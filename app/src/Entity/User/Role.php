@@ -7,11 +7,11 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * UserRole
+ * Role
  */
 #[ORM\Table(name: 'user_role', uniqueConstraints: [new ORM\UniqueConstraint(name: 'code', columns: ['code'])], indexes: [new ORM\Index(name: 'name', columns: ['name'])])]
 #[ORM\Entity]
-class UserRole
+class Role
 {
     /**
      * @var int
@@ -20,21 +20,25 @@ class UserRole
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private $id;
+
     /**
      * @var string
      */
     #[ORM\Column(name: 'code', type: 'string', length: 64, nullable: false)]
     private $code;
+
     /**
      * @var string
      */
     #[ORM\Column(name: 'name', type: 'string', length: 64, nullable: false)]
     private $name;
+
     /**
      * @var Collection
      */
     #[ORM\ManyToMany(targetEntity: 'User', mappedBy: 'roles')]
     private $users;
+
     /**
      * Constructor
      */
@@ -42,28 +46,34 @@ class UserRole
     {
         $this->users = new ArrayCollection();
     }
+    
     public function __toString()
     {
         return $this->id;
     }
+    
     public function getId(): ?int
     {
         return $this->id;
     }
+    
     public function getCode(): ?string
     {
         return $this->code;
     }
+    
     public function setCode(string $code): self
     {
         $this->code = $code;
 
         return $this;
     }
+    
     public function getName(): ?string
     {
         return $this->name;
     }
+    
     public function setName(string $name): self
     {
         $this->name = $name;
@@ -73,10 +83,12 @@ class UserRole
     /**
      * @return Collection|User[]
      */
-    public function getUsers(): Collection
+    
+     public function getUsers(): Collection
     {
         return $this->users;
     }
+    
     public function addUser(User $user): self
     {
         if (!$this->users->contains($user)) {
@@ -86,6 +98,7 @@ class UserRole
 
         return $this;
     }
+    
     public function removeUser(User $user): self
     {
         if ($this->users->removeElement($user)) {

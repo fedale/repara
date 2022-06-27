@@ -24,13 +24,13 @@ class Customer
     #[ORM\Column(length: 255, nullable: false, unique: true)]
     private string $email;
 
-    #[ORM\Column]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $password;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $unconfirmedEmail;
 
-    #[ORM\Column(length: 64)]
+    #[ORM\Column(length: 64, nullable: true)]
     private ?string $registrationIp;
 
     #[ORM\Column(nullable: false)]
@@ -39,13 +39,13 @@ class Customer
     #[ORM\Column(nullable: false)]
     private bool $active = true;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private \DateTime $confirmedAt;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private \DateTime $lastLoginAt;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private \DateTime $blockedAt;
 
     

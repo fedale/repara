@@ -2,37 +2,37 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
-
 class SecurityController extends AbstractDashboardController
 {
-    #[Route(path: '/login', name: 'admin_login')]
-    public function login(AuthenticationUtils $authenticationUtils) : Response
+    #[Route(path: '/admin/login', name: 'admin_login')]
+    public function login(AuthenticationUtils $authenticationUtils): Response
     {
+        // if ($this->getUser()) {
+        //     return $this->redirectToRoute('target_path');
+        // }
+
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
-        return $this->render('admin/pages/login.html.twig', [
-            'last_username' => $lastUsername,
-            'error'         => $error,
-            // the 'name' HTML attribute of the <input> used for the username field (default: '_username')
-            'username_parameter' => '_username',
-            // the 'name' HTML attribute of the <input> used for the password field (default: '_password')
-            'password_parameter' => '_password',
-            'forgot_password_enabled' => false,
-            'remember_me_enabled' => true,
-           ]);
+
+        return $this->render('security/login.html.twig', 
+            [
+                'title' => 'Login',
+                'last_username' => $lastUsername, 
+                'error' => $error
+            ]
+        );
     }
 
-    #[Route(path: '/logout', name: 'admin_logout')]
-    public function logout()
+    #[Route(path: '/admin/logout', name: 'admin_logout')]
+    public function logout(): void
     {
-        throw new \LoginException('This method cannot be blank');
+        throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
     }
 }

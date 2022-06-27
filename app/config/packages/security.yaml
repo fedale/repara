@@ -1,0 +1,82 @@
+security:
+    # https://symfony.com/doc/current/security/experimental_authenticators.html
+    enable_authenticator_manager: true
+    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
+    password_hashers:
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'bcrypt'
+        # App\Entity\User\User:
+        #     algorithm: bcrypt
+    providers:
+        app_user_provider:
+            entity:
+                class: App\Entity\User\User
+                property: username
+        
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        admin:
+            pattern: ^/admin
+            provider: app_user_provider
+            form_login:
+               login_path: admin_login
+               check_path: admin_login
+            custom_authenticator: App\Security\AdminCustomAuthenticator
+            entry_point: App\Security\AdminCustomAuthenticator
+            logout:
+                path: admin_logout
+                # where to redirect after logout
+                target: admin
+            # custom_authenticators:
+            #     - App\Security\BackendAuthenticator
+            # entry_point: App\Security\BackendAuthenticator
+
+        
+        api:
+            pattern: ^/authentication
+            stateless: true
+            provider: app_user_provider
+            json_login:
+                check_path: /authentication
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure       
+
+        refresh:
+            pattern: ^/token/refresh
+            stateless: true
+
+        main:
+            # pattern: ^/
+            stateless: true
+            provider: app_user_provider
+            json_login:
+                check_path: /authentication
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+            jwt: ~
+        
+        # main:
+        #     pattern: ^/admin
+        #     lazy: true
+        #     provider: app_user_provider
+            # form_login:
+            #    login_path: admin_login
+            #    check_path: admin_login
+            #guard:
+            #    authenticators:
+            #        - App\Security\BackendAuthenticator
+            
+
+
+            # activate different ways to authenticate
+            # https://symfony.com/doc/current/security.html#firewalls-authentication
+
+            # https://symfony.com/doc/current/security/impersonating_user.html
+            # switch_user: true
+
+    # Easy way to control access for large sections of your site
+    # Note: Only the *first* access control that matches will be used
+    access_control:
+        - { path: ^/, roles: EVERY_CHECK }

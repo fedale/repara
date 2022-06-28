@@ -27,7 +27,7 @@ class UserCrudController extends AbstractCrudController
         ;
     }
 
-
+*/
     public function configureFields(string $pageName): iterable
     {
         return [
@@ -58,6 +58,4 @@ class UserCrudController extends AbstractCrudController
                 ->setHelp('Write a message here!')
         ];
     }
-    */
-    
 }

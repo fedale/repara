@@ -33,7 +33,7 @@ class AdminCustomAuthenticator extends AbstractLoginFormAuthenticator
         $username = $request->request->get('username', '');
 
         $request->getSession()->set(Security::LAST_USERNAME, $username);
-
+dump($username, $request->request->get('password', ''));
         return new Passport(
             new UserBadge($username),
             new PasswordCredentials($request->request->get('password', '')),
@@ -45,6 +45,7 @@ class AdminCustomAuthenticator extends AbstractLoginFormAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
+        
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
         }
@@ -56,6 +57,7 @@ class AdminCustomAuthenticator extends AbstractLoginFormAuthenticator
 
     protected function getLoginUrl(Request $request): string
     {
+        
         return $this->urlGenerator->generate(self::LOGIN_ROUTE);
     }
 }

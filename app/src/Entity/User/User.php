@@ -279,7 +279,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @return array
      */
     
-     public function getRoles(): array
+    public function getRoles(): array
     {
         $roles = [];
         $rolesDB = $this->roles->toArray();
@@ -313,7 +313,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @see PasswordAuthenticatedUserInterface
      */
     
-     public function getPassword(): string
+    public function getPassword(): string
     {
         return $this->password;
     }
@@ -324,24 +324,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
     /**
      * The public representation of the user (e.g. a username, an email address, etc.)
      *
      * @see UserInterface
      */
-    
-     public function getUserIdentifier(): string
+    public function getUserIdentifier(): string
     {
         return (string) $this->username;
     }
+    
     /**
      * Returning a salt is only needed, if you are not using a modern
      * hashing algorithm (e.g. bcrypt or sodium) in your security.yaml.
      *
      * @see UserInterface
      */
-    
-     public function getSalt(): ?string
+    public function getSalt(): ?string
     {
         return null;
     }
@@ -349,7 +349,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @see UserInterface
      */
     
-     public function eraseCredentials()
+    public function eraseCredentials()
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;

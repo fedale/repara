@@ -4,9 +4,11 @@ namespace App\Entity\Customer;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity()]
-class Customer
+class Customer implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use TimestampableEntity;
 
@@ -47,6 +49,8 @@ class Customer
 
     #[ORM\Column(nullable: true)]
     private \DateTime $blockedAt;
+
+    private array $roles = [];
 
     
     public function getId(): ?int
@@ -193,4 +197,27 @@ class Customer
     }
 
 
+    public function getRoles(): array
+    {
+        return ['ROLE'];
+    }
+
+    public function eraseCredentials()
+    {
+        // If you store any temporary, sensitive data on the user, clear it here
+        $this->plainPassword = null;
+    }
+
+    /**
+     * The public representation of the user (e.g. a username, an email address, etc.)
+     *
+     * @see UserInterface
+     */
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->username;
+    }
+
+    
+    
 }

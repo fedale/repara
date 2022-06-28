@@ -8,6 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 
 class CustomerCrudController extends AbstractCrudController
 {
@@ -22,6 +23,11 @@ class CustomerCrudController extends AbstractCrudController
         yield TextField::new('username');
         yield TextField::new('code');
         yield TextField::new('email');
+        yield TextField::new('password')
+            ->hideOnIndex()
+            ->setFormType(PasswordType::class)
+            ->onlyWhenCreating()
+        ;
         yield IntegerField::new('typeId');
         yield DateField::new('createdAt')
             ->onlyOnIndex()

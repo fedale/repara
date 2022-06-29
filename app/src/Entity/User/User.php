@@ -8,13 +8,16 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use App\Repository\User\UserRepository;
-use Fresh\DoctrineEnumBundle\Validator\Constraints as DoctrineAssert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 /**
  * User
  */
 #[ORM\Table(name: 'user', uniqueConstraints: [new ORM\UniqueConstraint(name: 'user_unique_username', columns: ['username']), new ORM\UniqueConstraint(name: 'user_unique_email', columns: ['email'])], indexes: [new ORM\Index(name: 'type_id', columns: ['type_id']), new ORM\Index(name: 'active', columns: ['active'])])]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
+#[UniqueEntity(fields:['email'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     /**
@@ -28,20 +31,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string
      */
-    #[ORM\Column(name: 'username', type: 'string', length: 255, nullable: false)]
-    private $username;
+    #[ORM\Column(name: 'username', type: 'string', length: 255, nullable: false, unique: true)]
+    private string $username;
 
     /**
      * @var string
      */
-    #[ORM\Column(name: 'email', type: 'string', length: 255, nullable: false)]
-    private $email;
+    #[ORM\Column(name: 'email', type: 'string', length: 255, nullable: false, unique: true)]
+    #[Assert\Email]
+    private string $email;
 
     /**
      * @var string
      */
     #[ORM\Column(name: 'password', type: 'string', length: 60, nullable: false)]
-    private $password;
+    private string $password;
+
+    /**
+     * The plain non-persisted password
+     */
+    private ?string $plainPassword;
 
     /**
      * @var int|null
@@ -106,6 +115,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Role::class, fetch: 'EAGER', inversedBy: 'users')]
     #[ORM\JoinTable(name: 'user_role_assigned', joinColumns: [new ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')], inverseJoinColumns: [new ORM\JoinColumn(name: 'role_id', referencedColumnName: 'id')])]
     private $roles;
+
+    #[ORM\OneToOne(targetEntity: UserProfile::class, mappedBy: 'user', cascade:["persist", "remove"], fetch:'EAGER')]
+    #[ORM\JoinColumn(name:"id", referencedColumnName:"user_id", nullable:false)]
+    private $profile;
 
     /**
      * Constructor
@@ -204,18 +217,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
     
-    public function getState(): ?string
-    {
-        return $this->state;
-    }
-    
-    public function setState(?string $state): self
-    {
-        $this->state = $state;
-
-        return $this;
-    }
-    
     public function getActive(): ?bool
     {
         return $this->active;
@@ -228,6 +229,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
     
+    
+
     public function getCreatedAt(): ?int
     {
         return $this->createdAt;
@@ -291,7 +294,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $roles;
     }
     
-    public function addRole(UserRole $role): self
+    public function addRole(Role $role): self
     {
         if (!$this->roles->contains($role)) {
             $this->roles[] = $role;
@@ -301,7 +304,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
     
-    public function removeRole(UserRole $role): self
+    public function removeRole(Role $role): self
     {
         if ($this->roles->removeElement($role)) {
             $role->removeUser($this);
@@ -323,6 +326,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->password = $password;
 
         return $this;
+    }
+
+    public function getPlainPassword(): string
+    {
+        return $this->plainPassword;
+    }
+    public function setPlainPassword(string $plainPassword): void
+    {
+        $this->plainPassword = $plainPassword;
     }
 
     /**
@@ -353,5 +365,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function getProfile(): ?UserProfile
+    {
+        return $this->profile;
+    }
+
+    public function setProfile(?UserProfile $profile): self
+    {
+        $this->profile = $profile;
+
+        return $this;
     }
 }

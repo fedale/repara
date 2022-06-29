@@ -9,7 +9,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 
 class UserCrudController extends AbstractCrudController
 {
@@ -31,22 +34,25 @@ class UserCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
-            TextField::new('code'),
-            TextField::new('fullname'),
-            TextField::new('profile.email', 'Email')
+            TextField::new('username'),
+            TextField::new('profile.fullname')
+                ->onlyOnIndex()
+            ,
+            /*TextField::new('profile.firstname')
+                ->onlyOnForms()
+            ,
+            TextField::new('profile.lastname')
+                ->onlyOnForms()
+            ,*/
+            EmailField::new('email', 'Email')
                 ->setSortable(true)
             ,
-            TextField::new('profile.status', 'Status')
-                ->setSortable(true)
-                ,
-            ChoiceField::new('profile.type', 'Type')
-                ->setChoices([
-                    'Electrician' => 'E',
-                    'Maintainer' => 'M',
-                    'Turner' => 'T',
-                ])
-                ->setSortable(true)
-                ,
+            TextField::new('password')
+                ->hideOnIndex()
+                ->setFormType(PasswordType::class)
+                ->onlyWhenCreating(),
+            BooleanField::new('active'),
+            /*
             ChoiceField::new('profile.gender', 'Gender')
                 ->setChoices([
                     'Male' => 'M',
@@ -54,8 +60,9 @@ class UserCrudController extends AbstractCrudController
                 ])
                 ->setSortable(true)
                 ,
-            AssociationField::new('groups')
-                ->setHelp('Write a message here!')
+            */
+            // AssociationField::new('groups')
+            //     ->setHelp('Write a message here!')
         ];
     }
 }

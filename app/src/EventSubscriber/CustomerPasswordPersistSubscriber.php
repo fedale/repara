@@ -8,7 +8,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 
-class PasswordPersistSubscriber implements EventSubscriberInterface
+class CustomerPasswordPersistSubscriber implements EventSubscriberInterface
 {
     private $userPasswordHasher;
 

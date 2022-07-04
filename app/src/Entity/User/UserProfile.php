@@ -15,60 +15,62 @@ class UserProfile
      * @var string|null
      */
     #[ORM\Column(name: 'firstname', type: 'string', length: 255, nullable: true, options: ['default' => null])]
-    private $firstname = 'NULL';
+    private $firstname = NULL;
     /**
      * @var string|null
      */
     #[ORM\Column(name: 'lastname', type: 'string', length: 64, nullable: true, options: ['default' => null])]
-    private $lastname = 'NULL';
+    private $lastname = NULL;
     /**
      * @var string|null
      */
     #[ORM\Column(name: 'public_email', type: 'string', length: 255, nullable: true, options: ['default' => null])]
-    private $publicEmail = 'NULL';
+    private $publicEmail = NULL;
     /**
      * @var string|null
      */
     #[ORM\Column(name: 'gravatar_email', type: 'string', length: 255, nullable: true, options: ['default' => null])]
-    private $gravatarEmail = 'NULL';
+    private $gravatarEmail = NULL;
     /**
      * @var string|null
      */
     #[ORM\Column(name: 'gravatar_id', type: 'string', length: 32, nullable: true, options: ['default' => null])]
-    private $gravatarId = 'NULL';
+    private $gravatarId = NULL;
     /**
      * @var string|null
      */
     #[ORM\Column(name: 'location', type: 'string', length: 255, nullable: true, options: ['default' => null])]
-    private $location = 'NULL';
+    private $location = NULL;
     /**
      * @var string|null
      */
     #[ORM\Column(name: 'website', type: 'string', length: 255, nullable: true, options: ['default' => null])]
-    private $website = 'NULL';
+    private $website = NULL;
     /**
      * @var string|null
      */
     #[ORM\Column(name: 'bio', type: 'text', length: 65535, nullable: true, options: ['default' => null])]
-    private $bio = 'NULL';
+    private $bio = NULL;
     /**
      * @var string|null
      */
     #[ORM\Column(name: 'timezone', type: 'string', length: 40, nullable: true, options: ['default' => null])]
-    private $timezone = 'NULL';
+    private $timezone = NULL;
     /**
      * @var string|null
      */
     #[ORM\Column(name: 'setting', type: 'text', length: 0, nullable: true, options: ['default' => null, 'comment' => 'settings like notifications'])]
-    private $setting = 'NULL';
+    private $setting = NULL;
+
     /**
-     * @var User
+     * @var \
      */
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
-    #[ORM\OneToOne(targetEntity: User::class)]
+    #[ORM\OneToOne(targetEntity: User::class, cascade: ['persist'])]
     #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')]
     private $user;
+
     public function getFirstname(): ?string
     {
         return $this->firstname;

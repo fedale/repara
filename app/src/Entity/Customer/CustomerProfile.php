@@ -62,13 +62,14 @@ class CustomerProfile
     #[ORM\Column(name: 'setting', type: 'text', length: 0, nullable: true, options: ['default' => null, 'comment' => 'settings preferences'])]
     private $setting = 'NULL';
     /**
-     * @var \Customer
+     * @var Customer
      */
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
-    #[ORM\OneToOne(targetEntity: 'Customer')]
-    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')]
-    private $user;
+    #[ORM\OneToOne(targetEntity: Customer::class, cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(name: 'customer_id', referencedColumnName: 'id', nullable: false)]
+    private $customer;
+
     public function getFirstname(): ?string
     {
         return $this->firstname;
@@ -169,14 +170,15 @@ class CustomerProfile
 
         return $this;
     }
-    public function getUser(): ?Customer
+    public function getCustomer(): ?Customer
     {
-        return $this->user;
+        return $this->customer;
     }
-    public function setUser(?Customer $user): self
+    public function setCustomer(?Customer $customer): self
     {
-        $this->user = $user;
+        $this->customer = $customer;
 
         return $this;
     }
+
 }

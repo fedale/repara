@@ -3,10 +3,11 @@
 namespace App\Entity\Customer;
 
 use Gedmo\Timestampable\Traits\TimestampableEntity;
-
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 use App\Entity\Customer\Customer;
 use App\Repository\Customer\CustomerLocationRepository;
+
 
 #[ORM\Entity(CustomerLocationRepository::class)]
 class CustomerLocation
@@ -19,33 +20,37 @@ class CustomerLocation
     private ?int $id;
 
     #[ORM\Column(length: 128, nullable: false)]
+    #[Assert\NotNull()]
+    #[Assert\Length(max: 128)]
     private string $name;
 
     #[ORM\Column(length: 64, nullable: false)]
+    #[Assert\NotNull()]
+    #[Assert\Length(max: 64)]
     private string $address;
 
     #[ORM\Column(length: 8)]
+    #[Assert\NotNull()]
+    #[Assert\Length(max: 8)]
     private ?string $zipcode = null;
 
     #[ORM\Column(length: 64, nullable: false)]
+    #[Assert\NotNull()]
+    #[Assert\Length(max: 64)]
     private string $city;
 
     #[ORM\Column(length: 32, nullable:false)]
+    #[Assert\NotNull()]
+    #[Assert\Length(max: 32)]
     private string $country = 'Italia';
 
     #[ORM\Column]
     private bool $active = true;
 
-    /**
-     * @var Customer
-     *
-     * @ ORM\ManyToOne(targetEntity="Customer")
-     * @ ORM\JoinColumns({
-     *   @ ORM\JoinColumn(name="customer_id", referencedColumnName="id")
-     * })
-     */
-    #[ORM\ManyToOne]
-    private Customer $customer;
+    #[ORM\ManyToOne(targetEntity: Customer::class, inversedBy: 'locations')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull()]
+    private $customer;
 
 
     public function getId(): ?int
@@ -142,6 +147,5 @@ class CustomerLocation
     {
         return $this->active;
     }
-
 
 }

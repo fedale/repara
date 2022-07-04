@@ -1,0 +1,125 @@
+-- Doctrine Migration File Generated on 2022-07-02 08:06:14
+
+-- Version DoctrineMigrations\Version20220630192438
+CREATE TABLE notification (id INT UNSIGNED AUTO_INCREMENT NOT NULL, notification_entity_id INT UNSIGNED DEFAULT NULL, entity_id INT UNSIGNED DEFAULT NULL COMMENT 'NULL with deleted entities', message MEDIUMTEXT NOT NULL, status TINYINT(1) DEFAULT 1 NOT NULL, created_at DATETIME NOT NULL DEFAULT current_timestamp(), updated_at DATETIME NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(), deleted_at DATETIME DEFAULT NULL, INDEX created_at (created_at), INDEX updated_at (updated_at), INDEX entity_id (entity_id), INDEX active (status), INDEX entity_type_id (notification_entity_id), PRIMARY KEY(id)) ENGINE = InnoDB COMMENT = '' ;
+CREATE TABLE notification_entity (id INT UNSIGNED AUTO_INCREMENT NOT NULL, name VARCHAR(64) NOT NULL COMMENT 'post,comment,task,template', action VARCHAR(16) NOT NULL, subject VARCHAR(128) NOT NULL, template VARCHAR(255) NOT NULL, INDEX subject (subject), INDEX name (name), PRIMARY KEY(id)) ENGINE = InnoDB COMMENT = '' ;
+CREATE TABLE notification_item (id INT UNSIGNED AUTO_INCREMENT NOT NULL, notification_id INT UNSIGNED DEFAULT NULL, recipient_id INT UNSIGNED DEFAULT NULL, sender_id INT UNSIGNED NOT NULL, status SMALLINT NOT NULL, INDEX sender_id (sender_id), INDEX recipient_id (recipient_id), INDEX status (status), INDEX notification_id (notification_id), PRIMARY KEY(id)) ENGINE = InnoDB COMMENT = '' ;
+
+-- Version DoctrineMigrations\Version20220630192440
+CREATE TABLE project (id INT UNSIGNED AUTO_INCREMENT NOT NULL, code VARCHAR(32) NOT NULL, name VARCHAR(128) NOT NULL, description TEXT DEFAULT NULL, datetime_start DATETIME DEFAULT NULL, datetime_end DATETIME DEFAULT NULL, status VARCHAR(32) DEFAULT '''0''' NOT NULL, budget NUMERIC(15, 2) DEFAULT NULL, color CHAR(6) DEFAULT NULL, priority TINYINT(1) NOT NULL, visible TINYINT(1) DEFAULT 1 NOT NULL, created_by INT UNSIGNED NOT NULL, active tinyint DEFAULT 1 NOT NULL, created_at DATETIME NOT NULL DEFAULT current_timestamp(), updated_at DATETIME NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(), deleted_at DATETIME DEFAULT NULL, finished_at DATETIME DEFAULT NULL, INDEX name (name), INDEX updated_at (updated_at), INDEX color (color), INDEX datetime_start (datetime_start), INDEX active (active), INDEX priority (priority), INDEX datetime_end (datetime_end), INDEX visible (visible), INDEX created_by (created_by), INDEX status (status), UNIQUE INDEX code (code), INDEX created_at (created_at), INDEX budget (budget), PRIMARY KEY(id)) ENGINE = InnoDB COMMENT = '' ;
+CREATE TABLE project_milestone (id INT UNSIGNED AUTO_INCREMENT NOT NULL, name VARCHAR(32) NOT NULL, expiration_date DATETIME NOT NULL, active tinyint DEFAULT 1 NOT NULL, created_at DATETIME NOT NULL DEFAULT current_timestamp(), updated_at DATETIME NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(), deleted_at DATETIME DEFAULT NULL, INDEX active (active), INDEX name (name), PRIMARY KEY(id)) ENGINE = InnoDB COMMENT = '' ;
+CREATE TABLE project_milestone_task (id INT UNSIGNED AUTO_INCREMENT NOT NULL, milestone_id INT UNSIGNED NOT NULL, task_id INT UNSIGNED NOT NULL, active tinyint DEFAULT 1 NOT NULL, created_at DATETIME NOT NULL DEFAULT current_timestamp(), updated_at DATETIME NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(), deleted_at DATETIME DEFAULT NULL, INDEX task_it (task_id), INDEX active (active), INDEX milestone_it (milestone_id), PRIMARY KEY(id)) ENGINE = InnoDB COMMENT = '' ;
+CREATE TABLE project_task (id INT UNSIGNED AUTO_INCREMENT NOT NULL, customer_id INT UNSIGNED DEFAULT NULL, project_id INT UNSIGNED DEFAULT NULL, type_id SMALLINT UNSIGNED DEFAULT NULL, customer_location_place_asset_id INT UNSIGNED DEFAULT NULL, name VARCHAR(128) NOT NULL, description TEXT DEFAULT NULL, status VARCHAR(32) NOT NULL, asset_type VARCHAR(8) DEFAULT 'N/A' NOT NULL COMMENT 'Update with assetType value', priority SMALLINT NOT NULL, visible SMALLINT DEFAULT 1 NOT NULL, created_by INT NOT NULL, finished_at DATETIME DEFAULT NULL, active tinyint DEFAULT 1 NOT NULL, created_at DATETIME NOT NULL DEFAULT current_timestamp(), updated_at DATETIME NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(), deleted_at DATETIME DEFAULT NULL, INDEX status (status), INDEX active (active), INDEX created_by (created_by), INDEX project_id (project_id), INDEX visible (visible), INDEX created_on (created_at), INDEX place_id (customer_id), INDEX customer_location_place_asset_id (customer_location_place_asset_id), INDEX updated_at (updated_at), INDEX type_id (type_id), INDEX name (name), INDEX stuff_type (asset_type), INDEX priority (priority), PRIMARY KEY(id)) ENGINE = InnoDB COMMENT = '' ;
+CREATE TABLE project_task_assigned (id INT UNSIGNED AUTO_INCREMENT NOT NULL, user_id INT UNSIGNED NOT NULL, task_id INT UNSIGNED NOT NULL, active tinyint DEFAULT 1 NOT NULL, created_at DATETIME NOT NULL DEFAULT current_timestamp(), updated_at DATETIME NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(), deleted_at DATETIME DEFAULT NULL, INDEX created_at (created_at), INDEX updated_at (updated_at), INDEX task_item_id (task_id), INDEX active (active), INDEX user_id (user_id), PRIMARY KEY(id)) ENGINE = InnoDB COMMENT = '' ;
+CREATE TABLE project_task_attachment (id INT UNSIGNED AUTO_INCREMENT NOT NULL, user_id INT UNSIGNED DEFAULT NULL, project_task_id INT UNSIGNED DEFAULT NULL, name VARCHAR(255) NOT NULL, type VARCHAR(32) DEFAULT 'image' NOT NULL, size INT UNSIGNED NOT NULL, path VARCHAR(128) NOT NULL, filename VARCHAR(128) NOT NULL, active tinyint DEFAULT 1 NOT NULL, created_at DATETIME NOT NULL DEFAULT current_timestamp(), updated_at DATETIME NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(), deleted_at DATETIME DEFAULT NULL, INDEX created_at (created_at), INDEX active (active), INDEX user_id (user_id), INDEX type_3 (type), INDEX size (size), INDEX name (name), INDEX filename (filename), INDEX path (path), INDEX project_task_id (project_task_id), INDEX updated_at (updated_at), PRIMARY KEY(id)) ENGINE = InnoDB COMMENT = '' ;
+CREATE TABLE project_task_item (id INT UNSIGNED AUTO_INCREMENT NOT NULL, name VARCHAR(255) NOT NULL, description TEXT DEFAULT NULL, difficulty TINYINT(1) NOT NULL, value CHAR(1) DEFAULT NULL, datetime_start DATETIME DEFAULT NULL, datetime_end DATETIME DEFAULT NULL, task_id INT UNSIGNED NOT NULL, active tinyint DEFAULT 1 NOT NULL, created_at DATETIME NOT NULL DEFAULT current_timestamp(), updated_at DATETIME NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(), deleted_at DATETIME DEFAULT NULL, INDEX difficulty (difficulty), INDEX updated_at (updated_at), INDEX task_id (task_id), INDEX active (active), INDEX value (value), INDEX datetime_end (datetime_end), INDEX datetime_start (datetime_start), INDEX name (name), INDEX created_at (created_at), PRIMARY KEY(id)) ENGINE = InnoDB COMMENT = '' ;
+CREATE TABLE project_task_item_assigned (id INT UNSIGNED AUTO_INCREMENT NOT NULL, user_id INT UNSIGNED DEFAULT NULL, task_item_id INT UNSIGNED DEFAULT NULL, active tinyint DEFAULT 1 NOT NULL, created_at DATETIME NOT NULL DEFAULT current_timestamp(), updated_at DATETIME NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(), deleted_at DATETIME DEFAULT NULL, INDEX created_at (created_at), INDEX updated_at (updated_at), INDEX task_item_id (task_item_id), INDEX active (active), INDEX user_id (user_id), PRIMARY KEY(id)) ENGINE = InnoDB COMMENT = '' ;
+CREATE TABLE project_task_template (id INT UNSIGNED AUTO_INCREMENT NOT NULL, name VARCHAR(128) NOT NULL, description MEDIUMTEXT DEFAULT NULL, active tinyint DEFAULT 1 NOT NULL, created_at DATETIME NOT NULL DEFAULT current_timestamp(), updated_at DATETIME NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(), deleted_at DATETIME DEFAULT NULL, INDEX active (active), INDEX created_at (created_at), INDEX updated_at (updated_at), INDEX name (name), PRIMARY KEY(id)) ENGINE = InnoDB COMMENT = '' ;
+CREATE TABLE project_task_template_item (id INT UNSIGNED AUTO_INCREMENT NOT NULL, task_id INT UNSIGNED DEFAULT NULL, name VARCHAR(255) NOT NULL, task_type_id SMALLINT UNSIGNED DEFAULT 1 NOT NULL, sort SMALLINT NOT NULL, active tinyint DEFAULT 1 NOT NULL, created_at DATETIME NOT NULL DEFAULT current_timestamp(), updated_at DATETIME NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(), deleted_at DATETIME DEFAULT NULL, INDEX created_at (created_at), INDEX active (active), INDEX updated_at (updated_at), INDEX task_id (task_id), INDEX sort (sort), INDEX task_type_id (task_type_id), INDEX name (name), PRIMARY KEY(id)) ENGINE = InnoDB COMMENT = '' ;
+CREATE TABLE project_task_type (id SMALLINT UNSIGNED AUTO_INCREMENT NOT NULL, name VARCHAR(128) NOT NULL, active tinyint DEFAULT 1 NOT NULL, created_at DATETIME NOT NULL DEFAULT current_timestamp(), updated_at DATETIME NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(), deleted_at DATETIME DEFAULT NULL, INDEX active (active), INDEX created_at (created_at), INDEX updated_at (updated_at), INDEX name (name), PRIMARY KEY(id)) ENGINE = InnoDB COMMENT = '' ;
+
+-- Version DoctrineMigrations\Version20220630192739
+CREATE TABLE user
+        (id INT UNSIGNED AUTO_INCREMENT NOT NULL,
+        username VARCHAR(255) NOT NULL,
+        email VARCHAR(255) NOT NULL,
+        password VARCHAR(60) NOT NULL,
+        confirmed_at INT DEFAULT NULL,
+        unconfirmed_email VARCHAR(255) DEFAULT NULL,
+        blocked_at INT DEFAULT NULL,
+        registration_ip VARCHAR(45) DEFAULT NULL,
+        type_id SMALLINT UNSIGNED DEFAULT 1,
+        active tinyint DEFAULT 1 NOT NULL,
+        created_at DATETIME NOT NULL DEFAULT current_timestamp(),
+        updated_at DATETIME NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+        deleted_at DATETIME DEFAULT NULL,
+        last_login_at DATETIME DEFAULT NULL,
+        UNIQUE INDEX email (email),
+        INDEX type_id (type_id),
+        INDEX active (active),
+        UNIQUE INDEX username (username),
+        PRIMARY KEY(id)
+        ) ENGINE = InnoDB COMMENT = '' ;
+CREATE TABLE user_assigned_customer
+        (id INT AUTO_INCREMENT NOT NULL,
+        user_id INT UNSIGNED NOT NULL,
+        customer_id INT UNSIGNED NOT NULL,
+        customer_location_id INT UNSIGNED DEFAULT NULL,
+        customer_location_place_id INT UNSIGNED DEFAULT NULL,
+        customer_location_place_asset_id INT UNSIGNED DEFAULT NULL,
+        active tinyint DEFAULT 1 NOT NULL,
+        created_at DATETIME NOT NULL DEFAULT current_timestamp(),
+        updated_at DATETIME NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+        deleted_at DATETIME DEFAULT NULL,
+        INDEX customer_location_place_asset (customer_location_place_asset_id),
+        INDEX active (active),
+        INDEX updated_at (updated_at),
+        INDEX customer_id (customer_id),
+        INDEX customer_location_place (customer_location_place_id),
+        INDEX user_id (user_id),
+        UNIQUE INDEX customer_id_2 (customer_id,
+        customer_location_id,
+        customer_location_place_id,
+        customer_location_place_asset_id,
+        user_id),
+        INDEX created_at (created_at),
+        INDEX customer_location (customer_location_id),
+        PRIMARY KEY(id)
+        ) ENGINE = InnoDB COMMENT = '' ;
+CREATE TABLE user_attachment
+        (id INT UNSIGNED AUTO_INCREMENT NOT NULL,
+        user_id INT UNSIGNED DEFAULT NULL,
+        name VARCHAR(255) NOT NULL,
+        type VARCHAR(32) NOT NULL,
+        size INT UNSIGNED NOT NULL,
+        path VARCHAR(128) NOT NULL,
+        filename VARCHAR(128) NOT NULL,
+        active tinyint DEFAULT 1 NOT NULL,
+        created_at DATETIME NOT NULL DEFAULT current_timestamp(),
+        updated_at DATETIME NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+        deleted_at DATETIME DEFAULT NULL,
+        INDEX stuff_id (user_id),
+        INDEX updated_at (updated_at),
+        INDEX created_at (created_at),
+        INDEX active (active),
+        INDEX size (size),
+        INDEX type_2 (type),
+        INDEX name (name),
+        INDEX filename (filename),
+        INDEX path (path),
+        INDEX type (type),
+        PRIMARY KEY(id)
+        ) ENGINE = InnoDB COMMENT = '' ;
+CREATE TABLE user_group
+        (id SMALLINT UNSIGNED AUTO_INCREMENT NOT NULL,
+        name VARCHAR(32) NOT NULL,
+        code VARCHAR(32) NOT NULL,
+        PRIMARY KEY(id)
+        ) ENGINE = InnoDB COMMENT = '' ;
+CREATE TABLE user_profile (user_id INT UNSIGNED NOT NULL,
+        firstname VARCHAR(255) DEFAULT NULL,
+        lastname VARCHAR(64) DEFAULT NULL,
+        public_email VARCHAR(255) DEFAULT NULL,
+        gravatar_email VARCHAR(255) DEFAULT NULL,
+        gravatar_id VARCHAR(32) DEFAULT NULL,
+        location VARCHAR(255) DEFAULT NULL,
+        website VARCHAR(255) DEFAULT NULL,
+        bio TEXT DEFAULT NULL,
+        timezone VARCHAR(40) DEFAULT NULL,
+        setting LONGTEXT DEFAULT NULL COMMENT 'settings like notifications',
+        PRIMARY KEY(user_id)
+        ) ENGINE = InnoDB COMMENT = '' ;
+CREATE TABLE user_role
+        (id SMALLINT UNSIGNED AUTO_INCREMENT NOT NULL,
+        name VARCHAR(64) NOT NULL,
+        code VARCHAR(64) NOT NULL,
+        INDEX name (name),
+        UNIQUE INDEX code (code),
+        PRIMARY KEY(id)
+        ) ENGINE = InnoDB COMMENT = '' ;
+CREATE TABLE user_role_assigned (user_id INT UNSIGNED NOT NULL,
+        role_id SMALLINT UNSIGNED NOT NULL,
+        INDEX FK_D95AB405A76ED397 (role_id),
+        INDEX IDX_CFC787FBA76ED395 (user_id),
+        PRIMARY KEY(user_id, role_id)
+        ) DEFAULT COLLATE `utf8mb4_general_ci` ENGINE = InnoDB COMMENT = '' ;

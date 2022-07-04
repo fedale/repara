@@ -4,12 +4,12 @@ namespace App\Entity\Project;
 
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Customer\Customer;
-use App\Entity\Customer\CustomerPlaceAsset;
+use App\Entity\Customer\CustomerLocationPlaceAsset;
 
 /**
  * ProjectTask
  */
-#[ORM\Table(name: 'project_task', indexes: [new ORM\Index(name: 'name', columns: ['name']), new ORM\Index(name: 'active', columns: ['active']), new ORM\Index(name: 'created_on', columns: ['created_at']), new ORM\Index(name: 'type_id', columns: ['type_id']), new ORM\Index(name: 'status', columns: ['status']), new ORM\Index(name: 'visible', columns: ['visible']), new ORM\Index(name: 'modified_on', columns: ['modified_at']), new ORM\Index(name: 'priority', columns: ['priority']), new ORM\Index(name: 'project_id', columns: ['project_id']), new ORM\Index(name: 'project_task_ibfk_3', columns: ['customer_place_asset_id']), new ORM\Index(name: 'stuff_type', columns: ['asset_type']), new ORM\Index(name: 'created_by', columns: ['created_by']), new ORM\Index(name: 'place_id', columns: ['customer_id'])])]
+#[ORM\Table(name: 'project_task', indexes: [new ORM\Index(name: 'name', columns: ['name']), new ORM\Index(name: 'active', columns: ['active']), new ORM\Index(name: 'created_on', columns: ['created_at']), new ORM\Index(name: 'type_id', columns: ['type_id']), new ORM\Index(name: 'status', columns: ['status']), new ORM\Index(name: 'visible', columns: ['visible']), new ORM\Index(name: 'modified_on', columns: ['modified_at']), new ORM\Index(name: 'priority', columns: ['priority']), new ORM\Index(name: 'project_id', columns: ['project_id']), new ORM\Index(name: 'project_task_ibfk_3', columns: ['customer_location_place_asset_id']), new ORM\Index(name: 'stuff_type', columns: ['asset_type']), new ORM\Index(name: 'created_by', columns: ['created_by']), new ORM\Index(name: 'place_id', columns: ['customer_id'])])]
 #[ORM\Entity]
 class ProjectTask
 {
@@ -87,10 +87,10 @@ class ProjectTask
     #[ORM\JoinColumn(name: 'customer_id', referencedColumnName: 'id')]
     private $customer;
     /**
-     * @var \CustomerPlaceAsset
+     * @var CustomerLocationPlaceAsset
      */
-    #[ORM\ManyToOne(targetEntity: CustomerPlaceAsset::class)]
-    #[ORM\JoinColumn(name: 'customer_place_asset_id', referencedColumnName: 'id')]
+    #[ORM\ManyToOne(targetEntity: CustomerLocationPlaceAsset::class)]
+    #[ORM\JoinColumn(name: 'customer_location_place_asset_id', referencedColumnName: 'id')]
     private $customerPlaceAsset;
     /**
      * @var \Project

@@ -5,11 +5,11 @@ namespace App\Entity\Customer;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * CustomerPlaceAssetAttachment
+ * CustomerLocationPlaceAssetAttachment
  */
-#[ORM\Table(name: 'customer_place_asset_attachment', indexes: [new ORM\Index(name: 'stuff_id', columns: ['customer_place_asset_id']), new ORM\Index(name: 'active', columns: ['active']), new ORM\Index(name: 'name', columns: ['name']), new ORM\Index(name: 'type', columns: ['type']), new ORM\Index(name: 'created_at', columns: ['created_at']), new ORM\Index(name: 'type_2', columns: ['type']), new ORM\Index(name: 'path', columns: ['path']), new ORM\Index(name: 'updated_at', columns: ['updated_at']), new ORM\Index(name: 'size', columns: ['size']), new ORM\Index(name: 'filename', columns: ['filename'])])]
+#[ORM\Table(name: 'customer_location_place_asset_attachment', indexes: [new ORM\Index(name: 'stuff_id', columns: ['customer_location_place_asset_id']), new ORM\Index(name: 'active', columns: ['active']), new ORM\Index(name: 'name', columns: ['name']), new ORM\Index(name: 'type', columns: ['type']), new ORM\Index(name: 'created_at', columns: ['created_at']), new ORM\Index(name: 'type_2', columns: ['type']), new ORM\Index(name: 'path', columns: ['path']), new ORM\Index(name: 'updated_at', columns: ['updated_at']), new ORM\Index(name: 'size', columns: ['size']), new ORM\Index(name: 'filename', columns: ['filename'])])]
 #[ORM\Entity]
-class CustomerPlaceAssetAttachment
+class CustomerLocationPlaceAssetAttachment
 {
     /**
      * @var int
@@ -64,11 +64,13 @@ class CustomerPlaceAssetAttachment
     #[ORM\Column(name: 'deleted_at', type: 'datetime', nullable: true, options: ['default' => null])]
     private $deletedAt = 'NULL';
     /**
-     * @var \CustomerPlaceAsset
+     * @var \CustomerLocationPlaceAsset
      */
-    #[ORM\ManyToOne(targetEntity: 'CustomerPlaceAsset')]
-    #[ORM\JoinColumn(name: 'customer_place_asset_id', referencedColumnName: 'id')]
-    private $customerPlaceAsset;
+    #[ORM\ManyToOne(targetEntity: 'CustomerLocationPlaceAsset')]
+    #[ORM\JoinColumn(name: 'customer_location_place_asset_id', referencedColumnName: 'id')]
+    private $customerLocationPlaceAsset;
+
+
     public function getId(): ?int
     {
         return $this->id;
@@ -163,13 +165,14 @@ class CustomerPlaceAssetAttachment
 
         return $this;
     }
-    public function getCustomerPlaceAsset(): ?CustomerPlaceAsset
+    public function getCustomerLocationPlaceAsset(): ?CustomerLocationPlaceAsset
     {
-        return $this->customerPlaceAsset;
+        return $this->customerLocationPlaceAsset;
     }
-    public function setCustomerPlaceAsset(?CustomerPlaceAsset $customerPlaceAsset): self
+
+    public function setCustomerLocationPlaceAsset(?CustomerLocationPlaceAsset $customerLocationPlaceAsset): self
     {
-        $this->customerPlaceAsset = $customerPlaceAsset;
+        $this->customerLocationPlaceAsset = $customerLocationPlaceAsset;
 
         return $this;
     }

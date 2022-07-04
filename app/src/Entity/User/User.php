@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use App\Repository\User\UserRepository;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -20,6 +21,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[UniqueEntity(fields:['email'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    use TimestampableEntity;
+
     /**
      * @var int
      */
@@ -88,16 +91,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(name: 'active', type: 'boolean', nullable: false, options: ['default' => 1])]
     private $active = true;
     
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'created_at', type: 'integer', nullable: false)]
-    private $createdAt;
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'updated_at', type: 'integer', nullable: false)]
-    private $updatedAt;
     /**
      * @var \DateTime|null
      */
@@ -231,34 +224,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     
     
 
-    public function getCreatedAt(): ?int
-    {
-        return $this->createdAt;
-    }
-    
-    public function setCreatedAt(int $createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-    
-    public function getUpdatedAt(): ?int
-    {
-        return $this->updatedAt;
-    }
-    
-    public function setUpdatedAt(int $updatedAt): self
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
-    
-    public function getDeletedAt(): ?\DateTimeInterface
-    {
-        return $this->deletedAt;
-    }
     
     public function setDeletedAt(?\DateTimeInterface $deletedAt): self
     {

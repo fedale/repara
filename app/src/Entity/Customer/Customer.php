@@ -2,6 +2,8 @@
 
 namespace App\Entity\Customer;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -52,7 +54,28 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
 
     private array $roles = [];
 
+    #[ORM\OneToMany(mappedBy: 'customer', targetEntity: CustomerLocation::class)]
+    private $locations;
+
+    #[ORM\OneToOne(targetEntity: CustomerProfile::class, mappedBy: 'customer', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(name:"id", referencedColumnName:"customer_id", nullable:false)]
+    private $profile;
+
+    public function __construct()
+    {
+        $this->locations = new ArrayCollection();
+    }
+
+    public function __toString()
+    {
+        return $this->getFullname();
+    }
     
+    public function getFullname()
+    {
+        return $this->username;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -216,6 +239,48 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
     public function getUserIdentifier(): string
     {
         return (string) $this->username;
+    }
+
+    /**
+     * @return Collection<int, CustomerLocation>
+     */
+    public function getLocations(): Collection
+    {
+        return $this->locations;
+    }
+
+    public function addLocation(CustomerLocation $location): self
+    {
+        if (!$this->locations->contains($location)) {
+            $this->locations[] = $location;
+            $location->setCustomer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLocation(CustomerLocation $location): self
+    {
+        if ($this->locations->removeElement($location)) {
+            // set the owning side to null (unless already changed)
+            if ($location->getCustomer() === $this) {
+                $location->setCustomer(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getProfile(): ?CustomerProfile
+    {
+        return $this->profile;
+    }
+
+    public function setProfile(CustomerProfile $profile): self
+    {
+        $this->profile = $profile;
+
+        return $this;
     }
 
     

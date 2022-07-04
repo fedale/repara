@@ -39,11 +39,11 @@ final class CustomerProfileFactory extends ModelFactory
     protected function getDefaults(): array
     {
         return [
-            'customer' => CustomerFactory::new(),
             'firstname' => self::faker()->firstName(),
             'lastname' => self::faker()->lastName(),
             'website' => self::faker()->url(),
             'timezone' => self::faker()->timezone(),
+            'customer' => CustomerFactory::new(),
         ];
     }
 

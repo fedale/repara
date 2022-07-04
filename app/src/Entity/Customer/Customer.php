@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity()]
 class Customer implements UserInterface, PasswordAuthenticatedUserInterface
@@ -57,8 +58,15 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'customer', targetEntity: CustomerLocation::class)]
     private $locations;
 
+    /*
     #[ORM\OneToOne(targetEntity: CustomerProfile::class, mappedBy: 'customer', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(name:"id", referencedColumnName:"customer_id", nullable:false)]
+    #[Assert\Valid]
+    private $profile;
+    */
+
+    #[ORM\OneToOne(targetEntity: CustomerProfile::class, mappedBy: 'customer', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: true)]
     private $profile;
 
     public function __construct()
@@ -271,6 +279,23 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    
+    public function getProfile(): ?CustomerProfile
+    {
+        return $this->profile;
+    }
+
+    public function setProfile(CustomerProfile $profile): self
+    {
+         if ($profile->getCustomer() !== $this) {
+             $profile->setCustomer($this);
+         }
+
+        $this->profile = $profile;
+
+        return $this;
+    }
+/*
     public function getProfile(): ?CustomerProfile
     {
         return $this->profile;
@@ -282,7 +307,7 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-
+*/
     
     
 }

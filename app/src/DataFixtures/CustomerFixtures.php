@@ -12,7 +12,14 @@ class CustomerFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        CustomerFactory::createMany(6);
+          CustomerFactory::new()->many(2)->create();
+        /*
+        CustomerFactory::createMany(5, function () {
+            return [
+                'profile' => CustomerProfileFactory::new(),
+            ];
+        });
+        */
 
         $manager->flush();
     }

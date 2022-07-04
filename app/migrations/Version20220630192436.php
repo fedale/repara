@@ -180,6 +180,7 @@ final class Version20220630192436 extends AbstractMigration
         ) ENGINE = InnoDB COMMENT = \'\' ');
         
         $this->addSql('CREATE TABLE customer_profile (
+            id INT UNSIGNED AUTO_INCREMENT NOT NULL,
             customer_id INT UNSIGNED NOT NULL,
             firstname VARCHAR(255) DEFAULT NULL,
             lastname VARCHAR(64) NOT NULL,
@@ -191,7 +192,8 @@ final class Version20220630192436 extends AbstractMigration
             bio TEXT DEFAULT NULL,
             timezone VARCHAR(40) DEFAULT NULL,
             setting LONGTEXT DEFAULT NULL COMMENT \'settings preferences\',
-            PRIMARY KEY(customer_id),
+            PRIMARY KEY(id),
+            UNIQUE INDEX customer_id(customer_id),
             CONSTRAINT `customer_profile_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
         ) ENGINE = InnoDB COMMENT = \'\' ');
 

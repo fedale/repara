@@ -61,14 +61,23 @@ class CustomerProfile
      */
     #[ORM\Column(name: 'setting', type: 'text', length: 0, nullable: true, options: ['default' => null, 'comment' => 'settings preferences'])]
     private $setting = 'NULL';
+
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id;
+
     /**
      * @var Customer
      */
-    #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'NONE')]
-    #[ORM\OneToOne(targetEntity: Customer::class, cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(targetEntity: Customer::class, inversedBy: 'profile')]
     #[ORM\JoinColumn(name: 'customer_id', referencedColumnName: 'id', nullable: false)]
     private $customer;
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
     public function getFirstname(): ?string
     {
@@ -174,8 +183,13 @@ class CustomerProfile
     {
         return $this->customer;
     }
-    public function setCustomer(?Customer $customer): self
+    public function setCustomer(Customer $customer): self
     {
+        /*
+        if ($customer->getProfile() !== $this) {
+            $customer->setProfile($this);
+        }*/
+
         $this->customer = $customer;
 
         return $this;

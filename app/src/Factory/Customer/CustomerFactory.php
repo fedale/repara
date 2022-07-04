@@ -3,6 +3,7 @@
 namespace App\Factory\Customer;
 
 use App\Entity\Customer\Customer;
+use App\Entity\Customer\CustomerProfile;
 use Zenstruck\Foundry\ModelFactory;
 use Zenstruck\Foundry\Proxy;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -47,6 +48,7 @@ final class CustomerFactory extends ModelFactory
             'active' => self::faker()->boolean(90),
             'createdAt' => self::faker()->dateTimeBetween('-3 years', '-1 month'), // TODO add DATETIME ORM type manually
             'updatedAt' => self::faker()->dateTimeBetween('-1 month', 'now'),
+            'profile' => CustomerProfileFactory::new()
         ];
     }
 
@@ -54,9 +56,8 @@ final class CustomerFactory extends ModelFactory
     {
         // see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#initialization
         return $this
-            ->afterPersist(function(Customer $customer, array $attributes) {
-                $profile = CustomerProfileFactory::new(['customer' => $customer])->create();
-                dd($profile);
+            ->afterPersist( function(Customer $customer, array $attributes) {
+                $profile = CustomerProfileFactory::createOne(['customer' => $customer]);
                 $customer->setProfile($profile);
             });
         /*

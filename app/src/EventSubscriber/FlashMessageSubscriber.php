@@ -13,7 +13,7 @@ use  Symfony\Component\HttpFoundation\RequestStack;
 
 final class FlashMessageSubscriber implements EventSubscriberInterface
 {
-    public function __construct(private RequestStack $requestStack)
+    public function __construct(RequestStack $requestStack)
     {
     }
 

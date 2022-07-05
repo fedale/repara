@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Customer\Customer;
 use App\Entity\Customer\CustomerLocation;
 use App\Entity\Customer\CustomerLocationPlace;
+use App\Entity\Customer\CustomerType;
 use App\Entity\Project\ProjectTask;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
@@ -63,6 +64,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::section('Customer');
         yield MenuItem::linkToCrud('Customer list', 'fas fa-users', Customer::class);
         yield MenuItem::linkToCrud('Location', 'fas fa-users', CustomerLocation::class);
+        yield MenuItem::linkToCrud('Type', 'fas fa-users', CustomerType::class);
         yield MenuItem::linkToCrud('Place', 'fas fa-users', CustomerLocationPlace::class);
         yield MenuItem::section('Permission');
         // yield MenuItem::linkToCrud('Employees', 'fas fa-users', Employee::class),

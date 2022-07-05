@@ -70,8 +70,6 @@ class CustomerProfile
     /**
      * @var Customer
      */
-    #[ORM\OneToOne(targetEntity: Customer::class, inversedBy: 'profile')]
-    #[ORM\JoinColumn(name: 'customer_id', referencedColumnName: 'id', nullable: false)]
     private $customer;
 
     public function getId(): ?int
@@ -179,18 +177,15 @@ class CustomerProfile
 
         return $this;
     }
+
     public function getCustomer(): ?Customer
     {
         return $this->customer;
     }
+
     public function setCustomer(Customer $customer): self
     {
-        /*
-        if ($customer->getProfile() !== $this) {
-            $customer->setProfile($this);
-        }*/
-
-        $this->customer = $customer;
+          $this->customer = $customer;
 
         return $this;
     }

@@ -39,9 +39,6 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $registrationIp;
 
     #[ORM\Column(nullable: false)]
-    private int $typeId = 1;
-
-    #[ORM\Column(nullable: false)]
     private bool $active = true;
 
     #[ORM\Column(nullable: true)]
@@ -65,9 +62,13 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
     private $profile;
     */
 
-    #[ORM\OneToOne(targetEntity: CustomerProfile::class, mappedBy: 'customer', cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: true)]
+    #[ORM\OneToOne(targetEntity: CustomerProfile::class, cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
     private $profile;
+
+    #[ORM\ManyToOne(targetEntity: CustomerType::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private $type;
 
     public function __construct()
     {
@@ -157,18 +158,6 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
     public function setRegistrationIp(?string $registrationIp): self
     {
         $this->registrationIp = $registrationIp;
-
-        return $this;
-    }
-
-    public function getTypeId(): ?int
-    {
-        return $this->typeId;
-    }
-
-    public function setTypeId(int $typeId): self
-    {
-        $this->typeId = $typeId;
 
         return $this;
     }
@@ -279,23 +268,6 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    
-    public function getProfile(): ?CustomerProfile
-    {
-        return $this->profile;
-    }
-
-    public function setProfile(CustomerProfile $profile): self
-    {
-         if ($profile->getCustomer() !== $this) {
-             $profile->setCustomer($this);
-         }
-
-        $this->profile = $profile;
-
-        return $this;
-    }
-/*
     public function getProfile(): ?CustomerProfile
     {
         return $this->profile;
@@ -307,7 +279,18 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-*/
-    
+
+
+    public function getType(): ?CustomerType
+    {
+        return $this->type;
+    }
+
+    public function setType(?CustomerType $type): self
+    {
+        $this->type = $type;
+
+        return $this;
+    }
     
 }

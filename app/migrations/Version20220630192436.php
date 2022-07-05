@@ -43,7 +43,7 @@ final class Version20220630192436 extends AbstractMigration
         ) ENGINE = InnoDB COMMENT = \'\' ');
         
         $this->addSql('CREATE TABLE customer_attachment (
-        id INT UNSIGNED AUTO_INCREMENT NOT NULL,
+            id INT UNSIGNED AUTO_INCREMENT NOT NULL,
             customer_id INT UNSIGNED NOT NULL,
             name VARCHAR(255) NOT NULL,
             type VARCHAR(32) NOT NULL,
@@ -199,12 +199,10 @@ final class Version20220630192436 extends AbstractMigration
 
         $this->addSql('CREATE TABLE customer_type (
             id INT UNSIGNED AUTO_INCREMENT NOT NULL,
-            customer_id INT UNSIGNED NOT NULL,
             name VARCHAR(255) DEFAULT NULL,
-            INDEX customer_id (customer_id),
-            PRIMARY KEY(id),
-            CONSTRAINT `customer_type_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-        ) ENGINE = InnoDB COMMENT = \'\' ');
+            INDEX name (name),
+            PRIMARY KEY(id)
+        ) ENGINE = InnoDB ');
 
         $this->addSql('CREATE TABLE customer_group (
             id INT UNSIGNED AUTO_INCREMENT NOT NULL,
@@ -245,7 +243,7 @@ final class Version20220630192436 extends AbstractMigration
         $this->addSql('DROP TABLE customer_customer_group');
         
         $this->addSql('DROP TABLE customer_group');
-        
+
         $this->addSql('DROP TABLE customer');
     }
 }

@@ -12,7 +12,7 @@ class CustomerFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-          CustomerFactory::new()->many(2)->create();
+       //   CustomerFactory::new()->many(2)->create();
         /*
         CustomerFactory::createMany(5, function () {
             return [

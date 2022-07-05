@@ -44,11 +44,11 @@ final class CustomerFactory extends ModelFactory
             'username' => self::faker()->userName(),
             'email' => self::faker()->companyEmail(),
             'password' => self::faker()->password(),
-            'typeId' => self::faker()->randomNumber(1, 4),
+            //'type' => self::faker()->randomNumber(1, 4),
             'active' => self::faker()->boolean(90),
             'createdAt' => self::faker()->dateTimeBetween('-3 years', '-1 month'), // TODO add DATETIME ORM type manually
             'updatedAt' => self::faker()->dateTimeBetween('-1 month', 'now'),
-            'profile' => CustomerProfileFactory::new()
+     //       'profile' => CustomerProfileFactory::new()
         ];
     }
 

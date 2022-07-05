@@ -4,6 +4,7 @@ namespace App\Controller\Admin\Customer;
 
 use App\Entity\Customer\Customer;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
@@ -23,12 +24,16 @@ class CustomerCrudController extends AbstractCrudController
         yield TextField::new('username');
         yield TextField::new('code');
         yield TextField::new('email');
+        // yield TextField::new('profile.firstname');
+        // yield TextField::new('profile.lastname');
         yield TextField::new('password')
             ->hideOnIndex()
             ->setFormType(PasswordType::class)
             ->onlyWhenCreating()
         ;
-        yield IntegerField::new('typeId');
+        yield AssociationField::new('type')
+            ->renderAsNativeWidget()
+        ;
         yield DateField::new('createdAt')
             ->onlyOnIndex()
         ;

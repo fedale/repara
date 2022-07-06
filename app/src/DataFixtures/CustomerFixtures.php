@@ -2,25 +2,36 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Customer\Customer;
 use App\Entity\Customer\CustomerProfile;
+use App\Entity\Customer\CustomerType;
 use App\Factory\Customer\CustomerFactory;
 use App\Factory\Customer\CustomerProfileFactory;
+use App\Factory\Customer\CustomerTypeFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class CustomerFixtures extends Fixture
+class CustomerFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
-       //   CustomerFactory::new()->many(2)->create();
-        /*
-        CustomerFactory::createMany(5, function () {
+        $customerTypes = $manager->getRepository(CustomerType::class)->findAll();
+        
+        CustomerFactory::createMany(10, function () use ($customerTypes) {
             return [
-                'profile' => CustomerProfileFactory::new(),
+                'type' => $customerTypes[array_rand($customerTypes)]
             ];
         });
-        */
+        
 
         $manager->flush();
+    }
+
+    public function getDependencies(): array
+    {
+        return [
+            CustomerTypeFixtures::class,
+        ];
     }
 }

@@ -180,7 +180,6 @@ final class Version20220630192436 extends AbstractMigration
         ) ENGINE = InnoDB COMMENT = \'\' ');
         
         $this->addSql('CREATE TABLE customer_profile (
-            id INT UNSIGNED AUTO_INCREMENT NOT NULL,
             customer_id INT UNSIGNED NOT NULL,
             firstname VARCHAR(255) DEFAULT NULL,
             lastname VARCHAR(64) NOT NULL,
@@ -192,8 +191,7 @@ final class Version20220630192436 extends AbstractMigration
             bio TEXT DEFAULT NULL,
             timezone VARCHAR(40) DEFAULT NULL,
             setting LONGTEXT DEFAULT NULL COMMENT \'settings preferences\',
-            PRIMARY KEY(id),
-            UNIQUE INDEX customer_id(customer_id),
+            PRIMARY KEY(customer_id),
             CONSTRAINT `customer_profile_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
         ) ENGINE = InnoDB COMMENT = \'\' ');
 
@@ -219,6 +217,22 @@ final class Version20220630192436 extends AbstractMigration
             CONSTRAINT `customer_customer_group_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
             CONSTRAINT `customer_customer_group_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `customer_group` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
         ) ENGINE = InnoDB COMMENT = \'\' ');
+
+        $this->addSql('CREATE TABLE customer_role (
+            id INT UNSIGNED AUTO_INCREMENT NOT NULL,
+            name VARCHAR(255) DEFAULT NULL,
+            INDEX name (name),
+            PRIMARY KEY(id)
+        ) ENGINE = InnoDB ');
+
+        $this->addSql('CREATE TABLE customer_customer_role (
+            id INT UNSIGNED AUTO_INCREMENT NOT NULL,
+            customer_id INT UNSIGNED NOT NULL,
+            role_id INT UNSIGNED NOT NULL,
+            PRIMARY KEY(id),
+            CONSTRAINT `customer_customer_role_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+            CONSTRAINT `customer_customer_role_ibfk_2` FOREIGN KEY (`role_id`) REFERENCES `customer_role` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+        ) ENGINE = InnoDB ');
         
     }
 
@@ -243,6 +257,10 @@ final class Version20220630192436 extends AbstractMigration
         $this->addSql('DROP TABLE customer_customer_group');
         
         $this->addSql('DROP TABLE customer_group');
+
+        $this->addSql('DROP TABLE customer_customer_role');
+        
+        $this->addSql('DROP TABLE customer_role');
 
         $this->addSql('DROP TABLE customer');
     }

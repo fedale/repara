@@ -43,7 +43,7 @@ final class CustomerProfileFactory extends ModelFactory
             'lastname' => self::faker()->lastName(),
             'website' => self::faker()->url(),
             'timezone' => self::faker()->timezone(),
-            'customer' => CustomerFactory::new(),
+            //'customer' => CustomerFactory::new(),
         ];
     }
 

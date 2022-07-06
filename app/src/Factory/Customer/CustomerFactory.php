@@ -2,6 +2,7 @@
 
 namespace App\Factory\Customer;
 
+use App\DataFixtures\CustomerTypeFixtures;
 use App\Entity\Customer\Customer;
 use App\Entity\Customer\CustomerProfile;
 use Zenstruck\Foundry\ModelFactory;
@@ -44,22 +45,23 @@ final class CustomerFactory extends ModelFactory
             'username' => self::faker()->userName(),
             'email' => self::faker()->companyEmail(),
             'password' => self::faker()->password(),
-            //'type' => self::faker()->randomNumber(1, 4),
+            'type' => CustomerTypeFactory::new(),
             'active' => self::faker()->boolean(90),
             'createdAt' => self::faker()->dateTimeBetween('-3 years', '-1 month'), // TODO add DATETIME ORM type manually
             'updatedAt' => self::faker()->dateTimeBetween('-1 month', 'now'),
-     //       'profile' => CustomerProfileFactory::new()
+         //   'profile' => CustomerProfileFactory::new()
         ];
     }
 
     protected function initialize(): self
     {
+        return $this;
         // see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#initialization
         return $this
-            ->afterPersist( function(Customer $customer, array $attributes) {
-                $profile = CustomerProfileFactory::createOne(['customer' => $customer]);
-                $customer->setProfile($profile);
-            });
+             ->afterInstantiate( function(Customer $customer, array $attributes) {
+                 CustomerProfileFactory::createOne(['customer' => $customer ]);
+                //  $customer->setProfile($profile);
+             });
         /*
             ->afterInstantiate(function(Customer $customer) {
             $customer->setPassword($this->passwordHasher->hashPassword($customer, $customer->getPassword()));

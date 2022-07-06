@@ -11,6 +11,12 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity]
 class CustomerProfile
 {
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy:'AUTO')]
+    #[ORM\Column(name:'customer_id', type:'integer', nullable: false)]
+    #[ORM\OneToOne(inversedBy: 'profile', targetEntity: Customer::class, cascade: ['persist', 'remove'])]
+    private $customer;
+
     /**
      * @var string|null
      */
@@ -62,15 +68,10 @@ class CustomerProfile
     #[ORM\Column(name: 'setting', type: 'text', length: 0, nullable: true, options: ['default' => null, 'comment' => 'settings preferences'])]
     private $setting = 'NULL';
 
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id;
+    
+    
 
-    /**
-     * @var Customer
-     */
-    private $customer;
+
 
     public function getId(): ?int
     {
@@ -178,6 +179,7 @@ class CustomerProfile
         return $this;
     }
 
+   
     public function getCustomer(): ?Customer
     {
         return $this->customer;
@@ -185,7 +187,12 @@ class CustomerProfile
 
     public function setCustomer(Customer $customer): self
     {
-          $this->customer = $customer;
+        // // set the owning side of the relation if necessary
+        // if ($customer->getProfile() !== $this) {
+        //     $customer->setProfile($this);
+        // }
+
+        $this->customer = $customer;
 
         return $this;
     }

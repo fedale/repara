@@ -55,24 +55,23 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'customer', targetEntity: CustomerLocation::class)]
     private $locations;
 
-    /*
-    #[ORM\OneToOne(targetEntity: CustomerProfile::class, mappedBy: 'customer', cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(name:"id", referencedColumnName:"customer_id", nullable:false)]
-    #[Assert\Valid]
-    private $profile;
-    */
-
-    #[ORM\OneToOne(targetEntity: CustomerProfile::class, cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
-    private $profile;
+    
+    #[ORM\OneToOne(targetEntity: CustomerProfile::class, mappedBy:'customer', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(name:'id', referencedColumnName:'customer_id', nullable:false)]
+    private $profile = null;
+    
 
     #[ORM\ManyToOne(targetEntity: CustomerType::class)]
     #[ORM\JoinColumn(nullable: false)]
     private $type;
 
+    #[ORM\ManyToMany(targetEntity: CustomerGroup::class, inversedBy: 'customers')]
+    private $groups;
+
     public function __construct()
     {
         $this->locations = new ArrayCollection();
+        $this->groups = new ArrayCollection();
     }
 
     public function __toString()
@@ -292,5 +291,29 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-    
+
+    /**
+     * @return Collection<int, CustomerGroup>
+     */
+    public function getGroups(): Collection
+    {
+        return $this->groups;
+    }
+
+    public function addGroup(CustomerGroup $group): self
+    {
+        if (!$this->groups->contains($group)) {
+            $this->groups[] = $group;
+        }
+
+        return $this;
+    }
+
+    public function removeGroup(CustomerGroup $group): self
+    {
+        $this->groups->removeElement($group);
+
+        return $this;
+    }
+
 }

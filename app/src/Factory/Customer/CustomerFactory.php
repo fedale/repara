@@ -55,11 +55,10 @@ final class CustomerFactory extends ModelFactory
 
     protected function initialize(): self
     {
-        return $this;
         // see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#initialization
         return $this
-             ->afterInstantiate( function(Customer $customer, array $attributes) {
-                 CustomerProfileFactory::createOne(['customer' => $customer ]);
+             ->afterPersist( function(Customer $customer, array $attributes) {
+                CustomerProfileFactory::new(['customer' => $customer ])->create();
                 //  $customer->setProfile($profile);
              });
         /*

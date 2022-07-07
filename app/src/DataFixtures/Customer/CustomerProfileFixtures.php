@@ -1,22 +1,23 @@
 <?php
 
-namespace App\DataFixtures;
+namespace App\DataFixtures\Customer;
 
 use App\Factory\Customer\CustomerFactory;
-use App\Factory\Customer\CustomerLocationFactory;
+use App\Factory\Customer\CustomerProfileFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class CustomerLocationFixtures extends Fixture implements DependentFixtureInterface
+class CustomerProfileFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        CustomerLocationFactory::createMany(5, function () {
+        return;
+        CustomerProfileFactory::createMany(10, function () {
             return [
-                'customer' => CustomerFactory::random(),
+                'customer' => CustomerFactory::createOne()
             ];
         });
+        
 
         $manager->flush();
     }

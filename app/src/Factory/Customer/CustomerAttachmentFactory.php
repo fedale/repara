@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Factory;
+namespace App\Factory\Customer;
 
 use App\Entity\Customer\CustomerAttachment;
 use Zenstruck\Foundry\ModelFactory;

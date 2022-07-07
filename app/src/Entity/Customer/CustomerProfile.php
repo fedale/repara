@@ -13,15 +13,17 @@ class CustomerProfile
 {
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy:'AUTO')]
-    #[ORM\Column(name:'customer_id', type:'integer', nullable: false)]
-    #[ORM\OneToOne(inversedBy: 'profile', targetEntity: Customer::class, cascade: ['persist', 'remove'])]
-    private $customer;
+    #[ORM\Column]
+    private $id;
 
+    #[ORM\OneToOne(targetEntity: Customer::class, cascade: ['persist', 'remove'])]
+    private $customer;
+    
     /**
      * @var string|null
      */
     #[ORM\Column(name: 'firstname', type: 'string', length: 255, nullable: true, options: ['default' => null])]
-    private $firstname = 'NULL';
+    private $firstname = NULL;
     /**
      * @var string
      */
@@ -31,48 +33,46 @@ class CustomerProfile
      * @var string|null
      */
     #[ORM\Column(name: 'public_email', type: 'string', length: 255, nullable: true, options: ['default' => null])]
-    private $publicEmail = 'NULL';
+    private $publicEmail = NULL;
     /**
      * @var string|null
      */
     #[ORM\Column(name: 'gravatar_email', type: 'string', length: 255, nullable: true, options: ['default' => null])]
-    private $gravatarEmail = 'NULL';
+    private $gravatarEmail = NULL;
     /**
      * @var string|null
      */
     #[ORM\Column(name: 'gravatar_id', type: 'string', length: 32, nullable: true, options: ['default' => null])]
-    private $gravatarId = 'NULL';
+    private $gravatarId = NULL;
     /**
      * @var string|null
      */
     #[ORM\Column(name: 'location', type: 'string', length: 255, nullable: true, options: ['default' => null])]
-    private $location = 'NULL';
+    private $location = NULL;
     /**
      * @var string|null
      */
     #[ORM\Column(name: 'website', type: 'string', length: 255, nullable: true, options: ['default' => null])]
-    private $website = 'NULL';
+    private $website = NULL;
     /**
      * @var string|null
      */
     #[ORM\Column(name: 'bio', type: 'text', length: 65535, nullable: true, options: ['default' => null])]
-    private $bio = 'NULL';
+    private $bio = NULL;
     /**
      * @var string|null
      */
     #[ORM\Column(name: 'timezone', type: 'string', length: 40, nullable: true, options: ['default' => null])]
-    private $timezone = 'NULL';
+    private $timezone = NULL;
     /**
      * @var string|null
      */
     #[ORM\Column(name: 'setting', type: 'text', length: 0, nullable: true, options: ['default' => null, 'comment' => 'settings preferences'])]
-    private $setting = 'NULL';
+    private $setting = NULL;
 
     
+
     
-
-
-
     public function getId(): ?int
     {
         return $this->id;
@@ -187,14 +187,10 @@ class CustomerProfile
 
     public function setCustomer(Customer $customer): self
     {
-        // // set the owning side of the relation if necessary
-        // if ($customer->getProfile() !== $this) {
-        //     $customer->setProfile($this);
-        // }
-
         $this->customer = $customer;
 
         return $this;
     }
+
 
 }

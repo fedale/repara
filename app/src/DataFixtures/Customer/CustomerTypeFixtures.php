@@ -1,6 +1,6 @@
 <?php
 
-namespace App\DataFixtures;
+namespace App\DataFixtures\Customer;
 
 use App\Entity\Customer\CustomerType;
 use App\Factory\Customer\CustomerTypeFactory;
@@ -18,8 +18,6 @@ class CustomerTypeFixtures extends Fixture
         $customerType2 = new CustomerType();
         $customerType2->setName('Azienda');
         $manager->persist($customerType2);
-
-        // CustomerTypeFactory::createMany(2);
 
         $manager->flush();
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Factory;
+namespace App\Factory\Customer;
 
 use App\Entity\Customer\CustomerLocationPlaceAsset;
 use Zenstruck\Foundry\ModelFactory;

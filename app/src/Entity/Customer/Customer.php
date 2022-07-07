@@ -55,18 +55,14 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'customer', targetEntity: CustomerLocation::class)]
     private $locations;
 
-    
-    #[ORM\OneToOne(targetEntity: CustomerProfile::class, mappedBy:'customer', cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(name:'id', referencedColumnName:'customer_id', nullable:false)]
-    private $profile = null;
-    
-
     #[ORM\ManyToOne(targetEntity: CustomerType::class)]
     #[ORM\JoinColumn(nullable: false)]
     private $type;
 
     #[ORM\ManyToMany(targetEntity: CustomerGroup::class, inversedBy: 'customers')]
     private $groups;
+
+    
 
     public function __construct()
     {
@@ -267,6 +263,7 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    /*
     public function getProfile(): ?CustomerProfile
     {
         return $this->profile;
@@ -274,11 +271,16 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setProfile(CustomerProfile $profile): self
     {
+        // // set the owning side of the relation if necessary
+        if ($profile->getProfile() !== $this) {
+            $customer->setProfile($this);
+       }
+
         $this->profile = $profile;
 
         return $this;
     }
-
+    */
 
     public function getType(): ?CustomerType
     {
@@ -315,5 +317,7 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    
 
 }

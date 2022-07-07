@@ -211,13 +211,13 @@ final class Version20220630192436 extends AbstractMigration
             PRIMARY KEY(id)
         ) ENGINE = InnoDB COMMENT = \'\' ');
 
-        $this->addSql('CREATE TABLE customer_customer_group (
+        $this->addSql('CREATE TABLE customer_group_assigned (
             id INT UNSIGNED AUTO_INCREMENT NOT NULL,
             customer_id INT UNSIGNED NOT NULL,
-            group_id INT UNSIGNED NOT NULL,
+            customer_group_id INT UNSIGNED NOT NULL,
             PRIMARY KEY(id),
             CONSTRAINT `customer_customer_group_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-            CONSTRAINT `customer_customer_group_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `customer_group` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+            CONSTRAINT `customer_customer_group_ibfk_2` FOREIGN KEY (`customer_group_id`) REFERENCES `customer_group` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
         ) ENGINE = InnoDB COMMENT = \'\' ');
 
         $this->addSql('CREATE TABLE customer_role (
@@ -227,7 +227,7 @@ final class Version20220630192436 extends AbstractMigration
             PRIMARY KEY(id)
         ) ENGINE = InnoDB ');
 
-        $this->addSql('CREATE TABLE customer_customer_role (
+        $this->addSql('CREATE TABLE customer_role_assigned (
             id INT UNSIGNED AUTO_INCREMENT NOT NULL,
             customer_id INT UNSIGNED NOT NULL,
             role_id INT UNSIGNED NOT NULL,
@@ -256,11 +256,11 @@ final class Version20220630192436 extends AbstractMigration
         
         $this->addSql('DROP TABLE customer_type');
         
-        $this->addSql('DROP TABLE customer_customer_group');
+        $this->addSql('DROP TABLE customer_group_assigned');
         
         $this->addSql('DROP TABLE customer_group');
 
-        $this->addSql('DROP TABLE customer_customer_role');
+        $this->addSql('DROP TABLE customer_role_assigned');
         
         $this->addSql('DROP TABLE customer_role');
 

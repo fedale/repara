@@ -59,12 +59,7 @@ final class CustomerFactory extends ModelFactory
         return $this
              ->afterPersist( function(Customer $customer, array $attributes) {
                 CustomerProfileFactory::new(['customer' => $customer ])->create();
-                //  $customer->setProfile($profile);
              });
-        /*
-            ->afterInstantiate(function(Customer $customer) {
-            $customer->setPassword($this->passwordHasher->hashPassword($customer, $customer->getPassword()));
-        }) */
         ;
         
     }

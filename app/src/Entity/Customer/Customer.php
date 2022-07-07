@@ -50,9 +50,15 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private \DateTime $blockedAt;
 
-    private array $roles = [];
+    //  /**
+    //  * @var Collection|Role[]
+    //  */
+    // #[ORM\ManyToMany(targetEntity: Role::class, fetch: 'EAGER', inversedBy: 'users')]
+    // #[ORM\JoinTable(name: 'user_role_assigned', joinColumns: [new ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')], inverseJoinColumns: [new ORM\JoinColumn(name: 'role_id', referencedColumnName: 'id')])]
+    // private $roles;
 
-    #[ORM\OneToMany(mappedBy: 'customer', targetEntity: CustomerLocation::class)]
+
+    #[ORM\OneToMany(targetEntity: CustomerLocation::class, mappedBy: 'customer')]
     private $locations;
 
     #[ORM\ManyToOne(targetEntity: CustomerType::class)]
@@ -60,14 +66,18 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
     private $type;
 
     #[ORM\ManyToMany(targetEntity: CustomerGroup::class, inversedBy: 'customers')]
+    #[ORM\JoinTable(name: 'customer_group_assigned')]
     private $groups;
 
-    
+    #[ORM\ManyToMany(targetEntity: CustomerRole::class, inversedBy: 'customers')]
+    #[ORM\JoinTable(name: 'customer_role_assigned', joinColumns: [new ORM\JoinColumn(name: 'customer_id', referencedColumnName: 'id')], inverseJoinColumns: [new ORM\JoinColumn(name: 'role_id', referencedColumnName: 'id')])]
+    private $roles;
 
     public function __construct()
     {
         $this->locations = new ArrayCollection();
         $this->groups = new ArrayCollection();
+        $this->roles = new ArrayCollection();
     }
 
     public function __toString()
@@ -212,11 +222,6 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
 
-    public function getRoles(): array
-    {
-        return ['ROLE'];
-    }
-
     public function eraseCredentials()
     {
         // If you store any temporary, sensitive data on the user, clear it here
@@ -306,6 +311,7 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->groups->contains($group)) {
             $this->groups[] = $group;
+            $group->addCustomer($this);
         }
 
         return $this;
@@ -313,11 +319,66 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeGroup(CustomerGroup $group): self
     {
-        $this->groups->removeElement($group);
+        if ($this->groups->removeElement($group)) {
+            $group->removeCustomer($this);
+        }
+        
+        return $this;
+    }
+
+    public function getRoles(): array
+    {
+        $roles = [];
+        $rolesDB = $this->roles->toArray();
+        foreach ($rolesDB as $role) {
+            $roles[] = $role->getCode();
+        }
+        $roles[] = 'ROLE_USER';
+
+        return $roles;
+    }
+    
+    public function addRole(CustomerRole $role): self
+    {
+        if (!$this->roles->contains($role)) {
+            $this->roles[] = $role;
+            $role->addUser($this);
+        }
+
+        return $this;
+    }
+    
+    public function removeRole(CustomerRole $role): self
+    {
+        if ($this->roles->removeElement($role)) {
+            $role->removeUser($this);
+        }
 
         return $this;
     }
 
-    
+    // /**
+    //  * @return Collection<int, CustomerRole>
+    //  */
+    // public function getRoles2(): Collection
+    // {
+    //     return $this->roles2;
+    // }
+
+    // public function addRoles2(CustomerRole $roles2): self
+    // {
+    //     if (!$this->roles2->contains($roles2)) {
+    //         $this->roles2[] = $roles2;
+    //     }
+
+    //     return $this;
+    // }
+
+    // public function removeRoles2(CustomerRole $roles2): self
+    // {
+    //     $this->roles2->removeElement($roles2);
+
+    //     return $this;
+    // }
 
 }

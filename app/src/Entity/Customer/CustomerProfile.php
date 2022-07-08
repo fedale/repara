@@ -16,7 +16,7 @@ class CustomerProfile
     #[ORM\Column]
     private $id;
 
-    #[ORM\OneToOne(targetEntity: Customer::class, cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(targetEntity: Customer::class, inversedBy: 'profile', cascade: ['persist', 'remove'])]
     private $customer;
     
     /**
@@ -71,11 +71,19 @@ class CustomerProfile
     private $setting = NULL;
 
     
-
-    
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function __toString()
+    {
+        return $this->getFullname();
+    }
+    
+    public function getFullname()
+    {
+        return $this->firstname . ' ' . $this->lastname;
     }
 
     public function getFirstname(): ?string

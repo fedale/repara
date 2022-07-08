@@ -24,7 +24,7 @@ class CustomerPasswordPersistSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $entity->setPassword($this->userPasswordHasher->hashPassword($entity, $entity->getPassword()));
+        $entity->setPassword($this->userPasswordHasher->hashPassword($entity, $entity->getPlainPassword()));
     }
 
     public static function getSubscribedEvents(): array

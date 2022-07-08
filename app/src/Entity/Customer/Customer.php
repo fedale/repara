@@ -9,8 +9,12 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity()]
+#[UniqueEntity('email')]
+#[UniqueEntity('code')]
+#[UniqueEntity('username')]
 class Customer implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use TimestampableEntity;
@@ -27,6 +31,7 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
     private string $username;
 
     #[ORM\Column(length: 255, nullable: false, unique: true)]
+    #[Assert\Email]
     private string $email;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -50,13 +55,8 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private \DateTime $blockedAt;
 
-    //  /**
-    //  * @var Collection|Role[]
-    //  */
-    // #[ORM\ManyToMany(targetEntity: Role::class, fetch: 'EAGER', inversedBy: 'users')]
-    // #[ORM\JoinTable(name: 'user_role_assigned', joinColumns: [new ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')], inverseJoinColumns: [new ORM\JoinColumn(name: 'role_id', referencedColumnName: 'id')])]
-    // private $roles;
-
+    #[ORM\OneToOne(targetEntity: CustomerProfile::class, mappedBy: 'customer', cascade: ['persist', 'remove'])]
+    private ?CustomerProfile $profile;
 
     #[ORM\OneToMany(targetEntity: CustomerLocation::class, mappedBy: 'customer')]
     private $locations;
@@ -72,6 +72,10 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: CustomerRole::class, inversedBy: 'customers')]
     #[ORM\JoinTable(name: 'customer_role_assigned', joinColumns: [new ORM\JoinColumn(name: 'customer_id', referencedColumnName: 'id')], inverseJoinColumns: [new ORM\JoinColumn(name: 'role_id', referencedColumnName: 'id')])]
     private $roles;
+
+    #[Assert\NotBlank(groups: ['registration'])]
+    #[Assert\Length(min: 7, groups: ['registration'])]
+    private ?string $plainPassword = null;
 
     public function __construct()
     {
@@ -131,6 +135,11 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function getSalt(): ?string
+    {
+        return null;
+    }
+    
     public function getPassword(): ?string
     {
         return $this->password;
@@ -141,6 +150,16 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
         $this->password = $password;
 
         return $this;
+    }
+
+    public function getPlainPassword(): string
+    {
+        return $this->plainPassword;
+    }
+
+    public function setPlainPassword(string $plainPassword): void
+    {
+        $this->plainPassword = $plainPassword;
     }
 
     public function getUnconfirmedEmail(): ?string
@@ -268,7 +287,7 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /*
+    
     public function getProfile(): ?CustomerProfile
     {
         return $this->profile;
@@ -276,16 +295,16 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setProfile(CustomerProfile $profile): self
     {
-        // // set the owning side of the relation if necessary
-        if ($profile->getProfile() !== $this) {
-            $customer->setProfile($this);
-       }
+         // // set the owning side of the relation if necessary
+         if ($profile->getCustomer() !== $this) {
+             $profile->setCustomer($this);
+        }
 
         $this->profile = $profile;
 
         return $this;
     }
-    */
+    
 
     public function getType(): ?CustomerType
     {

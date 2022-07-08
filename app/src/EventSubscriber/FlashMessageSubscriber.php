@@ -13,8 +13,11 @@ use  Symfony\Component\HttpFoundation\RequestStack;
 
 final class FlashMessageSubscriber implements EventSubscriberInterface
 {
+    private $requestStack;
+
     public function __construct(RequestStack $requestStack)
     {
+        $this->requestStack = $requestStack;
     }
 
     public static function getSubscribedEvents(): array
@@ -28,7 +31,6 @@ final class FlashMessageSubscriber implements EventSubscriberInterface
 
     public function flashMessageAfterPersist(AfterEntityPersistedEvent $event): void
     {
-        dump('AfterPersist');
         $this->requestStack->getSession()->getFlashBag()->add('success', new TranslatableMessage('content_admin.flash_message.create', [
             '%name%' => (string) $event->getEntityInstance(),
         ], 'admin'));

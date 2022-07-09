@@ -47,7 +47,7 @@ final class CustomerFactory extends ModelFactory
             'password' => self::faker()->password(),
             'type' => CustomerTypeFactory::new(),
             'active' => self::faker()->boolean(90),
-            'createdAt' => self::faker()->dateTimeBetween('-3 years', '-1 month'), // TODO add DATETIME ORM type manually
+            'createdAt' => self::faker()->dateTimeBetween('-3 years', '-1 month'),
             'updatedAt' => self::faker()->dateTimeBetween('-1 month', 'now'),
          //   'profile' => CustomerProfileFactory::new()
         ];

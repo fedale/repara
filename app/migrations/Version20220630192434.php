@@ -92,7 +92,7 @@ final class Version20220630192434 extends AbstractMigration
         ) ENGINE = InnoDB COMMENT = \'\' ');
         
         $this->addSql('CREATE TABLE asset_type (
-            id SMALLINT UNSIGNED NOT NULL,
+            id SMALLINT UNSIGNED AUTO_INCREMENT NOT NULL,
             name VARCHAR(64) NOT NULL,
             active tinyint DEFAULT 1 NOT NULL,
             created_at DATETIME NOT NULL DEFAULT current_timestamp(),
@@ -109,16 +109,14 @@ final class Version20220630192434 extends AbstractMigration
 
     public function down(Schema $schema): void
     {
-        $this->addSql('DROP TABLE asset_type');   
-        
         $this->addSql('DROP TABLE asset_attachment');
-        
-        $this->addSql('DROP TABLE asset_brand');
+
+        $this->addSql('DROP TABLE asset');   
 
         $this->addSql('DROP TABLE asset_model');
 
-        $this->addSql('SET FOREIGN_KEY_CHECKS = 0');        
-        $this->addSql('DROP TABLE asset');        
-        $this->addSql('SET FOREIGN_KEY_CHECKS = 1');        
+        $this->addSql('DROP TABLE asset_brand');
+        
+        $this->addSql('DROP TABLE asset_type');   
     }
 }

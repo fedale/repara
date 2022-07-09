@@ -1,11 +1,11 @@
 <?php
 
-namespace App\DataFixtures\Customer;
+namespace App\DataFixtures\Asset;
 
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
-class CustomerLocationAssetFixtures extends Fixture
+class AssetAttachmentFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
@@ -13,5 +13,12 @@ class CustomerLocationAssetFixtures extends Fixture
         // $manager->persist($product);
 
         $manager->flush();
+    }
+
+    public function getDependencies()
+    {
+        return [
+            AssetFixtures::class,
+        ];
     }
 }

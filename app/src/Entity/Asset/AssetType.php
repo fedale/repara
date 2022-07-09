@@ -2,6 +2,8 @@
 
 namespace App\Entity\Asset;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
@@ -21,6 +23,14 @@ class AssetType
 
     #[ORM\Column(nullable: false)]
     private bool $active = true;
+
+    #[ORM\OneToMany(mappedBy: 'type', targetEntity: AssetModel::class)]
+    private $models;
+
+    public function __construct()
+    {
+        $this->models = new ArrayCollection();
+    }
     
 
     public function getId(): ?int
@@ -48,6 +58,36 @@ class AssetType
     public function setActive(bool $active): self
     {
         $this->active = $active;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, AssetModel>
+     */
+    public function getModels(): Collection
+    {
+        return $this->models;
+    }
+
+    public function addModel(AssetModel $model): self
+    {
+        if (!$this->models->contains($model)) {
+            $this->models[] = $model;
+            $model->setType($this);
+        }
+
+        return $this;
+    }
+
+    public function removeModel(AssetModel $model): self
+    {
+        if ($this->models->removeElement($model)) {
+            // set the owning side to null (unless already changed)
+            if ($model->getType() === $this) {
+                $model->setType(null);
+            }
+        }
 
         return $this;
     }

@@ -3,6 +3,7 @@
 namespace App\Entity\Asset;
 
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 /**
  * AssetModel
@@ -11,6 +12,8 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity]
 class AssetModel
 {
+    use TimestampableEntity;
+
     /**
      * @var int
      */
@@ -18,42 +21,36 @@ class AssetModel
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private $id;
+    
     /**
      * @var string
      */
     #[ORM\Column(name: 'name', type: 'string', length: 32, nullable: false)]
     private $name;
+    
     /**
      * @var bool
      */
     #[ORM\Column(name: 'type_id', type: 'boolean', nullable: false)]
     private $typeId;
+
     /**
      * @var bool
      */
     #[ORM\Column(name: 'active', type: 'boolean', nullable: false, options: ['default' => 1])]
     private $active = true;
+    
     /**
-     * @var \DateTime
-     */
-    #[ORM\Column(name: 'created_at', type: 'datetime', nullable: false, options: ['default' => 'current_timestamp()'])]
-    private $createdAt;
-    /**
-     * @var \DateTime
-     */
-    #[ORM\Column(name: 'updated_at', type: 'datetime', nullable: false, options: ['default' => 'current_timestamp()'])]
-    private $updatedAt;
-    /**
-     * @var \DateTime|null
-     */
-    #[ORM\Column(name: 'deleted_at', type: 'datetime', nullable: true, options: ['default' => null])]
-    private $deletedAt;
-    /**
-     * @var \AssetBrand
+     * @var AssetBrand
      */
     #[ORM\ManyToOne(targetEntity: 'AssetBrand', fetch: 'EAGER')]
     #[ORM\JoinColumn(name: 'brand_id', referencedColumnName: 'id')]
     private $brand;
+
+    #[ORM\ManyToOne(targetEntity: AssetType::class, inversedBy: 'models')]
+    #[ORM\JoinColumn(nullable: false)]
+    private $type;
+
     public function __toString(): string
     {
         return $this->getFullname();
@@ -92,48 +89,33 @@ class AssetModel
 
         return $this;
     }
-    public function getCreatedAt(): ?\DateTimeInterface
-    {
-        return $this->createdAt;
-    }
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-    public function getUpdatedAt(): ?\DateTimeInterface
-    {
-        return $this->updatedAt;
-    }
-    public function setUpdatedAt(\DateTimeInterface $updatedAt): self
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
-    public function getDeletedAt(): ?\DateTimeInterface
-    {
-        return $this->deletedAt;
-    }
-    public function setDeletedAt(?\DateTimeInterface $deletedAt): self
-    {
-        $this->deletedAt = $deletedAt;
-
-        return $this;
-    }
+    
     public function getBrand(): ?AssetBrand
     {
         return $this->brand;
     }
+
     public function setBrand(?AssetBrand $brand): self
     {
         $this->brand = $brand;
 
         return $this;
     }
+    
     public function getFullname(): ?string
     {
         return $this->name . ' ' . $this->getBrand()->getName();
+    }
+
+    public function getType(): ?AssetType
+    {
+        return $this->type;
+    }
+
+    public function setType(?AssetType $type): self
+    {
+        $this->type = $type;
+
+        return $this;
     }
 }

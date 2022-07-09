@@ -2,6 +2,10 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Asset\Asset;
+use App\Entity\Asset\AssetBrand;
+use App\Entity\Asset\AssetModel;
+use App\Entity\Asset\AssetType;
 use App\Entity\Customer\Customer;
 use App\Entity\Customer\CustomerLocation;
 use App\Entity\Customer\CustomerLocationPlace;
@@ -61,6 +65,11 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::section('Asset');
         yield MenuItem::section('Staff');
         yield MenuItem::linkToCrud('User', 'fas fa-list', User::class);
+        yield MenuItem::section('Asset');
+        yield MenuItem::linkToCrud('Asset list', 'fas fa-users', Asset::class);
+        yield MenuItem::linkToCrud('Asset brands', 'fas fa-users', AssetBrand::class);
+        yield MenuItem::linkToCrud('Asset types', 'fas fa-users', AssetType::class);
+        yield MenuItem::linkToCrud('Asset models', 'fas fa-users', AssetModel::class);
         yield MenuItem::section('Customer');
         yield MenuItem::linkToCrud('Customer list', 'fas fa-users', Customer::class);
         yield MenuItem::linkToCrud('Location', 'fas fa-users', CustomerLocation::class);

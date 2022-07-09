@@ -3,6 +3,7 @@
 namespace App\Entity\Customer;
 
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 /**
  * CustomerLocationPlace
@@ -11,6 +12,8 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity]
 class CustomerLocationPlace
 {
+    use TimestampableEntity;
+
     /**
      * @var int
      */
@@ -31,20 +34,9 @@ class CustomerLocationPlace
     /**
      * @var \DateTime
      */
-    #[ORM\Column(name: 'created_at', type: 'datetime', nullable: false, options: ['default' => 'current_timestamp()'])]
-    private $createdAt = 'current_timestamp()';
+
     /**
-     * @var \DateTime
-     */
-    #[ORM\Column(name: 'updated_at', type: 'datetime', nullable: false, options: ['default' => 'current_timestamp()'])]
-    private $updatedAt = 'current_timestamp()';
-    /**
-     * @var \DateTime|null
-     */
-    #[ORM\Column(name: 'deleted_at', type: 'datetime', nullable: true, options: ['default' => null])]
-    private $deletedAt = 'NULL';
-    /**
-     * @var \CustomerLocation
+     * @var CustomerLocation
      */
     #[ORM\ManyToOne(targetEntity: 'CustomerLocation')]
     #[ORM\JoinColumn(name: 'location_id', referencedColumnName: 'id')]
@@ -70,36 +62,6 @@ class CustomerLocationPlace
     public function setActive(bool $active): self
     {
         $this->active = $active;
-
-        return $this;
-    }
-    public function getCreatedAt(): ?\DateTimeInterface
-    {
-        return $this->createdAt;
-    }
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-    public function getUpdatedAt(): ?\DateTimeInterface
-    {
-        return $this->updatedAt;
-    }
-    public function setUpdatedAt(\DateTimeInterface $updatedAt): self
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
-    public function getDeletedAt(): ?\DateTimeInterface
-    {
-        return $this->deletedAt;
-    }
-    public function setDeletedAt(?\DateTimeInterface $deletedAt): self
-    {
-        $this->deletedAt = $deletedAt;
 
         return $this;
     }

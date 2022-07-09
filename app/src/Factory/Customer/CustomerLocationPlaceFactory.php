@@ -36,7 +36,7 @@ final class CustomerLocationPlaceFactory extends ModelFactory
     {
         return [
             // TODO add your default values here (https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories)
-            'name' => self::faker()->text(),
+            'name' => self::faker()->text(20),
             'active' => self::faker()->boolean(),
             // 'createdAt' => null, // TODO add DATETIME ORM type manually
             // 'updatedAt' => null, // TODO add DATETIME ORM type manually

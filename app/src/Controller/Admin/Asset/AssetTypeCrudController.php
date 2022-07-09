@@ -2,14 +2,14 @@
 
 namespace App\Controller\Admin\Asset;
 
-use App\Entity\Asset\Asset;
+use App\Entity\Asset\AssetType;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 
-class AssetCrudController extends AbstractCrudController
+class AssetTypeCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return Asset::class;
+        return AssetType::class;
     }
 
     /*

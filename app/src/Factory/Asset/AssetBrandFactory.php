@@ -37,7 +37,7 @@ final class AssetBrandFactory extends ModelFactory
         return [
             // TODO add your default values here (https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories)
             'name' => self::faker()->text(10),
-            'active' => self::faker()->boolean(),
+            'active' => self::faker()->boolean(50),
             'createdAt' => self::faker()->dateTimeBetween('-3 years', '-1 year'),
             'updatedAt' => self::faker()->dateTimeBetween('-1 year')
         ];

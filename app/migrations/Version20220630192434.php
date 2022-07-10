@@ -104,6 +104,32 @@ final class Version20220630192434 extends AbstractMigration
             INDEX name (name),
             PRIMARY KEY(id)
         ) ENGINE = InnoDB COMMENT = \'\' ');
+
+        $this->addSql('CREATE TABLE asset_category (
+            id INT UNSIGNED AUTO_INCREMENT NOT NULL,
+            name VARCHAR(128) NOT NULL,
+            description TEXT DEFAULT NULL,
+            slug VARCHAR(128) NOT NULL,
+            lft INT UNSIGNED DEFAULT NULL,
+            rgt INT UNSIGNED DEFAULT NULL,
+            parent_id INT UNSIGNED DEFAULT NULL,
+            root INT UNSIGNED DEFAULT NULL,
+            lvl INT UNSIGNED DEFAULT NULL,
+            active tinyint DEFAULT 1 NOT NULL,
+            created_at DATETIME NOT NULL DEFAULT current_timestamp(),
+            updated_at DATETIME NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+            deleted_at DATETIME DEFAULT NULL,
+            PRIMARY KEY (id),
+            INDEX name (name),
+            UNIQUE INDEX slug (slug),
+            INDEX lft (lft),
+            INDEX rgt (rgt),
+            INDEX parent_id (parent_id),
+            INDEX root (root),
+            INDEX lvl (lvl),
+            INDEX active (active),
+            CONSTRAINT `asset_category_ibfk_1` FOREIGN KEY (`parent_id`) REFERENCES `asset_category` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+        )');
         
     }
 
@@ -117,6 +143,8 @@ final class Version20220630192434 extends AbstractMigration
 
         $this->addSql('DROP TABLE asset_brand');
         
-        $this->addSql('DROP TABLE asset_type');   
+        $this->addSql('DROP TABLE asset_type'); 
+
+        $this->addSql('DROP TABLE asset_category');   
     }
 }

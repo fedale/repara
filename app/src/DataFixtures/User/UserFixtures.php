@@ -1,6 +1,6 @@
 <?php
 
-namespace App\DataFixtures;
+namespace App\DataFixtures\User;
 
 use App\Entity\User\User;
 use App\Entity\User\UserProfile;
@@ -21,6 +21,7 @@ class UserFixtures extends Fixture
     {
         $user1 = new User();
         $user1->setUsername('danilo');
+        $user1->setCode('danilo');
         $user1->setEmail('danilo@ipercollege.it');
         $password = $this->hasher->hashPassword($user1, 'danilo123');
         $user1->setPassword($password);
@@ -28,6 +29,7 @@ class UserFixtures extends Fixture
 
         $user2 = new User();
         $user2->setUsername('admin');
+        $user2->setCode('admin');
         $user2->setEmail('admin@ipercollege.it');
         $password = $this->hasher->hashPassword($user2, 'admin123');
         $user2->setPassword($password);

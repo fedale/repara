@@ -6,12 +6,14 @@ use App\Entity\Employee\Employee;
 use App\Entity\User\User;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use App\Type\UserProfileType;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 
 class UserCrudController extends AbstractCrudController
@@ -33,36 +35,24 @@ class UserCrudController extends AbstractCrudController
 */
     public function configureFields(string $pageName): iterable
     {
-        return [
-            TextField::new('username'),
-            TextField::new('profile.fullname')
-                ->onlyOnIndex()
-            ,
-            /*TextField::new('profile.firstname')
-                ->onlyOnForms()
-            ,
-            TextField::new('profile.lastname')
-                ->onlyOnForms()
-            ,*/
-            EmailField::new('email', 'Email')
-                ->setSortable(true)
-            ,
-            TextField::new('password')
-                ->hideOnIndex()
-                ->setFormType(PasswordType::class)
-                ->onlyWhenCreating(),
-            BooleanField::new('active'),
-            /*
-            ChoiceField::new('profile.gender', 'Gender')
-                ->setChoices([
-                    'Male' => 'M',
-                    'Female' => 'F'
-                ])
-                ->setSortable(true)
-                ,
-            */
-            // AssociationField::new('groups')
-            //     ->setHelp('Write a message here!')
-        ];
+        yield TextField::new('username');
+        yield TextField::new('code');
+        yield TextField::new('email');
+        yield TextField::new('profile')
+            ->setFormType(UserProfileType::class)
+            ->setLabel(false)
+        ;
+        yield TextField::new('plainPassword')
+            ->hideOnIndex()
+            ->setFormType(PasswordType::class)
+            ->onlyWhenCreating()
+            ->setFormTypeOption('validation_groups', 'registration')
+        ;
+        yield AssociationField::new('type')
+            ->renderAsNativeWidget()
+        ;
+        yield DateField::new('createdAt')
+            ->onlyOnIndex()
+        ;
     }
 }

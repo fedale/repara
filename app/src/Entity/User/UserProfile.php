@@ -11,6 +11,11 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity]
 class UserProfile
 {
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy:'AUTO')]
+    #[ORM\Column]
+    private $id;
+
     /**
      * @var string|null
      */
@@ -62,35 +67,43 @@ class UserProfile
     #[ORM\Column(name: 'setting', type: 'text', length: 0, nullable: true, options: ['default' => null, 'comment' => 'settings like notifications'])]
     private $setting = NULL;
 
-    /**
-     * @var \
-     */
-    #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'NONE')]
-    #[ORM\OneToOne(targetEntity: User::class, cascade: ['persist'])]
-    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')]
+    #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'profile', cascade: ['persist', 'remove'])]
     private $user;
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function __toString()
+    {
+        return $this->getFullname();
+    }
 
     public function getFirstname(): ?string
     {
         return $this->firstname;
     }
+    
     public function setFirstname(?string $firstname): self
     {
         $this->firstname = $firstname;
 
         return $this;
     }
+
     public function getLastname(): ?string
     {
         return $this->lastname;
     }
+
     public function setLastname(?string $lastname): self
     {
         $this->lastname = $lastname;
 
         return $this;
     }
+
     public function getFullname(): ?string
     {
         return $this->firstname . ' ' . $this->lastname;

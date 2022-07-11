@@ -86,11 +86,6 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __toString()
     {
-        return $this->getFullname();
-    }
-    
-    public function getFullname()
-    {
         return $this->username;
     }
 
@@ -295,7 +290,7 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setProfile(CustomerProfile $profile): self
     {
-         // // set the owning side of the relation if necessary
+        // set the owning side of the relation if necessary
          if ($profile->getCustomer() !== $this) {
              $profile->setCustomer($this);
         }

@@ -19,6 +19,13 @@ final class Version20220630192436 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
+        $this->addSql('CREATE TABLE customer_type (
+            id SMALLINT UNSIGNED AUTO_INCREMENT NOT NULL,
+            name VARCHAR(255) DEFAULT NULL,
+            INDEX name (name),
+            PRIMARY KEY(id)
+        ) ENGINE = InnoDB ');
+
         $this->addSql('CREATE TABLE customer (
             id INT UNSIGNED AUTO_INCREMENT NOT NULL,
             code VARCHAR(64) NOT NULL,
@@ -37,9 +44,11 @@ final class Version20220630192436 extends AbstractMigration
             deleted_at DATETIME DEFAULT NULL,
             UNIQUE INDEX email (email),
             UNIQUE INDEX username (username),
+            UNIQUE INDEX code (code),
             INDEX type_id (type_id),
             INDEX active (active),
-            PRIMARY KEY(id)
+            PRIMARY KEY(id),
+            CONSTRAINT `customer_ibfk_1` FOREIGN KEY (`type_id`) REFERENCES `customer_type` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
         ) ENGINE = InnoDB COMMENT = \'\' ');
         
         $this->addSql('CREATE TABLE customer_attachment (
@@ -197,12 +206,7 @@ final class Version20220630192436 extends AbstractMigration
             CONSTRAINT `customer_profile_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
         ) ENGINE = InnoDB COMMENT = \'\' ');
 
-        $this->addSql('CREATE TABLE customer_type (
-            id INT UNSIGNED AUTO_INCREMENT NOT NULL,
-            name VARCHAR(255) DEFAULT NULL,
-            INDEX name (name),
-            PRIMARY KEY(id)
-        ) ENGINE = InnoDB ');
+        
 
         $this->addSql('CREATE TABLE customer_group (
             id INT UNSIGNED AUTO_INCREMENT NOT NULL,
@@ -254,16 +258,16 @@ final class Version20220630192436 extends AbstractMigration
         
         $this->addSql('DROP TABLE customer_location');
         
-        $this->addSql('DROP TABLE customer_type');
-        
         $this->addSql('DROP TABLE customer_group_assigned');
         
         $this->addSql('DROP TABLE customer_group');
-
+        
         $this->addSql('DROP TABLE customer_role_assigned');
         
         $this->addSql('DROP TABLE customer_role');
-
+        
         $this->addSql('DROP TABLE customer');
+
+        $this->addSql('DROP TABLE customer_type');
     }
 }

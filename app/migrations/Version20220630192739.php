@@ -19,8 +19,16 @@ final class Version20220630192739 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
+        $this->addSql('CREATE TABLE user_type (
+            id SMALLINT UNSIGNED AUTO_INCREMENT NOT NULL,
+            name VARCHAR(255) DEFAULT NULL,
+            INDEX name (name),
+            PRIMARY KEY(id)
+        ) ENGINE = InnoDB ');
+
         $this->addSql('CREATE TABLE user
         (id INT UNSIGNED AUTO_INCREMENT NOT NULL,
+        code VARCHAR(64) NOT NULL,
         username VARCHAR(255) NOT NULL,
         email VARCHAR(255) NOT NULL,
         password VARCHAR(60) NOT NULL,
@@ -34,11 +42,13 @@ final class Version20220630192739 extends AbstractMigration
         updated_at DATETIME NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
         deleted_at DATETIME DEFAULT NULL,
         last_login_at DATETIME DEFAULT NULL,
+        PRIMARY KEY(id),
         UNIQUE INDEX email (email),
+        UNIQUE INDEX username (username),
+        UNIQUE INDEX code (code),
         INDEX type_id (type_id),
         INDEX active (active),
-        UNIQUE INDEX username (username),
-        PRIMARY KEY(id)
+        CONSTRAINT `user_ibfk_1` FOREIGN KEY (`type_id`) REFERENCES `user_type` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
         ) ENGINE = InnoDB COMMENT = \'\' ');
         
         $this->addSql('CREATE TABLE user_assigned_customer
@@ -100,18 +110,22 @@ final class Version20220630192739 extends AbstractMigration
         PRIMARY KEY(id)
         ) ENGINE = InnoDB COMMENT = \'\' ');
         
-        $this->addSql('CREATE TABLE user_profile (user_id INT UNSIGNED NOT NULL,
-        firstname VARCHAR(255) DEFAULT NULL,
-        lastname VARCHAR(64) DEFAULT NULL,
-        public_email VARCHAR(255) DEFAULT NULL,
-        gravatar_email VARCHAR(255) DEFAULT NULL,
-        gravatar_id VARCHAR(32) DEFAULT NULL,
-        location VARCHAR(255) DEFAULT NULL,
-        website VARCHAR(255) DEFAULT NULL,
-        bio TEXT DEFAULT NULL,
-        timezone VARCHAR(40) DEFAULT NULL,
-        setting LONGTEXT DEFAULT NULL COMMENT \'settings like notifications\',
-        PRIMARY KEY(user_id)
+        $this->addSql('CREATE TABLE user_profile (
+            id INT UNSIGNED AUTO_INCREMENT NOT NULL,
+            user_id INT UNSIGNED NOT NULL,
+            firstname VARCHAR(255) DEFAULT NULL,
+            lastname VARCHAR(64) DEFAULT NULL,
+            public_email VARCHAR(255) DEFAULT NULL,
+            gravatar_email VARCHAR(255) DEFAULT NULL,
+            gravatar_id VARCHAR(32) DEFAULT NULL,
+            location VARCHAR(255) DEFAULT NULL,
+            website VARCHAR(255) DEFAULT NULL,
+            bio TEXT DEFAULT NULL,
+            timezone VARCHAR(40) DEFAULT NULL,
+            setting LONGTEXT DEFAULT NULL COMMENT \'settings like notifications\',
+            PRIMARY KEY(id),
+            UNIQUE INDEX(user_id),
+            CONSTRAINT `user_profile_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
         ) ENGINE = InnoDB COMMENT = \'\' ');
         
         $this->addSql('CREATE TABLE user_role
@@ -134,8 +148,6 @@ final class Version20220630192739 extends AbstractMigration
 
     public function down(Schema $schema): void
     {
-        $this->addSql('DROP TABLE user');
-        
         $this->addSql('DROP TABLE user_assigned_customer');
         
         $this->addSql('DROP TABLE user_attachment');
@@ -148,5 +160,8 @@ final class Version20220630192739 extends AbstractMigration
         
         $this->addSql('DROP TABLE user_role_assigned');
 
+        $this->addSql('DROP TABLE user');
+
+        $this->addSql('DROP TABLE user_type');
     }
 }

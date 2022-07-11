@@ -31,6 +31,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private $id;
 
+    #[ORM\Column(length: 64, nullable: false, unique: true)]
+    private string $code;
+    
     /**
      * @var string
      */
@@ -49,11 +52,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column(name: 'password', type: 'string', length: 60, nullable: false)]
     private string $password;
-
-    /**
-     * The plain non-persisted password
-     */
-    private ?string $plainPassword;
+    
+    #[Assert\NotBlank(groups: ['registration'])]
+    #[Assert\Length(min: 7, groups: ['registration'])]
+    private ?string $plainPassword = null;
 
     /**
      * @var int|null
@@ -80,12 +82,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $registrationIp;
 
     /**
-     * @var int|null
-     */
-    #[ORM\Column(name: 'type_id', type: 'smallint', nullable: true, options: ['default' => 1, 'unsigned' => true])]
-    private $typeId = 1;
-
-    /**
      * @var bool
      */
     #[ORM\Column(name: 'active', type: 'boolean', nullable: false, options: ['default' => 1])]
@@ -109,9 +105,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\JoinTable(name: 'user_role_assigned', joinColumns: [new ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')], inverseJoinColumns: [new ORM\JoinColumn(name: 'role_id', referencedColumnName: 'id')])]
     private $roles;
 
-    #[ORM\OneToOne(targetEntity: UserProfile::class, mappedBy: 'user', cascade:["persist", "remove"], fetch:'EAGER')]
-    #[ORM\JoinColumn(name:"id", referencedColumnName:"user_id", nullable:false)]
-    private $profile;
+    #[ORM\OneToOne(targetEntity: UserProfile::class, mappedBy: 'user', cascade:["persist", "remove"])]
+    private ?UserProfile $profile;
+
+    #[ORM\ManyToOne(targetEntity: UserType::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private $type;
+
 
     /**
      * Constructor
@@ -120,10 +120,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->roles = new ArrayCollection();
     }
+
+    public function __toString()
+    {
+        return $this->username;
+    }
     
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getCode(): ?string
+    {
+        return $this->code;
+    }
+
+    public function setCode(string $code): self
+    {
+        $this->code = $code;
+
+        return $this;
     }
     
     public function getUsername(): ?string
@@ -336,7 +353,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setProfile(?UserProfile $profile): self
     {
-        $this->profile = $profile;
+        // set the owning side of the relation if necessary
+         if ($profile->getUser() !== $this) {
+            $profile->setUser($this);
+       }
+
+        return $this;
+    }
+
+    public function getType(): ?UserType
+    {
+        return $this->type;
+    }
+
+    public function setType(?UserType $type): self
+    {
+        $this->type = $type;
 
         return $this;
     }

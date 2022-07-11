@@ -3,7 +3,7 @@
 namespace App\Controller\Admin\Customer;
 
 use App\Entity\Customer\Customer;
-use App\Type\ProfileType;
+use App\Type\CustomerProfileType;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -27,7 +27,7 @@ class CustomerCrudController extends AbstractCrudController
         yield TextField::new('code');
         yield TextField::new('email');
         yield TextField::new('profile')
-            ->setFormType(ProfileType::class)
+            ->setFormType(CustomerProfileType::class)
             ->setLabel(false)
         ;
         yield TextField::new('plainPassword')

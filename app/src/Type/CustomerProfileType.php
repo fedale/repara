@@ -2,13 +2,13 @@
 
 namespace App\Type;
 
+use App\Entity\Customer\CustomerProfile;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 
-class ProfileType extends AbstractType
+class CustomerProfileType extends AbstractType
 {
     public function getName(): string
     {
@@ -17,16 +17,13 @@ class ProfileType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder
-            ->add('firstname', TextType::class)
-            ->add('lastname', TextType::class)
-        ;
+        $builder->add('customer_profile', ProfileType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'inherit_data' => true,
+            'data_class' => CustomerProfile::class
         ]);
     }
 }

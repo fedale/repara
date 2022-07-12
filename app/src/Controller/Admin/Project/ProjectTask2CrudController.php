@@ -5,7 +5,7 @@ namespace App\Controller\Admin\Project;
 use App\Entity\Project\Task\ProjectTask;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 
-class ProjectTaskCrudController extends AbstractCrudController
+class ProjectTask2CrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {

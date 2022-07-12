@@ -257,20 +257,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
     /**
      * @return array
      */
-    
     public function getRoles(): array
     {
         $roles = [];
+        $defaultRoles[] = 'ROLE_USER';
         $rolesDB = $this->roles->toArray();
+        
         foreach ($rolesDB as $role) {
             $roles[] = $role->getCode();
         }
-        $roles[] = 'ROLE_USER';
 
-        return $roles;
+        return array_unique(array_merge($defaultRoles, $roles));
     }
     
     public function addRole(Role $role): self

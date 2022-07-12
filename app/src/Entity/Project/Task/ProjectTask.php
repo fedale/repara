@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Entity\Project;
+namespace App\Entity\Project\Task;
 
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Customer\Customer;
 use App\Entity\Customer\CustomerLocationPlaceAsset;
+use App\Entity\Project\Project;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 /**
  * ProjectTask
@@ -13,6 +15,8 @@ use App\Entity\Customer\CustomerLocationPlaceAsset;
 #[ORM\Entity]
 class ProjectTask
 {
+    use TimestampableEntity;
+
     /**
      * @var int
      */
@@ -20,248 +24,243 @@ class ProjectTask
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private $id;
+    
     /**
      * @var string
      */
     #[ORM\Column(name: 'name', type: 'string', length: 128, nullable: false)]
     private $name;
+    
     /**
      * @var string|null
      */
     #[ORM\Column(name: 'description', type: 'text', length: 65535, nullable: true, options: ['default' => null])]
-    private $description = 'NULL';
+    private $description = NULL;
+    
     /**
      * @var string
      */
     #[ORM\Column(name: 'status', type: 'string', length: 32, nullable: false)]
     private $status;
+    
     /**
      * @var string
      */
     #[ORM\Column(name: 'asset_type', type: 'string', length: 8, nullable: false, options: ['default' => "'N/A'", 'comment' => 'Update with assetType value'])]
-    private $assetType = '\'N/A\'';
+    private $assetType = 'N/A';
+    
     /**
      * @var int
      */
     #[ORM\Column(name: 'priority', type: 'smallint', nullable: false)]
-    private $priority = '0';
+    private $priority = 0;
+
     /**
      * @var bool
      */
     #[ORM\Column(name: 'active', type: 'boolean', nullable: false, options: ['default' => 1])]
     private $active = true;
+    
     /**
      * @var bool
      */
     #[ORM\Column(name: 'visible', type: 'boolean', nullable: false, options: ['default' => 1])]
     private $visible = true;
+    
     /**
      * @var int
      */
     #[ORM\Column(name: 'created_by', type: 'integer', nullable: false)]
     private $createdBy;
-    /**
-     * @var \DateTime
-     */
-    #[ORM\Column(name: 'created_at', type: 'datetime', nullable: false, options: ['default' => 'current_timestamp()'])]
-    private $createdAt = 'current_timestamp()';
-    /**
-     * @var \DateTime
-     */
-    #[ORM\Column(name: 'modified_at', type: 'datetime', nullable: false, options: ['default' => 'current_timestamp()'])]
-    private $modifiedAt = 'current_timestamp()';
+
     /**
      * @var \DateTime|null
      */
-    #[ORM\Column(name: 'deleted_at', type: 'datetime', nullable: true, options: ['default' => null])]
-    private $deletedAt = 'NULL';
+    #[ORM\Column(name: 'finished_at', type: 'datetime', nullable: true)]
+    private $finishedAt = NULL;
+
     /**
-     * @var \DateTime|null
-     */
-    #[ORM\Column(name: 'finished_at', type: 'datetime', nullable: true, options: ['default' => null])]
-    private $finishedAt = 'NULL';
-    /**
-     * @var \Customer
+     * @var Customer
      */
     #[ORM\ManyToOne(targetEntity: Customer::class)]
     #[ORM\JoinColumn(name: 'customer_id', referencedColumnName: 'id')]
     private $customer;
+
     /**
      * @var CustomerLocationPlaceAsset
      */
     #[ORM\ManyToOne(targetEntity: CustomerLocationPlaceAsset::class)]
     #[ORM\JoinColumn(name: 'customer_location_place_asset_id', referencedColumnName: 'id')]
     private $customerPlaceAsset;
+
     /**
-     * @var \Project
+     * @var Project
      */
     #[ORM\ManyToOne(targetEntity: Project::class)]
     #[ORM\JoinColumn(name: 'project_id', referencedColumnName: 'id')]
     private $project;
+
     /**
-     * @var \ProjectTaskType
+     * @var ProjectTaskType
      */
     #[ORM\ManyToOne(targetEntity: ProjectTaskType::class)]
     #[ORM\JoinColumn(name: 'type_id', referencedColumnName: 'id')]
     private $type;
+
     public function getId(): ?int
     {
         return $this->id;
     }
+    
     public function getName(): ?string
     {
         return $this->name;
     }
+    
     public function setName(string $name): self
     {
         $this->name = $name;
 
         return $this;
     }
+    
     public function getDescription(): ?string
     {
         return $this->description;
     }
+    
     public function setDescription(?string $description): self
     {
         $this->description = $description;
 
         return $this;
     }
+    
     public function getStatus(): ?string
     {
         return $this->status;
     }
+    
     public function setStatus(string $status): self
     {
         $this->status = $status;
 
         return $this;
     }
+    
     public function getAssetType(): ?string
     {
         return $this->assetType;
     }
+    
     public function setAssetType(string $assetType): self
     {
         $this->assetType = $assetType;
 
         return $this;
     }
+    
     public function getPriority(): ?int
     {
         return $this->priority;
     }
+    
     public function setPriority(int $priority): self
     {
         $this->priority = $priority;
 
         return $this;
     }
+    
     public function getActive(): ?bool
     {
         return $this->active;
     }
+    
     public function setActive(bool $active): self
     {
         $this->active = $active;
 
         return $this;
     }
+    
     public function getVisible(): ?bool
     {
         return $this->visible;
     }
+    
     public function setVisible(bool $visible): self
     {
         $this->visible = $visible;
 
         return $this;
     }
+    
     public function getCreatedBy(): ?int
     {
         return $this->createdBy;
     }
+    
     public function setCreatedBy(int $createdBy): self
     {
         $this->createdBy = $createdBy;
 
         return $this;
     }
-    public function getCreatedAt(): ?\DateTimeInterface
-    {
-        return $this->createdAt;
-    }
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-    public function getModifiedAt(): ?\DateTimeInterface
-    {
-        return $this->modifiedAt;
-    }
-    public function setModifiedAt(\DateTimeInterface $modifiedAt): self
-    {
-        $this->modifiedAt = $modifiedAt;
-
-        return $this;
-    }
-    public function getDeletedAt(): ?\DateTimeInterface
-    {
-        return $this->deletedAt;
-    }
-    public function setDeletedAt(?\DateTimeInterface $deletedAt): self
-    {
-        $this->deletedAt = $deletedAt;
-
-        return $this;
-    }
+    
     public function getFinishedAt(): ?\DateTimeInterface
     {
         return $this->finishedAt;
     }
+    
     public function setFinishedAt(?\DateTimeInterface $finishedAt): self
     {
         $this->finishedAt = $finishedAt;
 
         return $this;
     }
+    
     public function getCustomer(): ?Customer
     {
         return $this->customer;
     }
+    
     public function setCustomer(?Customer $customer): self
     {
         $this->customer = $customer;
 
         return $this;
     }
+    
     public function getCustomerPlaceAsset(): ?CustomerPlaceAsset
     {
         return $this->customerPlaceAsset;
     }
+    
     public function setCustomerPlaceAsset(?CustomerPlaceAsset $customerPlaceAsset): self
     {
         $this->customerPlaceAsset = $customerPlaceAsset;
 
         return $this;
     }
+    
     public function getProject(): ?Project
     {
         return $this->project;
     }
+    
     public function setProject(?Project $project): self
     {
         $this->project = $project;
 
         return $this;
     }
+    
     public function getType(): ?ProjectTaskType
     {
         return $this->type;
     }
+    
     public function setType(?ProjectTaskType $type): self
     {
         $this->type = $type;

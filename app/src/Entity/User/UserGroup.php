@@ -28,24 +28,34 @@ class UserGroup
      */
     #[ORM\Column(name: 'code', type: 'string', length: 32, nullable: false)]
     private $code;
+
+    public function __toString(): string
+    {
+        return $this->name;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
     }
+
     public function getName(): ?string
     {
         return $this->name;
     }
+
     public function setName(string $name): self
     {
         $this->name = $name;
 
         return $this;
     }
+
     public function getCode(): ?string
     {
         return $this->code;
     }
+
     public function setCode(string $code): self
     {
         $this->code = $code;

@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Controller\Admin\Project;
+namespace App\Controller\Admin\User;
 
-use App\Entity\Project\Task\ProjectTask;
+use App\Entity\User\UserGroup;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 
-class ProjectTaskCrudController extends AbstractCrudController
+class UserGroupCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return ProjectTask::class;
+        return UserGroup::class;
     }
 
     /*

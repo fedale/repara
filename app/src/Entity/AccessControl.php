@@ -22,19 +22,19 @@ class AccessControl
     #[ORM\Column(length: 255, nullable: false)]
     private ?string $path;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $roles;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $ips;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $host;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $methods;
 
-    #[ORM\Column()]
+    #[ORM\Column(nullable: false)]
     private ?int $allow = 1;
 
     #[ORM\Column(nullable: false)]

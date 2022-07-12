@@ -15,7 +15,7 @@ class UserType
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[ORM\Column(type: 'string', length: 128, nullable: true)]
+    #[ORM\Column(type: 'string', length: 128, nullable: false)]
     private $name;
 
     public function __construct()

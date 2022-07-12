@@ -21,34 +21,35 @@ final class Version20220630192739 extends AbstractMigration
     {
         $this->addSql('CREATE TABLE user_type (
             id SMALLINT UNSIGNED AUTO_INCREMENT NOT NULL,
-            name VARCHAR(255) DEFAULT NULL,
+            name VARCHAR(128) NOT NULL,
+            slug VARCHAR(128) NOT NULL,
             INDEX name (name),
             PRIMARY KEY(id)
         ) ENGINE = InnoDB ');
 
-        $this->addSql('CREATE TABLE user
-        (id INT UNSIGNED AUTO_INCREMENT NOT NULL,
-        code VARCHAR(64) NOT NULL,
-        username VARCHAR(255) NOT NULL,
-        email VARCHAR(255) NOT NULL,
-        password VARCHAR(60) NOT NULL,
-        confirmed_at INT DEFAULT NULL,
-        unconfirmed_email VARCHAR(255) DEFAULT NULL,
-        blocked_at INT DEFAULT NULL,
-        registration_ip VARCHAR(45) DEFAULT NULL,
-        type_id SMALLINT UNSIGNED DEFAULT 1,
-        active tinyint DEFAULT 1 NOT NULL,
-        created_at DATETIME NOT NULL DEFAULT current_timestamp(),
-        updated_at DATETIME NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-        deleted_at DATETIME DEFAULT NULL,
-        last_login_at DATETIME DEFAULT NULL,
-        PRIMARY KEY(id),
-        UNIQUE INDEX email (email),
-        UNIQUE INDEX username (username),
-        UNIQUE INDEX code (code),
-        INDEX type_id (type_id),
-        INDEX active (active),
-        CONSTRAINT `user_ibfk_1` FOREIGN KEY (`type_id`) REFERENCES `user_type` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+        $this->addSql('CREATE TABLE user(
+            id INT UNSIGNED AUTO_INCREMENT NOT NULL,
+            code VARCHAR(64) NOT NULL,
+            username VARCHAR(255) NOT NULL,
+            email VARCHAR(255) NOT NULL,
+            password VARCHAR(60) NOT NULL,
+            confirmed_at INT DEFAULT NULL,
+            unconfirmed_email VARCHAR(255) DEFAULT NULL,
+            blocked_at INT DEFAULT NULL,
+            registration_ip VARCHAR(45) DEFAULT NULL,
+            type_id SMALLINT UNSIGNED DEFAULT 1,
+            active tinyint DEFAULT 1 NOT NULL,
+            created_at DATETIME NOT NULL DEFAULT current_timestamp(),
+            updated_at DATETIME NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+            deleted_at DATETIME DEFAULT NULL,
+            last_login_at DATETIME DEFAULT NULL,
+            PRIMARY KEY(id),
+            UNIQUE INDEX email (email),
+            UNIQUE INDEX username (username),
+            UNIQUE INDEX code (code),
+            INDEX type_id (type_id),
+            INDEX active (active),
+            CONSTRAINT `user_ibfk_1` FOREIGN KEY (`type_id`) REFERENCES `user_type` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
         ) ENGINE = InnoDB COMMENT = \'\' ');
         
         $this->addSql('CREATE TABLE user_assigned_customer

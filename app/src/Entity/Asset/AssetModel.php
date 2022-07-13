@@ -4,6 +4,7 @@ namespace App\Entity\Asset;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * AssetModel
@@ -25,8 +26,12 @@ class AssetModel
     /**
      * @var string
      */
-    #[ORM\Column(name: 'name', type: 'string', length: 32, nullable: false)]
+    #[ORM\Column(name: 'name', type: 'string', length: 64, nullable: false)]
     private $name;
+
+    #[Gedmo\Slug(fields:['name'])]
+    #[ORM\Column(type: 'string', length: 64, unique: true)]
+    private $slug;
     
     /**
      * @var bool
@@ -115,6 +120,18 @@ class AssetModel
     public function setType(?AssetType $type): self
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
 
         return $this;
     }

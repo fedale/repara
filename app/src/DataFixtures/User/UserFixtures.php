@@ -19,36 +19,55 @@ class UserFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        $user1 = new User();
-        $user1->setUsername('danilo');
-        $user1->setCode('danilo');
-        $user1->setEmail('danilo@ipercollege.it');
-        $password = $this->hasher->hashPassword($user1, 'danilo123');
-        $user1->setPassword($password);
-        $manager->persist($user1);
+        
+        foreach ($this->getUsers() as $k => $item) {
+            $u = $item['user'];
+            $p = $item['profile'];
 
-        $user2 = new User();
-        $user2->setUsername('admin');
-        $user2->setCode('admin');
-        $user2->setEmail('admin@ipercollege.it');
-        $password = $this->hasher->hashPassword($user2, 'admin123');
-        $user2->setPassword($password);
-        $manager->persist($user2);
+            $user = new User();
+            $user->setUsername($u['username']);
+            $user->setCode($u['code']);
+            $user->setEmail($u['email']);
+            $user->setPassword($u['password']);
+            $manager->persist($user);
+
+            $profile = new UserProfile();
+            $profile->setFirstname($p['firstname']);
+            $profile->setLastname($p['lastname']);
+            $profile->setUser($user);
+            $manager->persist($profile);    
+        }
         
         $manager->flush();
+    }
 
-        $userProfile1 = new UserProfile();
-        $userProfile1->setFirstname('Danilo');
-        $userProfile1->setLastname('Di Moia');
-        $userProfile1->setUser($user1);
-        $manager->persist($userProfile1);
+    private function getUsers() {
+        return [
+            [
+                'user' => [
+                    'username' => 'danilo',
+                    'code' => 'danilo',
+                    'email' => 'danilo@ipercollege.it',
+                    'password' => '$2y$13$TqzoavfROVsl5vHL6bxHSuRCzUz7jiwsYjAoiNb2vuu9/ej.JN6Ra', // danilo123
+                ],
+                'profile' => [
+                    'firstname' => 'Danilo',
+                    'lastname' => 'Di Moia',
+                ]
+            ],
+            [
+                'user' => [
+                    'username' => 'admin',
+                    'code' => 'admin',
+                    'email' => 'admin@ipercollege.it',
+                    'password' => '$2y$13$l2SmFZZpyNrc3sVn.k4ysO900I2fjMzeRkUldoU4DUsZIITevAQbi' // admin123
+                ],
+                'profile' => [
+                    'firstname' => 'Admin',
+                    'lastname' => 'Di Moia',
+                ]
+            ],
+        ];
 
-        $userProfile2 = new UserProfile();
-        $userProfile2->setFirstname('Admin');
-        $userProfile2->setLastname('Di Moia');
-        $userProfile2->setUser($user2);
-        $manager->persist($userProfile2);
-
-        $manager->flush();
     }
 }

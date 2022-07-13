@@ -69,13 +69,11 @@ class AssetCategoryFixtures extends Fixture
         foreach ($items as $key => $items) {            
             $category = new AssetCategory();
             $category->setName($key);
-            $category->setSlug($key);
             $category->setActive(true);
             
                 foreach($items as $item) {
                     $itemCategory = new AssetCategory();
                     $itemCategory->setName($item);
-                    $itemCategory->setSlug($item);
                     $itemCategory->setActive(true);
                     $itemCategory->setParent($category);
                     $manager->persist($itemCategory);

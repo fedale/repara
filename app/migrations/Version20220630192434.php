@@ -21,8 +21,9 @@ final class Version20220630192434 extends AbstractMigration
     {
         $this->addSql('CREATE TABLE asset (
             id INT UNSIGNED AUTO_INCREMENT NOT NULL,
+            name VARCHAR(128) NOT NULL,
+            slug VARCHAR(100) NOT NULL,
             model_id SMALLINT UNSIGNED DEFAULT NULL,
-            name VARCHAR(100) NOT NULL,
             active tinyint DEFAULT 1 NOT NULL,
             created_at DATETIME NOT NULL DEFAULT current_timestamp(),
             updated_at DATETIME NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -32,13 +33,15 @@ final class Version20220630192434 extends AbstractMigration
             INDEX model_id (model_id),
             INDEX created_at (created_at),
             INDEX name (name),
+            UNIQUE INDEX slug (slug),
             PRIMARY KEY(id)
-        ) ENGINE = InnoDB COMMENT = \'\' ');
+        ) ENGINE = InnoDB ');
         
         $this->addSql('CREATE TABLE asset_attachment (
             id INT UNSIGNED AUTO_INCREMENT NOT NULL,
-            asset_id INT UNSIGNED DEFAULT NULL,
             name VARCHAR(255) NOT NULL,
+            slug VARCHAR(255) NOT NULL,
+            asset_id INT UNSIGNED DEFAULT NULL,
             type VARCHAR(32) NOT NULL,
             size INT UNSIGNED NOT NULL,
             path VARCHAR(128) NOT NULL,
@@ -56,12 +59,14 @@ final class Version20220630192434 extends AbstractMigration
             INDEX type (type),
             INDEX stuff_id (asset_id),
             INDEX size (size),
+            UNIQUE INDEX slug (slug),
             PRIMARY KEY(id)
-        ) ENGINE = InnoDB COMMENT = \'\' ');
+        ) ENGINE = InnoDB');
         
         $this->addSql('CREATE TABLE asset_brand (
             id SMALLINT UNSIGNED AUTO_INCREMENT NOT NULL,
-            name VARCHAR(100) NOT NULL,
+            name VARCHAR(128) NOT NULL,
+            slug VARCHAR(128) NOT NULL,
             active tinyint DEFAULT 1 NOT NULL,
             created_at DATETIME NOT NULL DEFAULT current_timestamp(),
             updated_at DATETIME NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -70,13 +75,15 @@ final class Version20220630192434 extends AbstractMigration
             INDEX created_at (created_at),
             INDEX updated_at (updated_at),
             INDEX name (name),
+            UNIQUE INDEX slug (slug),
             PRIMARY KEY(id)
-        ) ENGINE = InnoDB COMMENT = \'\' ');
+        ) ENGINE = InnoDB ');
         
         $this->addSql('CREATE TABLE asset_model (
             id SMALLINT UNSIGNED AUTO_INCREMENT NOT NULL,
+            name VARCHAR(64) NOT NULL,
+            slug VARCHAR(64) NOT NULL,
             brand_id SMALLINT UNSIGNED DEFAULT NULL,
-            name VARCHAR(32) NOT NULL,
             type_id SMALLINT NOT NULL,
             active tinyint DEFAULT 1 NOT NULL,
             created_at DATETIME NOT NULL DEFAULT current_timestamp(),
@@ -88,12 +95,14 @@ final class Version20220630192434 extends AbstractMigration
             INDEX brand_id (brand_id),
             INDEX updated_at (updated_at),
             INDEX name (name),
+            UNIQUE INDEX slug (slug),
             PRIMARY KEY(id)
-        ) ENGINE = InnoDB COMMENT = \'\' ');
+        ) ENGINE = InnoDB');
         
         $this->addSql('CREATE TABLE asset_type (
             id SMALLINT UNSIGNED AUTO_INCREMENT NOT NULL,
             name VARCHAR(64) NOT NULL,
+            slug VARCHAR(64) NOT NULL,
             active tinyint DEFAULT 1 NOT NULL,
             created_at DATETIME NOT NULL DEFAULT current_timestamp(),
             updated_at DATETIME NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -102,8 +111,9 @@ final class Version20220630192434 extends AbstractMigration
             INDEX created_at (created_at),
             INDEX updated_at (updated_at),
             INDEX name (name),
-            PRIMARY KEY(id)
-        ) ENGINE = InnoDB COMMENT = \'\' ');
+            UNIQUE INDEX slug (slug),
+            PRIMARY KEY (id)
+        ) ENGINE = InnoDB');
 
         $this->addSql('CREATE TABLE asset_category (
             id INT UNSIGNED AUTO_INCREMENT NOT NULL,

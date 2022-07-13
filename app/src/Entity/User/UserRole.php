@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 #[ORM\Table(name: 'user_role', uniqueConstraints: [new ORM\UniqueConstraint(name: 'code', columns: ['code'])], indexes: [new ORM\Index(name: 'name', columns: ['name'])])]
 #[ORM\Entity]
-class Role
+class UserRole
 {
     /**
      * @var int
@@ -24,8 +24,8 @@ class Role
     /**
      * @var string
      */
-    #[ORM\Column(name: 'code', type: 'string', length: 64, nullable: false)]
-    private $code;
+    #[ORM\Column(name: 'slug', type: 'string', length: 64, nullable: false)]
+    private $slug;
 
     /**
      * @var string
@@ -57,14 +57,14 @@ class Role
         return $this->id;
     }
     
-    public function getCode(): ?string
+    public function getSLug(): ?string
     {
-        return $this->code;
+        return $this->slug;
     }
     
-    public function setCode(string $code): self
+    public function setSlug(string $slug): self
     {
-        $this->code = $code;
+        $this->slug = $slug;
 
         return $this;
     }

@@ -99,9 +99,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $lastLoginAt = NULL;
 
     /**
-     * @var Collection|Role[]
+     * @var Collection|UserRole[]
      */
-    #[ORM\ManyToMany(targetEntity: Role::class, fetch: 'EAGER', inversedBy: 'users')]
+    #[ORM\ManyToMany(targetEntity: UserRole::class, fetch: 'EAGER', inversedBy: 'users')]
     #[ORM\JoinTable(name: 'user_role_assigned', joinColumns: [new ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')], inverseJoinColumns: [new ORM\JoinColumn(name: 'role_id', referencedColumnName: 'id')])]
     private $roles;
 

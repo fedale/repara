@@ -3,6 +3,7 @@
 namespace App\Entity\User;
 
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * UserGroup
@@ -18,16 +19,19 @@ class UserGroup
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private $id;
+
     /**
      * @var string
      */
-    #[ORM\Column(name: 'name', type: 'string', length: 32, nullable: false)]
+    #[ORM\Column(name: 'name', type: 'string', length: 64, nullable: false)]
     private $name;
+
     /**
      * @var string
      */
-    #[ORM\Column(name: 'code', type: 'string', length: 32, nullable: false)]
-    private $code;
+    #[Gedmo\Slug(fields:['name'])]
+    #[ORM\Column(name: 'slug', type: 'string', length: 64, nullable: false)]
+    private $slug;
 
     public function __toString(): string
     {
@@ -51,14 +55,14 @@ class UserGroup
         return $this;
     }
 
-    public function getCode(): ?string
+    public function getSlug(): ?string
     {
-        return $this->code;
+        return $this->slug;
     }
 
-    public function setCode(string $code): self
+    public function setSlug(string $slug): self
     {
-        $this->code = $code;
+        $this->slug = $slug;
 
         return $this;
     }

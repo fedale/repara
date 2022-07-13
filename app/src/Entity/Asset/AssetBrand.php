@@ -4,6 +4,7 @@ namespace App\Entity\Asset;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * AssetBrand
@@ -25,8 +26,12 @@ class AssetBrand
     /**
      * @var string
      */
-    #[ORM\Column(name: 'name', type: 'string', length: 100, nullable: false)]
+    #[ORM\Column(name: 'name', type: 'string', length: 128, nullable: false)]
     private $name;
+
+    #[Gedmo\Slug(fields:['name'])]
+    #[ORM\Column(type: 'string', length: 128, unique: true)]
+    private $slug;
     
     /**
      * @var bool
@@ -59,6 +64,18 @@ class AssetBrand
     public function setActive(bool $active): self
     {
         $this->active = $active;
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
 
         return $this;
     }

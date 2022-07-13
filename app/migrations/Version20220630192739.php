@@ -24,6 +24,7 @@ final class Version20220630192739 extends AbstractMigration
             name VARCHAR(128) NOT NULL,
             slug VARCHAR(128) NOT NULL,
             INDEX name (name),
+            UNIQUE INDEX slug (slug),
             PRIMARY KEY(id)
         ) ENGINE = InnoDB ');
 
@@ -50,7 +51,7 @@ final class Version20220630192739 extends AbstractMigration
             INDEX type_id (type_id),
             INDEX active (active),
             CONSTRAINT `user_ibfk_1` FOREIGN KEY (`type_id`) REFERENCES `user_type` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-        ) ENGINE = InnoDB COMMENT = \'\' ');
+        ) ENGINE = InnoDB');
         
         $this->addSql('CREATE TABLE user_assigned_customer
         (id INT AUTO_INCREMENT NOT NULL,
@@ -77,7 +78,7 @@ final class Version20220630192739 extends AbstractMigration
         INDEX created_at (created_at),
         INDEX customer_location (customer_location_id),
         PRIMARY KEY(id)
-        ) ENGINE = InnoDB COMMENT = \'\' ');
+        ) ENGINE = InnoDB');
         
         $this->addSql('CREATE TABLE user_attachment
         (id INT UNSIGNED AUTO_INCREMENT NOT NULL,
@@ -102,14 +103,16 @@ final class Version20220630192739 extends AbstractMigration
         INDEX path (path),
         INDEX type (type),
         PRIMARY KEY(id)
-        ) ENGINE = InnoDB COMMENT = \'\' ');
+        ) ENGINE = InnoDB');
         
-        $this->addSql('CREATE TABLE user_group
-        (id SMALLINT UNSIGNED AUTO_INCREMENT NOT NULL,
-        name VARCHAR(32) NOT NULL,
-        code VARCHAR(32) NOT NULL,
-        PRIMARY KEY(id)
-        ) ENGINE = InnoDB COMMENT = \'\' ');
+        $this->addSql('CREATE TABLE user_group(
+            id SMALLINT UNSIGNED AUTO_INCREMENT NOT NULL,
+            name VARCHAR(64) NOT NULL,
+            slug VARCHAR(64) NOT NULL,
+            INDEX name (name),
+            UNIQUE INDEX slug (slug),
+            PRIMARY KEY(id)
+        ) ENGINE = InnoDB');
         
         $this->addSql('CREATE TABLE user_profile (
             id INT UNSIGNED AUTO_INCREMENT NOT NULL,
@@ -127,23 +130,24 @@ final class Version20220630192739 extends AbstractMigration
             PRIMARY KEY(id),
             UNIQUE INDEX(user_id),
             CONSTRAINT `user_profile_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-        ) ENGINE = InnoDB COMMENT = \'\' ');
+        ) ENGINE = InnoDB');
         
-        $this->addSql('CREATE TABLE user_role
-        (id SMALLINT UNSIGNED AUTO_INCREMENT NOT NULL,
-        name VARCHAR(64) NOT NULL,
-        code VARCHAR(64) NOT NULL,
-        INDEX name (name),
-        UNIQUE INDEX code (code),
-        PRIMARY KEY(id)
-        ) ENGINE = InnoDB COMMENT = \'\' ');
+        $this->addSql('CREATE TABLE user_role (
+            id SMALLINT UNSIGNED AUTO_INCREMENT NOT NULL,
+            name VARCHAR(64) NOT NULL,
+            slug VARCHAR(64) NOT NULL,
+            INDEX name (name),
+            UNIQUE INDEX slug (slug),
+            PRIMARY KEY(id)
+        ) ENGINE = InnoDB');
         
-        $this->addSql('CREATE TABLE user_role_assigned (user_id INT UNSIGNED NOT NULL,
-        role_id SMALLINT UNSIGNED NOT NULL,
-        INDEX FK_D95AB405A76ED397 (role_id),
-        INDEX IDX_CFC787FBA76ED395 (user_id),
-        PRIMARY KEY(user_id, role_id)
-        ) DEFAULT COLLATE `utf8mb4_general_ci` ENGINE = InnoDB COMMENT = \'\' ');
+        $this->addSql('CREATE TABLE user_role_assigned (
+            user_id INT UNSIGNED NOT NULL,
+            user_role_id SMALLINT UNSIGNED NOT NULL,
+            INDEX FK_D95AB405A76ED397 (role_id),
+            INDEX IDX_CFC787FBA76ED395 (user_id),
+            PRIMARY KEY(user_id, role_id)
+        ) DEFAULT COLLATE `utf8mb4_general_ci` ENGINE = InnoDB');
 
     }
 

@@ -24,6 +24,8 @@ use App\Entity\Website\Website;
 use App\Entity\User\User;
 use App\Entity\User\UserGroup;
 use App\Entity\User\UserType;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 
 class DashboardController extends AbstractDashboardController
 {
@@ -37,14 +39,9 @@ class DashboardController extends AbstractDashboardController
     
     public function configureCrud(): Crud
     {
-        $crud = parent::configureCrud();
-        // $crud->overrideTemplates([
-        //     'layout' => 'layout.html.twig',
-        //     'crud/index' => 'index.html.twig',
-        //     'crud/new' => 'new.html.twig',
-        //     'crud/edit' => 'edit.html.twig'
-        // ]);
-        return $crud;
+        return parent::configureCrud()
+            ->showEntityActionsInlined()
+        ;
     }
     
     public function configureAssets(): Assets
@@ -57,7 +54,12 @@ class DashboardController extends AbstractDashboardController
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
-            ->setTitle('App');
+            ->setTitle('Repara');
+    }
+
+    public function configureActions(): Actions
+    {
+        return parent::configureActions();
     }
 
     public function configureMenuItems(): iterable

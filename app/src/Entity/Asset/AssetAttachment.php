@@ -4,6 +4,7 @@ namespace App\Entity\Asset;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * AssetAttachment
@@ -24,6 +25,10 @@ class AssetAttachment
      */
     #[ORM\Column(name: 'name', type: 'string', length: 255, nullable: false)]
     private $name;
+
+    #[Gedmo\Slug(fields:['name'])]
+    #[ORM\Column(type: 'string', length: 255, unique: true)]
+    private $slug;
     
     /**
      * @var string
@@ -147,6 +152,18 @@ class AssetAttachment
     public function setAsset(?Asset $asset): self
     {
         $this->asset = $asset;
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
 
         return $this;
     }

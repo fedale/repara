@@ -112,6 +112,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\JoinColumn(nullable: false)]
     private $type;
 
+    /**
+     * @var Collection|UserGroup[]
+     */
     #[ORM\ManyToMany(targetEntity: UserGroup::class, inversedBy: 'users')]
     #[ORM\JoinTable(name: 'user_group_assigned')]
     private $groups;

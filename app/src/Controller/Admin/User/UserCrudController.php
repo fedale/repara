@@ -15,8 +15,11 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 
 class UserCrudController extends AbstractCrudController
@@ -49,7 +52,7 @@ class UserCrudController extends AbstractCrudController
         foreach ( $this->entityManager->getRepository(UserGroup::class)->findAll() as $k => $group ) {
             $groups[$group->getName()] = $group->getId();
         }
-//  dd($groups);
+//   dd($groups);
         yield TextField::new('username');
         yield TextField::new('code');
         yield TextField::new('email');
@@ -63,13 +66,10 @@ class UserCrudController extends AbstractCrudController
             ->onlyWhenCreating()
             ->setFormTypeOption('validation_groups', 'registration')
         ;
-        // yield AssociationField::new('groups')
-        //     ->renderAsNativeWidget()
-        // ;
-        yield ChoiceField::new('groups')
-            ->setChoices($groups)
-            ->renderAsNativeWidget()
+        yield AssociationField::new('groups')
+            ->setFormType(EntityType::class)
         ;
+        
         yield AssociationField::new('type')
             ->renderAsNativeWidget()
         ;

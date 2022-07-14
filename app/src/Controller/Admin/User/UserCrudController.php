@@ -68,6 +68,10 @@ class UserCrudController extends AbstractCrudController
         ;
         yield AssociationField::new('groups')
             ->setFormType(EntityType::class)
+            ->renderAsNativeWidget()
+            // ->allowMultipleChoices()
+            ->renderExpanded(true)
+            
         ;
         
         yield AssociationField::new('type')

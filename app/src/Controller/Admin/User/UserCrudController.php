@@ -4,9 +4,12 @@ namespace App\Controller\Admin\User;
 
 use App\Entity\Employee\Employee;
 use App\Entity\User\User;
+use App\Entity\User\UserGroup;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use App\Type\UserProfileType;
+use Doctrine\ORM\EntityManagerInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
@@ -18,6 +21,13 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 
 class UserCrudController extends AbstractCrudController
 {
+    private $entityManager;
+
+    public function __construct(EntityManagerInterface $entityManager)
+    {
+        $this->entityManager = $entityManager;
+    }
+
     public static function getEntityFqcn(): string
     {
         return User::class;
@@ -35,6 +45,11 @@ class UserCrudController extends AbstractCrudController
 */
     public function configureFields(string $pageName): iterable
     {
+        $groups = [];
+        foreach ( $this->entityManager->getRepository(UserGroup::class)->findAll() as $k => $group ) {
+            $groups[$group->getName()] = $group->getId();
+        }
+//  dd($groups);
         yield TextField::new('username');
         yield TextField::new('code');
         yield TextField::new('email');
@@ -47,6 +62,13 @@ class UserCrudController extends AbstractCrudController
             ->setFormType(PasswordType::class)
             ->onlyWhenCreating()
             ->setFormTypeOption('validation_groups', 'registration')
+        ;
+        // yield AssociationField::new('groups')
+        //     ->renderAsNativeWidget()
+        // ;
+        yield ChoiceField::new('groups')
+            ->setChoices($groups)
+            ->renderAsNativeWidget()
         ;
         yield AssociationField::new('type')
             ->renderAsNativeWidget()

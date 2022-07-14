@@ -1153,13 +1153,13 @@ INSERT INTO `user` VALUES (1,'danilo','danilo@gmail.com','$2y$13$8JERmrysMTvPaWx
 UNLOCK TABLES;
 
 --
--- Table structure for table `user_assigned_customer`
+-- Table structure for table `user_customer_assigned`
 --
 
-DROP TABLE IF EXISTS `user_assigned_customer`;
+DROP TABLE IF EXISTS `user_customer_assigned`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `user_assigned_customer` (
+CREATE TABLE `user_customer_assigned` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(10) unsigned NOT NULL,
   `customer_id` int(10) unsigned NOT NULL,
@@ -1184,12 +1184,12 @@ CREATE TABLE `user_assigned_customer` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `user_assigned_customer`
+-- Dumping data for table `user_customer_assigned`
 --
 
-LOCK TABLES `user_assigned_customer` WRITE;
-/*!40000 ALTER TABLE `user_assigned_customer` DISABLE KEYS */;
-/*!40000 ALTER TABLE `user_assigned_customer` ENABLE KEYS */;
+LOCK TABLES `user_customer_assigned` WRITE;
+/*!40000 ALTER TABLE `user_customer_assigned` DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_customer_assigned` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --

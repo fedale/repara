@@ -8,7 +8,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 /**
  * UserAssignedCustomer
  */
-#[ORM\Table(name: 'user_assigned_customer', uniqueConstraints: [new ORM\UniqueConstraint(name: 'customer_id_2', columns: ['customer_id', 'customer_location_id', 'customer_location_place_id', 'customer_place_asset_id', 'user_id'])], indexes: [new ORM\Index(name: 'updated_at', columns: ['updated_at']), new ORM\Index(name: 'user_id', columns: ['user_id']), new ORM\Index(name: 'customer_location', columns: ['customer_location_id']), new ORM\Index(name: 'active', columns: ['active']), new ORM\Index(name: 'customer_location_place', columns: ['customer_location_place_id']), new ORM\Index(name: 'created_at', columns: ['created_at']), new ORM\Index(name: 'customer_place_asset', columns: ['customer_place_asset_id']), new ORM\Index(name: 'customer_id', columns: ['customer_id'])])]
+#[ORM\Table(name: 'user_customer_assigned', uniqueConstraints: [new ORM\UniqueConstraint(name: 'customer_id_2', columns: ['customer_id', 'customer_location_id', 'customer_location_place_id', 'customer_place_asset_id', 'user_id'])], indexes: [new ORM\Index(name: 'updated_at', columns: ['updated_at']), new ORM\Index(name: 'user_id', columns: ['user_id']), new ORM\Index(name: 'customer_location', columns: ['customer_location_id']), new ORM\Index(name: 'active', columns: ['active']), new ORM\Index(name: 'customer_location_place', columns: ['customer_location_place_id']), new ORM\Index(name: 'created_at', columns: ['created_at']), new ORM\Index(name: 'customer_place_asset', columns: ['customer_place_asset_id']), new ORM\Index(name: 'customer_id', columns: ['customer_id'])])]
 #[ORM\Entity]
 class UserAssignedCustomer
 {

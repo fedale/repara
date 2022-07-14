@@ -112,6 +112,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\JoinColumn(nullable: false)]
     private $type;
 
+    #[ORM\ManyToMany(targetEntity: UserGroup::class, inversedBy: 'users')]
+    #[ORM\JoinTable(name: 'user_group_assigned')]
+    private $groups;
+
 
     /**
      * Constructor
@@ -119,6 +123,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct()
     {
         $this->roles = new ArrayCollection();
+        $this->groups = new ArrayCollection();
     }
 
     public function __toString()
@@ -370,6 +375,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setType(?UserType $type): self
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UserGroup>
+     */
+    public function getGroups(): Collection
+    {
+        return $this->groups;
+    }
+
+    public function addGroup(UserGroup $group): self
+    {
+        if (!$this->groups->contains($group)) {
+            $this->groups[] = $group;
+        }
+
+        return $this;
+    }
+
+    public function removeGroup(UserGroup $group): self
+    {
+        $this->groups->removeElement($group);
 
         return $this;
     }

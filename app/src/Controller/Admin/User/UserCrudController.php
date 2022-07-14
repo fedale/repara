@@ -70,7 +70,7 @@ class UserCrudController extends AbstractCrudController
             ->setFormType(EntityType::class)
             ->renderAsNativeWidget()
             // ->allowMultipleChoices()
-            ->renderExpanded(true)
+            ->setFormTypeOption('expanded', true)
             
         ;
         

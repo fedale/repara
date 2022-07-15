@@ -48,11 +48,6 @@ class UserCrudController extends AbstractCrudController
 */
     public function configureFields(string $pageName): iterable
     {
-        $groups = [];
-        foreach ( $this->entityManager->getRepository(UserGroup::class)->findAll() as $k => $group ) {
-            $groups[$group->getName()] = $group->getId();
-        }
-//   dd($groups);
         yield TextField::new('username');
         yield TextField::new('code');
         yield TextField::new('email');
@@ -69,11 +64,15 @@ class UserCrudController extends AbstractCrudController
         yield AssociationField::new('groups')
             ->setFormType(EntityType::class)
             ->renderAsNativeWidget()
-            // ->allowMultipleChoices()
             ->setFormTypeOption('expanded', true)
-            
+            ->setTemplatePath('admin/field/collection.twig')
         ;
-        
+        yield AssociationField::new('roles')
+            // ->setFormType(EntityType::class)
+            // ->renderAsNativeWidget()
+            // ->setFormTypeOption('expanded', true)
+            //->setTemplatePath('admin/field/collection.twig')
+        ;
         yield AssociationField::new('type')
             ->renderAsNativeWidget()
         ;

@@ -101,8 +101,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection|UserRole[]
      */
-    #[ORM\ManyToMany(targetEntity: UserRole::class, fetch: 'EAGER', inversedBy: 'users')]
-    #[ORM\JoinTable(name: 'user_role_assigned', joinColumns: [new ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')], inverseJoinColumns: [new ORM\JoinColumn(name: 'role_id', referencedColumnName: 'id')])]
+    #[ORM\ManyToMany(targetEntity: UserRole::class, inversedBy: 'users')]
+    #[ORM\JoinTable(name: 'user_role_assigned', joinColumns: [new ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')], inverseJoinColumns: [new ORM\JoinColumn(name: 'user_role_id', referencedColumnName: 'id')])]
     private $roles;
 
     #[ORM\OneToOne(targetEntity: UserProfile::class, mappedBy: 'user', cascade:["persist", "remove"])]
@@ -266,23 +266,52 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return array
-     */
+    // /**
+    //  * @return array
+    //  */
+    // public function getRoles(): array
+    // {
+    //     $roles = [];
+    //     $defaultRoles[] = 'ROLE_USER';
+    //     $rolesDB = $this->roles->toArray();
+        
+    //     foreach ($rolesDB as $role) {
+    //         $roles[] = $role->getCode();
+    //     }
+
+    //     return array_unique(array_merge($defaultRoles, $roles));
+    // }
+
+
+    // https://www.youtube.com/watch?v=W0FhUq-P9zQ
     public function getRoles(): array
     {
+        $defaultRoles[] = 'ROLE_USER';
+        dump($this->roles);
+        return $defaultRoles;
+        return array_unique(array_merge($defaultRoles, $this->roles->toArray() ));
+        
+        $dbRoles = array_map(function($o) { return $o->getName(); }, $this->roles->toArray());
+        // dd($this->roles);
+        return array_unique(array_merge($defaultRoles, $dbRoles));
+
         $roles = [];
         $defaultRoles[] = 'ROLE_USER';
         $rolesDB = $this->roles->toArray();
-        
+        dd($this->roles);
         foreach ($rolesDB as $role) {
-            $roles[] = $role->getCode();
+             $roles[] = $role->getCode();
         }
 
-        return array_unique(array_merge($defaultRoles, $roles));
+         return array_unique(array_merge($defaultRoles, $roles));
     }
     
-    public function addRole(Role $role): self
+    public function setRoles(Collection $roles)
+    {
+        $this->roles = $roles;
+    }
+
+    public function addRole(UserRole $role): self
     {
         if (!$this->roles->contains($role)) {
             $this->roles[] = $role;
@@ -292,7 +321,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
     
-    public function removeRole(Role $role): self
+    public function removeRole(UserRole $role): self
     {
         if ($this->roles->removeElement($role)) {
             $role->removeUser($this);

@@ -36,7 +36,7 @@ class UserRole
     /**
      * @var Collection
      */
-    #[ORM\ManyToMany(targetEntity: 'User', mappedBy: 'roles')]
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'roles')]
     private $users;
 
     /**
@@ -102,7 +102,7 @@ class UserRole
     public function removeUser(User $user): self
     {
         if ($this->users->removeElement($user)) {
-            $users->removeRole($this);
+            $user->removeRole($this);
         }
 
         return $this;

@@ -137,8 +137,10 @@ final class Version20220630192436 extends AbstractMigration
             id SMALLINT UNSIGNED AUTO_INCREMENT NOT NULL,
             name VARCHAR(64) NOT NULL,
             slug VARCHAR(64) NOT NULL,
+            code VARCHAR(64) NOT NULL,
             INDEX name (name),
             UNIQUE INDEX slug (slug),
+            UNIQUE INDEX code (code),
             PRIMARY KEY(id)
         ) ENGINE = InnoDB');
         

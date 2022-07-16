@@ -5,6 +5,7 @@ namespace App\Controller\Admin\User;
 use App\Entity\Employee\Employee;
 use App\Entity\User\User;
 use App\Entity\User\UserGroup;
+use App\Entity\User\UserRole;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use App\Type\UserProfileType;
@@ -67,11 +68,11 @@ class UserCrudController extends AbstractCrudController
             ->setFormTypeOption('expanded', true)
             ->setTemplatePath('admin/field/collection.twig')
         ;
-        yield AssociationField::new('roles')
+        yield AssociationField::new('userRoles')
             // ->setFormType(EntityType::class)
-            // ->renderAsNativeWidget()
-            // ->setFormTypeOption('expanded', true)
-            //->setTemplatePath('admin/field/collection.twig')
+            ->renderAsNativeWidget()
+            ->setFormTypeOption('expanded', true)
+            // ->setTemplatePath('admin/field/collection.twig')
         ;
         yield AssociationField::new('type')
             ->renderAsNativeWidget()

@@ -23,6 +23,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Website\Website;
 use App\Entity\User\User;
 use App\Entity\User\UserGroup;
+use App\Entity\User\UserRole;
 use App\Entity\User\UserType;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
@@ -73,6 +74,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Users', 'fas fa-list', User::class);
         yield MenuItem::linkToCrud('Groups', 'fas fa-list', UserGroup::class);
         yield MenuItem::linkToCrud('Types', 'fas fa-list', UserType::class);
+        yield MenuItem::linkToCrud('Roles', 'fas fa-list', UserRole::class);
         
         yield MenuItem::section('Asset');
         yield MenuItem::linkToCrud('Asset list', 'fas fa-users', Asset::class);

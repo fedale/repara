@@ -5,11 +5,15 @@ namespace App\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * Role
  */
-#[ORM\Table(name: 'user_role', uniqueConstraints: [new ORM\UniqueConstraint(name: 'code', columns: ['code'])], indexes: [new ORM\Index(name: 'name', columns: ['name'])])]
+#[ORM\Table(name: 'user_role', 
+    uniqueConstraints: [new ORM\UniqueConstraint(name: 'code', columns: ['code']), new ORM\UniqueConstraint(name: 'slug', columns: ['slug'])], 
+    indexes: [new ORM\Index(name: 'name', columns: ['name'])]
+)]
 #[ORM\Entity]
 class UserRole
 {
@@ -21,15 +25,10 @@ class UserRole
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private $id;
 
-    /**
-     * @var string
-     */
-    #[ORM\Column(name: 'slug', type: 'string', length: 64, nullable: false)]
+    #[ORM\Column(name: 'slug', type: 'string', length: 64, nullable: false, unique: true)]
+    #[Gedmo\Slug(fields: ['name'])]
     private $slug;
 
-    /**
-     * @var string
-     */
     #[ORM\Column(name: 'name', type: 'string', length: 64, nullable: false)]
     private $name;
 
@@ -38,6 +37,10 @@ class UserRole
      */
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'roles')]
     private $users;
+
+    #[ORM\Column(type: 'string', length: 64, nullable: false, unique: true)]
+    private $code;
+
 
     /**
      * Constructor
@@ -49,7 +52,7 @@ class UserRole
     
     public function __toString()
     {
-        return $this->id;
+        return $this->code;
     }
     
     public function getId(): ?int
@@ -57,7 +60,7 @@ class UserRole
         return $this->id;
     }
     
-    public function getSLug(): ?string
+    public function getSlug(): ?string
     {
         return $this->slug;
     }
@@ -104,6 +107,18 @@ class UserRole
         if ($this->users->removeElement($user)) {
             $user->removeRole($this);
         }
+
+        return $this;
+    }
+
+    public function getCode(): ?string
+    {
+        return $this->code;
+    }
+
+    public function setCode(string $code): self
+    {
+        $this->code = $code;
 
         return $this;
     }

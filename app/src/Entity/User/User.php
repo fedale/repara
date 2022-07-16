@@ -104,6 +104,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: UserRole::class, inversedBy: 'users')]
     #[ORM\JoinTable(name: 'user_role_assigned', joinColumns: [new ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')], inverseJoinColumns: [new ORM\JoinColumn(name: 'user_role_id', referencedColumnName: 'id')])]
     private $roles;
+    /**
+     * @var Collection|UserRole[]
+     */
+    #[ORM\ManyToMany(targetEntity: UserRole::class)]
+    #[ORM\JoinTable(name: 'user_role_assigned')]
+    private $userRoles;
 
     #[ORM\OneToOne(targetEntity: UserProfile::class, mappedBy: 'user', cascade:["persist", "remove"])]
     private ?UserProfile $profile;
@@ -126,6 +132,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct()
     {
         $this->roles = new ArrayCollection();
+        $this->userRoles = new ArrayCollection();
         $this->groups = new ArrayCollection();
     }
 
@@ -282,16 +289,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     //     return array_unique(array_merge($defaultRoles, $roles));
     // }
 
+    public function getUserRoles(): Collection
+    {
+        return $this->userRoles;
+    }
 
     // https://www.youtube.com/watch?v=W0FhUq-P9zQ
     public function getRoles(): array
     {
         $defaultRoles[] = 'ROLE_USER';
+        $dbRoles = array_map(function($o) { return $o->getCode(); }, $this->roles->toArray());
+        return array_unique(array_merge($defaultRoles, $dbRoles ));
+        
+        return $this->roles->toArray();
+        $defaultRoles[] = 'ROLE_USER';
         dump($this->roles);
         return $defaultRoles;
         return array_unique(array_merge($defaultRoles, $this->roles->toArray() ));
         
-        $dbRoles = array_map(function($o) { return $o->getName(); }, $this->roles->toArray());
+        
         // dd($this->roles);
         return array_unique(array_merge($defaultRoles, $dbRoles));
 

@@ -2,6 +2,8 @@
 
 namespace App\Entity\Project;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
@@ -89,16 +91,22 @@ class Project
     private $visible = true;
 
     /**
-     * @var int
-     */
-    #[ORM\Column(name: 'created_by', type: 'integer', nullable: false, options: ['unsigned' => true])]
-    private $createdBy;
-
-    /**
      * @var \DateTime|null
      */
     #[ORM\Column(name: 'finished_at', type: 'datetime', nullable: true, options: ['default' => null])]
     private $finishedAt = null;
+
+    #[ORM\OneToMany(mappedBy: 'project', targetEntity: ProjectActivity::class)]
+    private $activities;
+
+    #[ORM\ManyToOne(targetEntity: ProjectType::class, inversedBy: 'projects')]
+    #[ORM\JoinColumn(nullable: false)]
+    private $type;
+
+    public function __construct()
+    {
+        $this->activities = new ArrayCollection();
+    }
     
     public function getId(): ?int
     {
@@ -237,18 +245,6 @@ class Project
         return $this;
     }
     
-    public function getCreatedBy(): ?int
-    {
-        return $this->createdBy;
-    }
-    
-    public function setCreatedBy(int $createdBy): self
-    {
-        $this->createdBy = $createdBy;
-
-        return $this;
-    }
-    
     public function getFinishedAt(): ?\DateTimeInterface
     {
         return $this->finishedAt;
@@ -257,6 +253,48 @@ class Project
     public function setFinishedAt(?\DateTimeInterface $finishedAt): self
     {
         $this->finishedAt = $finishedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ProjectActivity>
+     */
+    public function getActivities(): Collection
+    {
+        return $this->activities;
+    }
+
+    public function addActivity(ProjectActivity $activity): self
+    {
+        if (!$this->activities->contains($activity)) {
+            $this->activities[] = $activity;
+            $activity->setProject($this);
+        }
+
+        return $this;
+    }
+
+    public function removeActivity(ProjectActivity $activity): self
+    {
+        if ($this->activities->removeElement($activity)) {
+            // set the owning side to null (unless already changed)
+            if ($activity->getProject() === $this) {
+                $activity->setProject(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getType(): ?ProjectType
+    {
+        return $this->type;
+    }
+
+    public function setType(?ProjectType $type): self
+    {
+        $this->type = $type;
 
         return $this;
     }

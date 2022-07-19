@@ -114,6 +114,7 @@ class ProjectTask
     #[ORM\JoinColumn(name: 'project_id', referencedColumnName: 'id')]
     private $project;
 
+    
     /**
      * @var ProjectTaskType
      */

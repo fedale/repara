@@ -2,6 +2,8 @@
 
 namespace App\Entity\Project;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
@@ -39,6 +41,14 @@ class ProjectMilestone
      */
     #[ORM\Column(name: 'active', type: 'boolean', nullable: false, options: ['default' => 1])]
     private $active = true;
+
+    #[ORM\OneToMany(mappedBy: 'milestone', targetEntity: ProjectMilestoneTask::class)]
+    private $projectMilestoneTasks;
+
+    public function __construct()
+    {
+        $this->projectMilestoneTasks = new ArrayCollection();
+    }
     
     public function getId(): ?int
     {
@@ -77,6 +87,36 @@ class ProjectMilestone
     public function setActive(bool $active): self
     {
         $this->active = $active;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ProjectMilestoneTask>
+     */
+    public function getProjectMilestoneTasks(): Collection
+    {
+        return $this->projectMilestoneTasks;
+    }
+
+    public function addProjectMilestoneTask(ProjectMilestoneTask $projectMilestoneTask): self
+    {
+        if (!$this->projectMilestoneTasks->contains($projectMilestoneTask)) {
+            $this->projectMilestoneTasks[] = $projectMilestoneTask;
+            $projectMilestoneTask->setMilestone($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProjectMilestoneTask(ProjectMilestoneTask $projectMilestoneTask): self
+    {
+        if ($this->projectMilestoneTasks->removeElement($projectMilestoneTask)) {
+            // set the owning side to null (unless already changed)
+            if ($projectMilestoneTask->getMilestone() === $this) {
+                $projectMilestoneTask->setMilestone(null);
+            }
+        }
 
         return $this;
     }

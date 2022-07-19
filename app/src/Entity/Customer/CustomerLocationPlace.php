@@ -2,6 +2,8 @@
 
 namespace App\Entity\Customer;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
@@ -41,6 +43,14 @@ class CustomerLocationPlace
     #[ORM\ManyToOne(targetEntity: 'CustomerLocation')]
     #[ORM\JoinColumn(name: 'location_id', referencedColumnName: 'id')]
     private $location;
+
+    #[ORM\OneToMany(mappedBy: 'customerLocationPlace', targetEntity: CustomerLocationPlaceAsset::class)]
+    private $customerLocationPlaceAssets;
+
+    public function __construct()
+    {
+        $this->customerLocationPlaceAssets = new ArrayCollection();
+    }
     public function getId(): ?int
     {
         return $this->id;
@@ -78,5 +88,35 @@ class CustomerLocationPlace
     public function isActive(): ?bool
     {
         return $this->active;
+    }
+
+    /**
+     * @return Collection<int, CustomerLocationPlaceAsset>
+     */
+    public function getCustomerLocationPlaceAssets(): Collection
+    {
+        return $this->customerLocationPlaceAssets;
+    }
+
+    public function addCustomerLocationPlaceAsset(CustomerLocationPlaceAsset $customerLocationPlaceAsset): self
+    {
+        if (!$this->customerLocationPlaceAssets->contains($customerLocationPlaceAsset)) {
+            $this->customerLocationPlaceAssets[] = $customerLocationPlaceAsset;
+            $customerLocationPlaceAsset->setCustomerLocationPlace($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCustomerLocationPlaceAsset(CustomerLocationPlaceAsset $customerLocationPlaceAsset): self
+    {
+        if ($this->customerLocationPlaceAssets->removeElement($customerLocationPlaceAsset)) {
+            // set the owning side to null (unless already changed)
+            if ($customerLocationPlaceAsset->getCustomerLocationPlace() === $this) {
+                $customerLocationPlaceAsset->setCustomerLocationPlace(null);
+            }
+        }
+
+        return $this;
     }
 }

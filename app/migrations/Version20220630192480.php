@@ -19,21 +19,6 @@ final class Version20220630192480 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        
-        $this->addSql('CREATE TABLE project_milestone_task (
-            id INT UNSIGNED AUTO_INCREMENT NOT NULL,
-            milestone_id INT UNSIGNED NOT NULL,
-            task_id INT UNSIGNED NOT NULL,
-            active tinyint DEFAULT 1 NOT NULL,
-            created_at DATETIME NOT NULL DEFAULT current_timestamp(),
-            updated_at DATETIME NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-            deleted_at DATETIME DEFAULT NULL,
-            INDEX task_it (task_id),
-            INDEX active (active),
-            INDEX milestone_it (milestone_id),
-            PRIMARY KEY(id
-        ) ENGINE = InnoDB');
-        
         $this->addSql('CREATE TABLE project_task (
             id INT UNSIGNED AUTO_INCREMENT NOT NULL,
             customer_id INT UNSIGNED DEFAULT NULL,
@@ -63,7 +48,7 @@ final class Version20220630192480 extends AbstractMigration
             INDEX name (name),
             INDEX stuff_type (asset_type),
             INDEX priority (priority),
-            PRIMARY KEY(id
+            PRIMARY KEY(id)
         ) ENGINE = InnoDB');
  
         $this->addSql('CREATE TABLE project_task_activity (
@@ -71,7 +56,7 @@ final class Version20220630192480 extends AbstractMigration
             name VARCHAR(128) NOT NULL,
             datetime DATETIME NOT NULL DEFAULT current_timestamp(),
             user_id INT UNSIGNED NOT NULL,
-            project_task_id INT UNSIGNE NOT NULL,
+            project_task_id INT UNSIGNED NOT NULL,
             INDEX name (name),
             INDEX user_id (user_id),
             INDEX project_task_id (project_task_id),
@@ -93,7 +78,7 @@ final class Version20220630192480 extends AbstractMigration
             INDEX task_item_id (task_id),
             INDEX active (active),
             INDEX user_id (user_id),
-            PRIMARY KEY(id
+            PRIMARY KEY(id)
         ) ENGINE = InnoDB');
         
         $this->addSql('CREATE TABLE project_task_attachment (
@@ -112,14 +97,42 @@ final class Version20220630192480 extends AbstractMigration
             INDEX created_at (created_at),
             INDEX active (active),
             INDEX user_id (user_id),
-            INDEX type_3 (type),
+            INDEX type (type),
             INDEX size (size),
             INDEX name (name),
             INDEX filename (filename),
             INDEX path (path),
             INDEX project_task_id (project_task_id),
             INDEX updated_at (updated_at),
-            PRIMARY KEY(id
+            PRIMARY KEY(id)
+        ) ENGINE = InnoDB');
+
+        $this->addSql('CREATE TABLE project_task_tag (
+            id INT UNSIGNED AUTO_INCREMENT NOT NULL, 
+            name VARCHAR(255) NOT NULL, 
+            PRIMARY KEY(id)
+        ) ENGINE = InnoDB');
+
+        $this->addSql('CREATE TABLE project_task_tag_assigned (
+            project_task_id INT UNSIGNED NOT NULL, 
+            project_task_tag_id INT UNSIGNED NOT NULL, 
+            INDEX IDX_87F3F1931BA80DE3 (project_task_id), 
+            INDEX IDX_87F3F19349B41039 (project_task_tag_id), 
+            PRIMARY KEY(project_task_id, project_task_tag_id)
+        ) ENGINE = InnoDB');
+
+        $this->addSql('CREATE TABLE project_milestone_task (
+            id INT UNSIGNED AUTO_INCREMENT NOT NULL,
+            milestone_id INT UNSIGNED NOT NULL,
+            task_id INT UNSIGNED NOT NULL,
+            active tinyint DEFAULT 1 NOT NULL,
+            created_at DATETIME NOT NULL DEFAULT current_timestamp(),
+            updated_at DATETIME NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+            deleted_at DATETIME DEFAULT NULL,
+            INDEX task_it (task_id),
+            INDEX active (active),
+            INDEX milestone_it (milestone_id),
+            PRIMARY KEY(id)
         ) ENGINE = InnoDB');
         
         $this->addSql('CREATE TABLE project_task_item (
@@ -144,7 +157,7 @@ final class Version20220630192480 extends AbstractMigration
             INDEX datetime_start (datetime_start),
             INDEX name (name),
             INDEX created_at (created_at),
-            PRIMARY KEY(id
+            PRIMARY KEY(id)
         ) ENGINE = InnoDB');
         
         $this->addSql('CREATE TABLE project_task_item_assigned (
@@ -160,7 +173,7 @@ final class Version20220630192480 extends AbstractMigration
             INDEX task_item_id (task_item_id),
             INDEX active (active),
             INDEX user_id (user_id),
-            PRIMARY KEY(id
+            PRIMARY KEY(id)
         ) ENGINE = InnoDB');
         
         $this->addSql('CREATE TABLE project_task_template (
@@ -175,7 +188,7 @@ final class Version20220630192480 extends AbstractMigration
             INDEX created_at (created_at),
             INDEX updated_at (updated_at),
             INDEX name (name),
-            PRIMARY KEY(id
+            PRIMARY KEY(id)
         ) ENGINE = InnoDB');
         
         $this->addSql('CREATE TABLE project_task_template_item (
@@ -195,7 +208,7 @@ final class Version20220630192480 extends AbstractMigration
             INDEX sort (sort),
             INDEX task_type_id (task_type_id),
             INDEX name (name),
-            PRIMARY KEY(id
+            PRIMARY KEY(id)
         ) ENGINE = InnoDB');
         
         $this->addSql('CREATE TABLE project_task_type (
@@ -209,7 +222,7 @@ final class Version20220630192480 extends AbstractMigration
             INDEX created_at (created_at),
             INDEX updated_at (updated_at),
             INDEX name (name),
-            PRIMARY KEY(id
+            PRIMARY KEY(id)
         ) ENGINE = InnoDB');
     }
 
@@ -228,12 +241,15 @@ final class Version20220630192480 extends AbstractMigration
         $this->addSql('DROP TABLE project_task_item');
         
         $this->addSql('DROP TABLE project_task_item_assigned');
-        
+
         $this->addSql('DROP TABLE project_task_template');
         
         $this->addSql('DROP TABLE project_task_template_item');
         
-        $this->addSql('DROP TABLE project_task_type');        
+        $this->addSql('DROP TABLE project_task_type');
 
+        $this->addSql('DROP TABLE project_task_tag');
+
+        $this->addSql('DROP TABLE project_task_tag_assigned');
     }
 }

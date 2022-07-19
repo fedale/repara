@@ -2,6 +2,10 @@
 
 namespace App\Entity\User;
 
+use App\Entity\Customer\Customer;
+use App\Entity\Customer\CustomerLocation;
+use App\Entity\Customer\CustomerLocationPlace;
+use App\Entity\Customer\CustomerLocationPlaceAsset;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
@@ -21,107 +25,38 @@ class UserAssignedCustomer
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private $id;
-
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'user_id', type: 'integer', nullable: false, options: ['unsigned' => true])]
-    private $userId;
-
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'customer_id', type: 'integer', nullable: false, options: ['unsigned' => true])]
-    private $customerId;
-
-    /**
-     * @var int|null
-     */
-    #[ORM\Column(name: 'customer_location_id', type: 'integer', nullable: true, options: ['unsigned' => true])]
-    private $customerLocationId = 0;
-
-    /**
-     * @var int|null
-     */
-    #[ORM\Column(name: 'customer_location_place_id', type: 'integer', nullable: true, options: ['unsigned' => true])]
-    private $customerLocationPlaceId = 0;
-
-    /**
-     * @var int|null
-     */
-    #[ORM\Column(name: 'customer_place_asset_id', type: 'integer', nullable: true, options: ['unsigned' => true])]
-    private $customerPlaceAssetId = 0;
-
+    
     /**
      * @var bool
      */
     #[ORM\Column(name: 'active', type: 'boolean', nullable: false, options: ['default' => 1])]
     private $active = true;
 
+    #[ORM\Column(name: 'user_id', type: 'integer', nullable: false, options: ['unsigned' => true])]
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private $user;
+
+    #[ORM\Column(name: 'customer_id', type: 'integer', nullable: false, options: ['unsigned' => true])]
+    #[ORM\ManyToOne(targetEntity: Customer::class)]
+    private $customer;
+
+    #[ORM\Column(name: 'customer_location_id', type: 'integer', nullable: true, options: ['unsigned' => true])]
+    #[ORM\ManyToOne(targetEntity: CustomerLocation::class)]
+    private $customerLocation;
+
+    #[ORM\Column(name: 'customer_location_place_id', type: 'integer', nullable: true, options: ['unsigned' => true])]
+    #[ORM\ManyToOne(targetEntity: CustomerLocationPlace::class)]
+    private $customerLocationPlace;
+
+    #[ORM\Column(name: 'customer_location_place_asset_id', type: 'integer', nullable: true, options: ['unsigned' => true])]
+    #[ORM\ManyToOne(targetEntity: CustomerLocationPlaceAsset::class)]
+    private $customerLocationPlaceAsset;
+
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getUserId(): ?int
-    {
-        return $this->userId;
-    }
-
-    public function setUserId(int $userId): self
-    {
-        $this->userId = $userId;
-
-        return $this;
-    }
-
-    public function getCustomerId(): ?int
-    {
-        return $this->customerId;
-    }
-
-    public function setCustomerId(int $customerId): self
-    {
-        $this->customerId = $customerId;
-
-        return $this;
-    }
-
-    public function getCustomerLocationId(): ?int
-    {
-        return $this->customerLocationId;
-    }
-
-    public function setCustomerLocationId(?int $customerLocationId): self
-    {
-        $this->customerLocationId = $customerLocationId;
-
-        return $this;
-    }
-
-    public function getCustomerLocationPlaceId(): ?int
-    {
-        return $this->customerLocationPlaceId;
-    }
-
-    public function setCustomerLocationPlaceId(?int $customerLocationPlaceId): self
-    {
-        $this->customerLocationPlaceId = $customerLocationPlaceId;
-
-        return $this;
-    }
-
-    public function getCustomerPlaceAssetId(): ?int
-    {
-        return $this->customerPlaceAssetId;
-    }
-
-    public function setCustomerPlaceAssetId(?int $customerPlaceAssetId): self
-    {
-        $this->customerPlaceAssetId = $customerPlaceAssetId;
-
-        return $this;
     }
 
     public function getActive(): ?bool
@@ -132,6 +67,66 @@ class UserAssignedCustomer
     public function setActive(bool $active): self
     {
         $this->active = $active;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    public function getCustomer(): ?Customer
+    {
+        return $this->customer;
+    }
+
+    public function setCustomer(?Customer $customer): self
+    {
+        $this->customer = $customer;
+
+        return $this;
+    }
+
+    public function getCustomerLocation(): ?CustomerLocation
+    {
+        return $this->customerLocation;
+    }
+
+    public function setCustomerLocation(?CustomerLocation $customerLocation): self
+    {
+        $this->customerLocation = $customerLocation;
+
+        return $this;
+    }
+
+    public function getCustomerLocationPlace(): ?CustomerLocationPlace
+    {
+        return $this->customerLocationPlace;
+    }
+
+    public function setCustomerLocationPlace(?CustomerLocationPlace $customerLocationPlace): self
+    {
+        $this->customerLocationPlace = $customerLocationPlace;
+
+        return $this;
+    }
+
+    public function getCustomerLocationPlaceAsset(): ?CustomerLocationPlaceAsset
+    {
+        return $this->customerLocationPlaceAsset;
+    }
+
+    public function setCustomerLocationPlaceAsset(?CustomerLocationPlaceAsset $customerLocationPlaceAsset): self
+    {
+        $this->customerLocationPlaceAsset = $customerLocationPlaceAsset;
 
         return $this;
     }

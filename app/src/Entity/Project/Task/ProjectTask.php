@@ -2,6 +2,10 @@
 
 namespace App\Entity\Project\Task;
 
+use App\Entity\Project\ProjectMilestoneTask;
+use App\Entity\Project\TaskItem\ProjectTaskItem;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Customer\Customer;
 use App\Entity\Customer\CustomerLocationPlaceAsset; 
@@ -116,6 +120,26 @@ class ProjectTask
     #[ORM\ManyToOne(targetEntity: ProjectTaskType::class)]
     #[ORM\JoinColumn(name: 'type_id', referencedColumnName: 'id')]
     private $type;
+
+    // #[ORM\ManyToMany(targetEntity: ProjectTaskTag::class, inversedBy: 'tasks')]
+    // private $tags;
+
+    #[ORM\OneToMany(mappedBy: 'tasks', targetEntity: ProjectTaskAssigned::class)]
+    private $projectTaskAssigneds;
+
+    #[ORM\OneToMany(mappedBy: 'projectTask', targetEntity: ProjectMilestoneTask::class)]
+    private $projectMilestoneTasks;
+
+    #[ORM\OneToMany(mappedBy: 'projectTask', targetEntity: ProjectTaskItem::class)]
+    private $projectTaskItems;
+
+    public function __construct()
+    {
+        $this->tags = new ArrayCollection();
+        $this->projectTaskAssigneds = new ArrayCollection();
+        $this->projectMilestoneTasks = new ArrayCollection();
+        $this->projectTaskItems = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -262,6 +286,120 @@ class ProjectTask
     public function setType(?ProjectTaskType $type): self
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ProjectTaskTag>
+     */
+    public function getTags(): Collection
+    {
+        return $this->tags;
+    }
+
+    public function addTag(ProjectTaskTag $tag): self
+    {
+        if (!$this->tags->contains($tag)) {
+            $this->tags[] = $tag;
+        }
+
+        return $this;
+    }
+
+    public function removeTag(ProjectTaskTag $tag): self
+    {
+        $this->tags->removeElement($tag);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ProjectTaskAssigned>
+     */
+    public function getProjectTaskAssigneds(): Collection
+    {
+        return $this->projectTaskAssigneds;
+    }
+
+    public function addProjectTaskAssigned(ProjectTaskAssigned $projectTaskAssigned): self
+    {
+        if (!$this->projectTaskAssigneds->contains($projectTaskAssigned)) {
+            $this->projectTaskAssigneds[] = $projectTaskAssigned;
+            $projectTaskAssigned->setTasks($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProjectTaskAssigned(ProjectTaskAssigned $projectTaskAssigned): self
+    {
+        if ($this->projectTaskAssigneds->removeElement($projectTaskAssigned)) {
+            // set the owning side to null (unless already changed)
+            if ($projectTaskAssigned->getTasks() === $this) {
+                $projectTaskAssigned->setTasks(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ProjectMilestoneTask>
+     */
+    public function getProjectMilestoneTasks(): Collection
+    {
+        return $this->projectMilestoneTasks;
+    }
+
+    public function addProjectMilestoneTask(ProjectMilestoneTask $projectMilestoneTask): self
+    {
+        if (!$this->projectMilestoneTasks->contains($projectMilestoneTask)) {
+            $this->projectMilestoneTasks[] = $projectMilestoneTask;
+            $projectMilestoneTask->setProjectTask($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProjectMilestoneTask(ProjectMilestoneTask $projectMilestoneTask): self
+    {
+        if ($this->projectMilestoneTasks->removeElement($projectMilestoneTask)) {
+            // set the owning side to null (unless already changed)
+            if ($projectMilestoneTask->getProjectTask() === $this) {
+                $projectMilestoneTask->setProjectTask(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ProjectTaskItem>
+     */
+    public function getProjectTaskItems(): Collection
+    {
+        return $this->projectTaskItems;
+    }
+
+    public function addProjectTaskItem(ProjectTaskItem $projectTaskItem): self
+    {
+        if (!$this->projectTaskItems->contains($projectTaskItem)) {
+            $this->projectTaskItems[] = $projectTaskItem;
+            $projectTaskItem->setProjectTask($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProjectTaskItem(ProjectTaskItem $projectTaskItem): self
+    {
+        if ($this->projectTaskItems->removeElement($projectTaskItem)) {
+            // set the owning side to null (unless already changed)
+            if ($projectTaskItem->getProjectTask() === $this) {
+                $projectTaskItem->setProjectTask(null);
+            }
+        }
 
         return $this;
     }

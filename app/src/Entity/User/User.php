@@ -2,6 +2,7 @@
 
 namespace App\Entity\User;
 
+use App\Entity\Project\Task\ProjectTaskAssigned;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -104,12 +105,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: UserRole::class, inversedBy: 'users')]
     #[ORM\JoinTable(name: 'user_role_assigned', joinColumns: [new ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')], inverseJoinColumns: [new ORM\JoinColumn(name: 'user_role_id', referencedColumnName: 'id')])]
     private $roles;
-    /**
-     * @var Collection|UserRole[]
-     */
-    #[ORM\ManyToMany(targetEntity: UserRole::class)]
-    #[ORM\JoinTable(name: 'user_role_assigned')]
-    private $userRoles;
+    // /**
+    //  * @var Collection|UserRole[]
+    //  */
+    // #[ORM\ManyToMany(targetEntity: UserRole::class)]
+    // #[ORM\JoinTable(name: 'user_role_assigned')]
+    // private $userRoles;
 
     #[ORM\OneToOne(targetEntity: UserProfile::class, mappedBy: 'user', cascade:["persist", "remove"])]
     private ?UserProfile $profile;
@@ -125,6 +126,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\JoinTable(name: 'user_group_assigned')]
     private $groups;
 
+    #[ORM\OneToMany(mappedBy: 'users', targetEntity: ProjectTaskAssigned::class)]
+    private $projectTaskAssigneds;
+
 
     /**
      * Constructor
@@ -134,6 +138,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->roles = new ArrayCollection();
         $this->userRoles = new ArrayCollection();
         $this->groups = new ArrayCollection();
+        $this->projectTaskAssigneds = new ArrayCollection();
     }
 
     public function __toString()
@@ -226,18 +231,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setRegistrationIp(?string $registrationIp): self
     {
         $this->registrationIp = $registrationIp;
-
-        return $this;
-    }
-    
-    public function getTypeId(): ?int
-    {
-        return $this->typeId;
-    }
-    
-    public function setTypeId(?int $typeId): self
-    {
-        $this->typeId = $typeId;
 
         return $this;
     }
@@ -447,6 +440,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeGroup(UserGroup $group): self
     {
         $this->groups->removeElement($group);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ProjectTaskAssigned>
+     */
+    public function getProjectTaskAssigneds(): Collection
+    {
+        return $this->projectTaskAssigneds;
+    }
+
+    public function addProjectTaskAssigned(ProjectTaskAssigned $projectTaskAssigned): self
+    {
+        if (!$this->projectTaskAssigneds->contains($projectTaskAssigned)) {
+            $this->projectTaskAssigneds[] = $projectTaskAssigned;
+            $projectTaskAssigned->setUsers($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProjectTaskAssigned(ProjectTaskAssigned $projectTaskAssigned): self
+    {
+        if ($this->projectTaskAssigneds->removeElement($projectTaskAssigned)) {
+            // set the owning side to null (unless already changed)
+            if ($projectTaskAssigned->getUsers() === $this) {
+                $projectTaskAssigned->setUsers(null);
+            }
+        }
 
         return $this;
     }

@@ -49,7 +49,7 @@ final class Version20220630192739 extends AbstractMigration
             INDEX active (active),
             PRIMARY KEY(id),
             CONSTRAINT `customer_ibfk_1` FOREIGN KEY (`type_id`) REFERENCES `customer_type` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-        ) ENGINE = InnoDB COMMENT = \'\' ');
+        ) ENGINE = InnoDB');
         
         $this->addSql('CREATE TABLE customer_attachment (
             id INT UNSIGNED AUTO_INCREMENT NOT NULL,
@@ -75,7 +75,7 @@ final class Version20220630192739 extends AbstractMigration
             INDEX updated_at (updated_at),
             PRIMARY KEY(id),
             CONSTRAINT `customer_attachment_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-        ) ENGINE = InnoDB COMMENT = \'\' ');        
+        ) ENGINE = InnoDB');        
         
         $this->addSql('CREATE TABLE customer_location (
             id INT UNSIGNED AUTO_INCREMENT NOT NULL,
@@ -98,11 +98,11 @@ final class Version20220630192739 extends AbstractMigration
             INDEX customer_id (customer_id),
             PRIMARY KEY(id),
             CONSTRAINT `customer_location_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-        ) ENGINE = InnoDB COMMENT = \'\' ');
+        ) ENGINE = InnoDB');
 
         $this->addSql('CREATE TABLE customer_contact (
             id INT UNSIGNED AUTO_INCREMENT NOT NULL,
-            location_id INT UNSIGNED DEFAULT NULL,
+            customer_location_id INT UNSIGNED DEFAULT NULL,
             firstname VARCHAR(64) NOT NULL,
             lastname VARCHAR(64) NOT NULL,
             phone VARCHAR(32) DEFAULT NULL,
@@ -114,20 +114,19 @@ final class Version20220630192739 extends AbstractMigration
             INDEX active (active),
             INDEX updated_at (updated_at),
             INDEX firstname (firstname),
-            UNIQUE INDEX phone (phone,
-            location_id),
-            INDEX location_id (location_id),
+            UNIQUE INDEX phone (phone, customer_location_id),
+            INDEX customer_location_id (customer_location_id),
             INDEX created_at (created_at),
-            UNIQUE INDEX email (email, location_id),
+            UNIQUE INDEX email (email, customer_location_id),
             INDEX lastname (lastname),
             PRIMARY KEY(id),
-            CONSTRAINT `customer_contact_ibfk_1` FOREIGN KEY (`location_id`) REFERENCES `customer_location` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-        ) ENGINE = InnoDB COMMENT = \'\' ');
+            CONSTRAINT `customer_contact_ibfk_1` FOREIGN KEY (`customer_location_id`) REFERENCES `customer_location` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+        ) ENGINE = InnoDB');
 
 
         $this->addSql('CREATE TABLE customer_location_place (
             id INT UNSIGNED AUTO_INCREMENT NOT NULL,
-            location_id INT UNSIGNED NOT NULL,
+            customer_location_id INT UNSIGNED NOT NULL,
             name VARCHAR(64) NOT NULL,
             active tinyint DEFAULT 1 NOT NULL,
             created_at DATETIME NOT NULL DEFAULT current_timestamp(),
@@ -137,16 +136,16 @@ final class Version20220630192739 extends AbstractMigration
             INDEX updated_at (updated_at),
             INDEX name (name),
             INDEX active (active),
-            INDEX customer_id (location_id),
+            INDEX customer_location_id (customer_location_id),
             PRIMARY KEY(id),
-            CONSTRAINT `customer_location_place_ibfk_1` FOREIGN KEY (`location_id`) REFERENCES `customer_location` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-        ) ENGINE = InnoDB COMMENT = \'\' ');
+            CONSTRAINT `customer_location_place_ibfk_1` FOREIGN KEY (`customer_location_id`) REFERENCES `customer_location` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+        ) ENGINE = InnoDB');
         
         $this->addSql('CREATE TABLE customer_location_place_asset (
             id INT UNSIGNED AUTO_INCREMENT NOT NULL,
             name VARCHAR(64) NOT NULL,
             code VARCHAR(64) NOT NULL,
-            location_place_id INT UNSIGNED NOT NULL,
+            customer_location_place_id INT UNSIGNED NOT NULL,
             asset_id INT UNSIGNED NOT NULL,
             active tinyint DEFAULT 1 NOT NULL,
             created_at DATETIME NOT NULL DEFAULT current_timestamp(),
@@ -159,9 +158,9 @@ final class Version20220630192739 extends AbstractMigration
             INDEX created_at (created_at),
             UNIQUE INDEX code (code),
             PRIMARY KEY(id),
-            CONSTRAINT `customer_location_place_asset_ibfk_1` FOREIGN KEY (`location_place_id`) REFERENCES `customer_location_place` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+            CONSTRAINT `customer_location_place_asset_ibfk_1` FOREIGN KEY (`customer_location_place_id`) REFERENCES `customer_location_place` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
             CONSTRAINT `customer_location_place_asset_ibfk_2` FOREIGN KEY (`asset_id`) REFERENCES `asset` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-        ) ENGINE = InnoDB COMMENT = \'\' ');
+        ) ENGINE = InnoDB');
         
         $this->addSql('CREATE TABLE customer_location_place_asset_attachment (
             id INT UNSIGNED AUTO_INCREMENT NOT NULL,
@@ -186,7 +185,7 @@ final class Version20220630192739 extends AbstractMigration
             INDEX stuff_id (customer_location_place_asset_id),
             INDEX updated_at (updated_at),
             PRIMARY KEY(id)
-        ) ENGINE = InnoDB COMMENT = \'\' ');
+        ) ENGINE = InnoDB');
         
         $this->addSql('CREATE TABLE customer_profile (
             id INT UNSIGNED AUTO_INCREMENT NOT NULL,
@@ -204,16 +203,14 @@ final class Version20220630192739 extends AbstractMigration
             PRIMARY KEY(id),
             UNIQUE INDEX(customer_id),
             CONSTRAINT `customer_profile_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-        ) ENGINE = InnoDB COMMENT = \'\' ');
-
-        
+        ) ENGINE = InnoDB');
 
         $this->addSql('CREATE TABLE customer_group (
             id INT UNSIGNED AUTO_INCREMENT NOT NULL,
             name VARCHAR(255) DEFAULT NULL,
             INDEX name (name),
             PRIMARY KEY(id)
-        ) ENGINE = InnoDB COMMENT = \'\' ');
+        ) ENGINE = InnoDB');
 
         $this->addSql('CREATE TABLE customer_group_assigned (
             id INT UNSIGNED AUTO_INCREMENT NOT NULL,
@@ -222,7 +219,7 @@ final class Version20220630192739 extends AbstractMigration
             PRIMARY KEY(id),
             CONSTRAINT `customer_customer_group_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
             CONSTRAINT `customer_customer_group_ibfk_2` FOREIGN KEY (`customer_group_id`) REFERENCES `customer_group` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-        ) ENGINE = InnoDB COMMENT = \'\' ');
+        ) ENGINE = InnoDB');
 
         $this->addSql('CREATE TABLE customer_role (
             id INT UNSIGNED AUTO_INCREMENT NOT NULL,

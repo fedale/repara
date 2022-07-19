@@ -2,6 +2,7 @@
 
 namespace App\Entity\Customer;
 
+use App\Entity\Asset\Asset;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
@@ -35,22 +36,20 @@ class CustomerLocationPlaceAsset
     private $code;
     
     /**
-     * @var int
-     */
-    #[ORM\Column(name: 'location_place_id', type: 'integer', nullable: false, options: ['unsigned' => true])]
-    private $locationPlaceId;
-    
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'asset_id', type: 'integer', nullable: false, options: ['unsigned' => true])]
-    private $assetId;
-    
-    /**
      * @var bool
      */
     #[ORM\Column(name: 'active', type: 'boolean', nullable: false, options: ['default' => 1])]
     private $active = true;
+
+    #[ORM\ManyToOne(targetEntity: CustomerLocationPlace::class, inversedBy: 'customerLocationPlaceAssets')]
+    #[ORM\Column(name: 'customer_location_place_id', type: 'integer', nullable: false, options: ['unsigned' => true])]
+    #[ORM\JoinColumn(nullable: false)]
+    private $customerLocationPlace;
+
+    #[ORM\ManyToOne(targetEntity: Asset::class, inversedBy: 'customerLocationPlaceAssets')]
+    #[ORM\Column(name: 'asset_id', type: 'integer', nullable: false, options: ['unsigned' => true])]
+    #[ORM\JoinColumn(nullable: false)]
+    private $asset;
     
     public function getId(): ?int
     {
@@ -80,31 +79,7 @@ class CustomerLocationPlaceAsset
 
         return $this;
     }
-    
-    public function getLocationPlaceId(): ?int
-    {
-        return $this->locationPlaceId;
-    }
-    
-    public function setLocationPlaceId(int $locationPlaceId): self
-    {
-        $this->locationPlaceId = $locationPlaceId;
-
-        return $this;
-    }
-    
-    public function getAssetId(): ?int
-    {
-        return $this->assetId;
-    }
-    
-    public function setAssetId(int $assetId): self
-    {
-        $this->assetId = $assetId;
-
-        return $this;
-    }
-    
+       
     public function getActive(): ?bool
     {
         return $this->active;
@@ -119,5 +94,29 @@ class CustomerLocationPlaceAsset
     public function isActive(): ?bool
     {
         return $this->active;
+    }
+
+    public function getCustomerLocationPlace(): ?CustomerLocationPlace
+    {
+        return $this->customerLocationPlace;
+    }
+
+    public function setCustomerLocationPlace(?CustomerLocationPlace $customerLocationPlace): self
+    {
+        $this->customerLocationPlace = $customerLocationPlace;
+
+        return $this;
+    }
+
+    public function getAsset(): ?Asset
+    {
+        return $this->asset;
+    }
+
+    public function setAsset(?Asset $asset): self
+    {
+        $this->asset = $asset;
+
+        return $this;
     }
 }

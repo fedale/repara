@@ -36,12 +36,6 @@ class AssetModel
     /**
      * @var bool
      */
-    #[ORM\Column(name: 'type_id', type: 'boolean', nullable: false)]
-    private $typeId;
-
-    /**
-     * @var bool
-     */
     #[ORM\Column(name: 'active', type: 'boolean', nullable: false, options: ['default' => 1])]
     private $active = true;
     
@@ -54,40 +48,36 @@ class AssetModel
 
     #[ORM\ManyToOne(targetEntity: AssetType::class, inversedBy: 'models')]
     #[ORM\JoinColumn(nullable: false)]
+    #[ORM\Column(name: 'type_id', type: 'boolean', nullable: false)]
     private $type;
 
     public function __toString(): string
     {
         return $this->getFullname();
     }
+    
     public function getId(): ?int
     {
         return $this->id;
     }
+    
     public function getName(): ?string
     {
         return $this->name;
     }
+    
     public function setName(string $name): self
     {
         $this->name = $name;
 
         return $this;
     }
-    public function getTypeId(): ?bool
-    {
-        return $this->typeId;
-    }
-    public function setTypeId(bool $typeId): self
-    {
-        $this->typeId = $typeId;
-
-        return $this;
-    }
+    
     public function getActive(): ?bool
     {
         return $this->active;
     }
+    
     public function setActive(bool $active): self
     {
         $this->active = $active;

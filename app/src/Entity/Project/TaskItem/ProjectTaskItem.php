@@ -2,6 +2,7 @@
 
 namespace App\Entity\Project\TaskItem;
 
+use App\Entity\Project\Task\ProjectTask;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
@@ -59,16 +60,15 @@ class ProjectTaskItem
     private $datetimeEnd = NULL;
     
     /**
-     * @var int
-     */
-    #[ORM\Column(name: 'task_id', type: 'integer', nullable: false, options: ['unsigned' => true])]
-    private $taskId;
-    
-    /**
      * @var bool
      */
     #[ORM\Column(name: 'active', type: 'boolean', nullable: false, options: ['default' => 1])]
     private $active = true;
+
+    #[ORM\ManyToOne(targetEntity: ProjectTask::class, inversedBy: 'projectTaskItems')]
+    #[ORM\Column(name: 'task_id', type: 'integer', nullable: false, options: ['unsigned' => true])]
+    #[ORM\JoinColumn(nullable: false)]
+    private $projectTask;
 
     public function getId(): ?int
     {
@@ -147,18 +147,6 @@ class ProjectTaskItem
         return $this;
     }
 
-    public function getTaskId(): ?int
-    {
-        return $this->taskId;
-    }
-
-    public function setTaskId(int $taskId): self
-    {
-        $this->taskId = $taskId;
-
-        return $this;
-    }
-
     public function getActive(): ?bool
     {
         return $this->active;
@@ -167,6 +155,18 @@ class ProjectTaskItem
     public function setActive(bool $active): self
     {
         $this->active = $active;
+
+        return $this;
+    }
+
+    public function getProjectTask(): ?ProjectTask
+    {
+        return $this->projectTask;
+    }
+
+    public function setProjectTask(?ProjectTask $projectTask): self
+    {
+        $this->projectTask = $projectTask;
 
         return $this;
     }

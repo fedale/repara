@@ -2,6 +2,7 @@
 
 namespace App\Entity\Project\Task;
 
+use App\Entity\User\User;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
@@ -23,50 +24,24 @@ class ProjectTaskAssigned
     private $id;
     
     /**
-     * @var int
-     */
-    #[ORM\Column(name: 'user_id', type: 'integer', nullable: false, options: ['unsigned' => true])]
-    private $userId;
-    
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'task_id', type: 'integer', nullable: false, options: ['unsigned' => true])]
-    private $taskId;
-
-    /**
      * @var bool
      */
     #[ORM\Column(name: 'active', type: 'boolean', nullable: false, options: ['default' => 1])]
     private $active = true;
 
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'projectTaskAssigneds')]
+    #[ORM\Column(name: 'user_id', type: 'integer', nullable: false, options: ['unsigned' => true])]
+    #[ORM\JoinColumn(nullable: false)]
+    private $users;
+
+    #[ORM\ManyToOne(targetEntity: ProjectTask::class, inversedBy: 'projectTaskAssigneds')]
+    #[ORM\Column(name: 'task_id', type: 'integer', nullable: false, options: ['unsigned' => true])]
+    #[ORM\JoinColumn(nullable: false)]
+    private $tasks;
+
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getUserId(): ?int
-    {
-        return $this->userId;
-    }
-
-    public function setUserId(int $userId): self
-    {
-        $this->userId = $userId;
-
-        return $this;
-    }
-
-    public function getTaskId(): ?int
-    {
-        return $this->taskId;
-    }
-
-    public function setTaskId(int $taskId): self
-    {
-        $this->taskId = $taskId;
-
-        return $this;
     }
 
     public function getActive(): ?bool
@@ -77,6 +52,30 @@ class ProjectTaskAssigned
     public function setActive(bool $active): self
     {
         $this->active = $active;
+
+        return $this;
+    }
+
+    public function getUsers(): ?User
+    {
+        return $this->users;
+    }
+
+    public function setUsers(?User $users): self
+    {
+        $this->users = $users;
+
+        return $this;
+    }
+
+    public function getTasks(): ?ProjectTask
+    {
+        return $this->tasks;
+    }
+
+    public function setTasks(?ProjectTask $tasks): self
+    {
+        $this->tasks = $tasks;
 
         return $this;
     }

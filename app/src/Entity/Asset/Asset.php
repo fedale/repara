@@ -2,6 +2,9 @@
 
 namespace App\Entity\Asset;
 
+use App\Entity\Customer\CustomerLocationPlaceAsset;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -45,6 +48,14 @@ class Asset
     #[ORM\ManyToOne(targetEntity: AssetModel::class, fetch: 'EAGER')]
     #[ORM\JoinColumn(name: 'model_id', referencedColumnName: 'id')]
     private $model;
+
+    #[ORM\OneToMany(mappedBy: 'asset', targetEntity: CustomerLocationPlaceAsset::class)]
+    private $customerLocationPlaceAssets;
+
+    public function __construct()
+    {
+        $this->customerLocationPlaceAssets = new ArrayCollection();
+    }
 
     public function __toString(): string
     {
@@ -99,6 +110,36 @@ class Asset
     public function setSlug(string $slug): self
     {
         $this->slug = $slug;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CustomerLocationPlaceAsset>
+     */
+    public function getCustomerLocationPlaceAssets(): Collection
+    {
+        return $this->customerLocationPlaceAssets;
+    }
+
+    public function addCustomerLocationPlaceAsset(CustomerLocationPlaceAsset $customerLocationPlaceAsset): self
+    {
+        if (!$this->customerLocationPlaceAssets->contains($customerLocationPlaceAsset)) {
+            $this->customerLocationPlaceAssets[] = $customerLocationPlaceAsset;
+            $customerLocationPlaceAsset->setAsset($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCustomerLocationPlaceAsset(CustomerLocationPlaceAsset $customerLocationPlaceAsset): self
+    {
+        if ($this->customerLocationPlaceAssets->removeElement($customerLocationPlaceAsset)) {
+            // set the owning side to null (unless already changed)
+            if ($customerLocationPlaceAsset->getAsset() === $this) {
+                $customerLocationPlaceAsset->setAsset(null);
+            }
+        }
 
         return $this;
     }

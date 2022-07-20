@@ -9,7 +9,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 /**
  * ProjectTaskItem
  */
-#[ORM\Table(name: 'project_task_item', indexes: [new ORM\Index(name: 'name', columns: ['name']), new ORM\Index(name: 'updated_at', columns: ['updated_at']), new ORM\Index(name: 'value', columns: ['value']), new ORM\Index(name: 'datetime_start', columns: ['datetime_start']), new ORM\Index(name: 'difficulty', columns: ['difficulty']), new ORM\Index(name: 'active', columns: ['active']), new ORM\Index(name: 'datetime_end', columns: ['datetime_end']), new ORM\Index(name: 'created_at', columns: ['created_at']), new ORM\Index(name: 'task_id', columns: ['task_id'])])]
+#[ORM\Table(name: 'project_task_item', indexes: [new ORM\Index(name: 'name', columns: ['name']), new ORM\Index(name: 'updated_at', columns: ['updated_at']), new ORM\Index(name: 'value', columns: ['value']), new ORM\Index(name: 'datetime_start', columns: ['datetime_start']), new ORM\Index(name: 'difficulty', columns: ['difficulty']), new ORM\Index(name: 'active', columns: ['active']), new ORM\Index(name: 'datetime_end', columns: ['datetime_end']), new ORM\Index(name: 'created_at', columns: ['created_at']), new ORM\Index(name: 'project_task_id', columns: ['project_task_id'])])]
 #[ORM\Entity]
 class ProjectTaskItem
 {
@@ -66,7 +66,7 @@ class ProjectTaskItem
     private $active = true;
 
     #[ORM\ManyToOne(targetEntity: ProjectTask::class, inversedBy: 'projectTaskItems')]
-    #[ORM\Column(name: 'task_id', type: 'integer', nullable: false, options: ['unsigned' => true])]
+    #[ORM\Column(name: 'project_task_id', type: 'integer', nullable: false, options: ['unsigned' => true])]
     #[ORM\JoinColumn(nullable: false)]
     private $projectTask;
 

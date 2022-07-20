@@ -35,7 +35,7 @@ class ProjectTaskAssigned
     private $users;
 
     #[ORM\ManyToOne(targetEntity: ProjectTask::class, inversedBy: 'projectTaskAssigneds')]
-    #[ORM\Column(name: 'task_id', type: 'integer', nullable: false, options: ['unsigned' => true])]
+    #[ORM\Column(name: 'project_task_id', type: 'integer', nullable: false, options: ['unsigned' => true])]
     #[ORM\JoinColumn(nullable: false)]
     private $tasks;
 

@@ -9,7 +9,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 /**
  * ProjectMilestoneTask
  */
-#[ORM\Table(name: 'project_milestone_task', indexes: [new ORM\Index(name: 'milestone_it', columns: ['milestone_id']), new ORM\Index(name: 'task_it', columns: ['task_id']), new ORM\Index(name: 'active', columns: ['active'])])]
+#[ORM\Table(name: 'project_task_milestone', indexes: [new ORM\Index(name: 'milestone_it', columns: ['milestone_id']), new ORM\Index(name: 'project_task_it', columns: ['project_task_id']), new ORM\Index(name: 'active', columns: ['active'])])]
 #[ORM\Entity]
 class ProjectMilestoneTask
 {
@@ -35,7 +35,7 @@ class ProjectMilestoneTask
     private $milestone;
 
     #[ORM\ManyToOne(targetEntity: ProjectTask::class, inversedBy: 'projectMilestoneTasks')]
-    #[ORM\Column(name: 'task_id', type: 'integer', nullable: false, options: ['unsigned' => true])]
+    #[ORM\Column(name: 'project_task_id', type: 'integer', nullable: false, options: ['unsigned' => true])]
     #[ORM\JoinColumn(nullable: false)]
     private $projectTask;
     

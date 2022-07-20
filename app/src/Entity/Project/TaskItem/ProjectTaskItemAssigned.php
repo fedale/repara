@@ -40,8 +40,8 @@ class ProjectTaskItemAssigned
      * @var ProjectTaskItem
      */
     #[ORM\ManyToOne(targetEntity: 'ProjectTaskItem')]
-    #[ORM\JoinColumn(name: 'task_item_id', referencedColumnName: 'id')]
-    private $taskItem;
+    #[ORM\JoinColumn(name: 'project_task_item_id', referencedColumnName: 'id')]
+    private $projectTaskItem;
 
     public function getId(): ?int
     {
@@ -73,14 +73,14 @@ class ProjectTaskItemAssigned
         return $this;
     }
     
-    public function getTaskItem(): ?ProjectTaskItem
+    public function getProjectTaskItem(): ?ProjectTaskItem
     {
-        return $this->taskItem;
+        return $this->projectTaskItem;
     }
     
-    public function setTaskItem(?ProjectTaskItem $taskItem): self
+    public function setProjectTaskItem(?ProjectTaskItem $projectTaskItem): self
     {
-        $this->taskItem = $taskItem;
+        $this->projectTaskItem = $projectTaskItem;
 
         return $this;
     }

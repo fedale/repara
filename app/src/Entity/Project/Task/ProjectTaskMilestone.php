@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Entity\Project;
+namespace App\Entity\Project\Task;
 
 use App\Entity\Project\Task\ProjectTask;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 /**
- * ProjectMilestoneTask
+ * ProjectTaskMilestone
  */
 #[ORM\Table(name: 'project_task_milestone', indexes: [new ORM\Index(name: 'milestone_it', columns: ['milestone_id']), new ORM\Index(name: 'project_task_it', columns: ['project_task_id']), new ORM\Index(name: 'active', columns: ['active'])])]
 #[ORM\Entity]
-class ProjectMilestoneTask
+class ProjectTaskMilestone
 {
     use TimestampableEntity;
 
@@ -29,12 +29,12 @@ class ProjectMilestoneTask
     #[ORM\Column(name: 'active', type: 'boolean', nullable: false, options: ['default' => 1])]
     private $active = true;
 
-    #[ORM\ManyToOne(targetEntity: ProjectMilestone::class, inversedBy: 'projectMilestoneTasks')]
+    #[ORM\ManyToOne(targetEntity: ProjectMilestone::class, inversedBy: 'projectTaskMilestones')]
     #[ORM\Column(name: 'milestone_id', type: 'integer', nullable: false, options: ['unsigned' => true])]
     #[ORM\JoinColumn(nullable: false)]
     private $milestone;
 
-    #[ORM\ManyToOne(targetEntity: ProjectTask::class, inversedBy: 'projectMilestoneTasks')]
+    #[ORM\ManyToOne(targetEntity: ProjectTask::class, inversedBy: 'projectTasksMilestone')]
     #[ORM\Column(name: 'project_task_id', type: 'integer', nullable: false, options: ['unsigned' => true])]
     #[ORM\JoinColumn(nullable: false)]
     private $projectTask;

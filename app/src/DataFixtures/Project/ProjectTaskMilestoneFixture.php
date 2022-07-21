@@ -5,7 +5,7 @@ namespace App\DataFixtures\Project;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
-class ProjectMilestoneTaskFixture extends Fixture
+class ProjectTaskMilestoneFixture extends Fixture
 {
     public function load(ObjectManager $manager): void
     {

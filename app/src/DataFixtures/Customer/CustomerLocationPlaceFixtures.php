@@ -20,7 +20,7 @@ class CustomerLocationPlaceFixtures extends Fixture implements DependentFixtureI
         foreach ($customerLocations as $customerLocation) {
             CustomerLocationPlaceFactory::createMany(\rand(1,5), function () use ($customerLocation) {
                 return [
-                    'location' => $customerLocation,
+                    'customer_location' => $customerLocation,
                 ];
             });
         }

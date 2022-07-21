@@ -7,11 +7,19 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 /**
- * ProjectTaskAssigned
+ * ProjectTaskUserAssigned
  */
-#[ORM\Table(name: 'project_task_assigned', indexes: [new ORM\Index(name: 'user_id', columns: ['user_id']), new ORM\Index(name: 'updated_at', columns: ['updated_at']), new ORM\Index(name: 'task_item_id', columns: ['task_id']), new ORM\Index(name: 'active', columns: ['active']), new ORM\Index(name: 'created_at', columns: ['created_at'])])]
+#[ORM\Table(name: 'project_task_assigned', 
+    indexes: [
+        new ORM\Index(name: 'user_id', columns: ['user_id']), 
+        new ORM\Index(name: 'updated_at', columns: ['updated_at']), 
+        new ORM\Index(name: 'project_task_id', columns: ['project_task_id']), 
+        new ORM\Index(name: 'active', columns: ['active']), 
+        new ORM\Index(name: 'created_at', columns: ['created_at'])
+    ]
+)]
 #[ORM\Entity]
-class ProjectTaskAssigned
+class ProjectTaskUserAssigned
 {
     use TimestampableEntity;
     
@@ -29,15 +37,15 @@ class ProjectTaskAssigned
     #[ORM\Column(name: 'active', type: 'boolean', nullable: false, options: ['default' => 1])]
     private $active = true;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'projectTaskAssigneds')]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'ProjectTaskUserAssigneds')]
     #[ORM\Column(name: 'user_id', type: 'integer', nullable: false, options: ['unsigned' => true])]
     #[ORM\JoinColumn(nullable: false)]
     private $users;
 
-    #[ORM\ManyToOne(targetEntity: ProjectTask::class, inversedBy: 'projectTaskAssigneds')]
+    #[ORM\ManyToOne(targetEntity: ProjectTask::class, inversedBy: 'ProjectTaskUserAssigneds')]
     #[ORM\Column(name: 'project_task_id', type: 'integer', nullable: false, options: ['unsigned' => true])]
     #[ORM\JoinColumn(nullable: false)]
-    private $tasks;
+    private $projectTasks;
 
     public function getId(): ?int
     {
@@ -68,14 +76,14 @@ class ProjectTaskAssigned
         return $this;
     }
 
-    public function getTasks(): ?ProjectTask
+    public function getProjectTasks(): ?ProjectTask
     {
-        return $this->tasks;
+        return $this->projectTasks;
     }
 
-    public function setTasks(?ProjectTask $tasks): self
+    public function setProjectTasks(?ProjectTask $projectTasks): self
     {
-        $this->tasks = $tasks;
+        $this->projectTasks = $projectTasks;
 
         return $this;
     }

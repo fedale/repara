@@ -2,7 +2,7 @@
 
 namespace App\Entity\User;
 
-use App\Entity\Project\Task\ProjectTaskAssigned;
+use App\Entity\Project\Task\ProjectTaskUserAssigned;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -17,7 +17,15 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * User
  */
-#[ORM\Table(name: 'user', uniqueConstraints: [new ORM\UniqueConstraint(name: 'user_unique_username', columns: ['username']), new ORM\UniqueConstraint(name: 'user_unique_email', columns: ['email'])], indexes: [new ORM\Index(name: 'type_id', columns: ['type_id']), new ORM\Index(name: 'active', columns: ['active'])])]
+#[ORM\Table(name: 'user', 
+    uniqueConstraints: [
+        new ORM\UniqueConstraint(name: 'user_unique_username', columns: ['username']), 
+        new ORM\UniqueConstraint(name: 'user_unique_email', columns: ['email'])], 
+        indexes: [
+            new ORM\Index(name: 'type_id', columns: ['type_id']), 
+            new ORM\Index(name: 'active', columns: ['active'])
+        ]
+)]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(fields:['email'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -103,14 +111,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var Collection|UserRole[]
      */
     #[ORM\ManyToMany(targetEntity: UserRole::class, inversedBy: 'users')]
-    #[ORM\JoinTable(name: 'user_role_assigned', joinColumns: [new ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')], inverseJoinColumns: [new ORM\JoinColumn(name: 'user_role_id', referencedColumnName: 'id')])]
+    #[ORM\JoinTable(name: 'user_role_assigned', joinColumns: [
+        new ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')], inverseJoinColumns: [
+        new ORM\JoinColumn(name: 'user_role_id', referencedColumnName: 'id')])]
     private $roles;
-    // /**
-    //  * @var Collection|UserRole[]
-    //  */
-    // #[ORM\ManyToMany(targetEntity: UserRole::class)]
-    // #[ORM\JoinTable(name: 'user_role_assigned')]
-    // private $userRoles;
+    
+    /**
+     * @var Collection|UserRole[]
+     */
+    #[ORM\ManyToMany(targetEntity: UserRole::class)]
+    #[ORM\JoinTable(name: 'user_role_assigned')]
+    private $userRoles;
 
     #[ORM\OneToOne(targetEntity: UserProfile::class, mappedBy: 'user', cascade:["persist", "remove"])]
     private ?UserProfile $profile;
@@ -126,8 +137,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\JoinTable(name: 'user_group_assigned')]
     private $groups;
 
-    #[ORM\OneToMany(mappedBy: 'users', targetEntity: ProjectTaskAssigned::class)]
-    private $projectTaskAssigneds;
+    #[ORM\OneToMany(mappedBy: 'users', targetEntity: ProjectTaskUserAssigned::class)]
+    private $projectTaskUserAssigneds;
 
 
     /**
@@ -135,10 +146,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function __construct()
     {
-        $this->roles = new ArrayCollection();
-        $this->userRoles = new ArrayCollection();
-        $this->groups = new ArrayCollection();
-        $this->projectTaskAssigneds = new ArrayCollection();
+        $this->roles = 
+        new ArrayCollection();
+        $this->userRoles = 
+        new ArrayCollection();
+        $this->groups = 
+        new ArrayCollection();
+        $this->projectTaskUserAssigneds = 
+        new ArrayCollection();
     }
 
     public function __toString()
@@ -445,29 +460,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, ProjectTaskAssigned>
+     * @return Collection<int, ProjectTaskUserAssigned>
      */
-    public function getProjectTaskAssigneds(): Collection
+    public function getProjectTaskUserAssigneds(): Collection
     {
-        return $this->projectTaskAssigneds;
+        return $this->projectTaskUserAssigneds;
     }
 
-    public function addProjectTaskAssigned(ProjectTaskAssigned $projectTaskAssigned): self
+    public function addProjectTaskUserAssigned(ProjectTaskUserAssigned $projectTaskUserAssigned): self
     {
-        if (!$this->projectTaskAssigneds->contains($projectTaskAssigned)) {
-            $this->projectTaskAssigneds[] = $projectTaskAssigned;
-            $projectTaskAssigned->setUsers($this);
+        if (!$this->projectTaskUserAssigneds->contains($projectTaskUserAssigned)) {
+            $this->projectTaskUserAssigneds[] = $projectTaskUserAssigned;
+            $projectTaskUserAssigned->setUsers($this);
         }
 
         return $this;
     }
 
-    public function removeProjectTaskAssigned(ProjectTaskAssigned $projectTaskAssigned): self
+    public function removeProjectTaskUserAssigned(ProjectTaskUserAssigned $projectTaskUserAssigned): self
     {
-        if ($this->projectTaskAssigneds->removeElement($projectTaskAssigned)) {
+        if ($this->projectTaskUserAssigneds->removeElement($projectTaskUserAssigned)) {
             // set the owning side to null (unless already changed)
-            if ($projectTaskAssigned->getUsers() === $this) {
-                $projectTaskAssigned->setUsers(null);
+            if ($projectTaskUserAssigned->getUsers() === $this) {
+                $projectTaskUserAssigned->setUsers(null);
             }
         }
 

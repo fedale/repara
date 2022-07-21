@@ -32,7 +32,7 @@ class ProjectTaskTemplateItem
      * @var int
      */
     #[ORM\Column(name: 'task_type_id', type: 'integer', nullable: false, options: ['default' => 1, 'unsigned' => true])]
-    private $taskTypeId = 1;
+    private $projectTaskTypeId = 1;
     
     /**
      * @var int
@@ -49,9 +49,9 @@ class ProjectTaskTemplateItem
     /**
      * @var ProjectTaskTemplate
      */
-    #[ORM\ManyToOne(targetEntity: 'ProjectTaskTemplate')]
-    #[ORM\JoinColumn(name: 'task_id', referencedColumnName: 'id')]
-    private $task;
+    #[ORM\ManyToOne(targetEntity: ProjectTaskTemplate::class)]
+    #[ORM\JoinColumn(name: 'project_task_id', referencedColumnName: 'id')]
+    private $projectTask;
 
     public function getId(): ?int
     {
@@ -70,14 +70,14 @@ class ProjectTaskTemplateItem
         return $this;
     }
 
-    public function getTaskTypeId(): ?int
+    public function getProjectTaskTypeId(): ?int
     {
-        return $this->taskTypeId;
+        return $this->projectTaskTypeId;
     }
 
-    public function setTaskTypeId(int $taskTypeId): self
+    public function setTaskTypeId(int $projectTaskTypeId): self
     {
-        $this->taskTypeId = $taskTypeId;
+        $this->projectTaskTypeId = $projectTaskTypeId;
 
         return $this;
     }
@@ -105,14 +105,14 @@ class ProjectTaskTemplateItem
 
         return $this;
     }
-    public function getTask(): ?ProjectTaskTemplate
+    public function getProjectTask(): ?ProjectTaskTemplate
     {
-        return $this->task;
+        return $this->projectTask;
     }
 
-    public function setTask(?ProjectTaskTemplate $task): self
+    public function setTask(?ProjectTaskTemplate $projectTask): self
     {
-        $this->task = $task;
+        $this->projectTask = $projectTask;
 
         return $this;
     }

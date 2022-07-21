@@ -6,11 +6,20 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use App\Entity\Customer\CustomerLocation;
 
 /**
  * CustomerLocationPlace
  */
-#[ORM\Table(name: 'customer_location_place', indexes: [new ORM\Index(name: 'customer_id', columns: ['location_id']), new ORM\Index(name: 'updated_at', columns: ['updated_at']), new ORM\Index(name: 'name', columns: ['name']), new ORM\Index(name: 'active', columns: ['active']), new ORM\Index(name: 'created_at', columns: ['created_at'])])]
+#[ORM\Table(name: 'customer_location_place', 
+    indexes: [
+        new ORM\Index(name: 'customer_location_id', columns: ['customer_location_id']), 
+        new ORM\Index(name: 'updated_at', columns: ['updated_at']), 
+        new ORM\Index(name: 'name', columns: ['name']), 
+        new ORM\Index(name: 'active', columns: ['active']), 
+        new ORM\Index(name: 'created_at', columns: ['created_at'])
+    ]
+)]
 #[ORM\Entity]
 class CustomerLocationPlace
 {
@@ -40,16 +49,17 @@ class CustomerLocationPlace
     /**
      * @var CustomerLocation
      */
-    #[ORM\ManyToOne(targetEntity: 'CustomerLocation')]
-    #[ORM\JoinColumn(name: 'location_id', referencedColumnName: 'id')]
-    private $location;
+    #[ORM\ManyToOne(targetEntity: CustomerLocation::class)]
+    #[ORM\JoinColumn(name: 'customer_location_id', referencedColumnName: 'id')]
+    private $customerLocation;
 
     #[ORM\OneToMany(mappedBy: 'customerLocationPlace', targetEntity: CustomerLocationPlaceAsset::class)]
     private $customerLocationPlaceAssets;
 
     public function __construct()
     {
-        $this->customerLocationPlaceAssets = new ArrayCollection();
+        $this->customerLocationPlaceAssets = 
+        new ArrayCollection();
     }
     public function getId(): ?int
     {
@@ -75,13 +85,13 @@ class CustomerLocationPlace
 
         return $this;
     }
-    public function getLocation(): ?CustomerLocation
+    public function getCustomerLocation(): ?CustomerLocation
     {
-        return $this->location;
+        return $this->customerLocation;
     }
-    public function setLocation(?CustomerLocation $location): self
+    public function setCustomerLocation(?CustomerLocation $customerLocation): self
     {
-        $this->location = $location;
+        $this->customerLocation = $customerLocation;
 
         return $this;
     }

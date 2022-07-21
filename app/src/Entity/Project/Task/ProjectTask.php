@@ -2,7 +2,7 @@
 
 namespace App\Entity\Project\Task;
 
-use App\Entity\Project\ProjectMilestoneTask;
+use App\Entity\Project\Task\ProjectTaskMilestone;
 use App\Entity\Project\TaskItem\ProjectTaskItem;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -125,20 +125,22 @@ class ProjectTask
     // #[ORM\ManyToMany(targetEntity: ProjectTaskTag::class, inversedBy: 'tasks')]
     // private $tags;
 
-    #[ORM\OneToMany(mappedBy: 'tasks', targetEntity: ProjectTaskAssigned::class)]
-    private $projectTaskAssigneds;
+    #[ORM\OneToMany(mappedBy: 'projectTasks', targetEntity: ProjectTaskUserAssigned::class)]
+    private $projectTaskUserAssigneds;
 
-    #[ORM\OneToMany(mappedBy: 'projectTask', targetEntity: ProjectMilestoneTask::class)]
-    private $projectMilestoneTasks;
+    #[ORM\OneToMany(mappedBy: 'projectTask', targetEntity: ProjectTaskMilestone::class)]
+    private $projectTaskMilestones;
 
     #[ORM\OneToMany(mappedBy: 'projectTask', targetEntity: ProjectTaskItem::class)]
     private $projectTaskItems;
 
+    private $datetimeRange;
+
     public function __construct()
     {
         $this->tags = new ArrayCollection();
-        $this->projectTaskAssigneds = new ArrayCollection();
-        $this->projectMilestoneTasks = new ArrayCollection();
+        $this->projectTaskUserAssigneds = new ArrayCollection();
+        $this->projectTaskMilestones = new ArrayCollection();
         $this->projectTaskItems = new ArrayCollection();
     }
 
@@ -316,29 +318,29 @@ class ProjectTask
     }
 
     /**
-     * @return Collection<int, ProjectTaskAssigned>
+     * @return Collection<int, ProjectTaskUserAssigned>
      */
-    public function getProjectTaskAssigneds(): Collection
+    public function getProjectTaskUserAssigneds(): Collection
     {
-        return $this->projectTaskAssigneds;
+        return $this->projectTaskUserAssigneds;
     }
 
-    public function addProjectTaskAssigned(ProjectTaskAssigned $projectTaskAssigned): self
+    public function addProjectTaskUserAssigned(ProjectTaskUserAssigned $projectTaskUserAssigned): self
     {
-        if (!$this->projectTaskAssigneds->contains($projectTaskAssigned)) {
-            $this->projectTaskAssigneds[] = $projectTaskAssigned;
-            $projectTaskAssigned->setTasks($this);
+        if (!$this->projectTaskUserAssigneds->contains($projectTaskUserAssigned)) {
+            $this->projectTaskUserAssigneds[] = $projectTaskUserAssigned;
+            $projectTaskUserAssigned->setProjectTasks($this);
         }
 
         return $this;
     }
 
-    public function removeProjectTaskAssigned(ProjectTaskAssigned $projectTaskAssigned): self
+    public function removeProjectTaskUserAssigned(ProjectTaskUserAssigned $projectTaskUserAssigned): self
     {
-        if ($this->projectTaskAssigneds->removeElement($projectTaskAssigned)) {
+        if ($this->projectTaskUserAssigneds->removeElement($projectTaskUserAssigned)) {
             // set the owning side to null (unless already changed)
-            if ($projectTaskAssigned->getTasks() === $this) {
-                $projectTaskAssigned->setTasks(null);
+            if ($projectTaskUserAssigned->getProjectTasks() === $this) {
+                $projectTaskUserAssigned->setProjectTasks(null);
             }
         }
 
@@ -346,29 +348,29 @@ class ProjectTask
     }
 
     /**
-     * @return Collection<int, ProjectMilestoneTask>
+     * @return Collection<int, ProjectTaskMilestone>
      */
-    public function getProjectMilestoneTasks(): Collection
+    public function getProjectTaskMilestones(): Collection
     {
-        return $this->projectMilestoneTasks;
+        return $this->projectTaskMilestones;
     }
 
-    public function addProjectMilestoneTask(ProjectMilestoneTask $projectMilestoneTask): self
+    public function addProjectTaskMilestone(ProjectTaskMilestone $projectTaskMilestone): self
     {
-        if (!$this->projectMilestoneTasks->contains($projectMilestoneTask)) {
-            $this->projectMilestoneTasks[] = $projectMilestoneTask;
-            $projectMilestoneTask->setProjectTask($this);
+        if (!$this->projectTaskMilestones->contains($projectTaskMilestone)) {
+            $this->projectTaskMilestones[] = $projectTaskMilestone;
+            $projectTaskMilestone->setProjectTask($this);
         }
 
         return $this;
     }
 
-    public function removeProjectMilestoneTask(ProjectMilestoneTask $projectMilestoneTask): self
+    public function removeProjectTaskMilestone(ProjectTaskMilestone $projectTaskMilestone): self
     {
-        if ($this->projectMilestoneTasks->removeElement($projectMilestoneTask)) {
+        if ($this->projectTaskMilestones->removeElement($projectTaskMilestone)) {
             // set the owning side to null (unless already changed)
-            if ($projectMilestoneTask->getProjectTask() === $this) {
-                $projectMilestoneTask->setProjectTask(null);
+            if ($projectTaskMilestone->getProjectTask() === $this) {
+                $projectTaskMilestone->setProjectTask(null);
             }
         }
 
@@ -401,6 +403,26 @@ class ProjectTask
                 $projectTaskItem->setProjectTask(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * Get the value of datetimeRange
+     */ 
+    public function getDatetimeRange()
+    {
+        return $this->datetimeRange;
+    }
+
+    /**
+     * Set the value of datetimeRange
+     *
+     * @return  self
+     */ 
+    public function setDatetimeRange($datetimeRange)
+    {
+        $this->datetimeRange = $datetimeRange;
 
         return $this;
     }

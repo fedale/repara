@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
+
 /**
  * ProjectMilestone
  */
@@ -42,12 +43,12 @@ class ProjectMilestone
     #[ORM\Column(name: 'active', type: 'boolean', nullable: false, options: ['default' => 1])]
     private $active = true;
 
-    #[ORM\OneToMany(mappedBy: 'milestone', targetEntity: ProjectMilestoneTask::class)]
-    private $projectMilestoneTasks;
+    #[ORM\OneToMany(mappedBy: 'milestone', targetEntity: ProjectTaskMilestone::class)]
+    private $projectTaskMilestones;
 
     public function __construct()
     {
-        $this->projectMilestoneTasks = new ArrayCollection();
+        $this->projectTaskMilestones = new ArrayCollection();
     }
     
     public function getId(): ?int
@@ -92,29 +93,29 @@ class ProjectMilestone
     }
 
     /**
-     * @return Collection<int, ProjectMilestoneTask>
+     * @return Collection<int, ProjectTaskMilestone>
      */
-    public function getProjectMilestoneTasks(): Collection
+    public function getProjectTaskMilestones(): Collection
     {
-        return $this->projectMilestoneTasks;
+        return $this->projectTasksMilestones;
     }
 
-    public function addProjectMilestoneTask(ProjectMilestoneTask $projectMilestoneTask): self
+    public function addProjectTaskMilestone(ProjectTaskMilestone $projectTaskMilestone): self
     {
-        if (!$this->projectMilestoneTasks->contains($projectMilestoneTask)) {
-            $this->projectMilestoneTasks[] = $projectMilestoneTask;
-            $projectMilestoneTask->setMilestone($this);
+        if (!$this->projectTaskMilestones->contains($projectTaskMilestone)) {
+            $this->projectTaskMilestones[] = $projectTaskMilestone;
+            $projectTaskMilestone->setMilestone($this);
         }
 
         return $this;
     }
 
-    public function removeProjectMilestoneTask(ProjectMilestoneTask $projectMilestoneTask): self
+    public function removeProjectTaskMilestone(ProjectTaskMilestone $projectTaskMilestone): self
     {
-        if ($this->projectMilestoneTasks->removeElement($projectMilestoneTask)) {
+        if ($this->projectTaskMilestones->removeElement($projectTaskMilestone)) {
             // set the owning side to null (unless already changed)
-            if ($projectMilestoneTask->getMilestone() === $this) {
-                $projectMilestoneTask->setMilestone(null);
+            if ($projectTaskMilestone->getMilestone() === $this) {
+                $projectTaskMilestone->setMilestone(null);
             }
         }
 

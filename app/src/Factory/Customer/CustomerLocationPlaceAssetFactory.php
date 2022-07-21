@@ -38,7 +38,7 @@ final class CustomerLocationPlaceAssetFactory extends ModelFactory
             // TODO add your default values here (https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories)
             'name' => self::faker()->text(),
             'code' => self::faker()->text(),
-            'locationPlaceId' => self::faker()->randomNumber(),
+            'customerLocationPlaceId' => self::faker()->randomNumber(),
             'assetId' => self::faker()->randomNumber(),
             'active' => self::faker()->boolean(),
             'createdAt' => null, // TODO add DATETIME ORM type manually

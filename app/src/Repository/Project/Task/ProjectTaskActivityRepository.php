@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repository\Project;
+namespace App\Repository\Project\Task;
 
 use App\Entity\Project\Task\ProjectTaskActivity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;

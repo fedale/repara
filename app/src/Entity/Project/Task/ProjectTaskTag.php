@@ -22,12 +22,12 @@ class ProjectTaskTag
     #[ORM\Column(type: 'string', length: 255)]
     private $name;
 
-    // #[ORM\ManyToMany(targetEntity: ProjectTask::class, mappedBy: 'tags')]
-    // private $tasks;
+    #[ORM\ManyToMany(targetEntity: ProjectTask::class, mappedBy: 'tags')]
+    private $projectTasks;
 
     public function __construct()
     {
-        $this->tasks = new ArrayCollection();
+        $this->projectTasks = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -50,25 +50,25 @@ class ProjectTaskTag
     /**
      * @return Collection<int, ProjectTask>
      */
-    public function getTasks(): Collection
+    public function getProjectTasks(): Collection
     {
-        return $this->tasks;
+        return $this->projectTasks;
     }
 
-    public function addTask(ProjectTask $task): self
+    public function addProjectTask(ProjectTask $projectTask): self
     {
-        if (!$this->tasks->contains($task)) {
-            $this->tasks[] = $task;
-            $task->addTag($this);
+        if (!$this->projectTasks->contains($projectTask)) {
+            $this->projectTasks[] = $projectTask;
+            $projectTask->addTag($this);
         }
 
         return $this;
     }
 
-    public function removeTask(ProjectTask $task): self
+    public function removeProjectTask(ProjectTask $projectTask): self
     {
-        if ($this->tasks->removeElement($task)) {
-            $task->removeTag($this);
+        if ($this->projectTasks->removeElement($projectTask)) {
+            $projectTask->removeTag($this);
         }
 
         return $this;

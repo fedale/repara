@@ -27,7 +27,7 @@ final class Version20220630192739 extends AbstractMigration
             customer_location_place_asset_id INT UNSIGNED DEFAULT NULL,
             name VARCHAR(128) NOT NULL,
             description TEXT DEFAULT NULL,
-            status VARCHAR(32) NOT NULL,
+            status enum("requested", "rejected", "approved", "current", "dead", "completed", "on_hold", "signed") NOT NULL COMMENT \'DC2Type::ProjectTaskEnumType\', 
             asset_type VARCHAR(8) DEFAULT \'N/A\' NOT NULL COMMENT \'Update with assetType value\',
             priority SMALLINT NOT NULL,
             visible SMALLINT DEFAULT 1 NOT NULL,

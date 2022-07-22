@@ -11,6 +11,8 @@ use App\Entity\Customer\Customer;
 use App\Entity\Customer\CustomerLocationPlaceAsset; 
 use App\Entity\Project\Project;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use App\DBAL\Types\ProjectTaskEnumType;
+use Fresh\DoctrineEnumBundle\Validator\Constraints\EnumType;
 
 /**
  * ProjectTask
@@ -60,8 +62,9 @@ class ProjectTask
     /**
      * @var string
      */
-    #[ORM\Column(name: 'status', type: 'string', length: 32, nullable: false)]
-    private $status;
+    #[ORM\Column(name: 'status', type: ProjectTaskEnumType::class, length: 32, nullable: false)]
+    #[EnumType(entity: TaskProjectTaskType::class)]
+    private string $status = ProjectTaskEnumType::STATE_REQUESTED;
     
     /**
      * @var string

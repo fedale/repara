@@ -1,0 +1,25 @@
+framework:
+    workflows:
+        project_task:
+            type: 'state_machine'
+            audit_trail:
+                enabled: true
+            marking_store:
+                type: 'method'
+                property: 'status'
+            supports:
+                - App\Entity\Project\Task\ProjectTask
+            initial_marking: requested
+            places:
+                - requested
+                - rejected
+                - approved
+                - current
+                - dead
+                - completed
+                - on_hold
+                - signed
+            transitions:
+                validate:
+                    from: requested
+                    to: current

@@ -62,8 +62,8 @@ class ProjectTask
     /**
      * @var string
      */
-    #[ORM\Column(name: 'status', type: ProjectTaskEnumType::class, length: 32, nullable: false)]
-    #[EnumType(entity: TaskProjectTaskType::class)]
+    #[ORM\Column(name: 'status', type: 'ProjectTaskEnumType', length: 32, nullable: false)]
+    #[EnumType(entity: ProjectTaskEnumType::class)]
     private string $status = ProjectTaskEnumType::STATE_REQUESTED;
     
     /**
@@ -145,6 +145,11 @@ class ProjectTask
         $this->projectTaskUserAssigneds = new ArrayCollection();
         $this->projectTaskMilestones = new ArrayCollection();
         $this->projectTaskItems = new ArrayCollection();
+    }
+
+    public function __toString()
+    {
+        return $this->name;
     }
 
     public function getId(): ?int

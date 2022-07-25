@@ -19,6 +19,20 @@ final class Version20220630192739 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
+        $this->addSql('CREATE TABLE project_task_type (
+            id SMALLINT UNSIGNED AUTO_INCREMENT NOT NULL,
+            name VARCHAR(128) NOT NULL,
+            active tinyint DEFAULT 1 NOT NULL,
+            created_at DATETIME NOT NULL DEFAULT current_timestamp(),
+            updated_at DATETIME NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+            deleted_at DATETIME DEFAULT NULL,
+            INDEX active (active),
+            INDEX created_at (created_at),
+            INDEX updated_at (updated_at),
+            INDEX name (name),
+            PRIMARY KEY(id)
+        ) ENGINE = InnoDB');
+
         $this->addSql('CREATE TABLE project_task (
             id INT UNSIGNED AUTO_INCREMENT NOT NULL,
             customer_id INT UNSIGNED DEFAULT NULL,
@@ -51,7 +65,7 @@ final class Version20220630192739 extends AbstractMigration
             PRIMARY KEY(id),
             CONSTRAINT `project_task_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
             CONSTRAINT `project_task_ibfk_2` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-            CONSTRAINT `project_task_ibfk_3` FOREIGN KEY (`type_id`) REFERENCES `project_type` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+            CONSTRAINT `project_task_ibfk_3` FOREIGN KEY (`type_id`) REFERENCES `project_task_type` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
         ) ENGINE = InnoDB');
  
         $this->addSql('CREATE TABLE project_task_activity (
@@ -226,19 +240,7 @@ final class Version20220630192739 extends AbstractMigration
             PRIMARY KEY(id)
         ) ENGINE = InnoDB');
         
-        $this->addSql('CREATE TABLE project_task_type (
-            id SMALLINT UNSIGNED AUTO_INCREMENT NOT NULL,
-            name VARCHAR(128) NOT NULL,
-            active tinyint DEFAULT 1 NOT NULL,
-            created_at DATETIME NOT NULL DEFAULT current_timestamp(),
-            updated_at DATETIME NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-            deleted_at DATETIME DEFAULT NULL,
-            INDEX active (active),
-            INDEX created_at (created_at),
-            INDEX updated_at (updated_at),
-            INDEX name (name),
-            PRIMARY KEY(id)
-        ) ENGINE = InnoDB');
+       
     }
 
     public function down(Schema $schema): void
@@ -255,8 +257,6 @@ final class Version20220630192739 extends AbstractMigration
         
         $this->addSql('DROP TABLE project_task_template_item');
         
-        $this->addSql('DROP TABLE project_task_type');
-        
         $this->addSql('DROP TABLE project_task_tag_assigned');
 
         $this->addSql('DROP TABLE project_task_tag');
@@ -272,5 +272,7 @@ final class Version20220630192739 extends AbstractMigration
         $this->addSql('ALTER TABLE project_task drop foreign key project_task_ibfk_3');
 
         $this->addSql('DROP TABLE project_task');
+        
+        $this->addSql('DROP TABLE project_task_type');
     }
 }

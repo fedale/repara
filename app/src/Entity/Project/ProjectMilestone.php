@@ -43,8 +43,8 @@ class ProjectMilestone
     #[ORM\Column(name: 'active', type: 'boolean', nullable: false, options: ['default' => 1])]
     private $active = true;
 
-    #[ORM\OneToMany(mappedBy: 'milestone', targetEntity: ProjectTaskMilestone::class)]
-    private $projectTaskMilestones;
+    // #[ORM\OneToMany(mappedBy: 'milestone', targetEntity: ProjectTaskMilestone::class)]
+    // private $projectTaskMilestones;
 
     public function __construct()
     {

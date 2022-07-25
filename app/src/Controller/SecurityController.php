@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Controller\Admin\WebsiteCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
@@ -12,9 +14,13 @@ class SecurityController extends AbstractDashboardController
     #[Route(path: '/admin/login', name: 'admin_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
-        // if ($this->getUser()) {
-        //     return $this->redirectToRoute('target_path');
-        // }
+        // redirect to some CRUD controller
+        $routeBuilder = $this->container->get(AdminUrlGenerator::class);
+        
+
+        if ($this->getUser()) {
+            return $this->redirect($routeBuilder->setController(WebsiteCrudController::class)->generateUrl());
+        }
 
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();

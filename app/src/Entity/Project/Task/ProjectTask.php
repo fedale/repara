@@ -4,6 +4,7 @@ namespace App\Entity\Project\Task;
 
 use App\Entity\Project\Task\ProjectTaskMilestone;
 use App\Entity\Project\TaskItem\ProjectTaskItem;
+use App\Entity\User\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -11,7 +12,8 @@ use App\Entity\Customer\Customer;
 use App\Entity\Customer\CustomerLocationPlaceAsset; 
 use App\Entity\Project\Project;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
-use App\DBAL\Types\ProjectTaskEnumType;
+use App\DBAL\Types\ProjectTaskStateType;
+use App\DBAL\Types\ProjectTaskPriorityType;
 use Fresh\DoctrineEnumBundle\Validator\Constraints\EnumType;
 
 /**
@@ -23,7 +25,7 @@ use Fresh\DoctrineEnumBundle\Validator\Constraints\EnumType;
         new ORM\Index(name: 'active', columns: ['active']), 
         new ORM\Index(name: 'created_on', columns: ['created_at']), 
         new ORM\Index(name: 'type_id', columns: ['type_id']), 
-        new ORM\Index(name: 'status', columns: ['status']), 
+        new ORM\Index(name: 'state', columns: ['state']), 
         new ORM\Index(name: 'visible', columns: ['visible']), 
         new ORM\Index(name: 'modified_on', columns: ['modified_at']), 
         new ORM\Index(name: 'priority', columns: ['priority']), 
@@ -62,9 +64,9 @@ class ProjectTask
     /**
      * @var string
      */
-    #[ORM\Column(name: 'status', type: 'ProjectTaskEnumType', length: 32, nullable: false)]
-    #[EnumType(entity: ProjectTaskEnumType::class)]
-    private string $status = ProjectTaskEnumType::STATE_REQUESTED;
+    #[ORM\Column(name: 'state', type: 'ProjectTaskStateType', length: 32, nullable: false)]
+    #[EnumType(entity: ProjectTaskStateType::class)]
+    private string $state = ProjectTaskStateType::STATE_REQUESTED;
     
     /**
      * @var string
@@ -73,10 +75,11 @@ class ProjectTask
     private $assetType = 'N/A';
     
     /**
-     * @var int
+     * @var string
      */
-    #[ORM\Column(name: 'priority', type: 'smallint', nullable: false)]
-    private $priority = 0;
+    #[ORM\Column(name: 'priority', type: 'ProjectTaskPriorityType', length: 32, nullable: false)]
+    #[EnumType(entity: ProjectTaskPriorityType::class)]
+    private string $priority = ProjectTaskPriorityType::PRIORITY_NORMAL;
 
     /**
      * @var bool
@@ -116,7 +119,6 @@ class ProjectTask
     #[ORM\ManyToOne(targetEntity: Project::class)]
     #[ORM\JoinColumn(name: 'project_id', referencedColumnName: 'id')]
     private $project;
-
     
     /**
      * @var ProjectTaskType
@@ -128,8 +130,8 @@ class ProjectTask
     // #[ORM\ManyToMany(targetEntity: ProjectTaskTag::class, inversedBy: 'tasks')]
     // private $tags;
 
-    #[ORM\OneToMany(mappedBy: 'projectTasks', targetEntity: ProjectTaskUserAssigned::class)]
-    private $projectTaskUserAssigneds;
+    // #[ORM\OneToMany(mappedBy: 'projectTasks', targetEntity: ProjectTaskUserAssigned::class)]
+    // private $projectTaskUserAssigneds;
 
     #[ORM\OneToMany(mappedBy: 'projectTask', targetEntity: ProjectTaskMilestone::class)]
     private $projectTaskMilestones;
@@ -139,12 +141,17 @@ class ProjectTask
 
     private $datetimeRange;
 
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'projectTasks')]
+    #[ORM\JoinTable(name: 'project_task_user_assigned')]
+    private Collection $projectTaskUserAssigneds;
+
     public function __construct()
     {
         $this->tags = new ArrayCollection();
         $this->projectTaskUserAssigneds = new ArrayCollection();
         $this->projectTaskMilestones = new ArrayCollection();
         $this->projectTaskItems = new ArrayCollection();
+        $this->userAssigneds = new ArrayCollection();
     }
 
     public function __toString()
@@ -181,14 +188,14 @@ class ProjectTask
         return $this;
     }
     
-    public function getStatus(): ?string
+    public function getState(): ?string
     {
-        return $this->status;
+        return $this->state;
     }
     
-    public function setStatus(string $status): self
+    public function setState(string $state): self
     {
-        $this->status = $status;
+        $this->state = $state;
 
         return $this;
     }
@@ -205,12 +212,12 @@ class ProjectTask
         return $this;
     }
     
-    public function getPriority(): ?int
+    public function getPriority(): ?string
     {
         return $this->priority;
     }
     
-    public function setPriority(int $priority): self
+    public function setPriority(string $priority): self
     {
         $this->priority = $priority;
 
@@ -324,37 +331,7 @@ class ProjectTask
 
         return $this;
     }
-
-    /**
-     * @return Collection<int, ProjectTaskUserAssigned>
-     */
-    public function getProjectTaskUserAssigneds(): Collection
-    {
-        return $this->projectTaskUserAssigneds;
-    }
-
-    public function addProjectTaskUserAssigned(ProjectTaskUserAssigned $projectTaskUserAssigned): self
-    {
-        if (!$this->projectTaskUserAssigneds->contains($projectTaskUserAssigned)) {
-            $this->projectTaskUserAssigneds[] = $projectTaskUserAssigned;
-            $projectTaskUserAssigned->setProjectTasks($this);
-        }
-
-        return $this;
-    }
-
-    public function removeProjectTaskUserAssigned(ProjectTaskUserAssigned $projectTaskUserAssigned): self
-    {
-        if ($this->projectTaskUserAssigneds->removeElement($projectTaskUserAssigned)) {
-            // set the owning side to null (unless already changed)
-            if ($projectTaskUserAssigned->getProjectTasks() === $this) {
-                $projectTaskUserAssigned->setProjectTasks(null);
-            }
-        }
-
-        return $this;
-    }
-
+    
     /**
      * @return Collection<int, ProjectTaskMilestone>
      */
@@ -431,6 +408,30 @@ class ProjectTask
     public function setDatetimeRange($datetimeRange)
     {
         $this->datetimeRange = $datetimeRange;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getProjectTaskUserAssigneds(): Collection
+    {
+        return $this->projectTaskUserAssigneds;
+    }
+
+    public function addProjectTaskUserAssigned(User $projectTaskUserAssigned): self
+    {
+        if (!$this->projectTaskUserAssigneds->contains($projectTaskUserAssigned)) {
+            $this->projectTaskUserAssigneds[] = $projectTaskUserAssigned;
+        }
+
+        return $this;
+    }
+
+    public function removeProjectTaskUserAssigned(User $projectTaskUserAssigned): self
+    {
+        $this->projectTaskUserAssigneds->removeElement($projectTaskUserAssigned);
 
         return $this;
     }

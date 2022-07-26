@@ -67,6 +67,102 @@ class UserFixtures extends Fixture
                     'lastname' => 'Di Moia',
                 ]
             ],
+            [
+                'user' => [
+                    'username' => 'massimo',
+                    'code' => 'massimo',
+                    'email' => 'massimo@ipercollege.it',
+                    'password' => '$2y$13$l2SmFZZpyNrc3sVn.k4ysO900I2fjMzeRkUldoU4DUsZIITevAQbi' // admin123
+                ],
+                'profile' => [
+                    'firstname' => 'Massimo',
+                    'lastname' => 'Di Moia',
+                ]
+            ],
+            [
+                'user' => [
+                    'username' => 'gabriella',
+                    'code' => 'gabriella',
+                    'email' => 'gabriella@ipercollege.it',
+                    'password' => '$2y$13$l2SmFZZpyNrc3sVn.k4ysO900I2fjMzeRkUldoU4DUsZIITevAQbi' // admin123
+                ],
+                'profile' => [
+                    'firstname' => 'Gabriella',
+                    'lastname' => 'Castagna',
+                ]
+            ],
+            [
+                'user' => [
+                    'username' => 'federico',
+                    'code' => 'federico',
+                    'email' => 'federico@ipercollege.it',
+                    'password' => '$2y$13$l2SmFZZpyNrc3sVn.k4ysO900I2fjMzeRkUldoU4DUsZIITevAQbi' // admin123
+                ],
+                'profile' => [
+                    'firstname' => 'Federico',
+                    'lastname' => 'Di Moia',
+                ]
+            ],
+            [
+                'user' => [
+                    'username' => 'alessandro',
+                    'code' => 'alessandro',
+                    'email' => 'alessandro@ipercollege.it',
+                    'password' => '$2y$13$l2SmFZZpyNrc3sVn.k4ysO900I2fjMzeRkUldoU4DUsZIITevAQbi' // admin123
+                ],
+                'profile' => [
+                    'firstname' => 'Alessandro',
+                    'lastname' => 'Di Moia',
+                ]
+            ],
+            [
+                'user' => [
+                    'username' => 'gino',
+                    'code' => 'gino',
+                    'email' => 'gino@ipercollege.it',
+                    'password' => '$2y$13$l2SmFZZpyNrc3sVn.k4ysO900I2fjMzeRkUldoU4DUsZIITevAQbi' // admin123
+                ],
+                'profile' => [
+                    'firstname' => 'Gino',
+                    'lastname' => 'Di Moia',
+                ]
+            ],
+            [
+                'user' => [
+                    'username' => 'gianna',
+                    'code' => 'gianna',
+                    'email' => 'gianna@ipercollege.it',
+                    'password' => '$2y$13$l2SmFZZpyNrc3sVn.k4ysO900I2fjMzeRkUldoU4DUsZIITevAQbi' // admin123
+                ],
+                'profile' => [
+                    'firstname' => 'Gianna',
+                    'lastname' => 'Ciammaichella',
+                ]
+            ],
+            [
+                'user' => [
+                    'username' => 'davide',
+                    'code' => 'davide',
+                    'email' => 'davide@ipercollege.it',
+                    'password' => '$2y$13$l2SmFZZpyNrc3sVn.k4ysO900I2fjMzeRkUldoU4DUsZIITevAQbi' // admin123
+                ],
+                'profile' => [
+                    'firstname' => 'Davide',
+                    'lastname' => 'Castagna',
+                ]
+            ],
+            [
+                'user' => [
+                    'username' => 'simone',
+                    'code' => 'simone',
+                    'email' => 'simone@ipercollege.it',
+                    'password' => '$2y$13$l2SmFZZpyNrc3sVn.k4ysO900I2fjMzeRkUldoU4DUsZIITevAQbi' // admin123
+                ],
+                'profile' => [
+                    'firstname' => 'Simone',
+                    'lastname' => 'Castagna',
+                ]
+            ],
         ];
 
     }

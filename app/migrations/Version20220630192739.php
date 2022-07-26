@@ -41,16 +41,16 @@ final class Version20220630192739 extends AbstractMigration
             customer_location_place_asset_id INT UNSIGNED DEFAULT NULL,
             name VARCHAR(128) NOT NULL,
             description TEXT DEFAULT NULL,
-            status enum("requested", "rejected", "approved", "current", "dead", "completed", "on_hold", "signed") NOT NULL COMMENT \'DC2Type::ProjectTaskEnumType\', 
+            state enum("requested", "rejected", "approved", "current", "dead", "completed", "on_hold", "signed") NOT NULL COMMENT \'DC2Type::ProjectTaskStateType\', 
             asset_type VARCHAR(8) DEFAULT \'N/A\' NOT NULL COMMENT \'Update with assetType value\',
-            priority SMALLINT NOT NULL,
+            priority enum("low", "normal", "high") NOT NULL COMMENT \'DC2Type::ProjectTaskPriorityType\', 
             visible SMALLINT DEFAULT 1 NOT NULL,
             finished_at DATETIME DEFAULT NULL,
             active tinyint DEFAULT 1 NOT NULL,
             created_at DATETIME NOT NULL DEFAULT current_timestamp(),
             updated_at DATETIME NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
             deleted_at DATETIME DEFAULT NULL,
-            INDEX status (status),
+            INDEX state (state),
             INDEX active (active),
             INDEX project_id (project_id),
             INDEX visible (visible),
@@ -82,7 +82,7 @@ final class Version20220630192739 extends AbstractMigration
             CONSTRAINT `project_task_activity_ibfk_2` FOREIGN KEY (`project_task_id`) REFERENCES `project_task` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
         ) ENGINE = InnoDB');
 
-        $this->addSql('CREATE TABLE project_task_assigned (
+        $this->addSql('CREATE TABLE project_task_user_assigned (
             id INT UNSIGNED AUTO_INCREMENT NOT NULL,
             user_id INT UNSIGNED NOT NULL,
             project_task_id INT UNSIGNED NOT NULL,
@@ -96,8 +96,8 @@ final class Version20220630192739 extends AbstractMigration
             INDEX active (active),
             INDEX user_id (user_id),
             PRIMARY KEY(id),
-            CONSTRAINT `project_task_assigned_ibfk_1` FOREIGN KEY (`project_task_id`) REFERENCES `project_task` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-            CONSTRAINT `project_task_assigned_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+            CONSTRAINT `project_task_user_assigned_ibfk_1` FOREIGN KEY (`project_task_id`) REFERENCES `project_task` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+            CONSTRAINT `project_task_user_assigned_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
         ) ENGINE = InnoDB');
         
         $this->addSql('CREATE TABLE project_task_attachment (
@@ -249,7 +249,7 @@ final class Version20220630192739 extends AbstractMigration
         
         $this->addSql('DROP TABLE project_task_activity');
         
-        $this->addSql('DROP TABLE project_task_assigned');
+        $this->addSql('DROP TABLE project_task_user_assigned');
         
         $this->addSql('DROP TABLE project_task_attachment');
         

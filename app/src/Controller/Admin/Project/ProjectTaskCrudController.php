@@ -2,7 +2,8 @@
 
 namespace App\Controller\Admin\Project;
 
-use App\DBAL\Types\ProjectTaskEnumType;
+use App\DBAL\Types\ProjectTaskStateType;
+use App\DBAL\Types\ProjectTaskPriorityType;
 use App\Entity\Project\Task\ProjectTask;
 use App\Workflow\ProjectTaskWorkflow;
 use Doctrine\ORM\EntityManagerInterface;
@@ -40,21 +41,31 @@ class ProjectTaskCrudController extends AbstractCrudController
     {
         return [
             TextField::new('name'),
-            TextEditorField::new('description'),
-            AssociationField::new('type')
-                ->renderAsNativeWidget()
+            TextEditorField::new('description')
+                ->onlyWhenUpdating()
             ,
-            ChoiceField::new('status')
-                ->setChoices(ProjectTaskEnumType::getChoices())
-                ->renderAsNativeWidget()
-                ->setRequired(true)
-            ,
-         //   TextField::new('priority'),
             AssociationField::new('customer')
                 ->renderAsNativeWidget()
             ,
             AssociationField::new('customerLocationPlaceAsset'),
-            // AssociationField::new('assignedUsers'),
+            AssociationField::new('type')
+                ->renderAsNativeWidget()
+            ,
+            ChoiceField::new('priority')
+                ->setChoices(ProjectTaskPriorityType::getChoices())
+                ->renderAsNativeWidget()
+                ->setRequired(true)
+                ->addCssClass('col-md-7 col-xxl-6')
+            ,
+            ChoiceField::new('state')
+                ->setChoices(ProjectTaskStateType::getChoices())
+                ->renderAsNativeWidget()
+                ->setRequired(true)
+                ->addCssClass('col-md-7 col-xxl-6')
+            ,
+            AssociationField::new('projectTaskUserAssigneds')
+                ->setFormTypeOption('expanded', true)
+            ,
 
         ];
     }

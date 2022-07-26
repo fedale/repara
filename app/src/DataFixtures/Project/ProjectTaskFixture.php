@@ -17,20 +17,6 @@ class ProjectTaskFixture extends Fixture
         $manager->flush();
     }
 
-    private function getStatus()
-    {
-        return [
-            'requested' => 'Richiesto',
-            'rejected' => 'Rifiutato',
-            'approved' => 'Approvato',
-            'current' => 'In lavorazione',
-            'dead' => 'Chiuso/Abortito',
-            'completed' => 'Completato',
-            'on_hold' => 'In attesa',
-            'signed' => 'Firmato/Completato'
-        ];
-    }
-
     public function getDependencies(): array
     {
         return [

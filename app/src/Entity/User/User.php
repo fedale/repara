@@ -2,6 +2,7 @@
 
 namespace App\Entity\User;
 
+use App\Entity\Project\Task\ProjectTask;
 use App\Entity\Project\Task\ProjectTaskUserAssigned;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -140,6 +141,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'users', targetEntity: ProjectTaskUserAssigned::class)]
     private $projectTaskUserAssigneds;
 
+    #[ORM\ManyToMany(targetEntity: ProjectTask::class, mappedBy: 'userAssigneds')]
+    private Collection $projectTasks;
+
 
     /**
      * Constructor
@@ -154,6 +158,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         new ArrayCollection();
         $this->projectTaskUserAssigneds = 
         new ArrayCollection();
+        $this->projectTasks = new ArrayCollection();
     }
 
     public function __toString()
@@ -484,6 +489,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             if ($projectTaskUserAssigned->getUsers() === $this) {
                 $projectTaskUserAssigned->setUsers(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ProjectTask>
+     */
+    public function getProjectTasks(): Collection
+    {
+        return $this->projectTasks;
+    }
+
+    public function addProjectTask(ProjectTask $projectTask): self
+    {
+        if (!$this->projectTasks->contains($projectTask)) {
+            $this->projectTasks[] = $projectTask;
+            $projectTask->addUserAssigned($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProjectTask(ProjectTask $projectTask): self
+    {
+        if ($this->projectTasks->removeElement($projectTask)) {
+            $projectTask->removeUserAssigned($this);
         }
 
         return $this;

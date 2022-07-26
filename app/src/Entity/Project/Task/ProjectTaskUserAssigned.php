@@ -9,7 +9,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 /**
  * ProjectTaskUserAssigned
  */
-#[ORM\Table(name: 'project_task_assigned', 
+#[ORM\Table(name: 'project_task_user_assigned', 
     indexes: [
         new ORM\Index(name: 'user_id', columns: ['user_id']), 
         new ORM\Index(name: 'updated_at', columns: ['updated_at']), 

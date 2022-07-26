@@ -9,7 +9,7 @@ use Fresh\DoctrineEnumBundle\DBAL\Types\AbstractEnumType;
 /**
  * @extends AbstractEnumType<string,string>
  */
-final class ProjectTaskEnumType extends AbstractEnumType
+final class ProjectTaskStateType extends AbstractEnumType
 {
     public const STATE_REQUESTED = 'requested';
     public const STATE_REJECTED = 'rejected';

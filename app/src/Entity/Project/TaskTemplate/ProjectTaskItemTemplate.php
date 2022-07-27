@@ -2,15 +2,26 @@
 
 namespace App\Entity\Project\TaskTemplate;
 
+use App\Entity\Project\Task\ProjectTask;
+use App\Entity\Project\Task\ProjectTaskType;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 /**
- * ProjectTaskTemplateItem
+ * ProjectTaskItemTemplate
  */
-#[ORM\Table(name: 'project_task_template_item', indexes: [new ORM\Index(name: 'name', columns: ['name']), new ORM\Index(name: 'active', columns: ['active']), new ORM\Index(name: 'task_type_id', columns: ['task_id']), new ORM\Index(name: 'created_at', columns: ['created_at']), new ORM\Index(name: 'task_stuff_type', columns: ['task_type_id']), new ORM\Index(name: 'updated_at', columns: ['updated_at']), new ORM\Index(name: 'sort', columns: ['sort'])])]
+#[ORM\Table(name: 'project_task_item_template', 
+    indexes: [
+        new ORM\Index(name: 'name', columns: ['name']), 
+        new ORM\Index(name: 'active', columns: ['active']), 
+        new ORM\Index(name: 'task_template_id', columns: ['task_template_id']), 
+        new ORM\Index(name: 'created_at', columns: ['created_at']), 
+        new ORM\Index(name: 'task_type_id', columns: ['task_type_id']), 
+        new ORM\Index(name: 'updated_at', columns: ['updated_at']), 
+        new ORM\Index(name: 'sort', columns: ['sort'])]
+)]
 #[ORM\Entity]
-class ProjectTaskTemplateItem
+class ProjectTaskItemTemplate
 {
     use TimestampableEntity;
 
@@ -31,12 +42,6 @@ class ProjectTaskTemplateItem
     /**
      * @var int
      */
-    #[ORM\Column(name: 'task_type_id', type: 'integer', nullable: false, options: ['default' => 1, 'unsigned' => true])]
-    private $projectTaskTypeId = 1;
-    
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'sort', type: 'integer', nullable: false)]
     private $sort = 0;
     
@@ -50,8 +55,12 @@ class ProjectTaskTemplateItem
      * @var ProjectTaskTemplate
      */
     #[ORM\ManyToOne(targetEntity: ProjectTaskTemplate::class)]
-    #[ORM\JoinColumn(name: 'project_task_id', referencedColumnName: 'id')]
-    private $projectTask;
+    #[ORM\JoinColumn(name: 'task_template_id', referencedColumnName: 'id')]
+    private $taskTemplate;
+
+    #[ORM\ManyToOne(targetEntity: ProjectTaskType::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?ProjectTask $taskType = null;
 
     public function getId(): ?int
     {
@@ -66,18 +75,6 @@ class ProjectTaskTemplateItem
     public function setName(string $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function getProjectTaskTypeId(): ?int
-    {
-        return $this->projectTaskTypeId;
-    }
-
-    public function setTaskTypeId(int $projectTaskTypeId): self
-    {
-        $this->projectTaskTypeId = $projectTaskTypeId;
 
         return $this;
     }
@@ -105,14 +102,26 @@ class ProjectTaskTemplateItem
 
         return $this;
     }
-    public function getProjectTask(): ?ProjectTaskTemplate
+    public function getTaskTemplate(): ?ProjectTaskTemplate
     {
-        return $this->projectTask;
+        return $this->taskTemplate;
     }
 
-    public function setTask(?ProjectTaskTemplate $projectTask): self
+    public function setTaskTemplate(?ProjectTaskTemplate $taskTemplate): self
     {
-        $this->projectTask = $projectTask;
+        $this->taskTemplate = $taskTemplate;
+
+        return $this;
+    }
+
+    public function getTaskType(): ?ProjectTask
+    {
+        return $this->taskType;
+    }
+
+    public function setTaskType(?ProjectTask $taskType): self
+    {
+        $this->taskType = $taskType;
 
         return $this;
     }

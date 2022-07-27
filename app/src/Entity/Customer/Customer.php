@@ -2,6 +2,7 @@
 
 namespace App\Entity\Customer;
 
+use App\Entity\User\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -77,11 +78,15 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Length(min: 7, groups: ['registration'])]
     private ?string $plainPassword = null;
 
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'assignedCustomers')]
+    private Collection $users;
+
     public function __construct()
     {
         $this->locations = new ArrayCollection();
         $this->groups = new ArrayCollection();
         $this->roles = new ArrayCollection();
+        $this->users = new ArrayCollection();
     }
 
     public function __toString()
@@ -394,5 +399,32 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
 
     //     return $this;
     // }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): self
+    {
+        if (!$this->users->contains($user)) {
+            $this->users[] = $user;
+            $user->addAssignedCustomer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): self
+    {
+        if ($this->users->removeElement($user)) {
+            $user->removeAssignedCustomer($this);
+        }
+
+        return $this;
+    }
 
 }

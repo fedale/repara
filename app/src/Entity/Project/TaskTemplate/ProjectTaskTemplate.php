@@ -40,6 +40,11 @@ class ProjectTaskTemplate
     #[ORM\Column(name: 'active', type: 'boolean', nullable: false, options: ['default' => 1])]
     private $active = true;
 
+    public function __toString()
+    {
+        return $this->name;
+    }
+    
     public function getId(): ?int
     {
         return $this->id;

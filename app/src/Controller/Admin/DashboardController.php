@@ -12,6 +12,8 @@ use App\Entity\Customer\CustomerLocation;
 use App\Entity\Customer\CustomerLocationPlace;
 use App\Entity\Customer\CustomerType;
 use App\Entity\Project\Task\ProjectTask;
+use App\Entity\Project\TaskTemplate\ProjectTaskTemplate;
+use App\Entity\Project\TaskTemplate\ProjectTaskItemTemplate;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -67,6 +69,8 @@ class DashboardController extends AbstractDashboardController
     {
         yield MenuItem::section('Project');
         yield MenuItem::linkToCrud('Project task', 'fas fa-users', ProjectTask::class);
+        yield MenuItem::linkToCrud('Project template', 'fas fa-users', ProjectTaskTemplate::class);
+        yield MenuItem::linkToCrud('Project template items', 'fas fa-users', ProjectTaskItemTemplate::class);
         yield MenuItem::section('Scan');
         yield MenuItem::section('Templates');
         

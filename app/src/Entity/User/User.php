@@ -2,6 +2,7 @@
 
 namespace App\Entity\User;
 
+use App\Entity\Customer\Customer;
 use App\Entity\Project\Task\ProjectTask;
 use App\Entity\Project\Task\ProjectTaskUserAssigned;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -144,6 +145,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: ProjectTask::class, mappedBy: 'userAssigneds')]
     private Collection $projectTasks;
 
+    #[ORM\ManyToMany(targetEntity: Customer::class, inversedBy: 'users')]
+    #[ORM\JoinTable(name: 'user_customer_assigned')]
+    private Collection $assignedCustomers;
+
 
     /**
      * Constructor
@@ -159,6 +164,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->projectTaskUserAssigneds = 
         new ArrayCollection();
         $this->projectTasks = new ArrayCollection();
+        $this->assignedCustomers = new ArrayCollection();
     }
 
     public function __toString()
@@ -517,6 +523,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         if ($this->projectTasks->removeElement($projectTask)) {
             $projectTask->removeUserAssigned($this);
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Customer>
+     */
+    public function getAssignedCustomers(): Collection
+    {
+        return $this->assignedCustomers;
+    }
+
+    public function addAssignedCustomer(Customer $assignedCustomer): self
+    {
+        if (!$this->assignedCustomers->contains($assignedCustomer)) {
+            $this->assignedCustomers[] = $assignedCustomer;
+        }
+
+        return $this;
+    }
+
+    public function removeAssignedCustomer(Customer $assignedCustomer): self
+    {
+        $this->assignedCustomers->removeElement($assignedCustomer);
 
         return $this;
     }

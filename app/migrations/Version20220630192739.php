@@ -220,10 +220,10 @@ final class Version20220630192739 extends AbstractMigration
         ) ENGINE = InnoDB');
         
         // check task_id if refers to project_task or to project_task_template (I suppose latter)
-        $this->addSql('CREATE TABLE project_task_template_item (
+        $this->addSql('CREATE TABLE project_task_item_template (
             id INT UNSIGNED AUTO_INCREMENT NOT NULL,
-            task_id INT UNSIGNED DEFAULT NULL,
             name VARCHAR(255) NOT NULL,
+            task_template_id INT UNSIGNED DEFAULT NULL,
             task_type_id SMALLINT UNSIGNED DEFAULT 1 NOT NULL,
             sort SMALLINT NOT NULL,
             active tinyint DEFAULT 1 NOT NULL,
@@ -233,14 +233,14 @@ final class Version20220630192739 extends AbstractMigration
             INDEX created_at (created_at),
             INDEX active (active),
             INDEX updated_at (updated_at),
-            INDEX task_id (task_id),
+            INDEX task_template_id (task_template_id),
             INDEX sort (sort),
             INDEX task_type_id (task_type_id),
             INDEX name (name),
-            PRIMARY KEY(id)
+            PRIMARY KEY(id),
+            CONSTRAINT `project_task_item_template_ibfk_1` FOREIGN KEY (`task_template_id`) REFERENCES `project_task` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+            CONSTRAINT `project_task_item_template_ibfk_2` FOREIGN KEY (`task_type_id`) REFERENCES `project_task_type` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
         ) ENGINE = InnoDB');
-        
-       
     }
 
     public function down(Schema $schema): void
@@ -254,8 +254,6 @@ final class Version20220630192739 extends AbstractMigration
         $this->addSql('DROP TABLE project_task_attachment');
         
         $this->addSql('DROP TABLE project_task_template');
-        
-        $this->addSql('DROP TABLE project_task_template_item');
         
         $this->addSql('DROP TABLE project_task_tag_assigned');
 
@@ -271,8 +269,11 @@ final class Version20220630192739 extends AbstractMigration
         
         $this->addSql('ALTER TABLE project_task drop foreign key project_task_ibfk_3');
 
-        $this->addSql('DROP TABLE project_task');
-        
+        $this->addSql('DROP TABLE project_task_item_template');
+
         $this->addSql('DROP TABLE project_task_type');
+
+        $this->addSql('DROP TABLE project_task');
+
     }
 }

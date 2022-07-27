@@ -2,6 +2,7 @@
 
 namespace App\Entity\Project\Task;
 
+use App\Entity\Project\TaskTemplate\ProjectTaskItemTemplate;
 use App\Entity\Project\Task\ProjectTaskMilestone;
 use App\Entity\Project\TaskItem\ProjectTaskItem;
 use App\Entity\User\User;
@@ -152,6 +153,7 @@ class ProjectTask
         $this->projectTaskMilestones = new ArrayCollection();
         $this->projectTaskItems = new ArrayCollection();
         $this->userAssigneds = new ArrayCollection();
+        $this->projectTaskItemTemplates = new ArrayCollection();
     }
 
     public function __toString()

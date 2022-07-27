@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use App\Repository\User\UserRoleRepository;
 
 /**
  * Role
@@ -14,7 +15,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
     uniqueConstraints: [new ORM\UniqueConstraint(name: 'code', columns: ['code']), new ORM\UniqueConstraint(name: 'slug', columns: ['slug'])], 
     indexes: [new ORM\Index(name: 'name', columns: ['name'])]
 )]
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: UserRoleRepository::class)]
 class UserRole
 {
     /**

@@ -18,7 +18,7 @@ final class Version20220630192739 extends AbstractMigration
     }
 
     public function up(Schema $schema): void
-    {
+    {        
         $this->addSql('CREATE TABLE project_task_type (
             id SMALLINT UNSIGNED AUTO_INCREMENT NOT NULL,
             name VARCHAR(128) NOT NULL,

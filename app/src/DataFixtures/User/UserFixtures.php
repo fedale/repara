@@ -3,22 +3,20 @@
 namespace App\DataFixtures\User;
 
 use App\Entity\User\User;
+use App\Entity\User\UserGroup;
 use App\Entity\User\UserProfile;
+use App\Entity\User\UserRole;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class UserFixtures extends Fixture
+class UserFixtures extends Fixture implements DependentFixtureInterface
 {
-    private UserPasswordHasherInterface $hasher;
-
-    public function __construct(UserPasswordHasherInterface $hasher)
-    {
-        $this->hasher = $hasher;
-    }
 
     public function load(ObjectManager $manager): void
     {
+        $userRoleRepository = $manager->getRepository(UserRole::class);
+        $userGroupRepository = $manager->getRepository(UserGroup::class);
         
         foreach ($this->getUsers() as $k => $item) {
             $u = $item['user'];
@@ -29,6 +27,27 @@ class UserFixtures extends Fixture
             $user->setCode($u['code']);
             $user->setEmail($u['email']);
             $user->setPassword($u['password']);
+            
+            // Check for role
+            if (array_key_exists('roles', $item) && count($item['roles']) > 0 ) {
+                foreach ($item['roles'] as $k => $code) {
+                    $role = $userRoleRepository->findOneBy(['code' => $code]);
+                    if (!is_null($role)) {
+                        $user->addRole($role);
+                    }
+                }
+            }
+
+            // Check for group
+            if (array_key_exists('groups', $item) && count($item['groups']) > 0 ) {
+                foreach ($item['groups'] as $k => $name) {
+                    $group = $userGroupRepository->findOneBy(['name' => $name]);
+                    if (!is_null($group)) {
+                        $user->addGroup($group);
+                    }
+                }
+            }
+
             $manager->persist($user);
 
             $profile = new UserProfile();
@@ -53,7 +72,9 @@ class UserFixtures extends Fixture
                 'profile' => [
                     'firstname' => 'Danilo',
                     'lastname' => 'Di Moia',
-                ]
+                ],
+                'roles' => ['ROLE_ADMIN', 'ROLE_SUPERADMIN'],
+                'groups' => ['Group 1', 'Group 2', 'Group 5']
             ],
             [
                 'user' => [
@@ -65,7 +86,9 @@ class UserFixtures extends Fixture
                 'profile' => [
                     'firstname' => 'Admin',
                     'lastname' => 'Di Moia',
-                ]
+                ],
+                'roles' => ['ROLE_ADMIN'],
+                'groups' => ['Group 3']
             ],
             [
                 'user' => [
@@ -77,7 +100,8 @@ class UserFixtures extends Fixture
                 'profile' => [
                     'firstname' => 'Massimo',
                     'lastname' => 'Di Moia',
-                ]
+                ],
+                'roles' => ['ROLE_EDITOR', 'ROLE_MODERATOR']
             ],
             [
                 'user' => [
@@ -89,7 +113,8 @@ class UserFixtures extends Fixture
                 'profile' => [
                     'firstname' => 'Gabriella',
                     'lastname' => 'Castagna',
-                ]
+                ],
+                'roles' => ['ROLE_ADMIN', 'ROLE_EDITOR']
             ],
             [
                 'user' => [
@@ -101,7 +126,8 @@ class UserFixtures extends Fixture
                 'profile' => [
                     'firstname' => 'Federico',
                     'lastname' => 'Di Moia',
-                ]
+                ],
+                'roles' => ['ROLE_ADMIN']
             ],
             [
                 'user' => [
@@ -113,7 +139,8 @@ class UserFixtures extends Fixture
                 'profile' => [
                     'firstname' => 'Alessandro',
                     'lastname' => 'Di Moia',
-                ]
+                ],
+                'roles' => ['ROLE_ADMIN', 'ROLE_SUPERADMIN']
             ],
             [
                 'user' => [
@@ -125,7 +152,8 @@ class UserFixtures extends Fixture
                 'profile' => [
                     'firstname' => 'Gino',
                     'lastname' => 'Di Moia',
-                ]
+                ],
+                'roles' => ['ROLE_ADMIN', 'ROLE_SUPERADMIN']
             ],
             [
                 'user' => [
@@ -137,7 +165,8 @@ class UserFixtures extends Fixture
                 'profile' => [
                     'firstname' => 'Gianna',
                     'lastname' => 'Ciammaichella',
-                ]
+                ],
+                'roles' => ['ROLE_TECHNICIAN']
             ],
             [
                 'user' => [
@@ -165,5 +194,13 @@ class UserFixtures extends Fixture
             ],
         ];
 
+    }
+
+    public function getDependencies(): array
+    {
+        return [
+            UserRoleFixtures::class,
+            UserGroupFixtures::class,
+        ];
     }
 }

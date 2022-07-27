@@ -63,20 +63,19 @@ class UserCrudController extends AbstractCrudController
             ->setFormTypeOption('validation_groups', 'registration')
         ;
         yield AssociationField::new('groups')
-            ->setFormType(EntityType::class)
             ->renderAsNativeWidget()
             ->setFormTypeOption('expanded', true)
             ->setTemplatePath('admin/field/collection.twig')
         ;
         yield AssociationField::new('userRoles')
-            // ->setFormType(EntityType::class)
             ->renderAsNativeWidget()
             ->setFormTypeOption('expanded', true)
-            // ->setTemplatePath('admin/field/collection.twig')
+            ->setTemplatePath('admin/field/collection.twig')
         ;
         yield AssociationField::new('assignedCustomers')
-            // ->renderAsNativeWidget()
-            // ->setFormTypeOption('expanded', true)
+            ->renderAsNativeWidget()
+            ->setFormTypeOption('expanded', true)
+            ->setTemplatePath('admin/field/collection.twig')
         ;
         yield AssociationField::new('type')
             ->renderAsNativeWidget()

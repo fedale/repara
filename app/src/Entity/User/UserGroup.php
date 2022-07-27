@@ -6,12 +6,13 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use App\Repository\User\UserGroupRepository;
 
 /**
  * UserGroup
  */
 #[ORM\Table(name: 'user_group')]
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: UserGroupRepository::class)]
 class UserGroup
 {
     /**

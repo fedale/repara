@@ -42,6 +42,10 @@ class UserRoleFixtures extends Fixture
                 'name' => 'Moderator',
                 'code' => 'ROLE_MODERATOR',
             ],
+            [
+                'name' => 'Technician',
+                'code' => 'ROLE_TECHNICIAN',
+            ],
         ];
     }
 }

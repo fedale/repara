@@ -60,11 +60,6 @@ class DashboardController extends AbstractDashboardController
             ->setTitle('Repara');
     }
 
-    public function configureActions(): Actions
-    {
-        return parent::configureActions();
-    }
-
     public function configureMenuItems(): iterable
     {
         yield MenuItem::section('Project');
@@ -94,5 +89,48 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Place', 'fas fa-users', CustomerLocationPlace::class);
         
         yield MenuItem::section('Permission');
+    }
+
+    public function configureActions(): Actions
+    {
+        return Actions::new()
+            ->add(Crud::PAGE_INDEX, Action::NEW)
+            ->add(Crud::PAGE_INDEX, Action::DETAIL)
+            ->add(Crud::PAGE_INDEX, Action::EDIT)
+            ->add(Crud::PAGE_INDEX, Action::DELETE)
+            ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
+                return $action->setIcon('fa-solid fa-square-plus')->setLabel('Create new %entity_label_singular%');
+            })
+            ->update(Crud::PAGE_INDEX, Action::DETAIL, function (Action $action) {
+                return $action->setIcon('fa-regular fa-eye')->setLabel(false);
+            })
+            ->update(Crud::PAGE_INDEX, Action::EDIT, function (Action $action) {
+                return $action->setIcon('fa fa-file-pen')->setLabel(false);
+            })
+            ->update(Crud::PAGE_INDEX, Action::DELETE, function (Action $action) {
+                return $action->setIcon('fa-solid fa-trash-can')->setLabel(false);
+            })
+            ->reorder(Crud::PAGE_INDEX, [Action::DETAIL, Action::EDIT, Action::DELETE])
+
+            ->add(Crud::PAGE_NEW, Action::SAVE_AND_RETURN)
+            ->add(Crud::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER)
+            ->add(Crud::PAGE_NEW, Action::SAVE_AND_CONTINUE)
+            ->add(Crud::PAGE_NEW, Action::INDEX)
+
+            ->add(Crud::PAGE_EDIT, Action::SAVE_AND_RETURN)
+            ->add(Crud::PAGE_EDIT, Action::SAVE_AND_CONTINUE)
+            ->add(Crud::PAGE_EDIT, Action::DELETE)
+            ->add(Crud::PAGE_EDIT, Action::DETAIL)
+            ->add(Crud::PAGE_EDIT, Action::INDEX)
+
+            ->setPermissions(
+                [
+                    Action::NEW => 'ROLE_ADMIN',
+                    Action::EDIT => 'ROLE_ADMIN',
+                    Action::DELETE => 'ROLE_ADMIN',
+                    Action::BATCH_DELETE => 'ROLE_ADMIN',
+                ]
+            )
+        ;
     }
 }

@@ -3,9 +3,14 @@
 {# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
 {% if 'toMany' == field.customOptions.get('associationType') %}
     {% if field.formattedValue <= 0 %}
-        <span class="badge badge-secondary">{{ field.formattedValue }}</span>
+        <span class="badge badge-secondary">{{ 'No items'|trans }}</span>
     {% else %}
-        {{ field.value|join(', ', ' and ') }}
+        {% if field.value|length > 3 and  ea.crud.currentAction == 'index' %}
+            {% set rest = field.value|length - 3 %}
+            {{ field.value[:3]|join(', ') ~  ' and other ' ~ rest}} 
+        {% else %}
+            {{ field.value|join(', ', ' and ') }}
+        {% endif %}
     {% endif %}
    
 {% else %}

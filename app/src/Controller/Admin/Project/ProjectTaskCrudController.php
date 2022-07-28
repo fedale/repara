@@ -64,7 +64,7 @@ class ProjectTaskCrudController extends AbstractCrudController
                 ->addCssClass('col-md-7 col-xxl-6')
             ,
             AssociationField::new('projectTaskUserAssigneds')
-                ->setFormTypeOption('expanded', true)
+                // ->setFormTypeOption('expanded', true)
             ,
 
         ];

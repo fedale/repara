@@ -166,6 +166,7 @@ final class Version20220630192739 extends AbstractMigration
             description TEXT DEFAULT NULL,
             difficulty TINYINT(1) NOT NULL,
             value CHAR(1) DEFAULT NULL,
+            -- "type" field to add to refer to task item type
             datetime_start DATETIME DEFAULT NULL,
             datetime_end DATETIME DEFAULT NULL,
             project_task_id INT UNSIGNED NOT NULL,
@@ -224,7 +225,7 @@ final class Version20220630192739 extends AbstractMigration
             id INT UNSIGNED AUTO_INCREMENT NOT NULL,
             name VARCHAR(255) NOT NULL,
             task_template_id INT UNSIGNED DEFAULT NULL,
-            task_type_id SMALLINT UNSIGNED DEFAULT 1 NOT NULL,
+            type_id SMALLINT UNSIGNED DEFAULT 1 NOT NULL COMMENT \'Item template type: string, number, widget, select combo\',
             sort SMALLINT NOT NULL,
             active tinyint DEFAULT 1 NOT NULL,
             created_at DATETIME NOT NULL DEFAULT current_timestamp(),
@@ -238,8 +239,8 @@ final class Version20220630192739 extends AbstractMigration
             INDEX task_type_id (task_type_id),
             INDEX name (name),
             PRIMARY KEY(id),
-            CONSTRAINT `project_task_item_template_ibfk_1` FOREIGN KEY (`task_template_id`) REFERENCES `project_task` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-            CONSTRAINT `project_task_item_template_ibfk_2` FOREIGN KEY (`task_type_id`) REFERENCES `project_task_type` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+            CONSTRAINT `project_task_item_template_ibfk_1` FOREIGN KEY (`task_template_id`) REFERENCES `project_task_template` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+            -- CONSTRAINT `project_task_item_template_ibfk_2` FOREIGN KEY (`task_type_id`) REFERENCES `project_task_type` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
         ) ENGINE = InnoDB');
     }
 

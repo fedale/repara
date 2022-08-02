@@ -60,7 +60,7 @@ class ProjectTaskItemTemplate
 
     #[ORM\ManyToOne(targetEntity: ProjectTaskType::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private ?ProjectTask $taskType = null;
+    private ?ProjectTaskType $taskType = null;
 
     public function getId(): ?int
     {
@@ -114,12 +114,12 @@ class ProjectTaskItemTemplate
         return $this;
     }
 
-    public function getTaskType(): ?ProjectTask
+    public function getTaskType(): ?ProjectTaskType
     {
         return $this->taskType;
     }
 
-    public function setTaskType(?ProjectTask $taskType): self
+    public function setTaskType(?ProjectTaskType $taskType): self
     {
         $this->taskType = $taskType;
 

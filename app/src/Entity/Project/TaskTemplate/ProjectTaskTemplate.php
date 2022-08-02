@@ -2,6 +2,7 @@
 
 namespace App\Entity\Project\TaskTemplate;
 
+use App\Repository\Project\TaskTemplate\ProjectTaskTemplateRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
@@ -9,7 +10,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  * ProjectTaskTemplate
  */
 #[ORM\Table(name: 'project_task_template', indexes: [new ORM\Index(name: 'name', columns: ['name']), new ORM\Index(name: 'active', columns: ['active']), new ORM\Index(name: 'created_at', columns: ['created_at']), new ORM\Index(name: 'updated_at', columns: ['updated_at'])])]
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: ProjectTaskTemplateRepository::class)]
 class ProjectTaskTemplate
 {
     use TimestampableEntity;

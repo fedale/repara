@@ -12,27 +12,39 @@ class AccessControlFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        $ac1 = new AccessControl();
-        $ac1->setName('Login');
-        $ac1->setPath('^/admin/login');
-        $ac1->setRoles('PUBLIC_ACCESS');
-        $ac1->setSort(1);
-        $manager->persist($ac1);
-
-        $ac2 = new AccessControl();
-        $ac2->setName('Logout');
-        $ac2->setPath('^/admin/logout');
-        $ac2->setRoles('IS_AUTHENTICATED_FULLY');
-        $ac2->setSort(2);
-        $manager->persist($ac2);
-
-        $ac3 = new AccessControl();
-        $ac3->setName('Admin area');
-        $ac3->setPath('^/');
-        $ac3->setRoles('IS_AUTHENTICATED_FULLY');
-        $ac3->setSort(1000);
-        $manager->persist($ac3);
-
+        foreach ($this->getAccessRoles() as $accessRole) {
+            $ac = new AccessControl();
+            $ac->setName($accessRole['name']);
+            $ac->setPath($accessRole['path']);
+            $ac->setRoles($accessRole['roles']);
+            $ac->setSort($accessRole['sort']);
+            $manager->persist($ac);
+        }
+        
         $manager->flush();
+    }
+
+    private function getAccessRoles(): array
+    {
+        return [
+            [
+                'name' => 'Login',
+                'path' => '^/admin/login',
+                'roles' => 'PUBLIC_ACCESS',
+                'sort' => 1
+            ],
+            [
+                'name' => 'Logout',
+                'path' => '^/admin/logout',
+                'roles' => 'IS_AUTHENTICATED_FULLY',
+                'sort' => 2
+            ],
+            [
+                'name' => 'Admin area',
+                'path' => '^/',
+                'roles' => 'IS_AUTHENTICATED_FULLY',
+                'sort' => 1000
+            ],
+        ];
     }
 }

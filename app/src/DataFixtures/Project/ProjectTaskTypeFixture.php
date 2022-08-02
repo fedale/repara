@@ -10,18 +10,21 @@ class ProjectTaskTypeFixture extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        $types = [
-            'Manutenzione ordinaria',
-            'Manutenzione straordinaria',
-            'Riparazione'
-        ];
-
-        foreach ( $types as $type) {
+        foreach ( $this->getTypes() as $type) {
             $item = new ProjectTaskType();
             $item->setName($type);
             $manager->persist($item);
         }
         
         $manager->flush();
+    }
+
+    private function getTypes(): array
+    {
+        return [
+            'Manutenzione ordinaria',
+            'Manutenzione straordinaria',
+            'Riparazione'
+        ];
     }
 }

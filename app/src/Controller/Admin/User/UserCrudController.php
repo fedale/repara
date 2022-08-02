@@ -62,6 +62,9 @@ class UserCrudController extends AbstractCrudController
             ->onlyWhenCreating()
             ->setFormTypeOption('validation_groups', 'registration')
         ;
+        yield AssociationField::new('type')
+            ->renderAsNativeWidget()
+        ;
         yield AssociationField::new('groups')
             ->renderAsNativeWidget()
             ->setFormTypeOption('expanded', true)
@@ -76,9 +79,6 @@ class UserCrudController extends AbstractCrudController
             ->renderAsNativeWidget()
             ->setFormTypeOption('expanded', true)
             ->setTemplatePath('admin/field/collection.twig')
-        ;
-        yield AssociationField::new('type')
-            ->renderAsNativeWidget()
         ;
         yield DateField::new('createdAt')
             ->onlyOnIndex()

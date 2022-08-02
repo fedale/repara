@@ -1,0 +1,42 @@
+{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
+{% extends '@EasyAdmin/crud/form_theme.html.twig' %}
+
+{%- block form_row2 -%}
+    {%- if compound is defined and compound -%}
+        {%- set element = 'fieldset' -%}
+    {%- endif -%}
+    {%- set widget_attr = {} -%}
+    {%- if help is not empty -%}
+        {%- set widget_attr = {attr: {'aria-describedby': id ~"_help"}} -%}
+    {%- endif -%}
+    {%- set row_class = row_class|default(row_attr.class|default('mb-3')|trim) -%}
+    <{{ element|default('div') }}{% with {attr: row_attr|merge({class: row_class})} %}{{ block('attributes') }}{% endwith %}>
+    {%- if 'form-floating' in row_class -%}
+        {{- form_widget(form, widget_attr) -}}
+        {{- form_label(form) -}}
+    {%- else -%}
+        {{- form_label(form) -}}
+        {{- form_widget(form, widget_attr) -}}
+    {%- endif -%}
+    {{- form_help(form) -}}
+    {{- form_errors(form) -}}
+    </{{ element|default('div') }}>
+{%- endblock form_row2 %}
+
+
+{%- block _employees_widget -%}
+WA
+    {%- set attr = attr|merge({class: (attr.class|default('') ~ ' form-check-input')|trim}) -%}
+    {%- set parent_label_class = parent_label_class|default(label_attr.class|default('')) -%}
+    {%- set row_class = 'form-check' -%}
+    {%- if 'checkbox-inline' in parent_label_class %}
+        {% set row_class = row_class ~ ' form-check-inline' %}
+    {% endif -%}
+    {%- if 'checkbox-switch' in parent_label_class %}
+        {% set row_class = row_class ~ ' form-switch' %}
+    {% endif -%}
+    <div class="ddm {{ row_class }}">
+        {{- form_label(form, null, { widget: parent() }) -}}
+    </div>
+{%- endblock _employees_widget %} 
+

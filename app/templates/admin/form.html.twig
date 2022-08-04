@@ -1,42 +1,87 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
 {% extends '@EasyAdmin/crud/form_theme.html.twig' %}
 
-{%- block form_row2 -%}
-    {%- if compound is defined and compound -%}
-        {%- set element = 'fieldset' -%}
-    {%- endif -%}
-    {%- set widget_attr = {} -%}
-    {%- if help is not empty -%}
-        {%- set widget_attr = {attr: {'aria-describedby': id ~"_help"}} -%}
-    {%- endif -%}
-    {%- set row_class = row_class|default(row_attr.class|default('mb-3')|trim) -%}
-    <{{ element|default('div') }}{% with {attr: row_attr|merge({class: row_class})} %}{{ block('attributes') }}{% endwith %}>
-    {%- if 'form-floating' in row_class -%}
-        {{- form_widget(form, widget_attr) -}}
-        {{- form_label(form) -}}
-    {%- else -%}
-        {{- form_label(form) -}}
-        {{- form_widget(form, widget_attr) -}}
-    {%- endif -%}
-    {{- form_help(form) -}}
-    {{- form_errors(form) -}}
-    </{{ element|default('div') }}>
-{%- endblock form_row2 %}
+{% block user_list_row %}
+    {% set row_attr = row_attr|merge({
+        class: row_attr.class|default('') ~ ' form-group'
+    }) %}
 
+    <div class="{{ form.vars.ea_crud_form.ea_field.columns ?? form.vars.ea_crud_form.ea_field.defaultColumns ?? '' }}">
+        <div {% with { attr: row_attr } %}{{ block('attributes') }}{% endwith %}>
+            {{- form_label(form) -}}
+            <div>
+                <p style="display:inline;">Select: 
+                <a href="#" data-action="employee#select" data-select-value="all">All</a> | 
+                <a href="#" data-action="employee#select" data-select-value="none">None</a> | 
+                <a href="#" data-action="employee#select" data-select-value="inverse">Inverse</a>
+                </p>
+                <p style="margin-left:10px; display:inline;">Gender: 
+                <a href="#" data-action="employee#selectGender" data-select-value="m">Males</a> | 
+                <a href="#" data-action="employee#selectGender" data-select-value="f">Females</a>
+                {# <a href="#" data-action="employee#selectGender" data-select-value="nd">Not defined</a> #}
+                </p>
+                <p style="margin-left:10px; display:inline;">Groups: 
+                <a href="#" data-action="employee#selectGroup" data-select-value="proposal">Proposal</a> | 
+                <a href="#" data-action="employee#selectGroup" data-select-value="impiegati">Impiegati</a> | 
+                <a href="#" data-action="employee#selectGroup" data-select-value="developer">Developer</a> | 
+                <a href="#" data-action="employee#selectGroup" data-select-value="none">None</a>
+                </p>
+                <p style="margin-left:10px; display:inline;">View: 
+                <a href="#" data-action="employee#view" data-select-value="all">All (<strong data-employee-target="counterAll"></strong>)</a> | 
+                <a href="#" data-action="employee#view" data-select-value="selected">Selected (<strong data-employee-target="counterSelected"></strong>)</a> | 
+                <a href="#" data-action="employee#view" data-select-value="not-selected">Not selected (<strong data-employee-target="counterNotSelected"></strong>)</a>
+                </p>
+                <!--<p style="margin-left:10px; display:inline;">Search: 
+                <input data-action="employee#search" value="" placholder="Cerca">
+                </p>-->
+            </div>
+            
+            <div class="form-widget">
+                {% set has_prepend_html = ea.field.prepend_html|default(null) is not null %}
+                {% set has_append_html = ea.field.append_html|default(null) is not null %}
+                {% set has_input_groups = has_prepend_html or has_append_html %}
 
-{%- block _employees_widget -%}
-WA
-    {%- set attr = attr|merge({class: (attr.class|default('') ~ ' form-check-input')|trim}) -%}
-    {%- set parent_label_class = parent_label_class|default(label_attr.class|default('')) -%}
-    {%- set row_class = 'form-check' -%}
-    {%- if 'checkbox-inline' in parent_label_class %}
-        {% set row_class = row_class ~ ' form-check-inline' %}
-    {% endif -%}
-    {%- if 'checkbox-switch' in parent_label_class %}
-        {% set row_class = row_class ~ ' form-switch' %}
-    {% endif -%}
-    <div class="ddm {{ row_class }}">
-        {{- form_label(form, null, { widget: parent() }) -}}
+                {% if has_input_groups %}<div class="input-group">{% endif %}
+                    {% if has_prepend_html %}
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">{{ ea.field.prepend_html|raw }}</span>
+                        </div>
+                    {% endif %}
+
+                    {{ form_widget(form) }}
+
+                    {% if has_append_html %}
+                        <span class="input-group-text">{{ ea.field.append_html|raw }}</span>
+                    {% endif %}
+                {% if has_input_groups %}</div>{% endif %}
+
+                {% set nullable_fields_fqcn = [
+                    'EasyCorp\\Bundle\\EasyAdminBundle\\Field\\DateTimeField',
+                    'EasyCorp\\Bundle\\EasyAdminBundle\\Field\\DateField',
+                    'EasyCorp\\Bundle\\EasyAdminBundle\\Field\\TimeField',
+                ] %}
+                {% if form.vars.ea_crud_form.ea_field.fieldFqcn|default(false) in nullable_fields_fqcn and not form.vars.ea_crud_form.ea_field.formTypeOptions.required %}
+                    <div class="nullable-control">
+                        <label>
+                            <input type="checkbox" {% if ea.crud.currentAction == 'edit' and data is null and valid %}checked="checked"{% endif %}>
+                            {{ 'label.nullable_field'|trans({}, 'EasyAdminBundle')}}
+                        </label>
+                    </div>
+                {% endif %}
+
+                {% if ea.field.help ?? false %}
+                    <small class="form-help">{{ ea.field.help|raw }}</small>
+                {% elseif form.vars.help ?? false %}
+                    <small class="form-help">{{ form.vars.help|trans(form.vars.help_translation_parameters, form.vars.translation_domain)|raw }}</small>
+                {% endif %}
+
+                {{- form_errors(form) -}}
+            </div>
+        </div>
     </div>
-{%- endblock _employees_widget %} 
 
+    {# if a field doesn't define its columns explicitly, insert a fill element to make the field take the entire row space #}
+    {% if form.vars.ea_crud_form.ea_field.columns|default(null) is null %}
+        <div class="flex-fill"></div>
+    {% endif %}
+{% endblock user_list_row %}

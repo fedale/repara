@@ -2,6 +2,7 @@
 
 namespace App\EasyAdmin;
 
+use App\EasyAdmin\UserField;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\PersistentCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
@@ -12,7 +13,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
-use EasyCorp\Bundle\EasyAdminBundle\Field\EmployeeField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudAutocompleteType;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\PropertyAccess\Exception\UnexpectedTypeException;
@@ -22,7 +22,7 @@ use function Symfony\Component\Translation\t;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class EmployeeConfigurator implements FieldConfiguratorInterface
+final class UserConfigurator implements FieldConfiguratorInterface
 {
     private EntityFactory $entityFactory;
     private AdminUrlGenerator $adminUrlGenerator;
@@ -35,7 +35,7 @@ final class EmployeeConfigurator implements FieldConfiguratorInterface
 
     public function supports(FieldDto $field, EntityDto $entityDto): bool
     {
-        return EmployeeField::class === $field->getFieldFqcn();
+        return UserField::class === $field->getFieldFqcn();
     }
 
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
@@ -47,11 +47,11 @@ final class EmployeeConfigurator implements FieldConfiguratorInterface
 
         $targetEntityFqcn = $field->getDoctrineMetadata()->get('targetEntity');
         // the target CRUD controller can be NULL; in that case, field value doesn't link to the related entity
-        $targetCrudControllerFqcn = $field->getCustomOption(EmployeeField::OPTION_CRUD_CONTROLLER)
+        $targetCrudControllerFqcn = $field->getCustomOption(UserField::OPTION_CRUD_CONTROLLER)
             ?? $context->getCrudControllers()->findCrudFqcnByEntityFqcn($targetEntityFqcn);
-        $field->setCustomOption(EmployeeField::OPTION_CRUD_CONTROLLER, $targetCrudControllerFqcn);
+        $field->setCustomOption(UserField::OPTION_CRUD_CONTROLLER, $targetCrudControllerFqcn);
 
-        if (EmployeeField::WIDGET_AUTOCOMPLETE === $field->getCustomOption(EmployeeField::OPTION_WIDGET)) {
+        if (UserField::WIDGET_AUTOCOMPLETE === $field->getCustomOption(UserField::OPTION_WIDGET)) {
             $field->setFormTypeOption('attr.data-ea-widget', 'ea-autocomplete');
         }
 
@@ -76,7 +76,7 @@ final class EmployeeConfigurator implements FieldConfiguratorInterface
             }
 
             $accessor = new PropertyAccessor();
-            $targetCrudControllerFqcn = $field->getCustomOption(EmployeeField::OPTION_CRUD_CONTROLLER);
+            $targetCrudControllerFqcn = $field->getCustomOption(UserField::OPTION_CRUD_CONTROLLER);
 
             $field->setFormTypeOptionIfNotSet('class', $targetEntityFqcn);
 
@@ -84,7 +84,7 @@ final class EmployeeConfigurator implements FieldConfiguratorInterface
                 $relatedEntityId = $accessor->getValue($entityDto->getInstance(), $propertyName.'.'.$metadata->getIdentifierFieldNames()[0]);
                 $relatedEntityDto = $this->entityFactory->create($targetEntityFqcn, $relatedEntityId);
 
-                $field->setCustomOption(EmployeeField::OPTION_RELATED_URL, $this->generateLinkToAssociatedEntity($targetCrudControllerFqcn, $relatedEntityDto));
+                $field->setCustomOption(UserField::OPTION_RELATED_URL, $this->generateLinkToAssociatedEntity($targetCrudControllerFqcn, $relatedEntityDto));
                 $field->setFormattedValue($this->formatAsString($relatedEntityDto->getInstance(), $relatedEntityDto));
             } catch (UnexpectedTypeException) {
                 // this may crash if something in the tree is null, so just do nothing then
@@ -99,8 +99,8 @@ final class EmployeeConfigurator implements FieldConfiguratorInterface
             }
         }
 
-        if (true === $field->getCustomOption(EmployeeField::OPTION_AUTOCOMPLETE)) {
-            $targetCrudControllerFqcn = $field->getCustomOption(EmployeeField::OPTION_CRUD_CONTROLLER);
+        if (true === $field->getCustomOption(UserField::OPTION_AUTOCOMPLETE)) {
+            $targetCrudControllerFqcn = $field->getCustomOption(UserField::OPTION_CRUD_CONTROLLER);
             if (null === $targetCrudControllerFqcn) {
                 throw new \RuntimeException(sprintf('The "%s" field cannot be autocompleted because it doesn\'t define the related CRUD controller FQCN with the "setCrudController()" method.', $field->getProperty()));
             }
@@ -109,9 +109,9 @@ final class EmployeeConfigurator implements FieldConfiguratorInterface
             $autocompleteEndpointUrl = $this->adminUrlGenerator
                 ->unsetAll()
                 ->set('page', 1) // The autocomplete should always start on the first page
-                ->setController($field->getCustomOption(EmployeeField::OPTION_CRUD_CONTROLLER))
+                ->setController($field->getCustomOption(UserField::OPTION_CRUD_CONTROLLER))
                 ->setAction('autocomplete')
-                ->set(EmployeeField::PARAM_AUTOCOMPLETE_CONTEXT, [
+                ->set(UserField::PARAM_AUTOCOMPLETE_CONTEXT, [
                     EA::CRUD_CONTROLLER_FQCN => $context->getRequest()->query->get(EA::CRUD_CONTROLLER_FQCN),
                     'propertyName' => $propertyName,
                     'originatingPage' => $context->getCrud()->getCurrentPage(),
@@ -124,7 +124,7 @@ final class EmployeeConfigurator implements FieldConfiguratorInterface
                 // TODO: should this use `createIndexQueryBuilder` instead, so we get the default ordering etc.?
                 // it would then be identical to the one used in autocomplete action, but it is a bit complex getting it in here
                 $queryBuilder = $repository->createQueryBuilder('entity');
-                if ($queryBuilderCallable = $field->getCustomOption(EmployeeField::OPTION_QUERY_BUILDER_CALLABLE)) {
+                if ($queryBuilderCallable = $field->getCustomOption(UserField::OPTION_QUERY_BUILDER_CALLABLE)) {
                     $queryBuilderCallable($queryBuilder);
                 }
 
@@ -135,28 +135,28 @@ final class EmployeeConfigurator implements FieldConfiguratorInterface
 
     private function configureToOneAssociation(FieldDto $field): void
     {
-        $field->setCustomOption(EmployeeField::OPTION_DOCTRINE_ASSOCIATION_TYPE, 'toOne');
+        $field->setCustomOption(UserField::OPTION_DOCTRINE_ASSOCIATION_TYPE, 'toOne');
 
         if (false === $field->getFormTypeOption('required')) {
             $field->setFormTypeOptionIfNotSet('attr.placeholder', t('label.form.empty_value', [], 'EasyAdminBundle'));
         }
 
         $targetEntityFqcn = $field->getDoctrineMetadata()->get('targetEntity');
-        $targetCrudControllerFqcn = $field->getCustomOption(EmployeeField::OPTION_CRUD_CONTROLLER);
+        $targetCrudControllerFqcn = $field->getCustomOption(UserField::OPTION_CRUD_CONTROLLER);
 
         $targetEntityDto = null === $field->getValue()
             ? $this->entityFactory->create($targetEntityFqcn)
             : $this->entityFactory->createForEntityInstance($field->getValue());
         $field->setFormTypeOptionIfNotSet('class', $targetEntityDto->getFqcn());
 
-        $field->setCustomOption(EmployeeField::OPTION_RELATED_URL, $this->generateLinkToAssociatedEntity($targetCrudControllerFqcn, $targetEntityDto));
+        $field->setCustomOption(UserField::OPTION_RELATED_URL, $this->generateLinkToAssociatedEntity($targetCrudControllerFqcn, $targetEntityDto));
 
         $field->setFormattedValue($this->formatAsString($field->getValue(), $targetEntityDto));
     }
 
     private function configureToManyAssociation(FieldDto $field): void
     {
-        $field->setCustomOption(EmployeeField::OPTION_DOCTRINE_ASSOCIATION_TYPE, 'toMany');
+        $field->setCustomOption(UserField::OPTION_DOCTRINE_ASSOCIATION_TYPE, 'toMany');
 
         // associations different from *-to-one cannot be sorted
         $field->setSortable(false);

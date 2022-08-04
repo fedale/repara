@@ -12,7 +12,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\FieldTrait;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class EmployeeField implements FieldInterface
+final class UserField implements FieldInterface
 {
     use FieldTrait;
 
@@ -48,13 +48,13 @@ final class EmployeeField implements FieldInterface
                 'expanded' => true,
                 'attr' => ['data-controller' => 'employee'],
                 'label_attr' => ['class' => 'checkbox-inline'],
-                'block_name' => '_employees_widget',
+                'block_prefix' => 'user_list',
                 'choice_attr' =>  function($choice, $key, $value) {
                     $groups = $choice->getGroups()->toArray();
                     return [
-                        'data-profile-status' => $choice->getProfile()->getStatus(),
-                        'data-profile-type' => $choice->getProfile()->getType(),
-                        'data-profile-gender' => $choice->getProfile()->getGender(),
+                        // 'data-profile-status' => $choice->getProfile()->getStatus(),
+                        // 'data-profile-type' => $choice->getProfile()->getType(),
+                        // 'data-profile-gender' => $choice->getProfile()->getGender(),
                         'data-groups' => json_encode(
                             array_map(function($group) { 
                                 return $group->getName();
@@ -65,7 +65,7 @@ final class EmployeeField implements FieldInterface
                 }
             ])
             ->addFormTheme('admin/form.html.twig')
-            ->addCssFiles('bundles/easyadmin/employee_group.css')
+            ->addCssFiles('bundles/easyadmin/user_group.css')
             ->setQueryBuilder(
                 fn (QueryBuilder $queryBuilder) => $queryBuilder->getEntityManager()->getRepository(Employee::class)->findWithProfileAndGroups()
             )

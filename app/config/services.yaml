@@ -26,5 +26,5 @@ services:
             - '../src/Kernel.php'
 
     # EasyAdmin
-    App\EasyAdmin\EmployeeConfigurator:
+    App\EasyAdmin\UserConfigurator:
         tags: [ 'ea.field_configurator' ]

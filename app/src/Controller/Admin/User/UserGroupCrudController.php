@@ -2,8 +2,10 @@
 
 namespace App\Controller\Admin\User;
 
+use App\EasyAdmin\UserField;
 use App\Entity\User\UserGroup;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class UserGroupCrudController extends AbstractCrudController
 {
@@ -12,14 +14,13 @@ class UserGroupCrudController extends AbstractCrudController
         return UserGroup::class;
     }
 
-    /*
+    
     public function configureFields(string $pageName): iterable
     {
         return [
-            IdField::new('id'),
-            TextField::new('title'),
-            TextEditorField::new('description'),
+            TextField::new('name'),
+            UserField::new('users'),
         ];
     }
-    */
+    
 }

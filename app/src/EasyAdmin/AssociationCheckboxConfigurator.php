@@ -2,7 +2,6 @@
 
 namespace App\EasyAdmin;
 
-use App\EasyAdmin\UserField;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\PersistentCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
@@ -22,7 +21,7 @@ use function Symfony\Component\Translation\t;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class UserConfigurator implements FieldConfiguratorInterface
+final class AssociationCheckboxConfigurator implements FieldConfiguratorInterface
 {
     private EntityFactory $entityFactory;
     private AdminUrlGenerator $adminUrlGenerator;
@@ -35,7 +34,7 @@ final class UserConfigurator implements FieldConfiguratorInterface
 
     public function supports(FieldDto $field, EntityDto $entityDto): bool
     {
-        return UserField::class === $field->getFieldFqcn();
+        return AssociationCheckboxField::class === $field->getFieldFqcn();
     }
 
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
@@ -46,14 +45,6 @@ final class UserConfigurator implements FieldConfiguratorInterface
         }
 
         $targetEntityFqcn = $field->getDoctrineMetadata()->get('targetEntity');
-        // the target CRUD controller can be NULL; in that case, field value doesn't link to the related entity
-        $targetCrudControllerFqcn = $field->getCustomOption(UserField::OPTION_CRUD_CONTROLLER)
-            ?? $context->getCrudControllers()->findCrudFqcnByEntityFqcn($targetEntityFqcn);
-        $field->setCustomOption(UserField::OPTION_CRUD_CONTROLLER, $targetCrudControllerFqcn);
-
-        if (UserField::WIDGET_AUTOCOMPLETE === $field->getCustomOption(UserField::OPTION_WIDGET)) {
-            $field->setFormTypeOption('attr.data-ea-widget', 'ea-autocomplete');
-        }
 
         // check for embedded associations
         $propertyNameParts = explode('.', $propertyName);
@@ -76,7 +67,6 @@ final class UserConfigurator implements FieldConfiguratorInterface
             }
 
             $accessor = new PropertyAccessor();
-            $targetCrudControllerFqcn = $field->getCustomOption(UserField::OPTION_CRUD_CONTROLLER);
 
             $field->setFormTypeOptionIfNotSet('class', $targetEntityFqcn);
 
@@ -84,7 +74,6 @@ final class UserConfigurator implements FieldConfiguratorInterface
                 $relatedEntityId = $accessor->getValue($entityDto->getInstance(), $propertyName.'.'.$metadata->getIdentifierFieldNames()[0]);
                 $relatedEntityDto = $this->entityFactory->create($targetEntityFqcn, $relatedEntityId);
 
-                $field->setCustomOption(UserField::OPTION_RELATED_URL, $this->generateLinkToAssociatedEntity($targetCrudControllerFqcn, $relatedEntityDto));
                 $field->setFormattedValue($this->formatAsString($relatedEntityDto->getInstance(), $relatedEntityDto));
             } catch (UnexpectedTypeException) {
                 // this may crash if something in the tree is null, so just do nothing then
@@ -99,65 +88,43 @@ final class UserConfigurator implements FieldConfiguratorInterface
             }
         }
 
-        if (true === $field->getCustomOption(UserField::OPTION_AUTOCOMPLETE)) {
-            $targetCrudControllerFqcn = $field->getCustomOption(UserField::OPTION_CRUD_CONTROLLER);
-            if (null === $targetCrudControllerFqcn) {
-                throw new \RuntimeException(sprintf('The "%s" field cannot be autocompleted because it doesn\'t define the related CRUD controller FQCN with the "setCrudController()" method.', $field->getProperty()));
-            }
+        // if (true === $field->getCustomOption(AssociationCheckboxField::OPTION_AUTOCOMPLETE)) {
+        //     $targetCrudControllerFqcn = $field->getCustomOption(AssociationCheckboxField::OPTION_CRUD_CONTROLLER);
+        //     if (null === $targetCrudControllerFqcn) {
+        //         throw new \RuntimeException(sprintf('The "%s" field cannot be autocompleted because it doesn\'t define the related CRUD controller FQCN with the "setCrudController()" method.', $field->getProperty()));
+        //     }
 
-            $field->setFormType(CrudAutocompleteType::class);
-            $autocompleteEndpointUrl = $this->adminUrlGenerator
-                ->unsetAll()
-                ->set('page', 1) // The autocomplete should always start on the first page
-                ->setController($field->getCustomOption(UserField::OPTION_CRUD_CONTROLLER))
-                ->setAction('autocomplete')
-                ->set(UserField::PARAM_AUTOCOMPLETE_CONTEXT, [
-                    EA::CRUD_CONTROLLER_FQCN => $context->getRequest()->query->get(EA::CRUD_CONTROLLER_FQCN),
-                    'propertyName' => $propertyName,
-                    'originatingPage' => $context->getCrud()->getCurrentPage(),
-                ])
-                ->generateUrl();
+        //     $field->setFormType(CrudAutocompleteType::class);
+        //     $autocompleteEndpointUrl = $this->adminUrlGenerator
+        //         ->unsetAll()
+        //         ->set('page', 1) // The autocomplete should always start on the first page
+        //         ->setController($field->getCustomOption(AssociationCheckboxField::OPTION_CRUD_CONTROLLER))
+        //         ->setAction('autocomplete')
+        //         ->set(AssociationCheckboxField::PARAM_AUTOCOMPLETE_CONTEXT, [
+        //             EA::CRUD_CONTROLLER_FQCN => $context->getRequest()->query->get(EA::CRUD_CONTROLLER_FQCN),
+        //             'propertyName' => $propertyName,
+        //             'originatingPage' => $context->getCrud()->getCurrentPage(),
+        //         ])
+        //         ->generateUrl();
 
-            $field->setFormTypeOption('attr.data-ea-autocomplete-endpoint-url', $autocompleteEndpointUrl);
-        } else {
-            $field->setFormTypeOptionIfNotSet('query_builder', static function (EntityRepository $repository) use ($field) {
-                // TODO: should this use `createIndexQueryBuilder` instead, so we get the default ordering etc.?
-                // it would then be identical to the one used in autocomplete action, but it is a bit complex getting it in here
-                $queryBuilder = $repository->createQueryBuilder('entity');
-                if ($queryBuilderCallable = $field->getCustomOption(UserField::OPTION_QUERY_BUILDER_CALLABLE)) {
-                    $queryBuilderCallable($queryBuilder);
-                }
+        //     $field->setFormTypeOption('attr.data-ea-autocomplete-endpoint-url', $autocompleteEndpointUrl);
+        // } else {
+        //     $field->setFormTypeOptionIfNotSet('query_builder', static function (EntityRepository $repository) use ($field) {
+        //         // TODO: should this use `createIndexQueryBuilder` instead, so we get the default ordering etc.?
+        //         // it would then be identical to the one used in autocomplete action, but it is a bit complex getting it in here
+        //         $queryBuilder = $repository->createQueryBuilder('entity');
+        //         if ($queryBuilderCallable = $field->getCustomOption(AssociationCheckboxField::OPTION_QUERY_BUILDER_CALLABLE)) {
+        //             $queryBuilderCallable($queryBuilder);
+        //         }
 
-                return $queryBuilder;
-            });
-        }
+        //         return $queryBuilder;
+        //     });
+        // }
     }
 
-    private function configureToOneAssociation(FieldDto $field): void
-    {
-        $field->setCustomOption(UserField::OPTION_DOCTRINE_ASSOCIATION_TYPE, 'toOne');
-
-        if (false === $field->getFormTypeOption('required')) {
-            $field->setFormTypeOptionIfNotSet('attr.placeholder', t('label.form.empty_value', [], 'EasyAdminBundle'));
-        }
-
-        $targetEntityFqcn = $field->getDoctrineMetadata()->get('targetEntity');
-        $targetCrudControllerFqcn = $field->getCustomOption(UserField::OPTION_CRUD_CONTROLLER);
-
-        $targetEntityDto = null === $field->getValue()
-            ? $this->entityFactory->create($targetEntityFqcn)
-            : $this->entityFactory->createForEntityInstance($field->getValue());
-        $field->setFormTypeOptionIfNotSet('class', $targetEntityDto->getFqcn());
-
-        $field->setCustomOption(UserField::OPTION_RELATED_URL, $this->generateLinkToAssociatedEntity($targetCrudControllerFqcn, $targetEntityDto));
-
-        $field->setFormattedValue($this->formatAsString($field->getValue(), $targetEntityDto));
-    }
 
     private function configureToManyAssociation(FieldDto $field): void
     {
-        $field->setCustomOption(UserField::OPTION_DOCTRINE_ASSOCIATION_TYPE, 'toMany');
-
         // associations different from *-to-one cannot be sorted
         $field->setSortable(false);
 
@@ -188,23 +155,6 @@ final class UserConfigurator implements FieldConfiguratorInterface
         }
 
         return $entityDto->getName();
-    }
-
-    private function generateLinkToAssociatedEntity(?string $crudController, EntityDto $entityDto): ?string
-    {
-        if (null === $crudController) {
-            return null;
-        }
-
-        // TODO: check if user has permission to see the related entity
-        return $this->adminUrlGenerator
-            ->setController($crudController)
-            ->setAction(Action::DETAIL)
-            ->setEntityId($entityDto->getPrimaryKeyValue())
-            ->unset(EA::MENU_INDEX)
-            ->unset(EA::SUBMENU_INDEX)
-            ->includeReferrer()
-            ->generateUrl();
     }
 
     private function countNumElements($collection): int

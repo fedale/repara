@@ -2,7 +2,7 @@
 
 namespace App\Controller\Admin\User;
 
-use App\EasyAdmin\UserField;
+use App\EasyAdmin\AssociationCheckboxField;
 use App\Entity\User\UserGroup;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -19,7 +19,7 @@ class UserGroupCrudController extends AbstractCrudController
     {
         return [
             TextField::new('name'),
-            UserField::new('users'),
+            AssociationCheckboxField::new('users'),
         ];
     }
     

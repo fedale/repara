@@ -9,12 +9,13 @@ export default class extends Controller {
 
     static targets = ['input', 'counterAll', 'counterSelected', 'counterNotSelected'];
 
-    initialize () {
-        this.update = this.update.bind(this);
-    }
+    // initialize () {
+    //     this.change = this.change.bind(this);
+    // }
 
     connect() {
-        this.update();
+        console.log('Connected');
+        this.change();
     }
 
     select(event) {
@@ -40,7 +41,7 @@ export default class extends Controller {
             break;
         }
 
-        this.update();
+        this.change();
     }
 
     selectGender(event) {
@@ -53,7 +54,7 @@ export default class extends Controller {
             }  
         })
 
-        this.update();
+        this.change();
     }
 
     selectStatus(event) {
@@ -76,7 +77,7 @@ export default class extends Controller {
             }
         })
 
-        this.update();
+        this.change();
     }
 
     view(event) {
@@ -122,11 +123,12 @@ export default class extends Controller {
         })
     }
 
-    update() {
+    
+    change() {
         this.counterAllTarget.innerHTML = this.countAll.toString();
         this.counterSelectedTarget.innerHTML = this.countSelected.toString();
         this.counterNotSelectedTarget.innerHTML = this.countNotSelected.toString();
-    } 
+    }
 
     get countAll() {
         return this.inputTargets.length;

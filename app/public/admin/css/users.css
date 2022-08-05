@@ -1,0 +1,10 @@
+.form-check-inline.form-check-inline {
+    width: 220px;
+    margin-left: 0;
+}
+
+.form-check-inline label {
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

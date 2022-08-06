@@ -54,14 +54,19 @@ class ProjectTaskItemTemplate
     /**
      * @var ProjectTaskTemplate
      */
-    #[ORM\ManyToOne(targetEntity: ProjectTaskTemplate::class)]
-    #[ORM\JoinColumn(name: 'task_template_id', referencedColumnName: 'id')]
-    private $taskTemplate;
+    #[ORM\ManyToOne(targetEntity: ProjectTaskTemplate::class, inversedBy: 'items')]
+    #[ORM\JoinColumn(name: 'task_template_id', referencedColumnName: 'id', nullable: false)]
+    private ?ProjectTaskTemplate $taskTemplate;
 
     #[ORM\ManyToOne(targetEntity: ProjectTaskType::class)]
     #[ORM\JoinColumn(nullable: false)]
     private ?ProjectTaskType $taskType = null;
 
+    public function __toString()
+    {
+        return $this->name;
+    }
+    
     public function getId(): ?int
     {
         return $this->id;

@@ -43,7 +43,7 @@ class ProjectTaskTemplate
     #[ORM\Column(name: 'active', type: 'boolean', nullable: false, options: ['default' => 1])]
     private $active = true;
 
-    #[ORM\OneToMany(mappedBy: 'taskTemplate', targetEntity: ProjectTaskItemTemplate::class)]
+    #[ORM\OneToMany(mappedBy: 'taskTemplate', targetEntity: ProjectTaskItemTemplate::class, cascade: ['persist'])]
     private Collection $items;
 
     public function __construct()

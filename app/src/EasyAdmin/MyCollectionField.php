@@ -6,11 +6,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Asset;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Contracts\Translation\TranslatableInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Field\FieldTrait;
+use EasyCorp\Bundle\EasyAdminBundle\Field\FieldTrait;   
+
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class CollectionField implements FieldInterface
+final class MyCollectionField implements FieldInterface
 {
     use FieldTrait;
 
@@ -30,6 +31,7 @@ final class CollectionField implements FieldInterface
      */
     public static function new(string $propertyName, $label = null): self
     {
+        dump($propertyName, $label);
         return (new self())
             ->setProperty($propertyName)
             ->setLabel($label)
@@ -38,12 +40,15 @@ final class CollectionField implements FieldInterface
             ->addCssClass('field-collection')
             ->addJsFiles(Asset::fromEasyAdminAssetPackage('field-collection.js')->onlyOnForms())
             ->setDefaultColumns('col-md-8 col-xxl-7')
+            ->setFormTypeOptions([
+                'block_prefix' => 'collection_' . $propertyName,
+                'by_reference' => false,
+            ])
+            ->addFormTheme('admin/form/form.html.twig')
             ->setCustomOption(self::OPTION_ALLOW_ADD, true)
             ->setCustomOption(self::OPTION_ALLOW_DELETE, true)
-            ->setCustomOption(self::OPTION_ENTRY_IS_COMPLEX, null)
             ->setCustomOption(self::OPTION_ENTRY_TYPE, null)
-            ->setCustomOption(self::OPTION_SHOW_ENTRY_LABEL, false)
-            ->setCustomOption(self::OPTION_RENDER_EXPANDED, false)
+            ->setCustomOption(self::OPTION_SHOW_ENTRY_LABEL, true)
             ->setCustomOption(self::OPTION_ENTRY_USES_CRUD_FORM, false)
             ->setCustomOption(self::OPTION_ENTRY_CRUD_CONTROLLER_FQCN, null)
             ->setCustomOption(self::OPTION_ENTRY_CRUD_NEW_PAGE_NAME, null)
@@ -64,17 +69,7 @@ final class CollectionField implements FieldInterface
         return $this;
     }
 
-    /**
-     * Set this option to TRUE if the collection items are complex form types
-     * composed of several form fields (EasyAdmin applies a special rendering to make them look better).
-     */
-    public function setEntryIsComplex(bool $isComplex = true): self
-    {
-        $this->setCustomOption(self::OPTION_ENTRY_IS_COMPLEX, $isComplex);
-
-        return $this;
-    }
-
+    
     public function setEntryType(string $formTypeFqcn): self
     {
         $this->setCustomOption(self::OPTION_ENTRY_TYPE, $formTypeFqcn);
@@ -85,13 +80,6 @@ final class CollectionField implements FieldInterface
     public function showEntryLabel(bool $showLabel = true): self
     {
         $this->setCustomOption(self::OPTION_SHOW_ENTRY_LABEL, $showLabel);
-
-        return $this;
-    }
-
-    public function renderExpanded(bool $renderExpanded = true): self
-    {
-        $this->setCustomOption(self::OPTION_RENDER_EXPANDED, $renderExpanded);
 
         return $this;
     }

@@ -26,5 +26,5 @@ services:
             - '../src/Kernel.php'
 
     # EasyAdmin
-    # App\EasyAdmin\AssociationCheckboxConfigurator:
-    #     tags: [ 'ea.field_configurator' ]
+    App\EasyAdmin\MyCollectionConfigurator:
+        tags: [ 'ea.field_configurator' ]

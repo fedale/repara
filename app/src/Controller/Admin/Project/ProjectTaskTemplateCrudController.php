@@ -7,8 +7,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-//use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
-use App\EasyAdmin\CollectionField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
+// use EasyCorp\Bundle\EasyAdminBundle\Field\MyCollectionField;
+use App\EasyAdmin\MyCollectionField;
 
 class ProjectTaskTemplateCrudController extends AbstractCrudController
 {
@@ -26,7 +27,6 @@ class ProjectTaskTemplateCrudController extends AbstractCrudController
             CollectionField::new('items')
             ->allowAdd(true)
             ->allowDelete(true)
-
         ];
     }
 }

@@ -11,7 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\FieldTrait;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class MyCollectionField implements FieldInterface
+final class CustomerField implements FieldInterface
 {
     use FieldTrait;
 
@@ -31,7 +31,6 @@ final class MyCollectionField implements FieldInterface
      */
     public static function new(string $propertyName, $label = null): self
     {
-        dump($propertyName, $label);
         return (new self())
             ->setProperty($propertyName)
             ->setLabel($label)

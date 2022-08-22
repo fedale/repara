@@ -21,12 +21,12 @@ use Symfony\Component\Form\Extension\Core\Type\TimezoneType;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
 use function Symfony\Component\String\u;
-use App\EasyAdmin\MyCollectionField;
+use App\EasyAdmin\CustomerField;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class MyCollectionConfigurator implements FieldConfiguratorInterface
+final class CustomerConfigurator implements FieldConfiguratorInterface
 {
     private RequestStack $requestStack;
     private EntityFactory $entityFactory;
@@ -41,12 +41,12 @@ final class MyCollectionConfigurator implements FieldConfiguratorInterface
 
     public function supports(FieldDto $field, EntityDto $entityDto): bool
     {
-        return MyCollectionField::class === $field->getFieldFqcn();
+        return CustomerField::class === $field->getFieldFqcn();
     }
 
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
-        if (null !== $entryTypeFqcn = $field->getCustomOptions()->get(MyCollectionField::OPTION_ENTRY_TYPE)) {
+        if (null !== $entryTypeFqcn = $field->getCustomOptions()->get(CustomerField::OPTION_ENTRY_TYPE)) {
             $field->setFormTypeOption('entry_type', $entryTypeFqcn);
         }
 
@@ -58,42 +58,42 @@ final class MyCollectionConfigurator implements FieldConfiguratorInterface
         // the contents of this field are a collection of other fields, so it cannot be sorted
         $field->setSortable(false);
 
-        $field->setFormTypeOptionIfNotSet('allow_add', $field->getCustomOptions()->get(MyCollectionField::OPTION_ALLOW_ADD));
-        $field->setFormTypeOptionIfNotSet('allow_delete', $field->getCustomOptions()->get(MyCollectionField::OPTION_ALLOW_DELETE));
+        $field->setFormTypeOptionIfNotSet('allow_add', $field->getCustomOptions()->get(CustomerField::OPTION_ALLOW_ADD));
+        $field->setFormTypeOptionIfNotSet('allow_delete', $field->getCustomOptions()->get(CustomerField::OPTION_ALLOW_DELETE));
         $field->setFormTypeOptionIfNotSet('by_reference', false);
         $field->setFormTypeOptionIfNotSet('delete_empty', true);
 
         // TODO: check why this label (hidden by default) is not working properly
         // (generated values are always the same for all elements)
-        $field->setFormTypeOptionIfNotSet('entry_options.label', $field->getCustomOptions()->get(MyCollectionField::OPTION_SHOW_ENTRY_LABEL));
+        $field->setFormTypeOptionIfNotSet('entry_options.label', $field->getCustomOptions()->get(CustomerField::OPTION_SHOW_ENTRY_LABEL));
 
      
         $field->setFormattedValue($this->formatCollection($field, $context));
 
-        if (true === $field->getCustomOption(MyCollectionField::OPTION_ENTRY_USES_CRUD_FORM)) {
+        if (true === $field->getCustomOption(CustomerField::OPTION_ENTRY_USES_CRUD_FORM)) {
             if (!$entityDto->isAssociation($field->getProperty())) {
                 throw new \RuntimeException(sprintf('The "%s" collection field of "%s" cannot use the "useEntryCrudForm()" method because it is not a Doctrine association.', $field->getProperty(), $context->getCrud()?->getControllerFqcn()));
             }
 
-            if (null !== $field->getCustomOptions()->get(MyCollectionField::OPTION_ENTRY_TYPE)) {
+            if (null !== $field->getCustomOptions()->get(CustomerField::OPTION_ENTRY_TYPE)) {
                 throw new \RuntimeException(sprintf('The "%s" collection field of "%s" can render its entries using a Symfony Form (via the "setEntryType()" method) or using an EasyAdmin CRUD Form (via the "useEntryCrudForm()" method) but you cannot use both methods at the same time. Remove one of those two methods.', $field->getProperty(), $context->getCrud()?->getControllerFqcn()));
             }
 
             $field->setFormTypeOption('entry_type', CrudFormType::class);
 
             $targetEntityFqcn = $field->getDoctrineMetadata()->get('targetEntity');
-            $targetCrudControllerFqcn = $field->getCustomOption(MyCollectionField::OPTION_ENTRY_CRUD_CONTROLLER_FQCN)
+            $targetCrudControllerFqcn = $field->getCustomOption(CustomerField::OPTION_ENTRY_CRUD_CONTROLLER_FQCN)
                 ?? $context->getCrudControllers()->findCrudFqcnByEntityFqcn($targetEntityFqcn);
 
             if (null === $targetCrudControllerFqcn) {
                 throw new \RuntimeException(sprintf('The "%s" collection field of "%s" wants to render its entries using an EasyAdmin CRUD form. However, no CRUD form was found related to this field. You can either create a CRUD controller for the entity "%s" or pass the CRUD controller to use as the first argument of the "useEntryCrudForm()" method.', $field->getProperty(), $context->getCrud()?->getControllerFqcn(), $targetEntityFqcn));
             }
 
-            $crudEditPageName = $field->getCustomOption(MyCollectionField::OPTION_ENTRY_CRUD_EDIT_PAGE_NAME) ?? Crud::PAGE_EDIT;
+            $crudEditPageName = $field->getCustomOption(CustomerField::OPTION_ENTRY_CRUD_EDIT_PAGE_NAME) ?? Crud::PAGE_EDIT;
             $editEntityDto = $this->createEntityDto($targetEntityFqcn, $targetCrudControllerFqcn, Action::EDIT, $crudEditPageName);
             $field->setFormTypeOption('entry_options.entityDto', $editEntityDto);
 
-            $crudNewPageName = $field->getCustomOption(MyCollectionField::OPTION_ENTRY_CRUD_NEW_PAGE_NAME) ?? Crud::PAGE_NEW;
+            $crudNewPageName = $field->getCustomOption(CustomerField::OPTION_ENTRY_CRUD_NEW_PAGE_NAME) ?? Crud::PAGE_NEW;
             $newEntityDto = $this->createEntityDto($targetEntityFqcn, $targetCrudControllerFqcn, Action::NEW, $crudNewPageName);
 
             try {

@@ -42,13 +42,6 @@ final class Version20220630192251 extends AbstractMigration
         ) ENGINE = InnoDB COMMENT = \'\';
         ');
 
-        $this->addSql('CREATE TABLE craue_config_setting (
-            name VARCHAR(255) NOT NULL, 
-            section VARCHAR(255) DEFAULT NULL, 
-            value VARCHAR(255) DEFAULT NULL, 
-            PRIMARY KEY(name)
-        ) ENGINE = InnoDB COMMENT = \'\' ');
-
         $this->addSql('CREATE TABLE website (
             id SMALLINT UNSIGNED AUTO_INCREMENT NOT NULL, 
             code VARCHAR(32) NOT NULL, 
@@ -70,9 +63,7 @@ final class Version20220630192251 extends AbstractMigration
     public function down(Schema $schema): void
     {
         $this->addSql('DROP TABLE access_control');
-                
-        $this->addSql('DROP TABLE craue_config_setting');
-        
+                        
         $this->addSql('DROP TABLE website');
     }
 }

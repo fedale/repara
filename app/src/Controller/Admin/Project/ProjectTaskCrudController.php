@@ -4,9 +4,11 @@ namespace App\Controller\Admin\Project;
 
 use App\DBAL\Types\ProjectTaskStateType;
 use App\DBAL\Types\ProjectTaskPriorityType;
+use App\Entity\Customer\CustomerLocationPlaceAsset;
 use App\Entity\Project\Task\ProjectTask;
 use App\Workflow\ProjectTaskWorkflow;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -39,6 +41,8 @@ class ProjectTaskCrudController extends AbstractCrudController
     
     public function configureFields(string $pageName): iterable
     {
+        $customerLocationPlaceAssetRepository = $this->em->getRepository(CustomerLocationPlaceAsset::class);
+        // dd($customerLocationPlaceAssetRepository->createQueryBuilder('entity'));
         return [
             TextField::new('name'),
             TextEditorField::new('description')
@@ -47,7 +51,16 @@ class ProjectTaskCrudController extends AbstractCrudController
             AssociationField::new('customer')
                 ->renderAsNativeWidget()
             ,
-            AssociationField::new('customerLocationPlaceAsset'),
+            AssociationField::new('customerLocationPlaceAsset')
+                ->renderAsNativeWidget()
+                ->setQueryBuilder(
+                    fn (QueryBuilder $queryBuilder) => $queryBuilder->getEntityManager()->getRepository(CustomerLocationPlaceAsset::class)->findByCustomer()
+                )
+            ,
+            // yield AssociationField::new('...')->setQueryBuilder(
+            //     fn (QueryBuilder $queryBuilder) => $queryBuilder->getEntityManager()->getRepository(Foo::class)->findBySomeCriteria();
+            // );
+        
             AssociationField::new('type')
                 ->renderAsNativeWidget()
             ,

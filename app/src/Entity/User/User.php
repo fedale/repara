@@ -113,7 +113,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var Collection|UserRole[]
      */
     #[ORM\ManyToMany(targetEntity: UserRole::class, inversedBy: 'users')]
-    #[ORM\JoinTable(name: 'user_role_assigned2', joinColumns: [
+    #[ORM\JoinTable(name: 'user_role_assigned', joinColumns: [
         new ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')], inverseJoinColumns: [
         new ORM\JoinColumn(name: 'user_role_id', referencedColumnName: 'id')])]
     private $roles;
@@ -121,9 +121,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     // /**
     //  * @var Collection|UserRole[]
     //  */
-    // #[ORM\ManyToMany(targetEntity: UserRole::class)]
-    // #[ORM\JoinTable(name: 'user_role_assigned')]
-    // private $userRoles;
+    #[ORM\ManyToMany(targetEntity: UserRole::class)]
+    #[ORM\JoinTable(name: 'user_role_assigned')]
+    private $userRoles;
 
     #[ORM\OneToOne(targetEntity: UserProfile::class, mappedBy: 'user', cascade:["persist", "remove"])]
     private ?UserProfile $profile;
@@ -146,7 +146,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $projectTasks;
 
     #[ORM\ManyToMany(targetEntity: Customer::class, inversedBy: 'users')]
-    #[ORM\JoinTable(name: 'user_customer_assigned2')]
+    #[ORM\JoinTable(name: 'user_customer_assigned')]
     private Collection $assignedCustomers;
 
 
@@ -155,14 +155,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function __construct()
     {
-        $this->roles = 
-        new ArrayCollection();
-        $this->userRoles = 
-        new ArrayCollection();
-        $this->groups = 
-        new ArrayCollection();
-        $this->projectTaskUserAssigneds = 
-        new ArrayCollection();
+        $this->roles = new ArrayCollection();
+        $this->userRoles = new ArrayCollection();
+        $this->groups = new ArrayCollection();
+        $this->projectTaskUserAssigneds = new ArrayCollection();
         $this->projectTasks = new ArrayCollection();
         $this->assignedCustomers = new ArrayCollection();
     }

@@ -3,6 +3,7 @@
 namespace App\Entity\Customer;
 
 use App\Entity\Asset\Asset;
+use App\Repository\Customer\CustomerLocationPlaceAssetRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
@@ -10,7 +11,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  * CustomerLocationPlaceAsset
  */
 #[ORM\Table(name: 'customer_location_place_asset', uniqueConstraints: [new ORM\UniqueConstraint(name: 'code', columns: ['code'])], indexes: [new ORM\Index(name: 'active', columns: ['active']), new ORM\Index(name: 'installation_doc', columns: ['installation_doc']), new ORM\Index(name: 'created_on', columns: ['created_on']), new ORM\Index(name: 'door_id', columns: ['asset_id']), new ORM\Index(name: 'created_at', columns: ['created_at']), new ORM\Index(name: 'modified_on', columns: ['modified_on']), new ORM\Index(name: 'installer_agency', columns: ['installer_agency']), new ORM\Index(name: 'location_place_id', columns: ['location_place_id']), new ORM\Index(name: 'updated_at', columns: ['updated_at']), new ORM\Index(name: 'executor_agency', columns: ['executor_agency']), new ORM\Index(name: 'compliance_doc', columns: ['compliance_doc']), new ORM\Index(name: 'name', columns: ['name'])])]
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: CustomerLocationPlaceAssetRepository::class)]
 class CustomerLocationPlaceAsset
 {
     use TimestampableEntity;

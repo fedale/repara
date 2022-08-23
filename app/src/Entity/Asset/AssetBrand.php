@@ -30,7 +30,7 @@ class AssetBrand
     private $name;
 
     #[Gedmo\Slug(fields:['name'])]
-    #[ORM\Column(type: 'string', length: 128, unique: true)]
+    #[ORM\Column(name: 'slug', type: 'string', length: 128, unique: true)]
     private $slug;
     
     /**
@@ -39,6 +39,11 @@ class AssetBrand
     #[ORM\Column(name: 'active', type: 'boolean', nullable: false, options: ['default' => 1])]
     private $active = true;
     
+    public function __toString()
+    {
+        return $this->name;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

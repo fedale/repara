@@ -72,15 +72,10 @@ class UserCrudController extends AbstractCrudController
             ->setTemplatePath('admin/field/collection.twig')
         ;
         yield AssociationField::new('userRoles')
-            ->renderAsNativeWidget()
-            ->setFormTypeOption('expanded', true)
-            ->setTemplatePath('admin/field/collection.twig')
+             ->renderAsNativeWidget()
+             ->setFormTypeOption('expanded', true)
+             ->setTemplatePath('admin/field/collection.twig')
         ;
-        // yield AssociationField::new('assignedCustomers')
-        //     ->renderAsNativeWidget()
-        //     ->setFormTypeOption('expanded', true)
-        //     ->setTemplatePath('admin/field/collection.twig')
-        // ;
         yield CustomerField::new('assignedCustomers');
         yield DateField::new('createdAt')
             ->onlyOnIndex()

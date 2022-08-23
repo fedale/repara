@@ -16,8 +16,8 @@ class AssetType
 
     #[ORM\Column]
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    private ?int $id;
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    private $id;
 
     #[ORM\Column(length: 64, nullable: false)]
     private string $name;
@@ -37,6 +37,10 @@ class AssetType
         $this->models = new ArrayCollection();
     }
     
+    public function __toString()
+    {
+        return $this->name;
+    }
 
     public function getId(): ?int
     {

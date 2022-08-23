@@ -4,6 +4,8 @@ namespace App\Controller\Admin\Asset;
 
 use App\Entity\Asset\AssetBrand;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class AssetBrandCrudController extends AbstractCrudController
 {
@@ -12,14 +14,14 @@ class AssetBrandCrudController extends AbstractCrudController
         return AssetBrand::class;
     }
 
-    /*
     public function configureFields(string $pageName): iterable
     {
         return [
-            IdField::new('id'),
-            TextField::new('title'),
-            TextEditorField::new('description'),
+            TextField::new('name'),
+            TextField::new('slug')
+                ->onlyWhenUpdating()
+            ,
+            BooleanField::new('active'),
         ];
     }
-    */
 }

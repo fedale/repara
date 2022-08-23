@@ -4,6 +4,7 @@ namespace App\Controller\Admin\User;
 
 use App\Entity\User\UserRole;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class UserRoleCrudController extends AbstractCrudController
 {
@@ -12,14 +13,14 @@ class UserRoleCrudController extends AbstractCrudController
         return UserRole::class;
     }
 
-    /*
     public function configureFields(string $pageName): iterable
     {
         return [
-            IdField::new('id'),
-            TextField::new('title'),
-            TextEditorField::new('description'),
+            TextField::new('name'),
+            TextField::new('code'),
+            TextField::new('slug')
+                ->onlyWhenUpdating()
+            ,
         ];
     }
-    */
 }

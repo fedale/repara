@@ -1,7 +1,8 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
 {% extends '@EasyAdmin/crud/form_theme.html.twig' %}
 
-{% block association_users_row %}
+{% block users_association_row %}
+
     {% set row_attr = row_attr|merge({
         class: row_attr.class|default('') ~ ' form-group'
     }) %}
@@ -9,33 +10,45 @@
     <div class="{{ form.vars.ea_crud_form.ea_field.columns ?? form.vars.ea_crud_form.ea_field.defaultColumns ?? '' }}">
         <div {% with { attr: row_attr } %}{{ block('attributes') }}{% endwith %}>
             {{- form_label(form) -}}
-            <div class="form-widget">
-                <p style="display:inline;">Select: 
-                <a href="#" data-action="users#select" data-select-value="all">All</a> | 
-                <a href="#" data-action="users#select" data-select-value="none">None</a> | 
-                <a href="#" data-action="users#select" data-select-value="inverse">Inverse</a>
+            <div class="select-search-box">
+                <p>{{ 'Select'|trans }}: 
+                <a href="#" data-action="users#select" data-select-value="all">{{ 'All'|trans }}</a> | 
+                <a href="#" data-action="users#select" data-select-value="none">{{ 'None'|trans }}</a> | 
+                <a href="#" data-action="users#select" data-select-value="inverse">{{ 'Inverse'|trans }}</a>
                 </p>
-                <p style="margin-left:10px; display:inline;">Gender: 
-                <a href="#" data-action="users#selectGender" data-select-value="m">Males</a> | 
-                <a href="#" data-action="users#selectGender" data-select-value="f">Females</a>
-                {# <a href="#" data-action="users#selectGender" data-select-value="nd">Not defined</a> #}
+                <p class="ms-2">{{ 'Gender'|trans }}: 
+                <a href="#" data-action="users#selectGender" data-select-value="m">{{ 'Males'|trans }}</a> | 
+                <a href="#" data-action="users#selectGender" data-select-value="f">{{ 'Females'|trans }}</a>
+                {# <a href="#" data-action="users#selectGender" data-select-value="nd">{{ 'Not defined'|trans }}</a> #}
                 </p>
-                <p style="margin-left:10px; display:inline;">Groups: 
-                <a href="#" data-action="users#selectGroup" data-select-value="group-1">Group 1</a> | 
-                <a href="#" data-action="users#selectGroup" data-select-value="group-2">Group 2</a> | 
-                <a href="#" data-action="users#selectGroup" data-select-value="group-3">Group 3</a> | 
-                <a href="#" data-action="users#selectGroup" data-select-value="group-4">Group 4</a>
+                
+                {% if groups|length > 0 %}
+                    <p class="form-widget ms-2">
+                    {% if groups|length > 2 %}
+                        <select class="form-select" data-action="users#selectGroup">
+                            <option value="">{{ 'Choose group:'|trans }}</option>
+                            {% for group in groups %}
+                                <option  value="{{ group.slug }}" data-select-value="{{ group.slug }}">{{ group|trans }}</option>
+                            {% endfor %}
+                                <option  value="none" data-select-value="none">{{ 'No group'|trans }}</option>
+                        </select>
+                    {% else %}
+                        {{ 'Groups'|trans }}:
+                        {% for group in groups %}
+                            <a href="#" data-action="users#selectGroup" data-select-value="{{ group.slug }}">{{ group|trans }}</a> | 
+                        {% endfor %}
+                            <a href="#" data-action="users#selectGroup" data-select-value="none">{{ 'No gorup'|trans }}</a>
+                    {% endif %}
+                    </p>
+                {% endif %}
+                
+                <p class="form-widget ms-2">{{ 'View'|trans }}: 
+                <a href="#" data-action="users#view" data-select-value="all">{{ 'All'|trans }} (<strong data-users-target="counterAll"></strong>)</a> | 
+                <a href="#" data-action="users#view" data-select-value="selected">{{ 'Selected'|trans }} (<strong data-users-target="counterSelected"></strong>)</a> | 
+                <a href="#" data-action="users#view" data-select-value="not-selected">{{ 'Not selected'|trans }} (<strong data-users-target="counterNotSelected"></strong>)</a>
                 </p>
-                <p style="margin-left:10px; display:inline;">View: 
-                <a href="#" data-action="users#view" data-select-value="all">All (<strong data-users-target="counterAll"></strong>)</a> | 
-                <a href="#" data-action="users#view" data-select-value="selected">Selected (<strong data-users-target="counterSelected"></strong>)</a> | 
-                <a href="#" data-action="users#view" data-select-value="not-selected">Not selected (<strong data-users-target="counterNotSelected"></strong>)</a>
-                </p>
-                <p style="margin-left:10px; display:inline;">
-                <div class="input-group">
-                <input type="text" class="form-control form-control-sm col-xxl-2" data-action="users#search" value="" placeholder="Cerca...">
-                <button class="btn btn-outline-secondary" type="button"><i class="fa-solid fa-magnifying-glass"></i></button>
-                </div>
+                <p class="form-widget ms-2">
+                <input type="search" class="form-control form-control-sm w-10 d-inline" data-action="users#search" value="" placeholder="{{ 'Search...'|trans }}">
                 </p>
             </div>
             
@@ -87,39 +100,4 @@
     {% if form.vars.ea_crud_form.ea_field.columns|default(null) is null %}
         <div class="flex-fill"></div>
     {% endif %}
-{% endblock association_users_row %}
-
-{% block collection_entry_row %}
-
-    {% set is_array_field = 'EasyCorp\\Bundle\\EasyAdminBundle\\Field\\ArrayField' == form_parent(form).vars.ea_crud_form.ea_field.fieldFqcn ?? false %}
-    {% set is_complex = form_parent(form).vars.ea_crud_form.ea_field.customOptions.get('entryIsComplex') ?? false %}
-    {% set allows_deleting_items = form_parent(form).vars.allow_delete|default(false) %}
-    {% set render_expanded = form_parent(form).vars.ea_crud_form.ea_field.customOptions.get('renderExpanded') ?? false %}
-    {% set delete_item_button %}
-        <button type="button" class="btn btn-link btn-link-danger field-collection-delete-button action-delete"
-                title="{{ 'action.remove_item'|trans({}, 'EasyAdminBundle') }}">
-            <i class="far fa-trash-alt"></i>
-        </button>
-    {% endset %}
-
-    <div class="card field-collection-item">
-    <div class="card-header">
-        {{ value|ea_as_string }}
-        {% if allows_deleting_items %}
-                {{ delete_item_button }}
-        {% endif %}
-    </div>
-    <div class="card-body">
-        <div class="card-text">
-        {# {{ dump(form) }} #}
-        {{ form_widget(form) }}
-        {# {{ form_row(form) }} #}
-        </div>
-    </div>
-    </div>
-    <div class="field-collection-item">
-    <div class="field-collection-item">
-            
-            
-    </div>
-{% endblock collection_entry_row %}
+{% endblock users_association_row %}

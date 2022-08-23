@@ -11,7 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\FieldTrait;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class CustomerField implements FieldInterface
+final class UserField implements FieldInterface
 {
     use FieldTrait;
 
@@ -40,8 +40,31 @@ final class CustomerField implements FieldInterface
             ->addJsFiles(Asset::fromEasyAdminAssetPackage('field-collection.js')->onlyOnForms())
             ->setDefaultColumns('col-md-8 col-xxl-7')
             ->setFormTypeOptions([
-                'block_prefix' => 'collection_' . $propertyName,
                 'by_reference' => false,
+                'expanded' => true,
+                'row_attr' => [
+                    'data-controller' => 'user', 
+                    'data-user-selects-value' => "[\"all\", \"none\", \"invert\", \"visibile\", \"not-vibile\"]", 
+                    'data-user-genders-value' => "[\"M\", \"F\", \"N\"]", 
+                    'data-user-groups-value' => "[\"proposal\", \"impiegati\", \"developer\"]", 
+                ],
+                'label_attr' => ['class' => 'checkbox-inline'],
+                'block_prefix' => 'user_list',
+                'choice_attr' =>  function($choice, $key, $value) {
+                    $groups = $choice->getGroups()->toArray();
+                    return [
+                        'data-user-target' => 'input',
+                        'data-profile-status' => strtolower($choice->getProfile()->getStatus()),
+                        'data-profile-type' => strtolower($choice->getProfile()->getType()),
+                        'data-profile-gender' => strtolower($choice->getProfile()->getGender()),
+                        'data-groups' => json_encode(
+                            array_map(function($group) { 
+                                return $group->getSlug();
+                            }, 
+                            $groups
+                        ))
+                    ];
+                }
             ])
             ->addFormTheme('admin/form/form.html.twig')
             ->setCustomOption(self::OPTION_ALLOW_ADD, true)

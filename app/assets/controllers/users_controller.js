@@ -9,39 +9,46 @@ export default class extends Controller {
 
     static targets = ['input', 'counterAll', 'counterSelected', 'counterNotSelected'];
 
-    // initialize () {
-    //     this.change = this.change.bind(this);
-    // }
+    initialize () {
+        this.update = this.update.bind(this);
+    }
 
     connect() {
-        console.log('Connected');
-        this.change();
+        this.inputTargets.forEach(checkbox => checkbox.addEventListener('change', this.update))
+        this.update()
     }
 
     select(event) {
         event.preventDefault();
         
         const value = event.target.dataset.selectValue;
+
         switch (value) {
             case 'none':
                 this.inputTargets.forEach( checkbox => {
-                    checkbox.checked = false;
+                    if (checkbox.parentElement.style.display !== 'none') {
+                        checkbox.checked = false;
+                    }
                 });
             break;
             case 'inverse':
                 this.inputTargets.forEach( checkbox => {
-                    checkbox.checked = !checkbox.checked;
+                    if (checkbox.parentElement.style.display !== 'none') {
+                        checkbox.checked = !checkbox.checked;
+                    }
                 });
             break;
             default:
             case 'all':
                 this.inputTargets.forEach( checkbox => {
-                    checkbox.checked = true;
+                    if (checkbox.parentElement.style.display !== 'none') {
+                        checkbox.checked = true;
+                    }
                 });
             break;
         }
 
-        this.change();
+        this.update();
     }
 
     selectGender(event) {
@@ -54,7 +61,7 @@ export default class extends Controller {
             }  
         })
 
-        this.change();
+        this.update();
     }
 
     selectStatus(event) {
@@ -64,7 +71,8 @@ export default class extends Controller {
 
     selectGroup(event) {
         event.preventDefault();
-        const value = event.target.dataset.selectValue;
+        const value = event.target.dataset.selectValue || event.target.value;
+        console.log(event.target.dataset.selectValue);
         
         this.inputTargets.forEach( checkbox => {
             const groups = JSON.parse(checkbox.dataset.groups.toLowerCase());
@@ -77,7 +85,7 @@ export default class extends Controller {
             }
         })
 
-        this.change();
+        this.update();
     }
 
     view(event) {
@@ -123,12 +131,11 @@ export default class extends Controller {
         })
     }
 
-    
-    change() {
+    update() {
         this.counterAllTarget.innerHTML = this.countAll.toString();
         this.counterSelectedTarget.innerHTML = this.countSelected.toString();
         this.counterNotSelectedTarget.innerHTML = this.countNotSelected.toString();
-    }
+    } 
 
     get countAll() {
         return this.inputTargets.length;

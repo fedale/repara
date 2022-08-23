@@ -1,0 +1,13 @@
+.select-search-box p {
+    display: inline-block;
+}
+
+.form-check-inline,
+.form-check-inline+.form-check-inline {
+    width: 200px;
+    /* display:inline-block; */
+    margin-left: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    /* text-overflow: ellipsis; */
+}

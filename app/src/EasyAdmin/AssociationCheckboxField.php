@@ -21,6 +21,9 @@ final class AssociationCheckboxField implements FieldInterface
 
     public const WIDGET_NATIVE = 'native';
 
+   
+
+   
 
     /**
      * @param TranslatableInterface|string|false|null $label
@@ -31,6 +34,7 @@ final class AssociationCheckboxField implements FieldInterface
             ->setProperty($propertyName)
             ->setLabel($label)
             ->setTemplateName('crud/field/association')
+            ->setTemplatePath('admin/field/association.html.twig')
             ->setFormType(EntityType::class)
             ->addCssClass('field-association')
             ->setDefaultColumns('col-md-7 col-xxl-12')
@@ -42,15 +46,14 @@ final class AssociationCheckboxField implements FieldInterface
                     'data-controller' => $propertyName, 
                 ],
                 'label_attr' => ['class' => 'checkbox-inline'],
-                'block_prefix' => 'association_' . $propertyName,
+                'block_prefix' => $propertyName . '_association',
                 'choice_attr' =>  function($choice, $key, $value) {
                     $groups = $choice->getGroups()->toArray();
+                    
+                    
                     return [
                         'data-users-target' => 'input',
-                        'data-action' => 'users#change',
-                        // 'data-profile-status' => $choice->getProfile()->getStatus(),
-                        // 'data-profile-type' => $choice->getProfile()->getType(),
-                        // 'data-profile-gender' => $choice->getProfile()->getGender(),
+                        // 'data-action' => 'users#change',
                         'data-groups' => json_encode(
                             array_map(function($group) { 
                                 return $group->getSlug();
@@ -58,19 +61,19 @@ final class AssociationCheckboxField implements FieldInterface
                             $groups
                         ))
                     ];
-                }
+                },
             ])
             ->addFormTheme('admin/form/form.html.twig')
             ->addCssFiles('admin/css/' . $propertyName . '.css')->onlyOnForms()
-            ->setQueryBuilder(
-                fn (QueryBuilder $queryBuilder) => $queryBuilder->getEntityManager()->getRepository(Employee::class)->findWithProfileAndGroups()
-            )
-        //    ->setCustomOption(self::OPTION_CRUD_CONTROLLER, null)
+            // ->setQueryBuilder(
+            //     fn (QueryBuilder $queryBuilder) => $queryBuilder->getEntityManager()->getRepository(Employee::class)->findWithProfileAndGroups()
+            // )
         ;
     }
 
     public function setQueryBuilder(\Closure $queryBuilderCallable): self
     {
+
         $this->setCustomOption(self::OPTION_QUERY_BUILDER_CALLABLE, $queryBuilderCallable);
 
         return $this;

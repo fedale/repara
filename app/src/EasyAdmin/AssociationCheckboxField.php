@@ -3,6 +3,7 @@
 namespace App\EasyAdmin;
 
 use App\Entity\Employee\Employee;
+use App\Entity\User\User;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -50,10 +51,8 @@ final class AssociationCheckboxField implements FieldInterface
                 'choice_attr' =>  function($choice, $key, $value) {
                     $groups = $choice->getGroups()->toArray();
                     
-                    
                     return [
                         'data-users-target' => 'input',
-                        // 'data-action' => 'users#change',
                         'data-groups' => json_encode(
                             array_map(function($group) { 
                                 return $group->getSlug();
@@ -65,9 +64,9 @@ final class AssociationCheckboxField implements FieldInterface
             ])
             ->addFormTheme('admin/form/form.html.twig')
             ->addCssFiles('admin/css/' . $propertyName . '.css')->onlyOnForms()
-            // ->setQueryBuilder(
-            //     fn (QueryBuilder $queryBuilder) => $queryBuilder->getEntityManager()->getRepository(Employee::class)->findWithProfileAndGroups()
-            // )
+            ->setQueryBuilder(
+                fn (QueryBuilder $queryBuilder) => $queryBuilder->getEntityManager()->getRepository(User::class)->findWithProfileAndGroups()
+            )
         ;
     }
 

@@ -6,6 +6,7 @@ use App\Repository\Customer\CustomerGroupRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 #[ORM\Entity(repositoryClass: CustomerGroupRepository::class)]
 class CustomerGroup
@@ -17,6 +18,13 @@ class CustomerGroup
 
     #[ORM\Column(type: 'string', length: 255)]
     private $name;
+    
+    #[Gedmo\Slug(fields:['name'])]
+    #[ORM\Column(type:"string", length:255, unique:true)]
+    private $slug;
+
+    #[ORM\Column(type:'smallint')]
+    private $sort;
 
     #[ORM\ManyToMany(targetEntity: Customer::class, mappedBy: 'groups')]
     private $customers;
@@ -24,6 +32,7 @@ class CustomerGroup
     public function __construct()
     {
         $this->customers = new ArrayCollection();
+        $this->sort = 0;
     }
 
     public function getId(): ?int
@@ -66,6 +75,30 @@ class CustomerGroup
         if ($this->customers->removeElement($customer)) {
             $customer->removeGroup($this);
         }
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    public function getSort(): ?int
+    {
+        return $this->sort;
+    }
+
+    public function setSort(int $sort): self
+    {
+        $this->sort = $sort;
 
         return $this;
     }

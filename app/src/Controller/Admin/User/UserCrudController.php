@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin\User;
 
+use App\EasyAdmin\AssociationCheckboxField;
 use App\EasyAdmin\CustomerField;
 use App\Entity\Employee\Employee;
 use App\Entity\User\User;
@@ -76,7 +77,7 @@ class UserCrudController extends AbstractCrudController
              ->setFormTypeOption('expanded', true)
              ->setTemplatePath('admin/field/collection.twig')
         ;
-        yield CustomerField::new('assignedCustomers');
+        yield AssociationCheckboxField::new('assignedCustomers');
         yield DateField::new('createdAt')
             ->onlyOnIndex()
         ;

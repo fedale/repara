@@ -16,9 +16,6 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
-/**
- * User
- */
 #[ORM\Table(name: 'user', 
     uniqueConstraints: [
         new ORM\UniqueConstraint(name: 'user_unique_username', columns: ['username']), 
@@ -34,9 +31,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use TimestampableEntity;
 
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'id', type: 'integer', nullable: false, options: ['unsigned' => true])]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
@@ -45,22 +39,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 64, nullable: false, unique: true)]
     private string $code;
     
-    /**
-     * @var string
-     */
     #[ORM\Column(name: 'username', type: 'string', length: 255, nullable: false, unique: true)]
     private string $username;
 
-    /**
-     * @var string
-     */
     #[ORM\Column(name: 'email', type: 'string', length: 255, nullable: false, unique: true)]
     #[Assert\Email]
     private string $email;
 
-    /**
-     * @var string
-     */
     #[ORM\Column(name: 'password', type: 'string', length: 60, nullable: false)]
     private string $password;
     
@@ -68,59 +53,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Length(min: 7, groups: ['registration'])]
     private ?string $plainPassword = null;
 
-    /**
-     * @var int|null
-     */
     #[ORM\Column(name: 'confirmed_at', type: 'integer', nullable: true, options: ['default' => null])]
     private $confirmedAt = NULL;
 
-    /**
-     * @var string|null
-     */
     #[ORM\Column(name: 'unconfirmed_email', type: 'string', length: 255, nullable: true, options: ['default' => null])]
     private $unconfirmedEmail;
 
-    /**
-     * @var int|null
-     */
     #[ORM\Column(name: 'blocked_at', type: 'integer', nullable: true, options: ['default' => null])]
     private $blockedAt = NULL;
 
-    /**
-     * @var string|null
-     */
     #[ORM\Column(name: 'registration_ip', type: 'string', length: 45, nullable: true, options: ['default' => null])]
     private $registrationIp;
 
-    /**
-     * @var bool
-     */
     #[ORM\Column(name: 'active', type: 'boolean', nullable: false, options: ['default' => 1])]
     private $active = true;
     
-    /**
-     * @var \DateTime|null
-     */
     #[ORM\Column(name: 'deleted_at', type: 'datetime', nullable: true, options: ['default' => null])]
     private $deletedAt;
-    /**
-     * @var int|null
-     */
+
     #[ORM\Column(name: 'last_login_at', type: 'integer', nullable: true, options: ['default' => null])]
     private $lastLoginAt = NULL;
 
-    /**
-     * @var Collection|UserRole[]
-     */
     #[ORM\ManyToMany(targetEntity: UserRole::class, inversedBy: 'users')]
     #[ORM\JoinTable(name: 'user_role_assigned', joinColumns: [
         new ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')], inverseJoinColumns: [
         new ORM\JoinColumn(name: 'user_role_id', referencedColumnName: 'id')])]
     private $roles;
     
-    // /**
-    //  * @var Collection|UserRole[]
-    //  */
     #[ORM\ManyToMany(targetEntity: UserRole::class)]
     #[ORM\JoinTable(name: 'user_role_assigned')]
     private $userRoles;
@@ -132,9 +91,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\JoinColumn(nullable: false)]
     private $type;
 
-    /**
-     * @var Collection|UserGroup[]
-     */
     #[ORM\ManyToMany(targetEntity: UserGroup::class, inversedBy: 'users')]
     #[ORM\JoinTable(name: 'user_group_assigned')]
     private $groups;
@@ -150,9 +106,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $assignedCustomers;
 
 
-    /**
-     * Constructor
-     */
     public function __construct()
     {
         $this->roles = new ArrayCollection();

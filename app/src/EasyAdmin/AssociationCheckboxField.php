@@ -2,7 +2,6 @@
 
 namespace App\EasyAdmin;
 
-use App\Entity\Employee\Employee;
 use App\Entity\User\User;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
@@ -18,13 +17,11 @@ final class AssociationCheckboxField implements FieldInterface
     use FieldTrait;
 
     public const OPTION_WIDGET = 'widget';
+    
     public const OPTION_QUERY_BUILDER_CALLABLE = 'queryBuilderCallable';
 
     public const WIDGET_NATIVE = 'native';
 
-   
-
-   
 
     /**
      * @param TranslatableInterface|string|false|null $label
@@ -49,6 +46,7 @@ final class AssociationCheckboxField implements FieldInterface
                 'label_attr' => ['class' => 'checkbox-inline'],
                 'block_prefix' => $propertyName . '_association',
                 'choice_attr' =>  function($choice, $key, $value) {
+                    dump('bla');
                     $groups = $choice->getGroups()->toArray();
                     
                     return [
@@ -65,7 +63,7 @@ final class AssociationCheckboxField implements FieldInterface
             ->addFormTheme('admin/form/form.html.twig')
             ->addCssFiles('admin/css/' . $propertyName . '.css')->onlyOnForms()
             ->setQueryBuilder(
-                fn (QueryBuilder $queryBuilder) => $queryBuilder->getEntityManager()->getRepository(User::class)->findWithProfileAndGroups()
+                fn (QueryBuilder $queryBuilder) => $queryBuilder->getEntityManager()->getRepository(User::class)->findWithProfileAndGrouprs()
             )
         ;
     }

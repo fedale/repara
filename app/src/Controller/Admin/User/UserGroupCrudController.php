@@ -6,6 +6,7 @@ use App\EasyAdmin\AssociationCheckboxField;
 use App\Entity\User\UserGroup;
 use App\Repository\User\UserGroupRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -36,6 +37,13 @@ class UserGroupCrudController extends AbstractCrudController
             TextField::new('name'),
             AssociationCheckboxField::new('users'),
         ];
+    }
+
+    public function configureFilters(Filters $filters): Filters
+    {
+        return $filters
+            ->add('name')
+        ;
     }
 
     public function configureResponseParameters(KeyValueStore $responseParameters): KeyValueStore

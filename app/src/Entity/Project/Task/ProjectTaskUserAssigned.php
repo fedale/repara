@@ -23,21 +23,15 @@ class ProjectTaskUserAssigned
 {
     use TimestampableEntity;
     
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'id', type: 'integer', nullable: false, options: ['unsigned' => true])]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private $id;
     
-    /**
-     * @var bool
-     */
     #[ORM\Column(name: 'active', type: 'boolean', nullable: false, options: ['default' => 1])]
     private $active = true;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'ProjectTaskUserAssigneds')]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'projectTaskUserAssigneds')]
     #[ORM\Column(name: 'user_id', type: 'integer', nullable: false, options: ['unsigned' => true])]
     #[ORM\JoinColumn(nullable: false)]
     private $users;
@@ -46,6 +40,7 @@ class ProjectTaskUserAssigned
     #[ORM\Column(name: 'project_task_id', type: 'integer', nullable: false, options: ['unsigned' => true])]
     #[ORM\JoinColumn(nullable: false)]
     private $projectTasks;
+
 
     public function getId(): ?int
     {

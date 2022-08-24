@@ -3,6 +3,7 @@
 namespace App\Controller\Admin\User;
 
 use App\Entity\User\UserType;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
@@ -21,5 +22,12 @@ class UserTypeCrudController extends AbstractCrudController
                 ->onlyWhenUpdating()
             ,
         ];
+    }
+
+    public function configureFilters(Filters $filters): Filters
+    {
+        return $filters
+            ->add('name')
+        ;
     }
 }

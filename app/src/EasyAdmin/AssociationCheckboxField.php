@@ -46,7 +46,6 @@ final class AssociationCheckboxField implements FieldInterface
                 'label_attr' => ['class' => 'checkbox-inline'],
                 'block_prefix' => $propertyName . '_association',
                 'choice_attr' =>  function($choice, $key, $value) {
-                    dump('bla');
                     $groups = $choice->getGroups()->toArray();
                     
                     return [
@@ -70,7 +69,7 @@ final class AssociationCheckboxField implements FieldInterface
 
     public function setQueryBuilder(\Closure $queryBuilderCallable): self
     {
-
+        dump($queryBuilderCallable);
         $this->setCustomOption(self::OPTION_QUERY_BUILDER_CALLABLE, $queryBuilderCallable);
 
         return $this;

@@ -29,6 +29,7 @@ use App\Entity\User\UserRole;
 use App\Entity\User\UserType;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\BatchActionDto;
 
 class DashboardController extends AbstractDashboardController
 {
@@ -131,6 +132,19 @@ class DashboardController extends AbstractDashboardController
                     Action::BATCH_DELETE => 'ROLE_ADMIN',
                 ]
             )
+
+            ->addBatchAction(Action::new('active', '')
+                ->linkToCrudAction('deactivate')
+                ->addCssClass('btn btn-primary')
+                ->setIcon('fa fa-user-check')
+            )
+            // ->addBatchAction(Action::new('delete', 'Delete selected')
+            //     ->linkToCrudAction('approveUsers')
+            //     ->addCssClass('btn btn-primary')
+            //     ->setIcon('fa fa-user-check')
+            // )
         ;
     }
+
+    
 }

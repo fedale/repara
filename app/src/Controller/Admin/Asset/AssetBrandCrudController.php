@@ -3,7 +3,7 @@
 namespace App\Controller\Admin\Asset;
 
 use App\Entity\Asset\AssetBrand;
-use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use App\Controller\Admin\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
@@ -24,4 +24,6 @@ class AssetBrandCrudController extends AbstractCrudController
             BooleanField::new('active'),
         ];
     }
+
+   
 }

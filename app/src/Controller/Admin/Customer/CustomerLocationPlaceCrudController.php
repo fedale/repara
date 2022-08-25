@@ -4,6 +4,8 @@ namespace App\Controller\Admin\Customer;
 
 use App\Entity\Customer\CustomerLocationPlace;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class CustomerLocationPlaceCrudController extends AbstractCrudController
 {
@@ -12,14 +14,11 @@ class CustomerLocationPlaceCrudController extends AbstractCrudController
         return CustomerLocationPlace::class;
     }
 
-    /*
     public function configureFields(string $pageName): iterable
     {
         return [
-            IdField::new('id'),
-            TextField::new('title'),
-            TextEditorField::new('description'),
+            TextField::new('name'),
+            BooleanField::new('active'),
         ];
     }
-    */
 }

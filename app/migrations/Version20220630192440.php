@@ -222,11 +222,15 @@ final class Version20220630192440 extends AbstractMigration
         ) ENGINE = InnoDB');
 
         $this->addSql('CREATE TABLE customer_role (
-            id INT UNSIGNED AUTO_INCREMENT NOT NULL,
-            name VARCHAR(255) DEFAULT NULL,
+            id SMALLINT UNSIGNED AUTO_INCREMENT NOT NULL,
+            name VARCHAR(64) NOT NULL,
+            slug VARCHAR(64) NOT NULL,
+            code VARCHAR(64) NOT NULL,
             INDEX name (name),
+            UNIQUE INDEX slug (slug),
+            UNIQUE INDEX code (code),
             PRIMARY KEY(id)
-        ) ENGINE = InnoDB ');
+        ) ENGINE = InnoDB');
 
         $this->addSql('CREATE TABLE customer_role_assigned (
             id INT UNSIGNED AUTO_INCREMENT NOT NULL,

@@ -33,15 +33,22 @@ class UserRole
     #[ORM\Column(name: 'name', type: 'string', length: 64, nullable: false)]
     private $name;
 
-    /**
-     * @var Collection
-     */
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'roles')]
     private $users;
 
     #[ORM\Column(type: 'string', length: 64, nullable: false, unique: true)]
     private $code;
 
+    #[ORM\ManyToMany(targetEntity: self::class, mappedBy: 'children')]
+    private Collection $parents;
+
+    #[ORM\ManyToMany(targetEntity: self::class, inversedBy: 'parents')]
+    #[ORM\JoinTable(
+        name: 'user_role_hierarchy', 
+        joinColumns: [new ORM\JoinColumn(name: 'parent', referencedColumnName: 'id')], 
+        inverseJoinColumns: [new ORM\JoinColumn(name: 'child', referencedColumnName: 'id')]
+    )]
+    private Collection $children;
 
     /**
      * Constructor
@@ -49,6 +56,8 @@ class UserRole
     public function __construct()
     {
         $this->users = new ArrayCollection();
+        $this->parents = new ArrayCollection();
+        $this->children = new ArrayCollection();
     }
     
     public function __toString()
@@ -84,11 +93,8 @@ class UserRole
 
         return $this;
     }
-    /**
-     * @return Collection|User[]
-     */
     
-     public function getUsers(): Collection
+    public function getUsers(): Collection
     {
         return $this->users;
     }
@@ -120,6 +126,54 @@ class UserRole
     public function setCode(string $code): self
     {
         $this->code = $code;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, self>
+     */
+    public function getParents(): Collection
+    {
+        return $this->parents;
+    }
+
+    public function addParent(self $parent): self
+    {
+        if (!$this->parents->contains($parent)) {
+            $this->parents->add($parent);
+        }
+
+        return $this;
+    }
+
+    public function removeParent(self $parent): self
+    {
+        $this->parents->removeElement($parent);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, self>
+     */
+    public function getChildren(): Collection
+    {
+        return $this->children;
+    }
+
+    public function addChild(self $child): self
+    {
+        if (!$this->children->contains($child)) {
+            $this->children->add($child);
+        }
+
+        return $this;
+    }
+
+    public function removeChild(self $child): self
+    {
+        $this->children->removeElement($child);
 
         return $this;
     }

@@ -5,6 +5,7 @@ namespace App\Controller\Admin\User;
 use App\Entity\User\UserRole;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class UserRoleCrudController extends AbstractCrudController
@@ -30,6 +31,8 @@ class UserRoleCrudController extends AbstractCrudController
             TextField::new('slug')
                 ->onlyWhenUpdating()
             ,
+            AssociationField::new('parents'),
+            //AssociationField::new('children')
         ];
     }
 }

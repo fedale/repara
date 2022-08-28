@@ -5,6 +5,7 @@ namespace App\Controller\Admin\User;
 use App\EasyAdmin\AssociationCheckboxField;
 use App\Admin\Filter\UserProfileFilter;
 use App\EasyAdmin\CustomerField;
+use App\EasyAdmin\TreeCheckboxField;
 use App\Entity\Employee\Employee;
 use App\Entity\User\User;
 use App\Entity\User\UserGroup;
@@ -85,7 +86,8 @@ class UserCrudController extends AbstractCrudController
             ->setFormTypeOption('expanded', true)
             ->setTemplatePath('admin/field/collection.twig')
         ;
-        yield AssociationCheckboxField::new('assignedCustomers');
+        yield TreeCheckboxField::new('assignedCustomers');
+        // yield AssociationCheckboxField::new('assignedCustomers');
         yield DateField::new('createdAt')
             ->onlyOnIndex()
         ;

@@ -233,14 +233,14 @@ final class Version20220630192440 extends AbstractMigration
         ) ENGINE = InnoDB');
 
         $this->addSql('CREATE TABLE customer_role_assigned (
-            id INT UNSIGNED AUTO_INCREMENT NOT NULL,
             customer_id INT UNSIGNED NOT NULL,
-            customer_role_id INT UNSIGNED NOT NULL,
-            PRIMARY KEY(id),
+            customer_role_id SMALLINT UNSIGNED NOT NULL,
+            INDEX FK_D95AB405A76ED398 (customer_role_id),
+            INDEX IDX_CFC787FBA76ED396 (customer_id),
+            PRIMARY KEY(customer_id, customer_role_id),
             CONSTRAINT `customer_customer_role_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
             CONSTRAINT `customer_customer_role_ibfk_2` FOREIGN KEY (`customer_role_id`) REFERENCES `customer_role` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-        ) ENGINE = InnoDB ');
-        
+        ) ENGINE = InnoDB');
     }
 
     public function down(Schema $schema): void

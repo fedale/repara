@@ -12,7 +12,16 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * Asset
  */
-#[ORM\Table(name: 'asset', indexes: [new ORM\Index(name: 'name', columns: ['name']), new ORM\Index(name: 'active', columns: ['active']), new ORM\Index(name: 'model_id', columns: ['model_id']), new ORM\Index(name: 'created_at', columns: ['created_at']), new ORM\Index(name: 'updated_at', columns: ['updated_at'])])]
+#[ORM\Table(
+    name: 'asset', 
+    indexes: [
+        new ORM\Index(name: 'name', columns: ['name']), 
+        new ORM\Index(name: 'active', columns: ['active']), 
+        new ORM\Index(name: 'model_id', columns: ['model_id']), 
+        new ORM\Index(name: 'created_at', columns: ['created_at']), 
+        new ORM\Index(name: 'updated_at', columns: ['updated_at'])
+    ]
+)]
 #[ORM\Entity]
 class Asset
 {
@@ -40,7 +49,7 @@ class Asset
     #[ORM\JoinColumn(name: 'model_id', referencedColumnName: 'id')]
     private $model;
 
-    #[ORM\OneToMany(mappedBy: 'asset', targetEntity: CustomerLocationPlaceAsset::class)]
+    #[ORM\OneToMany(targetEntity: CustomerLocationPlaceAsset::class, mappedBy: 'asset')]
     private $customerLocationPlaceAssets;
 
     public function __construct()

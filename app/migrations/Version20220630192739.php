@@ -41,9 +41,9 @@ final class Version20220630192739 extends AbstractMigration
             customer_location_place_asset_id INT UNSIGNED DEFAULT NULL,
             name VARCHAR(128) NOT NULL,
             description TEXT DEFAULT NULL,
-            state enum("requested", "rejected", "approved", "current", "dead", "completed", "on_hold", "signed") NOT NULL COMMENT \'DC2Type::ProjectTaskStateType\', 
-            asset_type VARCHAR(8) DEFAULT \'N/A\' NOT NULL COMMENT \'Update with assetType value\',
-            priority enum("low", "normal", "high") NOT NULL COMMENT \'DC2Type::ProjectTaskPriorityType\', 
+            state enum("requested", "rejected", "approved", "current", "dead", "completed", "on_hold", "signed") NOT NULL COMMENT "DC2Type::ProjectTaskStateType", 
+            asset_type VARCHAR(8) DEFAULT "N/A" NOT NULL COMMENT "Update with assetType value",
+            priority enum("low", "normal", "high") NOT NULL COMMENT "DC2Type::ProjectTaskPriorityType", 
             visible SMALLINT DEFAULT 1 NOT NULL,
             finished_at DATETIME DEFAULT NULL,
             active tinyint DEFAULT 1 NOT NULL,
@@ -239,7 +239,7 @@ final class Version20220630192739 extends AbstractMigration
             INDEX task_type_id (task_type_id),
             INDEX name (name),
             PRIMARY KEY(id),
-            CONSTRAINT `project_task_item_template_ibfk_1` FOREIGN KEY (`task_template_id`) REFERENCES `project_task_template` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+            CONSTRAINT `project_task_item_template_ibfk_1` FOREIGN KEY (`task_template_id`) REFERENCES `project_task_template` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
             -- CONSTRAINT `project_task_item_template_ibfk_2` FOREIGN KEY (`task_type_id`) REFERENCES `project_task_type` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
         ) ENGINE = InnoDB');
     }

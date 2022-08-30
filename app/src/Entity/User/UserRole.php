@@ -39,15 +39,16 @@ class UserRole
     #[ORM\Column(type: 'string', length: 64, nullable: false, unique: true)]
     private $code;
 
-    #[ORM\ManyToMany(targetEntity: self::class, mappedBy: 'children')]
-    private Collection $parents;
+    #[ORM\ManyToMany(targetEntity: UserRole::class, mappedBy: 'children')]
+    private $parents;
 
-    #[ORM\ManyToMany(targetEntity: self::class, inversedBy: 'parents')]
+    #[ORM\ManyToMany(targetEntity: UserRole::class, inversedBy: 'parents')]
     #[ORM\JoinTable(
         name: 'user_role_hierarchy', 
         joinColumns: [new ORM\JoinColumn(name: 'child', referencedColumnName: 'id')], 
-        inverseJoinColumns: [new ORM\JoinColumn(name: 'parent', referencedColumnName: 'id')])]
-    private Collection $children;
+        inverseJoinColumns: [new ORM\JoinColumn(name: 'parent', referencedColumnName: 'id')]
+    )]
+    private $children;
 
     /**
      * Constructor

@@ -16,40 +16,26 @@ class CustomerLocationPlaceAsset
 {
     use TimestampableEntity;
     
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'id', type: 'integer', nullable: false, options: ['unsigned' => true])]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private $id;
     
-    /**
-     * @var string
-     */
     #[ORM\Column(name: 'name', type: 'string', length: 64, nullable: false)]
     private $name;
     
-    /**
-     * @var string
-     */
     #[ORM\Column(name: 'code', type: 'string', length: 64, nullable: false)]
     private $code;
     
-    /**
-     * @var bool
-     */
     #[ORM\Column(name: 'active', type: 'boolean', nullable: false, options: ['default' => 1])]
     private $active = true;
 
     #[ORM\ManyToOne(targetEntity: CustomerLocationPlace::class, inversedBy: 'customerLocationPlaceAssets')]
-    #[ORM\Column(name: 'customer_location_place_id', type: 'integer', nullable: false, options: ['unsigned' => true])]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(name: 'customer_location_place_id', nullable: false)]
     private $customerLocationPlace;
 
     #[ORM\ManyToOne(targetEntity: Asset::class, inversedBy: 'customerLocationPlaceAssets')]
-    #[ORM\Column(name: 'asset_id', type: 'integer', nullable: false, options: ['unsigned' => true])]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(name: 'asset_id', nullable: false)]
     private $asset;
     
     public function getId(): ?int

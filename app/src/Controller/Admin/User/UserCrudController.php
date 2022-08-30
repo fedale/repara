@@ -81,8 +81,9 @@ class UserCrudController extends AbstractCrudController
             ->setFormTypeOption('expanded', true)
             ->setTemplatePath('admin/field/collection.twig')
         ;
-        yield AssociationField::new('userRoles')
+        yield AssociationField::new('roles')
             ->renderAsNativeWidget()
+            ->onlyOnIndex()
             ->setFormTypeOption('expanded', true)
             ->setTemplatePath('admin/field/collection.twig')
         ;
@@ -101,7 +102,7 @@ class UserCrudController extends AbstractCrudController
             ->add('email')
             ->add('active')
             ->add('groups')
-            ->add('userRoles')
+            // ->add('userRoles')
             ->add(UserProfileFilter::new('profile'))
         ;
     }
@@ -110,10 +111,10 @@ class UserCrudController extends AbstractCrudController
     {
         $qb = parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters);
         $qb->addSelect('profile');
-        $qb->addSelect('userRoles');
+        $qb->addSelect('roles');
         $qb->addSelect('groups');
         $qb->leftJoin('entity.profile', 'profile');
-        $qb->leftJoin('entity.userRoles', 'userRoles');
+        $qb->leftJoin('entity.roles', 'roles');
         $qb->leftJoin('entity.groups', 'groups');
 
         return $qb;

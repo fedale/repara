@@ -80,9 +80,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         new ORM\JoinColumn(name: 'user_role_id', referencedColumnName: 'id')])]
     private $roles;
     
-    #[ORM\ManyToMany(targetEntity: UserRole::class)]
-    #[ORM\JoinTable(name: 'user_role_assigned')]
-    private $userRoles;
+    // #[ORM\ManyToMany(targetEntity: UserRole::class)]
+    // #[ORM\JoinTable(name: 'user_role_assigned2')]
+    // private $userRoles;
 
     #[ORM\OneToOne(targetEntity: UserProfile::class, mappedBy: 'user', cascade:["persist", "remove"])]
     private ?UserProfile $profile;
@@ -95,10 +95,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\JoinTable(name: 'user_group_assigned')]
     private $groups;
 
-    #[ORM\OneToMany(mappedBy: 'users', targetEntity: ProjectTaskUserAssigned::class)]
+    #[ORM\OneToMany(targetEntity: ProjectTaskUserAssigned::class, mappedBy: 'users')]
     private $projectTaskUserAssigneds;
 
-    #[ORM\ManyToMany(targetEntity: ProjectTask::class, mappedBy: 'userAssigneds')]
+    #[ORM\ManyToMany(targetEntity: ProjectTask::class, mappedBy: 'projectTaskUserAssigneds')]
     private Collection $projectTasks;
 
     #[ORM\ManyToMany(targetEntity: Customer::class, inversedBy: 'users')]

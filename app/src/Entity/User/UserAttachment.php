@@ -3,7 +3,7 @@
 namespace App\Entity\User;
 
 use Doctrine\ORM\Mapping as ORM;
-use APp\Entity\User\User;
+use App\Entity\User\User;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 /**

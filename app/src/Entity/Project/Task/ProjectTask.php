@@ -42,97 +42,55 @@ class ProjectTask
 {
     use TimestampableEntity;
 
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'id', type: 'integer', nullable: false, options: ['unsigned' => true])]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private $id;
     
-    /**
-     * @var string
-     */
     #[ORM\Column(name: 'name', type: 'string', length: 128, nullable: false)]
     private $name;
     
-    /**
-     * @var string|null
-     */
     #[ORM\Column(name: 'description', type: 'text', length: 65535, nullable: true, options: ['default' => null])]
     private $description = NULL;
     
-    /**
-     * @var string
-     */
     #[ORM\Column(name: 'state', type: 'ProjectTaskStateType', length: 32, nullable: false)]
     #[EnumType(entity: ProjectTaskStateType::class)]
     private string $state = ProjectTaskStateType::STATE_REQUESTED;
     
-    /**
-     * @var string
-     */
     #[ORM\Column(name: 'asset_type', type: 'string', length: 8, nullable: false, options: ['default' => "'N/A'", 'comment' => 'Update with assetType value'])]
     private $assetType = 'N/A';
     
-    /**
-     * @var string
-     */
     #[ORM\Column(name: 'priority', type: 'ProjectTaskPriorityType', length: 32, nullable: false)]
     #[EnumType(entity: ProjectTaskPriorityType::class)]
     private string $priority = ProjectTaskPriorityType::PRIORITY_NORMAL;
 
-    /**
-     * @var bool
-     */
     #[ORM\Column(name: 'active', type: 'boolean', nullable: false, options: ['default' => 1])]
     private $active = true;
     
-    /**
-     * @var bool
-     */
     #[ORM\Column(name: 'visible', type: 'boolean', nullable: false, options: ['default' => 1])]
     private $visible = true;
     
-    /**
-     * @var \DateTime|null
-     */
     #[ORM\Column(name: 'finished_at', type: 'datetime', nullable: true)]
     private $finishedAt = NULL;
 
-    /**
-     * @var Customer
-     */
     #[ORM\ManyToOne(targetEntity: Customer::class)]
     #[ORM\JoinColumn(name: 'customer_id', referencedColumnName: 'id')]
     private $customer;
 
-    /**
-     * @var CustomerLocationPlaceAsset
-     */
     #[ORM\ManyToOne(targetEntity: CustomerLocationPlaceAsset::class)]
     #[ORM\JoinColumn(name: 'customer_location_place_asset_id', referencedColumnName: 'id')]
     private $customerLocationPlaceAsset;
 
-    /**
-     * @var Project
-     */
     #[ORM\ManyToOne(targetEntity: Project::class)]
     #[ORM\JoinColumn(name: 'project_id', referencedColumnName: 'id')]
     private $project;
     
-    /**
-     * @var ProjectTaskType
-     */
     #[ORM\ManyToOne(targetEntity: ProjectTaskType::class)]
     #[ORM\JoinColumn(name: 'type_id', referencedColumnName: 'id')]
     private $type;
 
-    // #[ORM\ManyToMany(targetEntity: ProjectTaskTag::class, inversedBy: 'tasks')]
-    // private $tags;
-
-    // #[ORM\OneToMany(mappedBy: 'projectTasks', targetEntity: ProjectTaskUserAssigned::class)]
-    // private $projectTaskUserAssigneds;
+    #[ORM\ManyToMany(targetEntity: ProjectTaskTag::class, inversedBy: 'projectTasks')]
+    private $tags;
 
     #[ORM\OneToMany(mappedBy: 'projectTask', targetEntity: ProjectTaskMilestone::class)]
     private $projectTaskMilestones;
@@ -140,15 +98,19 @@ class ProjectTask
     #[ORM\OneToMany(mappedBy: 'projectTask', targetEntity: ProjectTaskItem::class)]
     private $projectTaskItems;
 
+    #[ORM\OneToMany(mappedBy: 'projectTask', targetEntity: ProjectTaskActivity::class)]
+    private $activities;
+    
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'projectTasks')]
+    private Collection $projectTaskUserAssigneds;
+    
     private $datetimeRange;
 
-    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'projectTasks')]
-    #[ORM\JoinTable(name: 'project_task_user_assigned')]
-    private Collection $projectTaskUserAssigneds;
-
+    
     public function __construct()
     {
         $this->tags = new ArrayCollection();
+        $this->activities = new ArrayCollection();
         $this->projectTaskUserAssigneds = new ArrayCollection();
         $this->projectTaskMilestones = new ArrayCollection();
         $this->projectTaskItems = new ArrayCollection();
@@ -310,9 +272,6 @@ class ProjectTask
         return $this;
     }
 
-    /**
-     * @return Collection<int, ProjectTaskTag>
-     */
     public function getTags(): Collection
     {
         return $this->tags;
@@ -434,6 +393,27 @@ class ProjectTask
     public function removeProjectTaskUserAssigned(User $projectTaskUserAssigned): self
     {
         $this->projectTaskUserAssigneds->removeElement($projectTaskUserAssigned);
+
+        return $this;
+    }
+
+    public function getActivities(): Collection
+    {
+        return $this->activities;
+    }
+
+    public function addActivity(ProjectTaskActivity $activity): self
+    {
+        if (!$this->activities->contains($activity)) {
+            $this->activities[] = $activity;
+        }
+
+        return $this;
+    }
+
+    public function removeActivity(ProjectTaskTag $activity): self
+    {
+        $this->activities->removeElement($activity);
 
         return $this;
     }

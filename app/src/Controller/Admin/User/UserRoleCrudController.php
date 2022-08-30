@@ -32,7 +32,7 @@ class UserRoleCrudController extends AbstractCrudController
                 ->onlyWhenUpdating()
             ,
             AssociationField::new('parents'),
-            //AssociationField::new('children')
+            AssociationField::new('children')
         ];
     }
 }

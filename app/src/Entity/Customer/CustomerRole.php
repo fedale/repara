@@ -29,12 +29,12 @@ class CustomerRole
     #[ORM\ManyToMany(targetEntity: Customer::class, mappedBy: 'roles')]
     private $customers;
 
-    #[ORM\ManyToMany(targetEntity: self::class, mappedBy: 'children')]
+    #[ORM\ManyToMany(targetEntity: CustomerRole::class, mappedBy: 'children')]
     private Collection $parents;
 
-    #[ORM\ManyToMany(targetEntity: self::class, inversedBy: 'parents')]
+    #[ORM\ManyToMany(targetEntity: CustomerRole::class, inversedBy: 'parents')]
     #[ORM\JoinTable(
-        name: 'user_role_hierarchy', 
+        name: 'customer_role_hierarchy', 
         joinColumns: [new ORM\JoinColumn(name: 'parent', referencedColumnName: 'id')], 
         inverseJoinColumns: [new ORM\JoinColumn(name: 'child', referencedColumnName: 'id')]
     )]

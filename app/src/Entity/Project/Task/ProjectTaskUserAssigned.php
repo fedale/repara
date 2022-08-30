@@ -6,9 +6,6 @@ use App\Entity\User\User;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
-/**
- * ProjectTaskUserAssigned
- */
 #[ORM\Table(name: 'project_task_user_assigned', 
     indexes: [
         new ORM\Index(name: 'user_id', columns: ['user_id']), 
@@ -32,14 +29,16 @@ class ProjectTaskUserAssigned
     private $active = true;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'projectTaskUserAssigneds')]
-    #[ORM\Column(name: 'user_id', type: 'integer', nullable: false, options: ['unsigned' => true])]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(name: 'user_id', nullable: false)]
     private $users;
 
-    #[ORM\ManyToOne(targetEntity: ProjectTask::class, inversedBy: 'ProjectTaskUserAssigneds')]
-    #[ORM\Column(name: 'project_task_id', type: 'integer', nullable: false, options: ['unsigned' => true])]
-    #[ORM\JoinColumn(nullable: false)]
-    private $projectTasks;
+    // #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'projectTasks')]
+    // #[ORM\JoinColumn(name: 'user_id', nullable: false)]
+    // private $userAssigneds;
+
+    // #[ORM\ManyToOne(targetEntity: ProjectTask::class, inversedBy: 'projectTaskUserAssigneds')]
+    // #[ORM\JoinColumn(name: 'project_task_id', nullable: false)]
+    // private $projectTasks;
 
 
     public function getId(): ?int

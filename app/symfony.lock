@@ -1,6 +1,6 @@
 {
     "craue/config-bundle": {
-        "version": "dev-master"
+        "version": "dev-main"
     },
     "doctrine/annotations": {
         "version": "1.13",

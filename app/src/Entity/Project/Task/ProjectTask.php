@@ -90,6 +90,7 @@ class ProjectTask
     private $type;
 
     #[ORM\ManyToMany(targetEntity: ProjectTaskTag::class, inversedBy: 'projectTasks')]
+    #[ORM\JoinTable(name:'project_task_tag_assigned')]
     private $tags;
 
     #[ORM\OneToMany(mappedBy: 'projectTask', targetEntity: ProjectTaskMilestone::class)]
@@ -102,6 +103,7 @@ class ProjectTask
     private $activities;
     
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'projectTasks')]
+    #[ORM\JoinTable(name:'project_task_user_assigned')]
     private Collection $projectTaskUserAssigneds;
     
     private $datetimeRange;

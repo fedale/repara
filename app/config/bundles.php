@@ -19,6 +19,5 @@ return [
     Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle::class => ['dev' => true, 'test' => true],
     Zenstruck\Foundry\ZenstruckFoundryBundle::class => ['dev' => true, 'test' => true],
     Fresh\DoctrineEnumBundle\FreshDoctrineEnumBundle::class => ['all' => true],
-    // Fedale\SettingBundle\FedaleSettingBundle::class => ['all' => true],
-    // Craue\ConfigBundle\CraueConfigBundle::class => ['all' => true],
+    Craue\ConfigBundle\CraueConfigBundle::class => ['all' => true],
 ];

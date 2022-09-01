@@ -104,7 +104,5 @@ final class Version20220630192480 extends AbstractMigration
         $this->addSql('DROP TABLE project');
      
         $this->addSql('DROP TABLE project_type');
-        
-        
     }
 }

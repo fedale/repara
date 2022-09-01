@@ -61,7 +61,7 @@
             "dist": {
                 "type": "path",
                 "url": "../../CraueConfigBundle",
-                "reference": "fe5cfc2452e282231a68b628715292e737bf2b62"
+                "reference": "922701546b2c4fb7a946047e46ba7027e4874a93"
             },
             "require": {
                 "doctrine/doctrine-bundle": "^1.6.12|^2",

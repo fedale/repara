@@ -1,0 +1,18 @@
+{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
+{# This template checks for 'ea' variable existence because it can
+   be used in a EasyAdmin Dashboard controller, where 'ea' is defined
+   or from any other Symfony controller, where 'ea' is not defined #}
+{% extends ea is defined ? ea.templatePath('layout') : '@EasyAdmin/page/login_minimal.html.twig' %}
+
+{% block title %}Setting{% endblock %}
+
+{% block body %}
+
+{{ dump(config) }}
+
+{{ dump(superAdmin) }}
+
+{{ dump(container) }}
+
+
+{% endblock %}

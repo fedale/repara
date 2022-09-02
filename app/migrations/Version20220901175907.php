@@ -19,6 +19,7 @@ final class Version20220901175907 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
+        return;
         // this up() migration is auto-generated, please modify it to your needs
         
         $this->addSql('INSERT INTO setting VALUES (1, "general", "myInt", "1", 1);');

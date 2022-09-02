@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5ea71770d3daad9c383b1486c8e47d3a",
+    "content-hash": "1f614f5873dea5efa64118424bfb5da9",
     "packages": [
         {
             "name": "behat/transliterator",
@@ -61,7 +61,7 @@
             "dist": {
                 "type": "path",
                 "url": "../../CraueConfigBundle",
-                "reference": "922701546b2c4fb7a946047e46ba7027e4874a93"
+                "reference": "cfd69368a6e09260c46ddc93ac96b8c4a06d7adc"
             },
             "require": {
                 "doctrine/doctrine-bundle": "^1.6.12|^2",
@@ -1721,52 +1721,6 @@
                 "source": "https://github.com/FakerPHP/Faker/tree/v1.20.0"
             },
             "time": "2022-07-20T13:12:54+00:00"
-        },
-        {
-            "name": "fedale/setting-bundle",
-            "version": "dev-master",
-            "dist": {
-                "type": "path",
-                "url": "../../SettingBundle",
-                "reference": "7241cafcbb2cde76b601c84fdb27a9e182be59a5"
-            },
-            "require": {
-                "doctrine/doctrine-bundle": "^1.6.12|^2",
-                "php": "^7.3|^8.1",
-                "psr/simple-cache": "^1|^2|^3",
-                "symfony/cache": "~4.4|~5.3|^6",
-                "symfony/config": "~4.4|~5.3|^6",
-                "symfony/dependency-injection": "~4.4|~5.3|^6",
-                "symfony/yaml": "^6"
-            },
-            "require-dev": {
-                "doctrine/orm": "^2.5.14",
-                "symfony/phpunit-bridge": "^6.1"
-            },
-            "type": "symfony-bundle",
-            "autoload": {
-                "psr-4": {
-                    "Fedale\\SettingBundle\\": "src/"
-                }
-            },
-            "autoload-dev": {
-                "psr-4": {
-                    "Fedale\\SettingBundle\\Tests\\": "tests/"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Danilo Di Moia",
-                    "email": "zitter@gmail.com"
-                }
-            ],
-            "description": "Database-stored settings made available via a service for your Symfony project.",
-            "transport-options": {
-                "relative": true
-            }
         },
         {
             "name": "fresh/doctrine-enum-bundle",
@@ -11658,8 +11612,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "craue/config-bundle": 20,
-        "fedale/setting-bundle": 20
+        "craue/config-bundle": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
@@ -11669,5 +11622,5 @@
         "ext-iconv": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.1.0"
+    "plugin-api-version": "2.3.0"
 }

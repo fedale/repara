@@ -16,9 +16,8 @@ class MyController extends AbstractDashboardController
     public function indexAction(Config $config): Response
     {
         $container = new ContainerBuilder();
-        $superAdmin = $container->getPa
+        // $superAdmin = $container->getParameter('superAdmin');
         // $var = $container->setParameter('superAdmin', 'myVa');
-        dd($superAdmin);
         return $this->render('setting/setting.html.twig', 
         [
             'config' => $config->all(),

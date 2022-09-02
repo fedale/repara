@@ -240,7 +240,7 @@ final class Version20220630192739 extends AbstractMigration
             INDEX name (name),
             PRIMARY KEY(id),
             CONSTRAINT `project_task_item_template_ibfk_1` FOREIGN KEY (`task_template_id`) REFERENCES `project_task_template` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-            CONSTRAINT `project_task_item_template_ibfk_2` FOREIGN KEY (`task_type_id`) REFERENCES `project_task_type` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+            -- CONSTRAINT `project_task_item_template_ibfk_2` FOREIGN KEY (`task_type_id`) REFERENCES `project_task_type` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
         ) ENGINE = InnoDB');
     }
 
@@ -253,8 +253,6 @@ final class Version20220630192739 extends AbstractMigration
         $this->addSql('DROP TABLE project_task_user_assigned');
         
         $this->addSql('DROP TABLE project_task_attachment');
-        
-        $this->addSql('DROP TABLE project_task_template');
         
         $this->addSql('DROP TABLE project_task_tag_assigned');
 
@@ -271,6 +269,8 @@ final class Version20220630192739 extends AbstractMigration
         $this->addSql('ALTER TABLE project_task drop foreign key project_task_ibfk_3');
 
         $this->addSql('DROP TABLE project_task_item_template');
+
+        $this->addSql('DROP TABLE project_task_template');
 
         $this->addSql('DROP TABLE project_task_type');
 

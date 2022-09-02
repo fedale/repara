@@ -103,6 +103,7 @@ class ProjectTask
     private $activities;
     
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'projectTasks')]
+    #[ORM\JoinTable('project_task_user_assigned')]
     private Collection $projectTaskUserAssigneds;
     
     private $datetimeRange;

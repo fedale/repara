@@ -14,7 +14,6 @@
         "doctrine/orm": "^2.12",
         "easycorp/easyadmin-bundle": "^4.3",
         "fakerphp/faker": "^1.19",
-        "fedale/setting-bundle": "*@dev",
         "fresh/doctrine-enum-bundle": "^9.0",
         "lexik/jwt-authentication-bundle": "^2.16",
         "phpdocumentor/reflection-docblock": "^5.3",
@@ -120,10 +119,6 @@
         "zenstruck/foundry": "^1.21"
     },
     "repositories": [
-        {
-            "type": "path",
-            "url": "../../SettingBundle"
-        },
         {
             "type": "path",
             "url": "../../CraueConfigBundle"

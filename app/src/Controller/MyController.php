@@ -12,16 +12,27 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class MyController extends AbstractDashboardController
 {
+    private $myParam;
+
+    public function __construct(String $myParam)
+    {
+        $this->myParam = $myParam;
+    }
+
     #[Route(path: '/admin/setting', name: 'admin_setting')]
     public function indexAction(Config $config): Response
     {
         $container = new ContainerBuilder();
-        // $superAdmin = $container->getParameter('superAdmin');
+        // $superAdmin = $this->getParameter('superAdmin');
+        $myParam  = $this->getParameter('myParam');
+        $myBool = $this->getParameter('myBool');
+        var_dump($myBool);
+        dump($myParam, $this->myParam); die();
         // $var = $container->setParameter('superAdmin', 'myVa');
         return $this->render('setting/setting.html.twig', 
         [
             'config' => $config->all(),
-            'superAdmin' => $this->getParameter('superAdmin'),
+            'superAdmin' => $superAdmin,
             'container' => $container,
         ]);
     }

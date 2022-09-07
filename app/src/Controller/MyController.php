@@ -13,9 +13,11 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class MyController extends AbstractDashboardController
 {
     private $myParam;
+    private $anonymousAccess;
 
-    public function __construct(String $myParam)
+    public function __construct(string $myParam, bool $anonymousAccess)
     {
+        $this->anonymousAccess = $anonymousAccess;
         $this->myParam = $myParam;
     }
 
@@ -24,9 +26,10 @@ class MyController extends AbstractDashboardController
     {
         $container = new ContainerBuilder();
         // $superAdmin = $this->getParameter('superAdmin');
+        $anonymousAccess = $this->getParameter('anonymousAccess');
+        dump($anonymousAccess, $this->anonymousAccess);
+
         $myParam  = $this->getParameter('myParam');
-        $myBool = $this->getParameter('myBool');
-        var_dump($myBool);
         dump($myParam, $this->myParam); die();
         // $var = $container->setParameter('superAdmin', 'myVa');
         return $this->render('setting/setting.html.twig', 

@@ -45,6 +45,7 @@ class DashboardController extends AbstractDashboardController
     {
         return parent::configureCrud()
             ->showEntityActionsInlined()
+         
         ;
     }
     
@@ -58,7 +59,9 @@ class DashboardController extends AbstractDashboardController
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
-            ->setTitle('Repara');
+            ->setTitle('Repara')
+            ->generateRelativeUrls()
+            ;
     }
 
     public function configureMenuItems(): iterable

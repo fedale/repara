@@ -32,6 +32,7 @@ class MyController extends AbstractDashboardController
         dump($myParam, $this->myParam); 
         $defaultPath = $this->getParameter('twig.default_path');
         // $var = $container->setParameter('superAdmin', 'myVa');
+        
         return $this->render('setting/setting.html.twig', 
         [
             'config' => $config->all(),

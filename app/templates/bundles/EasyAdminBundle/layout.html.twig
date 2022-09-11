@@ -15,7 +15,8 @@
     <title>{{ page_title_block_output|striptags|raw }}</title>
 
     {% block head_stylesheets %}
-        <link rel="stylesheet" href="{{ asset('app.css', ea.assets.defaultAssetPackageName) }}">
+        {# <link rel="stylesheet" href="{{ asset('app.css', ea.assets.defaultAssetPackageName) }}"> #}
+        {# <link rel="stylesheet" href="{{ asset('app.css') }}"> #}
     {% endblock %}
 
     {% block configured_stylesheets %}
@@ -179,7 +180,7 @@
                     {% endblock responsive_header %}
                 </div>
 
-                <div class="sidebar-wrapper">
+                <section class="navigation">
                     <aside class="sidebar">
                         {% block sidebar %}
                             <header class="main-header">
@@ -206,7 +207,7 @@
 
                         <div id="sidebar-resizer-handler" class="resizer-handler resizer-handler-left"></div>
                     </aside>
-                </div>
+                </section>
 
                 <section class="main-content">
                     {% set has_search = ea.crud is not null and ea.crud.isSearchEnabled %}

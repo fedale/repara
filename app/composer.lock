@@ -61,7 +61,7 @@
             "dist": {
                 "type": "path",
                 "url": "../../CraueConfigBundle",
-                "reference": "fcbde55b0cd59208c066ddc2b127be9841a33770"
+                "reference": "850604d564497058386b1f5169764e7365efee54"
             },
             "require": {
                 "doctrine/doctrine-bundle": "^1.6.12|^2",
@@ -11622,5 +11622,5 @@
         "ext-iconv": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.1.0"
 }

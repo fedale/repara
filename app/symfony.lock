@@ -59,9 +59,6 @@
             "ref": "b131e6cbfe1b898a508987851963fff485986285"
         }
     },
-    "fedale/setting-bundle": {
-        "version": "dev-master"
-    },
     "fresh/doctrine-enum-bundle": {
         "version": "9.0",
         "recipe": {

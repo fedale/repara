@@ -92,7 +92,8 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Type', 'fas fa-users', CustomerType::class);
         yield MenuItem::linkToCrud('Place', 'fas fa-users', CustomerLocationPlace::class);
         
-        yield MenuItem::section('Permission');
+        // yield MenuItem::section('Permission');
+        yield MenuItem::linkToRoute('Setting test', '', 'admin_setting');
     }
 
     public function configureActions(): Actions

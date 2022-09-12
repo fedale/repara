@@ -138,76 +138,60 @@
             </ul>
         {% endset %}
 
-        <div class="wrapper">
+        <div class="wrapper ">
             {% block wrapper %}
-                <div class="responsive-header">
-                    {% block responsive_header %}
-                        <button id="navigation-toggler" type="button" aria-label="Toggle navigation">
-                            <i class="fa fa-fw fa-bars"></i>
-                        </button>
 
-                        <div id="responsive-header-logo" class="text-truncate ms-auto">
-                            {% block responsive_header_logo %}
-                                <a class="responsive-logo" title="{{ ea.dashboardTitle|striptags }}" href="{{ path(ea.dashboardRouteName) }}">
-                                    {{ ea.dashboardTitle|raw }}
-                                </a>
-                            {% endblock responsive_header_logo %}
-                        </div>
-
-                        <div class="dropdown user-menu-wrapper {{ is_granted(impersonator_permission) ? 'user-is-impersonated' }} ms-auto">
-                            <a class="user-details" type="button" data-bs-toggle="dropdown" data-bs-offset="0,5" aria-expanded="false">
-                                {# to make the site design consistent, always display the user avatar in responsive header
-                                   and hide the user name (because there's no space left) regardless of the user config #}
-                                {% if ea.userMenu.avatarDisplayed %}
-                                    {{ user_menu_avatar }}
-                                {% else %}
-                                    <i class="user-avatar fa fa-fw {{ ea.user is not null ? 'fa-user' : 'fa-user-times' }}"></i>
-                                {% endif %}
-                            </a>
-
-                            {{ user_menu_dropdown }}
-                        </div>
-
-                        {% if ea.dashboardHasDarkModeEnabled %}
-                            <div class="dropdown dropdown-appearance">
-                                <a class="dropdown-appearance-button" type="button" data-bs-toggle="dropdown" data-bs-offset="0,5" aria-expanded="false">
-                                    <i class="fas fa-adjust"></i>
-                                </a>
-
-                                {{ appearance_menu_dropdown }}
+                <!--- ### HEADER ### -->
+                <header class="top container-fluid">
+                    {% block header %}
+                    <div class="top-inner row">
+                    <nav class="navbar col-2" role="navigation">
+                        {% block header_navbar %}
+                            <div id="header-logo">
+                                {% block header_logo %}
+                                    <a class="logo" title="{{ ea.dashboardTitle|striptags }}" href="{{ path(ea.dashboardRouteName) }}">
+                                        <span class="logo-custom">{{ ea.dashboardTitle|raw }}</span>
+                                        <span class="logo-compact"><i class="fas fa-home"></i></span>
+                                    </a>
+                                {% endblock header_logo %}
                             </div>
-                        {% endif %}
-                    {% endblock responsive_header %}
-                </div>
+                        {% endblock header_navbar %}
+                    </nav>
+                    {% block main_menu_wrapper %}
+                        <div class="col-6">
+                        {{ include(ea.templatePath('main_menu')) }}
+                        </div>
+                    {% endblock main_menu_wrapper %}
 
-                <section class="navigation">
-                    <aside class="sidebar">
-                        {% block sidebar %}
-                            <header class="main-header">
-                                {% block header %}
-                                <nav class="navbar" role="navigation">
-                                    {% block header_navbar %}
-                                        <div id="header-logo">
-                                            {% block header_logo %}
-                                                <a class="logo" title="{{ ea.dashboardTitle|striptags }}" href="{{ path(ea.dashboardRouteName) }}">
-                                                    <span class="logo-custom">{{ ea.dashboardTitle|raw }}</span>
-                                                    <span class="logo-compact"><i class="fas fa-home"></i></span>
-                                                </a>
-                                            {% endblock header_logo %}
-                                        </div>
-                                    {% endblock header_navbar %}
-                                </nav>
-                                {% endblock header %}
-                            </header>
+                    {% if ea.dashboardHasDarkModeEnabled %}
+                                <div class="navbar-custom-menu col-2">
+                                    <div class="dropdown dropdown-appearance">
+                                        <a class="dropdown-appearance-button" type="button" data-bs-toggle="dropdown" data-bs-offset="0,5" aria-expanded="false">
+                                            <i class="fas fa-adjust"></i>
+                                        </a>
 
-                            {% block main_menu_wrapper %}
-                                {{ include(ea.templatePath('main_menu')) }}
-                            {% endblock main_menu_wrapper %}
-                        {% endblock sidebar %}
+                                        {{ appearance_menu_dropdown }}
+                                    </div>
+                                </div>
+                    {% endif %}
 
-                        <div id="sidebar-resizer-handler" class="resizer-handler resizer-handler-left"></div>
-                    </aside>
-                </section>
+                        <div class="navbar-custom-menu col-2">
+                                {% block header_custom_menu %}
+                                    <div class="dropdown user-menu-wrapper {{ is_granted(impersonator_permission) ? 'user-is-impersonated' }}">
+                                        <a class="user-details" type="button" data-bs-toggle="dropdown" data-bs-offset="0,5" aria-expanded="false">
+                                            {{ user_menu_avatar }}
+                                            {% if ea.userMenu.isNameDisplayed %}
+                                                <span class="user-name">{{ ea.userMenu.name }}</span>
+                                            {% endif %}
+                                        </a>
+
+                                        {{ user_menu_dropdown }}
+                                    </div>
+                                {% endblock header_custom_menu %}
+                        </div>
+                    </div><!-- .top-inner -->
+                    {% endblock header %}
+                </header>
 
                 <section class="main-content">
                     {% set has_search = ea.crud is not null and ea.crud.isSearchEnabled %}
@@ -268,32 +252,9 @@
                                 {% endif %}
                             </div>
 
-                            <div class="navbar-custom-menu">
-                                {% block header_custom_menu %}
-                                    <div class="dropdown user-menu-wrapper {{ is_granted(impersonator_permission) ? 'user-is-impersonated' }}">
-                                        <a class="user-details" type="button" data-bs-toggle="dropdown" data-bs-offset="0,5" aria-expanded="false">
-                                            {{ user_menu_avatar }}
-                                            {% if ea.userMenu.isNameDisplayed %}
-                                                <span class="user-name">{{ ea.userMenu.name }}</span>
-                                            {% endif %}
-                                        </a>
+                           
 
-                                        {{ user_menu_dropdown }}
-                                    </div>
-                                {% endblock header_custom_menu %}
-                            </div>
-
-                            {% if ea.dashboardHasDarkModeEnabled %}
-                                <div class="navbar-custom-menu">
-                                    <div class="dropdown dropdown-appearance">
-                                        <a class="dropdown-appearance-button" type="button" data-bs-toggle="dropdown" data-bs-offset="0,5" aria-expanded="false">
-                                            <i class="fas fa-adjust"></i>
-                                        </a>
-
-                                        {{ appearance_menu_dropdown }}
-                                    </div>
-                                </div>
-                            {% endif %}
+                           
                         {% endblock content_top_header %}
                     </aside>
 

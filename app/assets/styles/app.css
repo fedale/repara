@@ -1,4 +1,7 @@
-@import "~bootstrap/dist/css/bootstrap.css";
+@import "@tabler/core/dist/css/tabler.min.css";
+/* @import '~tabler/dist/css/tabler-buttons'; 
+@import '~tabler/dist/css/tabler-payments'; */
+/* @import "~bootstrap/dist/css/bootstrap.css"; */
 
 @import '~@fortawesome/fontawesome-free/css/all.css';
 

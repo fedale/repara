@@ -66,27 +66,30 @@ class DashboardController extends AbstractDashboardController
 
     public function configureMenuItems(): iterable
     {
-        yield MenuItem::section('Project');
-        yield MenuItem::linkToCrud('Project task', 'fas fa-users', ProjectTask::class);
-        yield MenuItem::linkToCrud('Project template', 'fas fa-users', ProjectTaskTemplate::class);
-        yield MenuItem::linkToCrud('Project template items', 'fas fa-users', ProjectTaskItemTemplate::class);
-        yield MenuItem::section('Scan');
-        yield MenuItem::section('Templates');
+        yield MenuItem::subMenu('Project', 'fa fa-article')
+            ->setSubItems([
+                MenuItem::linkToCrud('Project task', 'fas fa-users', ProjectTask::class),
+                MenuItem::linkToCrud('Project template', 'fas fa-users', ProjectTaskTemplate::class),
+                MenuItem::linkToCrud('Project template items', 'fas fa-users', ProjectTaskItemTemplate::class),
+            ]);
         
-        yield MenuItem::section('Staff');
+        // yield MenuItem::section('Scan');
+        // yield MenuItem::section('Templates');
+        
+        // yield MenuItem::section('Staff');
         yield MenuItem::linkToCrud('Users', 'fas fa-list', User::class);
         yield MenuItem::linkToCrud('Groups', 'fas fa-list', UserGroup::class);
         yield MenuItem::linkToCrud('Types', 'fas fa-list', UserType::class);
         yield MenuItem::linkToCrud('Roles', 'fas fa-list', UserRole::class);
         
-        yield MenuItem::section('Asset');
+        // yield MenuItem::section('Asset');
         yield MenuItem::linkToCrud('Asset list', 'fas fa-users', Asset::class);
         yield MenuItem::linkToCrud('Asset brands', 'fas fa-users', AssetBrand::class);
         yield MenuItem::linkToCrud('Asset types', 'fas fa-users', AssetType::class);
         yield MenuItem::linkToCrud('Asset categories', 'fas fa-users', AssetCategory::class);
         yield MenuItem::linkToCrud('Asset models', 'fas fa-users', AssetModel::class);
        
-        yield MenuItem::section('Customer');
+        // yield MenuItem::section('Customer');
         yield MenuItem::linkToCrud('Customer list', 'fas fa-users', Customer::class);
         yield MenuItem::linkToCrud('Location', 'fas fa-users', CustomerLocation::class);
         yield MenuItem::linkToCrud('Type', 'fas fa-users', CustomerType::class);

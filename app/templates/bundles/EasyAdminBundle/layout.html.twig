@@ -51,7 +51,7 @@
 {% block body %}
     <body
         id="{% block body_id %}{% endblock %}"
-        class="ea {% block body_class %}{% endblock %}"
+        class="ea {% block body_class %}{% endblock %} layout-fluid"
         data-ea-content-width="{{ ea.crud.contentWidth ?? ea.dashboardContentWidth ?? 'normal' }}"
         data-ea-sidebar-width="{{ ea.crud.sidebarWidth ?? ea.dashboardSidebarWidth ?? 'normal' }}"
         data-ea-dark-scheme-is-enabled="{{ ea.dashboardHasDarkModeEnabled ? 'true' : 'false' }}"
@@ -81,6 +81,7 @@
             {% endif %}
         {% endset %}
 
+        {% set has_search = ea.crud is not null and ea.crud.isSearchEnabled %}
         {% set impersonator_permission = constant('Symfony\\Component\\Security\\Core\\Authorization\\Voter\\AuthenticatedVoter::IS_IMPERSONATOR') is defined ? 'IS_IMPERSONATOR' : 'ROLE_PREVIOUS_ADMIN' %}
 
         {% set user_menu_dropdown %}
@@ -138,174 +139,623 @@
             </ul>
         {% endset %}
 
-        <div class="wrapper ">
-            {% block wrapper %}
-
-                <!--- ### HEADER ### -->
-                <header class="top container-fluid">
-                    {% block header %}
-                    <div class="top-inner row">
-                    <nav class="navbar col-2" role="navigation">
-                        {% block header_navbar %}
-                            <div id="header-logo">
-                                {% block header_logo %}
-                                    <a class="logo" title="{{ ea.dashboardTitle|striptags }}" href="{{ path(ea.dashboardRouteName) }}">
-                                        <span class="logo-custom">{{ ea.dashboardTitle|raw }}</span>
-                                        <span class="logo-compact"><i class="fas fa-home"></i></span>
-                                    </a>
-                                {% endblock header_logo %}
-                            </div>
-                        {% endblock header_navbar %}
-                    </nav>
-                    {% block main_menu_wrapper %}
-                        <div class="col-6">
-                        {{ include(ea.templatePath('main_menu')) }}
-                        </div>
-                    {% endblock main_menu_wrapper %}
-
-                    {% if ea.dashboardHasDarkModeEnabled %}
-                                <div class="navbar-custom-menu col-2">
-                                    <div class="dropdown dropdown-appearance">
-                                        <a class="dropdown-appearance-button" type="button" data-bs-toggle="dropdown" data-bs-offset="0,5" aria-expanded="false">
-                                            <i class="fas fa-adjust"></i>
-                                        </a>
-
-                                        {{ appearance_menu_dropdown }}
-                                    </div>
-                                </div>
-                    {% endif %}
-
-                        <div class="navbar-custom-menu col-2">
-                                {% block header_custom_menu %}
-                                    <div class="dropdown user-menu-wrapper {{ is_granted(impersonator_permission) ? 'user-is-impersonated' }}">
-                                        <a class="user-details" type="button" data-bs-toggle="dropdown" data-bs-offset="0,5" aria-expanded="false">
-                                            {{ user_menu_avatar }}
-                                            {% if ea.userMenu.isNameDisplayed %}
-                                                <span class="user-name">{{ ea.userMenu.name }}</span>
-                                            {% endif %}
-                                        </a>
-
-                                        {{ user_menu_dropdown }}
-                                    </div>
-                                {% endblock header_custom_menu %}
-                        </div>
-                    </div><!-- .top-inner -->
-                    {% endblock header %}
-                </header>
-
-                <section class="main-content">
-                    {% set has_search = ea.crud is not null and ea.crud.isSearchEnabled %}
-                    <aside class="content-top {{ has_search ? 'ea-search-enabled' : 'ea-search-disabled' }}">
-                        {% block content_top_header %}
-                            <div class="content-search">
-                                {% if has_search %}
-                                    {% block search %}
-
-                                        <form class="form-action-search" method="get">
-                                            {% block search_form %}
-                                                {% block search_form_filters %}
-                                                    {% for field, array in ea.search.appliedFilters %}
-                                                        {% for key, value in array %}
-                                                            {# This code re-applies your filters on searches, an iterable check is needed in cases we have more than one object for a filter #}
-                                                            {% if value is iterable %}
-                                                                {% for index, iterValue in value %}
-                                                                    {# This sub-level iterable check is needed in cases we have more complex filters like the DateTimeFilter cf. issue #5038 #}
-                                                                    {% if iterValue is iterable %}
-                                                                        {% for subIndex, subIterValue in iterValue %}
-                                                                            <input type="hidden" name="filters[{{ field }}][{{ key }}][{{ index }}][{{ subIndex }}]" value="{{ subIterValue }}">
-                                                                        {% endfor %}
-                                                                    {% else %}
-                                                                        <input type="hidden" name="filters[{{ field }}][{{ key }}][{{ index }}]" value="{{ iterValue }}">
-                                                                    {% endif %}
-                                                                {% endfor %}
-                                                            {% else %}
-                                                                <input type="hidden" name="filters[{{ field }}][{{ key }}]" value="{{ value }}">
-                                                            {% endif %}
-                                                        {% endfor %}
-                                                    {% endfor %}
-                                                {% endblock %}
-
-                                                <input type="hidden" name="crudAction" value="index">
-                                                <input type="hidden" name="crudControllerFqcn" value="{{ ea.request.query.get('crudControllerFqcn') }}">
-                                                <input type="hidden" name="menuIndex" value="{{ ea.request.query.get('menuIndex') }}">
-                                                <input type="hidden" name="submenuIndex" value="{{ ea.request.query.get('submenuIndex') }}">
-                                                <input type="hidden" name="page" value="1">
-
-                                                <div class="form-group">
-                                                    <div class="form-widget">
-                                                        <i class="fas fa-search content-search-icon"></i>
-
-                                                        <label class="content-search-label" data-value="{{ app.request.get('query') }}">
-                                                            <input class="form-control {{ app.request.get('query') is null ? 'is-blank' }}" type="search" name="query" value="{{ app.request.get('query') ?? '' }}" placeholder="{{ t('action.search', ea.i18n.translationParameters, 'EasyAdminBundle')|trans }}" spellcheck="false" autocorrect="off" onInput="this.parentNode.dataset.value=this.value"{% if ea.crud.currentAction == 'index' and ea.crud.autofocusSearch == true %} autofocus="autofocus"{% endif %}>
-                                                        </label>
-
-                                                        {% if app.request.get('query') %}
-                                                            <a href="{{ ea_url().unset('query') }}" class="content-search-reset">
-                                                                <i class="fas fa-fw fa-times"></i>
-                                                            </a>
-                                                        {% endif %}
-                                                    </div>
-                                                </div>
-                                            {% endblock %}
-                                        </form>
-                                    {% endblock search %}
-                                {% endif %}
-                            </div>
-
-                           
-
-                           
-                        {% endblock content_top_header %}
-                    </aside>
-
-                    <div class="content-wrapper">
-                        {% block content %}
-                            <article class="content">
-                                {% block content_header_wrapper %}
-                                    {% set has_help_message = (ea.crud.helpMessage ?? '') is not empty %}
-                                    <section class="content-header">
-                                        {% block content_header %}
-                                            <div class="content-header-title">
-                                                <h1 class="title">
-                                                    {% block content_title %}{% endblock %}
-
-                                                    {% block content_help %}
-                                                        {% if has_help_message %}
-                                                            <a tabindex="0" class="content-header-help" data-bs-toggle="popover" data-bs-custom-class="ea-content-help-popover" data-bs-animation="true" data-bs-html="true" data-bs-placement="bottom" data-bs-trigger="focus" data-bs-content="{{ ea.crud.helpMessage|trans|e('html_attr') }}">
-                                                                <i class="far fa-question-circle"></i>
-                                                            </a>
-                                                        {% endif %}
-                                                    {% endblock %}
-                                                </h1>
-                                            </div>
-
-                                            {% block page_actions_wrapper %}
-                                                <div class="page-actions">{% block page_actions %}{% endblock %}</div>
-                                            {% endblock %}
-                                        {% endblock content_header %}
-                                    </section>
-                                {% endblock content_header_wrapper %}
-
-                                <section id="main" class="content-body">
-                                    {% block main %}{% endblock %}
-                                </section>
-
-                                {% block content_footer_wrapper %}
-                                    {% set content_footer = block('content_footer') is defined ? block('content_footer') : '' %}
-                                    {% if content_footer is not empty %}
-                                        <section class="content-footer">
-                                            {{ content_footer }}
-                                        </section>
-                                    {% endif %}
-                                {% endblock %}
-                            </article>
-                        {% endblock content %}
-
-                        <div id="content-resizer-handler" class="resizer-handler resizer-handler-right"></div>
+     <div class="page">
+      <header class="navbar navbar-expand-md navbar-light d-print-none">
+        <div class="container-xl">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
+            <a href="{{ path(ea.dashboardRouteName) }}">
+              {# <img src="./static/logo.svg" width="110" height="32" alt="Tabler" class="navbar-brand-image"> #}
+                <span class="logo-compact"><i class="fas fa-home"></i></span>
+                <span class="logo-custom">{{ ea.dashboardTitle|raw }}</span>
+            </a>
+          </h1>
+          <div class="navbar-nav flex-row order-md-last">
+            <div class="nav-item d-none d-md-flex me-3">
+              
+            </div>
+            <div class="d-none d-md-flex">
+              <a href="?theme=dark" class="nav-link px-0 hide-theme-dark" title="Enable dark mode" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                <!-- Download SVG icon from http://tabler-icons.io/i/moon -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" /></svg>
+              </a>
+              <a href="?theme=light" class="nav-link px-0 hide-theme-light" title="Enable light mode" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                <!-- Download SVG icon from http://tabler-icons.io/i/sun -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><circle cx="12" cy="12" r="4" /><path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7" /></svg>
+              </a>
+              <div class="nav-item dropdown d-none d-md-flex me-3">
+                <a href="#" class="nav-link px-0" data-bs-toggle="dropdown" tabindex="-1" aria-label="Show notifications">
+                  <!-- Download SVG icon from http://tabler-icons.io/i/bell -->
+                  <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 5a2 2 0 0 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6" /><path d="M9 17v1a3 3 0 0 0 6 0v-1" /></svg>
+                  <span class="badge bg-red"></span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-arrow dropdown-menu-end dropdown-menu-card">
+                  <div class="card">
+                    <div class="card-header">
+                      <h3 class="card-title">Last updates</h3>
                     </div>
-                </section>
-            {% endblock wrapper %}
+                    <div class="list-group list-group-flush list-group-hoverable">
+                      <div class="list-group-item">
+                        <div class="row align-items-center">
+                          <div class="col-auto"><span class="status-dot status-dot-animated bg-red d-block"></span></div>
+                          <div class="col text-truncate">
+                            <a href="#" class="text-body d-block">Example 1</a>
+                            <div class="d-block text-muted text-truncate mt-n1">
+                              Change deprecated html tags to text decoration classes (#29604)
+                            </div>
+                          </div>
+                          <div class="col-auto">
+                            <a href="#" class="list-group-item-actions">
+                              <!-- Download SVG icon from http://tabler-icons.io/i/star -->
+                              <svg xmlns="http://www.w3.org/2000/svg" class="icon text-muted" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="list-group-item">
+                        <div class="row align-items-center">
+                          <div class="col-auto"><span class="status-dot d-block"></span></div>
+                          <div class="col text-truncate">
+                            <a href="#" class="text-body d-block">Example 2</a>
+                            <div class="d-block text-muted text-truncate mt-n1">
+                              justify-content:between ⇒ justify-content:space-between (#29734)
+                            </div>
+                          </div>
+                          <div class="col-auto">
+                            <a href="#" class="list-group-item-actions show">
+                              <!-- Download SVG icon from http://tabler-icons.io/i/star -->
+                              <svg xmlns="http://www.w3.org/2000/svg" class="icon text-yellow" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="list-group-item">
+                        <div class="row align-items-center">
+                          <div class="col-auto"><span class="status-dot d-block"></span></div>
+                          <div class="col text-truncate">
+                            <a href="#" class="text-body d-block">Example 3</a>
+                            <div class="d-block text-muted text-truncate mt-n1">
+                              Update change-version.js (#29736)
+                            </div>
+                          </div>
+                          <div class="col-auto">
+                            <a href="#" class="list-group-item-actions">
+                              <!-- Download SVG icon from http://tabler-icons.io/i/star -->
+                              <svg xmlns="http://www.w3.org/2000/svg" class="icon text-muted" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="list-group-item">
+                        <div class="row align-items-center">
+                          <div class="col-auto"><span class="status-dot status-dot-animated bg-green d-block"></span></div>
+                          <div class="col text-truncate">
+                            <a href="#" class="text-body d-block">Example 4</a>
+                            <div class="d-block text-muted text-truncate mt-n1">
+                              Regenerate package-lock.json (#29730)
+                            </div>
+                          </div>
+                          <div class="col-auto">
+                            <a href="#" class="list-group-item-actions">
+                              <!-- Download SVG icon from http://tabler-icons.io/i/star -->
+                              <svg xmlns="http://www.w3.org/2000/svg" class="icon text-muted" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="nav-item dropdown">
+              <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Open user menu">
+                <span class="avatar avatar-sm" style="background-image: url(./static/avatars/000m.jpg)"></span>
+                <div class="d-none d-xl-block ps-2">
+                  <div>Paweł Kuna</div>
+                  <div class="mt-1 small text-muted">UI Designer</div>
+                </div>
+              </a>
+              <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                <a href="#" class="dropdown-item">Set status</a>
+                <a href="#" class="dropdown-item">Profile & account</a>
+                <a href="#" class="dropdown-item">Feedback</a>
+                <div class="dropdown-divider"></div>
+                <a href="#" class="dropdown-item">Settings</a>
+                <a href="#" class="dropdown-item">Logout</a>
+              </div>
+            </div>
+          </div>
         </div>
+      </header>
+      <div class="navbar-expand-md">
+        <div class="collapse navbar-collapse" id="navbar-menu">
+          <div class="navbar navbar-light">
+            {{ include(ea.templatePath('main_menu')) }}
+          </div>
+        </div>
+      </div>
+      <div class="page-wrapper">
+        <div class="container-xl">
+          <!-- Page title -->
+          <div class="page-header d-print-none">
+            <div class="row g-2 align-items-center">
+              <div class="col">
+                <!-- Page pre-title -->
+                <div class="page-pretitle">
+                  Overview
+                </div>
+                <h2 class="page-title">
+                  Fluid layout
+                </h2>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="page-body">
+         <div class="col-12">
+                <div class="card">
+                  <div class="card-header">
+                    <h3 class="card-title">Invoices</h3>
+                  </div>
+                  <div class="card-body border-bottom py-3">
+                    <div class="d-flex">
+                      <div class="text-muted">
+                        Show
+                        <div class="mx-2 d-inline-block">
+                          <input type="text" class="form-control form-control-sm" value="8" size="3" aria-label="Invoices count">
+                        </div>
+                        entries
+                      </div>
+                      <div class="ms-auto text-muted">
+                        Search:
+                        <div class="ms-2 d-inline-block">
+                          <input type="text" class="form-control form-control-sm" aria-label="Search invoice">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="table-responsive">
+                    <table class="table card-table table-vcenter text-nowrap datatable">
+                      <thead>
+                        <tr>
+                          <th class="w-1"><input class="form-check-input m-0 align-middle" type="checkbox" aria-label="Select all invoices"></th>
+                          <th class="w-1">No. <!-- Download SVG icon from http://tabler-icons.io/i/chevron-up -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-sm text-dark icon-thick" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><polyline points="6 15 12 9 18 15"></polyline></svg>
+                          </th>
+                          <th>Invoice Subject</th>
+                          <th>Client</th>
+                          <th>VAT No.</th>
+                          <th>Created</th>
+                          <th>Status</th>
+                          <th>Price</th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td><input class="form-check-input m-0 align-middle" type="checkbox" aria-label="Select invoice"></td>
+                          <td><span class="text-muted">001401</span></td>
+                          <td><a href="invoice.html" class="text-reset" tabindex="-1">Design Works</a></td>
+                          <td>
+                            <span class="flag flag-country-us"></span>
+                            Carlson Limited
+                          </td>
+                          <td>
+                            87956621
+                          </td>
+                          <td>
+                            15 Dec 2017
+                          </td>
+                          <td>
+                            <span class="badge bg-success me-1"></span> Paid
+                          </td>
+                          <td>$887</td>
+                          <td class="text-end">
+                            <span class="dropdown">
+                              <button class="btn dropdown-toggle align-text-top" data-bs-boundary="viewport" data-bs-toggle="dropdown">Actions</button>
+                              <div class="dropdown-menu dropdown-menu-end">
+                                <a class="dropdown-item" href="#">
+                                  Action
+                                </a>
+                                <a class="dropdown-item" href="#">
+                                  Another action
+                                </a>
+                              </div>
+                            </span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td><input class="form-check-input m-0 align-middle" type="checkbox" aria-label="Select invoice"></td>
+                          <td><span class="text-muted">001402</span></td>
+                          <td><a href="invoice.html" class="text-reset" tabindex="-1">UX Wireframes</a></td>
+                          <td>
+                            <span class="flag flag-country-gb"></span>
+                            Adobe
+                          </td>
+                          <td>
+                            87956421
+                          </td>
+                          <td>
+                            12 Apr 2017
+                          </td>
+                          <td>
+                            <span class="badge bg-warning me-1"></span> Pending
+                          </td>
+                          <td>$1200</td>
+                          <td class="text-end">
+                            <span class="dropdown">
+                              <button class="btn dropdown-toggle align-text-top" data-bs-boundary="viewport" data-bs-toggle="dropdown">Actions</button>
+                              <div class="dropdown-menu dropdown-menu-end">
+                                <a class="dropdown-item" href="#">
+                                  Action
+                                </a>
+                                <a class="dropdown-item" href="#">
+                                  Another action
+                                </a>
+                              </div>
+                            </span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td><input class="form-check-input m-0 align-middle" type="checkbox" aria-label="Select invoice"></td>
+                          <td><span class="text-muted">001403</span></td>
+                          <td><a href="invoice.html" class="text-reset" tabindex="-1">New Dashboard</a></td>
+                          <td>
+                            <span class="flag flag-country-de"></span>
+                            Bluewolf
+                          </td>
+                          <td>
+                            87952621
+                          </td>
+                          <td>
+                            23 Oct 2017
+                          </td>
+                          <td>
+                            <span class="badge bg-warning me-1"></span> Pending
+                          </td>
+                          <td>$534</td>
+                          <td class="text-end">
+                            <span class="dropdown">
+                              <button class="btn dropdown-toggle align-text-top" data-bs-boundary="viewport" data-bs-toggle="dropdown">Actions</button>
+                              <div class="dropdown-menu dropdown-menu-end">
+                                <a class="dropdown-item" href="#">
+                                  Action
+                                </a>
+                                <a class="dropdown-item" href="#">
+                                  Another action
+                                </a>
+                              </div>
+                            </span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td><input class="form-check-input m-0 align-middle" type="checkbox" aria-label="Select invoice"></td>
+                          <td><span class="text-muted">001404</span></td>
+                          <td><a href="invoice.html" class="text-reset" tabindex="-1">Landing Page</a></td>
+                          <td>
+                            <span class="flag flag-country-br"></span>
+                            Salesforce
+                          </td>
+                          <td>
+                            87953421
+                          </td>
+                          <td>
+                            2 Sep 2017
+                          </td>
+                          <td>
+                            <span class="badge bg-secondary me-1"></span> Due in 2 Weeks
+                          </td>
+                          <td>$1500</td>
+                          <td class="text-end">
+                            <span class="dropdown">
+                              <button class="btn dropdown-toggle align-text-top" data-bs-boundary="viewport" data-bs-toggle="dropdown">Actions</button>
+                              <div class="dropdown-menu dropdown-menu-end">
+                                <a class="dropdown-item" href="#">
+                                  Action
+                                </a>
+                                <a class="dropdown-item" href="#">
+                                  Another action
+                                </a>
+                              </div>
+                            </span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td><input class="form-check-input m-0 align-middle" type="checkbox" aria-label="Select invoice"></td>
+                          <td><span class="text-muted">001405</span></td>
+                          <td><a href="invoice.html" class="text-reset" tabindex="-1">Marketing Templates</a></td>
+                          <td>
+                            <span class="flag flag-country-pl"></span>
+                            Printic
+                          </td>
+                          <td>
+                            87956621
+                          </td>
+                          <td>
+                            29 Jan 2018
+                          </td>
+                          <td>
+                            <span class="badge bg-danger me-1"></span> Paid Today
+                          </td>
+                          <td>$648</td>
+                          <td class="text-end">
+                            <span class="dropdown">
+                              <button class="btn dropdown-toggle align-text-top" data-bs-boundary="viewport" data-bs-toggle="dropdown">Actions</button>
+                              <div class="dropdown-menu dropdown-menu-end">
+                                <a class="dropdown-item" href="#">
+                                  Action
+                                </a>
+                                <a class="dropdown-item" href="#">
+                                  Another action
+                                </a>
+                              </div>
+                            </span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td><input class="form-check-input m-0 align-middle" type="checkbox" aria-label="Select invoice"></td>
+                          <td><span class="text-muted">001406</span></td>
+                          <td><a href="invoice.html" class="text-reset" tabindex="-1">Sales Presentation</a></td>
+                          <td>
+                            <span class="flag flag-country-br"></span>
+                            Tabdaq
+                          </td>
+                          <td>
+                            87956621
+                          </td>
+                          <td>
+                            4 Feb 2018
+                          </td>
+                          <td>
+                            <span class="badge bg-secondary me-1"></span> Due in 3 Weeks
+                          </td>
+                          <td>$300</td>
+                          <td class="text-end">
+                            <span class="dropdown">
+                              <button class="btn dropdown-toggle align-text-top" data-bs-boundary="viewport" data-bs-toggle="dropdown">Actions</button>
+                              <div class="dropdown-menu dropdown-menu-end">
+                                <a class="dropdown-item" href="#">
+                                  Action
+                                </a>
+                                <a class="dropdown-item" href="#">
+                                  Another action
+                                </a>
+                              </div>
+                            </span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td><input class="form-check-input m-0 align-middle" type="checkbox" aria-label="Select invoice"></td>
+                          <td><span class="text-muted">001407</span></td>
+                          <td><a href="invoice.html" class="text-reset" tabindex="-1">Logo &amp; Print</a></td>
+                          <td>
+                            <span class="flag flag-country-us"></span>
+                            Apple
+                          </td>
+                          <td>
+                            87956621
+                          </td>
+                          <td>
+                            22 Mar 2018
+                          </td>
+                          <td>
+                            <span class="badge bg-success me-1"></span> Paid Today
+                          </td>
+                          <td>$2500</td>
+                          <td class="text-end">
+                            <span class="dropdown">
+                              <button class="btn dropdown-toggle align-text-top" data-bs-boundary="viewport" data-bs-toggle="dropdown">Actions</button>
+                              <div class="dropdown-menu dropdown-menu-end">
+                                <a class="dropdown-item" href="#">
+                                  Action
+                                </a>
+                                <a class="dropdown-item" href="#">
+                                  Another action
+                                </a>
+                              </div>
+                            </span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td><input class="form-check-input m-0 align-middle" type="checkbox" aria-label="Select invoice"></td>
+                          <td><span class="text-muted">001408</span></td>
+                          <td><a href="invoice.html" class="text-reset" tabindex="-1">Icons</a></td>
+                          <td>
+                            <span class="flag flag-country-pl"></span>
+                            Tookapic
+                          </td>
+                          <td>
+                            87956621
+                          </td>
+                          <td>
+                            13 May 2018
+                          </td>
+                          <td>
+                            <span class="badge bg-success me-1"></span> Paid Today
+                          </td>
+                          <td>$940</td>
+                          <td class="text-end">
+                            <span class="dropdown">
+                              <button class="btn dropdown-toggle align-text-top" data-bs-boundary="viewport" data-bs-toggle="dropdown">Actions</button>
+                              <div class="dropdown-menu dropdown-menu-end">
+                                <a class="dropdown-item" href="#">
+                                  Action
+                                </a>
+                                <a class="dropdown-item" href="#">
+                                  Another action
+                                </a>
+                              </div>
+                            </span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="card-footer d-flex align-items-center">
+                    <p class="m-0 text-muted">Showing <span>1</span> to <span>8</span> of <span>16</span> entries</p>
+                    <ul class="pagination m-0 ms-auto">
+                      <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
+                          <!-- Download SVG icon from http://tabler-icons.io/i/chevron-left -->
+                          <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><polyline points="15 6 9 12 15 18"></polyline></svg>
+                          prev
+                        </a>
+                      </li>
+                      <li class="page-item"><a class="page-link" href="#">1</a></li>
+                      <li class="page-item active"><a class="page-link" href="#">2</a></li>
+                      <li class="page-item"><a class="page-link" href="#">3</a></li>
+                      <li class="page-item"><a class="page-link" href="#">4</a></li>
+                      <li class="page-item"><a class="page-link" href="#">5</a></li>
+                      <li class="page-item">
+                        <a class="page-link" href="#">
+                          next <!-- Download SVG icon from http://tabler-icons.io/i/chevron-right -->
+                          <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><polyline points="9 6 15 12 9 18"></polyline></svg>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+        </div>
+        <footer class="footer footer-transparent d-print-none">
+          <div class="container-xl">
+            <div class="row text-center align-items-center flex-row-reverse">
+              <div class="col-lg-auto ms-lg-auto">
+                <ul class="list-inline list-inline-dots mb-0">
+                  <li class="list-inline-item"><a href="./docs/index.html" class="link-secondary">Documentation</a></li>
+                  <li class="list-inline-item"><a href="./license.html" class="link-secondary">License</a></li>
+                  <li class="list-inline-item"><a href="https://github.com/tabler/tabler" target="_blank" class="link-secondary" rel="noopener">Source code</a></li>
+                  <li class="list-inline-item">
+                    <a href="https://github.com/sponsors/codecalm" target="_blank" class="link-secondary" rel="noopener">
+                      <!-- Download SVG icon from http://tabler-icons.io/i/heart -->
+                      <svg xmlns="http://www.w3.org/2000/svg" class="icon text-pink icon-filled icon-inline" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428m0 0a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572" /></svg>
+                      Sponsor
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <div class="col-12 col-lg-auto mt-3 mt-lg-0">
+                <ul class="list-inline list-inline-dots mb-0">
+                  <li class="list-inline-item">
+                    Copyright &copy; 2022
+                    <a href="." class="link-secondary">Tabler</a>.
+                    All rights reserved.
+                  </li>
+                  <li class="list-inline-item">
+                    Generated 2022-08-31 11:00 UTC
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+    <div class="modal modal-blur fade" id="modal-report" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">New report</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label">Name</label>
+              <input type="text" class="form-control" name="example-text-input" placeholder="Your report name">
+            </div>
+            <label class="form-label">Report type</label>
+            <div class="form-selectgroup-boxes row mb-3">
+              <div class="col-lg-6">
+                <label class="form-selectgroup-item">
+                  <input type="radio" name="report-type" value="1" class="form-selectgroup-input" checked>
+                  <span class="form-selectgroup-label d-flex align-items-center p-3">
+                    <span class="me-3">
+                      <span class="form-selectgroup-check"></span>
+                    </span>
+                    <span class="form-selectgroup-label-content">
+                      <span class="form-selectgroup-title strong mb-1">Simple</span>
+                      <span class="d-block text-muted">Provide only basic data needed for the report</span>
+                    </span>
+                  </span>
+                </label>
+              </div>
+              <div class="col-lg-6">
+                <label class="form-selectgroup-item">
+                  <input type="radio" name="report-type" value="1" class="form-selectgroup-input">
+                  <span class="form-selectgroup-label d-flex align-items-center p-3">
+                    <span class="me-3">
+                      <span class="form-selectgroup-check"></span>
+                    </span>
+                    <span class="form-selectgroup-label-content">
+                      <span class="form-selectgroup-title strong mb-1">Advanced</span>
+                      <span class="d-block text-muted">Insert charts and additional advanced analyses to be inserted in the report</span>
+                    </span>
+                  </span>
+                </label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-8">
+                <div class="mb-3">
+                  <label class="form-label">Report url</label>
+                  <div class="input-group input-group-flat">
+                    <span class="input-group-text">
+                      https://tabler.io/reports/
+                    </span>
+                    <input type="text" class="form-control ps-0"  value="report-01" autocomplete="off">
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <div class="mb-3">
+                  <label class="form-label">Visibility</label>
+                  <select class="form-select">
+                    <option value="1" selected>Private</option>
+                    <option value="2">Public</option>
+                    <option value="3">Hidden</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="mb-3">
+                  <label class="form-label">Client name</label>
+                  <input type="text" class="form-control">
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="mb-3">
+                  <label class="form-label">Reporting period</label>
+                  <input type="date" class="form-control">
+                </div>
+              </div>
+              <div class="col-lg-12">
+                <div>
+                  <label class="form-label">Additional information</label>
+                  <textarea class="form-control" rows="3"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">
+              Cancel
+            </a>
+            <a href="#" class="btn btn-primary ms-auto" data-bs-dismiss="modal">
+              <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+              <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
+              Create new report
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
     {% endblock wrapper_wrapper %}
 
     {% block body_javascript %}{% endblock body_javascript %}

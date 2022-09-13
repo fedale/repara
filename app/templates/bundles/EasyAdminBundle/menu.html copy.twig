@@ -6,11 +6,11 @@
         {% block main_menu %}
             {% for menuItem in ea.mainMenu.items %}
                 {% block menu_item %}
-                    <li class="nav-item {{ menuItem.isMenuSection ? 'menu-header' : 'menu-item' }} {{ menuItem.hasSubItems ? 'has-submenu' }} {{ ea.mainMenu.isSelected(menuItem) ? 'active' }} {{ ea.mainMenu.isExpanded(menuItem) ? 'expanded' }}">
+                    <li class="{{ menuItem.isMenuSection ? 'menu-header' : 'menu-item' }} {{ menuItem.hasSubItems ? 'has-submenu' }} {{ ea.mainMenu.isSelected(menuItem) ? 'active' }} {{ ea.mainMenu.isExpanded(menuItem) ? 'expanded' }}">
                         {{ _self.render_menu_item(menuItem) }}
 
                         {% if menuItem.hasSubItems %}
-                            <ul class="dropdown-menu">
+                            <ul class="submenu">
                                 {% for menuSubItem in menuItem.subItems %}
                                     {% block menu_subitem %}
                                         <li class="{{ menuSubItem.isMenuSection ? 'menu-header' : 'menu-item' }} {{ ea.mainMenu.isSelected(menuSubItem) ? 'active' }}">
@@ -41,7 +41,7 @@
             {% endif %}
         </span>
     {% else %}
-        <a href="{{ item.linkUrl }}" class="nav-link menu-item-contents {{ item.hasSubItems ? 'submenu-toggle' }} {{ item.cssClass }}" target="{{ item.linkTarget }}" rel="{{ item.linkRel }}" referrerpolicy="origin-when-cross-origin">
+        <a href="{{ item.linkUrl }}" class="menu-item-contents {{ item.hasSubItems ? 'submenu-toggle' }} {{ item.cssClass }}" target="{{ item.linkTarget }}" rel="{{ item.linkRel }}" referrerpolicy="origin-when-cross-origin">
             {% if item.icon is not empty %}<i class="menu-icon fa-fw {{ item.icon }}"></i>{% endif %}
             <span class="menu-item-label position-relative">
                 {{ item.label|trans|raw }}

@@ -4,6 +4,7 @@ namespace App\Controller\Admin\Customer;
 
 use App\Entity\Customer\Customer;
 use App\Type\CustomerProfileType;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -41,6 +42,16 @@ class CustomerCrudController extends AbstractCrudController
         ;
         yield DateField::new('createdAt')
             ->onlyOnIndex()
+        ;
+    }
+
+    public function configureFilters(Filters $filters): Filters
+    {
+        return $filters
+            ->add('username')
+            ->add('code')
+            ->add('email')
+            ->add('createdAt')
         ;
     }
     

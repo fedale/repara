@@ -4,7 +4,7 @@
 /* @import "~bootstrap/dist/css/bootstrap.css"; */
 
 @import '~@fortawesome/fontawesome-free/css/all.css';
-
+/* 
 .wrapper {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
@@ -18,8 +18,8 @@ header.top {
      grid-area: 1 / 1 / 2 / 6; 
      background: lightgray;
      padding: 0 1em;
-}
-
+} */
+/* 
 nav#main-menu {
     
 }
@@ -55,10 +55,8 @@ nav#main-menu {
 .form-check-inline,
 .form-check-inline+.form-check-inline {
     width: 200px;
-    /* display:inline-block; */
     margin-left: 0;
     white-space: nowrap;
     overflow: hidden;
-    /* text-overflow: ellipsis; */
 }
-
+ */

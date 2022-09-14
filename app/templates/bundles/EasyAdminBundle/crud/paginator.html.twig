@@ -4,7 +4,6 @@
 
 
     <p class="m-0 text-muted">
-    {{ dump(paginator) }}
         {% if render_detailed_pagination is defined ? render_detailed_pagination : true %}
             {{ 'paginator.results'|trans({'%count%': paginator.numResults|format})|raw }}
         {% endif %}

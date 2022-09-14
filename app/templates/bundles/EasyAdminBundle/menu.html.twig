@@ -1,24 +1,21 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
-<nav id="main-menu" class="navbar">
+<div class="container-xl">
     {% block main_menu_before %}{% endblock %}
 
     <ul class="menu navbar-nav">
         {% block main_menu %}
             {% for menuItem in ea.mainMenu.items %}
                 {% block menu_item %}
-                    <li class="nav-item {{ menuItem.isMenuSection ? 'menu-header' : 'menu-item' }} {{ menuItem.hasSubItems ? 'has-submenu' }} {{ ea.mainMenu.isSelected(menuItem) ? 'active' }} {{ ea.mainMenu.isExpanded(menuItem) ? 'expanded' }}">
+                    <li class="nav-item {{ menuItem.isMenuSection ? 'menu-header' : 'menu-item' }} {{ menuItem.hasSubItems ? 'dropdown' }} {{ ea.mainMenu.isSelected(menuItem) ? 'active' }} {{ ea.mainMenu.isExpanded(menuItem) ? 'expanded' }}">
                         {{ _self.render_menu_item(menuItem) }}
-
                         {% if menuItem.hasSubItems %}
-                            <ul class="dropdown-menu">
+                            <div class="dropdown-menu">
                                 {% for menuSubItem in menuItem.subItems %}
                                     {% block menu_subitem %}
-                                        <li class="{{ menuSubItem.isMenuSection ? 'menu-header' : 'menu-item' }} {{ ea.mainMenu.isSelected(menuSubItem) ? 'active' }}">
                                             {{ _self.render_menu_item(menuSubItem) }}
-                                        </li>
                                     {% endblock menu_subitem %}
                                 {% endfor %}
-                            </ul>
+                            </div>
                         {% endif %}
                     </li>
                 {% endblock menu_item %}
@@ -27,7 +24,8 @@
     </ul>
 
     {% block main_menu_after %}{% endblock %}
-</nav>
+</div>
+
 
 {% macro render_menu_item(item) %}
     {% if item.isMenuSection %}
@@ -41,7 +39,7 @@
             {% endif %}
         </span>
     {% else %}
-        <a href="{{ item.linkUrl }}" class="nav-link menu-item-contents {{ item.hasSubItems ? 'submenu-toggle' }} {{ item.cssClass }}" target="{{ item.linkTarget }}" rel="{{ item.linkRel }}" referrerpolicy="origin-when-cross-origin">
+        <a href="{{ item.linkUrl }}" class="dropdown-item {{ item.hasSubItems ? 'submenu-toggle' }} {{ item.cssClass }}" target="{{ item.linkTarget }}" rel="{{ item.linkRel }}" referrerpolicy="origin-when-cross-origin" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="false">
             {% if item.icon is not empty %}<i class="menu-icon fa-fw {{ item.icon }}"></i>{% endif %}
             <span class="menu-item-label position-relative">
                 {{ item.label|trans|raw }}

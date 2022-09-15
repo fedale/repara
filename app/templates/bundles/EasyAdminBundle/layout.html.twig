@@ -17,6 +17,7 @@
     {% block head_stylesheets %}
         {# <link rel="stylesheet" href="{{ asset('app.css', ea.assets.defaultAssetPackageName) }}"> #}
         {# <link rel="stylesheet" href="{{ asset('app.css') }}"> #}
+        {{ encore_entry_link_tags('app') }}
     {% endblock %}
 
     {% block configured_stylesheets %}
@@ -29,7 +30,8 @@
     {% endblock %}
 
     {% block head_javascript %}
-        <script src="{{ asset('app.js', ea.assets.defaultAssetPackageName) }}"></script>
+        {# <script src="{{ asset('app.js', ea.assets.defaultAssetPackageName) }}"></script> #}
+        {{ encore_entry_script_tags('app') }}
     {% endblock head_javascript %}
 
     {% block configured_javascripts %}

@@ -23,6 +23,7 @@ security:
             form_login:
                login_path: admin_login
                check_path: admin_login
+               enable_csrf: true
             custom_authenticator: App\Security\AdminCustomAuthenticator
             entry_point: App\Security\AdminCustomAuthenticator
             logout:

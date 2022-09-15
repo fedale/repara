@@ -2,24 +2,33 @@
 
 namespace App\Controller;
 
+use App\Controller\Admin\DashboardController;
 use App\Controller\Admin\WebsiteCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
-class SecurityController extends AbstractDashboardController
+class SecurityController extends AbstractController
 {
+    private AdminUrlGenerator $adminUrlGenerator;
+
+    public function __construct(AdminUrlGenerator $adminUrlGenerator)
+    {
+        $this->adminUrlGenerator = $adminUrlGenerator;
+    }
+
     #[Route(path: '/admin/login', name: 'admin_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
-        // redirect to some CRUD controller
-        $routeBuilder = $this->container->get(AdminUrlGenerator::class);
-        
-
         if ($this->getUser()) {
-            return $this->redirect($routeBuilder->setController(WebsiteCrudController::class)->generateUrl());
+            $url = $this->adminUrlGenerator
+                ->setDashboard(DashboardController::class)
+                ->setController(WebsiteCrudController::class)
+                ->generateUrl();
+            return $this->redirect($url);
         }
 
         // get the login error if there is one
@@ -27,11 +36,12 @@ class SecurityController extends AbstractDashboardController
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
 
-        return $this->render('security/login.html.twig', 
+        return $this->render('@EasyAdmin/page/login.html.twig', 
             [
                 'title' => 'Login',
                 'last_username' => $lastUsername, 
-                'error' => $error
+                'error' => $error,
+                'csrf_token_intention' => 'authenticate',
             ]
         );
     }

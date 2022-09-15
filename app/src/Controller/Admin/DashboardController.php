@@ -45,16 +45,15 @@ class DashboardController extends AbstractDashboardController
     {
         return parent::configureCrud()
             ->showEntityActionsInlined()
-         
         ;
     }
     
-    public function configureAssets(): Assets
-    {
-        return parent::configureAssets()
-             ->addWebpackEncoreEntry('app')
-        ;
-    }
+    // public function configureAssets(): Assets
+    // {
+    //     return parent::configureAssets()
+    //          ->addWebpackEncoreEntry('app')
+    //     ;
+    // }
 
     public function configureDashboard(): Dashboard
     {

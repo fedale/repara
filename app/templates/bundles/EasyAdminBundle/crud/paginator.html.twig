@@ -2,10 +2,9 @@
 {# @var paginator \EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator #}
 {% trans_default_domain 'EasyAdminBundle' %}
 
-
     <p class="m-0 text-muted">
         {% if render_detailed_pagination is defined ? render_detailed_pagination : true %}
-            {{ 'paginator.results'|trans({'%count%': paginator.numResults|format})|raw }}
+            {{ 'paginator.counter'|trans({'%results%': paginator.numResults|format, '%start%': paginator.startResults|format,'%end%': paginator.endResults|format })|raw }}
         {% endif %}
     </p>
 

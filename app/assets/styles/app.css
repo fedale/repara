@@ -4,59 +4,30 @@
 /* @import "~bootstrap/dist/css/bootstrap.css"; */
 
 @import '~@fortawesome/fontawesome-free/css/all.css';
-/* 
-.wrapper {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    grid-template-rows: repeat(5, 1fr);
-    grid-column-gap: 0px;
-    grid-row-gap: 0px;
-    
-    }
-    
-header.top {
-     grid-area: 1 / 1 / 2 / 6; 
-     background: lightgray;
-     padding: 0 1em;
-} */
-/* 
-nav#main-menu {
-    
+
+header.navbar .navbar-brand {
+    font-size: 2em;
 }
 
-section.main { grid-area: 2 / 1 / 5 / 6; }
+header.navbar .navbar-light {
+    box-shadow: none;
+}
+
+#navbar-menu ul.menu > li > a {
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+#navbar-menu ul.menu > li.nav-item.active,
+.navbar-expand-md .navbar-light .nav-item.active:after, 
+.navbar-expand-md.navbar-light .nav-item.active:after
+{
+    border: none;
+    background: var(--tblr-primary);
+    border-radius: var(--tblr-border-radius);
+}
+
+#navbar-menu ul.menu > li.nav-item.active > a {
+    color: var(--tblr-light);
     
-footer.bottom { grid-area: 5 / 1 / 6 / 6; }
-
-
-nav#main-menu {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    ul {        
-        display: flex;
-        align-items: center;
-    }
-
-    ul li {
-        margin-right: 20px;
-
-        &:last-child {
-            margin-right: 0px;
-        }
-    }
 }
-
-.select-search-box p {
-    display: inline-block;
-}
-
-.form-check-inline,
-.form-check-inline+.form-check-inline {
-    width: 200px;
-    margin-left: 0;
-    white-space: nowrap;
-    overflow: hidden;
-}
- */

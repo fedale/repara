@@ -1,7 +1,6 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
 <div class="container-xl">
     {% block main_menu_before %}{% endblock %}
-
     <ul class="menu navbar-nav">
         {% block main_menu %}
             {% for menuItem in ea.mainMenu.items %}
@@ -9,7 +8,7 @@
                     <li class="nav-item {{ menuItem.isMenuSection ? 'menu-header' : 'menu-item' }} {{ menuItem.hasSubItems ? 'dropdown' }} {{ ea.mainMenu.isSelected(menuItem) ? 'active' }} {{ ea.mainMenu.isExpanded(menuItem) ? 'expanded' }}">
                         {{ _self.render_menu_item(menuItem) }}
                         {% if menuItem.hasSubItems %}
-                            <div class="dropdown-menu">
+                            <div class="dropdown-menu" data-menu-target="dropdown">
                                 {% for menuSubItem in menuItem.subItems %}
                                     {% block menu_subitem %}
                                             {{ _self.render_menu_item(menuSubItem) }}
@@ -22,10 +21,8 @@
             {% endfor %}
         {% endblock main_menu %}
     </ul>
-
     {% block main_menu_after %}{% endblock %}
 </div>
-
 
 {% macro render_menu_item(item) %}
     {% if item.isMenuSection %}
@@ -40,7 +37,7 @@
         </span>
     {% else %}
         <a href="{{ item.linkUrl }}" 
-            class="nav-link {{ item.hasSubItems ? 'dropdown-toggle' }} {{ item.cssClass }}" 
+            class="nav-link  {{ item.hasSubItems ? 'dropdown-toggle' }}  {{ item.cssClass }} {{ ea.mainMenu.isSelected(item) ? 'active' }}" 
             {% if item.hasSubItems %}
                 target="{{ item.linkTarget }}" 
                 rel="{{ item.linkRel }}" 
@@ -50,6 +47,7 @@
                 role="button" 
                 aria-expanded="false"
             {% endif %}
+            
         >
             {% if item.icon is not empty %}<i class="menu-icon fa-fw {{ item.icon }}"></i>{% endif %}
             <span class="nav-link-title">{{ item.label|trans|raw }}</span>

@@ -31,3 +31,14 @@ header.navbar .navbar-light {
     color: var(--tblr-light);
     
 }
+
+
+/* ###### 6.6 Navbar  ###### */
+@media (max-width: 768px) {
+header.navbar.show {
+    position: absolute; 
+    width: 40%; 
+    z-index:9999; 
+    height: 100%;
+}
+}

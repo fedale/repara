@@ -8,7 +8,7 @@
 // any CSS you import will output into a single css file (app.css in this case)
 import './styles/app.css';
 
-import '@tabler/core/dist/js/tabler.js';
+// import '@tabler/core/dist/js/tabler.js';
 
 // start the Stimulus application
 import './bootstrap';

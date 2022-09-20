@@ -142,12 +142,13 @@
         {% endset %}
 
      <div class="page">
-      <header class="navbar navbar-expand-md navbar-light d-print-none">
+      <header class="navbar navbar-expand-md navbar-light d-print-none" data-controller="header">
         <div class="container-xl">
-        <!--
+        style="position: absolute; width: 40%; z-index:9999; height: 100%"
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu">
             <span class="navbar-toggler-icon"></span>
-          </button>-->
+          </button>
+          
           <div class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
             <a href="{{ path(ea.dashboardRouteName) }}">
               {# <img src="./static/logo.svg" width="110" height="32" alt="Tabler" class="navbar-brand-image"> #}
@@ -263,8 +264,8 @@
               <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Open user menu">
                 <span class="avatar avatar-sm" style="background-image: url(./static/avatars/000m.jpg)"></span>
                 <div class="d-none d-xl-block ps-2">
-                  <div>Paweł Kuna</div>
-                  <div class="mt-1 small text-muted">UI Designer</div>
+                  <div>{{ app.user.profile }}</div>
+                  <div class="mt-1 small text-muted">{{ app.user.email }}</div>
                 </div>
               </a>
               <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">

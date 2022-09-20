@@ -18,12 +18,17 @@ services:
       - db_data:/var/lib/mysql
 
   app:
-    build:
-      context: ./php
     ports:
       - '9000:9000'
     volumes:
-      - ./app:/var/www/app
+      - ./app:/srv/app
+    environment: 
+    - APP_NAME=${APP_NAME}
+    - APP_ENV=${APP_ENV}
+    - DATABASE_URL=mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@database:3306/${MYSQL_DATABASE}
+    - COMPANY_ID=${COMPANY_ID}
+    - APP_LOCALE=${APP_LOCALE}
+    - DEFAULT_TIMEZONE=${DEFAULT_TIMEZONE}
     depends_on:
       - database
 

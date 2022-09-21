@@ -19,11 +19,49 @@ final class Version20220630192438 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        $this->addSql('CREATE TABLE notification (id SERIAL PRIMARY KEY NOT NULL, notification_entity_id INT DEFAULT NULL, entity_id INT DEFAULT NULL COMMENT \'NULL with deleted entities\', message MEDIUMTEXT NOT NULL, status TINYINT(1) DEFAULT 1 NOT NULL, created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, deleted_at TIMESTAMP DEFAULT NULL, INDEX created_at (created_at), INDEX updated_at (updated_at), INDEX entity_id (entity_id), INDEX active (status), INDEX entity_type_id (notification_entity_id), PRIMARY KEY(id)) COMMENT = \'\' ');
+        $this->addSql('CREATE TABLE notification (
+            id SERIAL NOT NULL, 
+            notification_entity_id INT DEFAULT NULL CHECK (notification_entity_id > 0), 
+            entity_id INT DEFAULT NULL CHECK (entity_id > 0), 
+            message TEXT NOT NULL, 
+            status SMALLINT DEFAULT 1 NOT NULL, 
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, 
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, 
+            deleted_at TIMESTAMP DEFAULT NULL, 
+            PRIMARY KEY (id)
+        )');
+        $this->addSql('COMMENT ON COLUMN notification.entity_id IS  \'NULL with deleted entities\''); 
+        $this->addSql('CREATE INDEX ON notification (created_at)'); 
+        $this->addSql('CREATE INDEX ON notification (updated_at)');
+        $this->addSql('CREATE INDEX ON notification (entity_id)');
+        $this->addSql('CREATE INDEX ON notification (status)');
+        $this->addSql('CREATE INDEX ON notification (notification_entity_id)');
         
-        $this->addSql('CREATE TABLE notification_entity (id SERIAL PRIMARY KEY NOT NULL, name VARCHAR(64) NOT NULL COMMENT \'post,comment,task,template\', action VARCHAR(16) NOT NULL, subject VARCHAR(128) NOT NULL, template VARCHAR(255) NOT NULL, INDEX subject (subject), INDEX name (name), PRIMARY KEY(id)) COMMENT = \'\' ');
+        $this->addSql('CREATE TABLE notification_entity (
+            id SERIAL NOT NULL, 
+            name VARCHAR(64) NOT NULL, 
+            action VARCHAR(16) NOT NULL, 
+            subject VARCHAR(128) NOT NULL, 
+            template VARCHAR(255) NOT NULL, 
+            PRIMARY KEY (id) 
+        )');
+        $this->addSql('COMMENT ON COLUMN notification_entity.name IS  \'post,comment,task,template\''); 
+        $this->addSql('CREATE INDEX ON notification_entity (subject)');
+        $this->addSql('CREATE INDEX ON notification_entity (name)');
+        $this->addSql('CREATE INDEX ON notification_entity (action)');
         
-        $this->addSql('CREATE TABLE notification_item (id SERIAL PRIMARY KEY NOT NULL, notification_id INT DEFAULT NULL, recipient_id INT DEFAULT NULL, sender_id INT NOT NULL, status SMALLINT NOT NULL, INDEX sender_id (sender_id), INDEX recipient_id (recipient_id), INDEX status (status), INDEX notification_id (notification_id), PRIMARY KEY(id)) COMMENT = \'\' ');
+        $this->addSql('CREATE TABLE notification_item (
+            id SERIAL NOT NULL, 
+            notification_id INT DEFAULT NULL CHECK (notification_id > 0), 
+            recipient_id INT DEFAULT NULL CHECK (recipient_id > 0), 
+            sender_id INT NOT NULL CHECK (sender_id > 0), 
+            status SMALLINT NOT NULL,
+            PRIMARY KEY (id)
+        )');
+        $this->addSql('CREATE INDEX ON notification_item (sender_id)');
+        $this->addSql('CREATE INDEX ON notification_item (recipient_id)');
+        $this->addSql('CREATE INDEX ON notification_item (status)');
+        $this->addSql('CREATE INDEX ON notification_item (notification_id)');
 
     }
 

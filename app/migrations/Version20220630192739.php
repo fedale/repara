@@ -31,7 +31,7 @@ final class Version20220630192739 extends AbstractMigration
             INDEX updated_at (updated_at),
             INDEX name (name),
             PRIMARY KEY(id)
-        ) ENGINE = InnoDB');
+        ) ');
 
         $this->addSql('CREATE TABLE project_task (
             id SERIAL PRIMARY KEY NOT NULL,
@@ -66,7 +66,7 @@ final class Version20220630192739 extends AbstractMigration
             CONSTRAINT `project_task_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
             CONSTRAINT `project_task_ibfk_2` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
             CONSTRAINT `project_task_ibfk_3` FOREIGN KEY (`type_id`) REFERENCES `project_task_type` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-        ) ENGINE = InnoDB');
+        ) ');
  
         $this->addSql('CREATE TABLE project_task_activity (
             id SERIAL PRIMARY KEY NOT NULL,
@@ -80,7 +80,7 @@ final class Version20220630192739 extends AbstractMigration
             PRIMARY KEY(id),
             CONSTRAINT `project_task_activity_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
             CONSTRAINT `project_task_activity_ibfk_2` FOREIGN KEY (`project_task_id`) REFERENCES `project_task` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-        ) ENGINE = InnoDB');
+        ) ');
 
         $this->addSql('CREATE TABLE project_task_user_assigned (
             id SERIAL PRIMARY KEY NOT NULL,
@@ -98,7 +98,7 @@ final class Version20220630192739 extends AbstractMigration
             PRIMARY KEY(id),
             CONSTRAINT `project_task_user_assigned_ibfk_1` FOREIGN KEY (`project_task_id`) REFERENCES `project_task` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
             CONSTRAINT `project_task_user_assigned_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-        ) ENGINE = InnoDB');
+        ) ');
         
         $this->addSql('CREATE TABLE project_task_attachment (
             id SERIAL PRIMARY KEY NOT NULL,
@@ -126,13 +126,13 @@ final class Version20220630192739 extends AbstractMigration
             PRIMARY KEY(id),
             CONSTRAINT `project_task_attachment_ibfk_1` FOREIGN KEY (`project_task_id`) REFERENCES `project_task` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
             CONSTRAINT `project_task_attachment_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-        ) ENGINE = InnoDB');
+        ) ');
 
         $this->addSql('CREATE TABLE project_task_tag (
             id SERIAL PRIMARY KEY NOT NULL, 
             name VARCHAR(255) NOT NULL, 
             PRIMARY KEY(id)
-        ) ENGINE = InnoDB');
+        ) ');
 
         $this->addSql('CREATE TABLE project_task_tag_assigned (
             project_task_id INT NOT NULL, 
@@ -142,7 +142,7 @@ final class Version20220630192739 extends AbstractMigration
             PRIMARY KEY(project_task_id, project_task_tag_id),
             CONSTRAINT `project_task_tag_assigned_ibfk_1` FOREIGN KEY (`project_task_id`) REFERENCES `project_task` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
             CONSTRAINT `project_task_tag_assigned_ibfk_2` FOREIGN KEY (`project_task_tag_id`) REFERENCES `project_task_tag` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-        ) ENGINE = InnoDB');
+        ) ');
 
         $this->addSql('CREATE TABLE project_task_milestone (
             id SERIAL PRIMARY KEY NOT NULL,
@@ -158,7 +158,7 @@ final class Version20220630192739 extends AbstractMigration
             PRIMARY KEY(id),
             CONSTRAINT `project_task_milestone_ibfk_1` FOREIGN KEY (`project_milestone_id`) REFERENCES `project_milestone` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
             CONSTRAINT `project_task_milestone_ibfk_2` FOREIGN KEY (`project_task_id`) REFERENCES `project_task` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-        ) ENGINE = InnoDB');
+        ) ');
         
         $this->addSql('CREATE TABLE project_task_item (
             id SERIAL PRIMARY KEY NOT NULL,
@@ -185,7 +185,7 @@ final class Version20220630192739 extends AbstractMigration
             INDEX created_at (created_at),
             PRIMARY KEY(id),
             CONSTRAINT `project_task_item_ibfk_1` FOREIGN KEY (`project_task_id`) REFERENCES `project_task` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-        ) ENGINE = InnoDB');
+        ) ');
         
         $this->addSql('CREATE TABLE project_task_item_assigned (
             id SERIAL PRIMARY KEY NOT NULL,
@@ -203,7 +203,7 @@ final class Version20220630192739 extends AbstractMigration
             PRIMARY KEY(id),
             CONSTRAINT `project_task_item_assigned_ibfk_1` FOREIGN KEY (`project_task_item_id`) REFERENCES `project_task_item` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
             CONSTRAINT `project_task_item_assigned_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-        ) ENGINE = InnoDB');
+        ) ');
         
         $this->addSql('CREATE TABLE project_task_template (
             id SERIAL PRIMARY KEY NOT NULL,
@@ -218,7 +218,7 @@ final class Version20220630192739 extends AbstractMigration
             INDEX updated_at (updated_at),
             INDEX name (name),
             PRIMARY KEY(id)
-        ) ENGINE = InnoDB');
+        ) ');
         
         // check task_id if refers to project_task or to project_task_template (I suppose latter)
         $this->addSql('CREATE TABLE project_task_item_template (
@@ -241,7 +241,7 @@ final class Version20220630192739 extends AbstractMigration
             PRIMARY KEY(id),
             CONSTRAINT `project_task_item_template_ibfk_1` FOREIGN KEY (`task_template_id`) REFERENCES `project_task_template` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
             -- CONSTRAINT `project_task_item_template_ibfk_2` FOREIGN KEY (`task_type_id`) REFERENCES `project_task_type` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-        ) ENGINE = InnoDB');
+        ) ');
     }
 
     public function down(Schema $schema): void

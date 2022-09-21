@@ -143,14 +143,11 @@ final class Version20220630192434 extends AbstractMigration
         $this->addSql('CREATE INDEX ON asset_category (root)');
         $this->addSql('CREATE INDEX ON asset_category (lvl)');
         $this->addSql('CREATE INDEX ON asset_category (active)');
-        //     CONSTRAINT `asset_category_ibfk_1` FOREIGN KEY (`parent_id`) REFERENCES `asset_category` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-        // )');
-        
+        $this->addSql('ALTER TABLE asset_category ADD CONSTRAINT asset_category_fk_1 FOREIGN KEY (parent_id) REFERENCES asset_category (id) ON DELETE CASCADE ON UPDATE NO ACTION');
     }
 
     public function down(Schema $schema): void
     {
-        return;
         $this->addSql('DROP TABLE asset_attachment');
 
         $this->addSql('DROP TABLE asset');   

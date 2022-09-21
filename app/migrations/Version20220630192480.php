@@ -31,7 +31,7 @@ final class Version20220630192480 extends AbstractMigration
             INDEX updated_at (updated_at),
             INDEX name (name),
             PRIMARY KEY(id)
-        ) ENGINE = InnoDB');
+        ) ');
 
         $this->addSql('CREATE TABLE project (
             id SERIAL PRIMARY KEY NOT NULL,
@@ -65,7 +65,7 @@ final class Version20220630192480 extends AbstractMigration
             INDEX budget (budget),
             PRIMARY KEY(id),
             CONSTRAINT `project_type_ibfk_1` FOREIGN KEY (`type_id`) REFERENCES `project_type` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-        ) ENGINE = InnoDB');
+        ) ');
         
         $this->addSql('CREATE TABLE project_activity (
             id SERIAL PRIMARY KEY NOT NULL,
@@ -79,7 +79,7 @@ final class Version20220630192480 extends AbstractMigration
             PRIMARY KEY(id),
             CONSTRAINT `project_activity_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
             CONSTRAINT `project_activity_ibfk_2` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-        ) ENGINE = InnoDB');
+        ) ');
 
         $this->addSql('CREATE TABLE project_milestone (
             id SERIAL PRIMARY KEY NOT NULL,
@@ -92,7 +92,7 @@ final class Version20220630192480 extends AbstractMigration
             INDEX active (active),
             INDEX name (name),
             PRIMARY KEY(id)
-        ) ENGINE = InnoDB');
+        ) ');
     }
 
     public function down(Schema $schema): void

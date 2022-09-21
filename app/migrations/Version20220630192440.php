@@ -24,7 +24,7 @@ final class Version20220630192440 extends AbstractMigration
             name VARCHAR(255) DEFAULT NULL,
             INDEX name (name),
             PRIMARY KEY(id)
-        ) ENGINE = InnoDB ');
+        ) ');
 
         $this->addSql('CREATE TABLE customer (
             id SERIAL PRIMARY KEY NOT NULL,
@@ -49,7 +49,7 @@ final class Version20220630192440 extends AbstractMigration
             INDEX active (active),
             PRIMARY KEY(id),
             CONSTRAINT `customer_ibfk_1` FOREIGN KEY (`type_id`) REFERENCES `customer_type` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-        ) ENGINE = InnoDB');
+        ) ');
         
         $this->addSql('CREATE TABLE customer_attachment (
             id SERIAL PRIMARY KEY NOT NULL,
@@ -75,7 +75,7 @@ final class Version20220630192440 extends AbstractMigration
             INDEX updated_at (updated_at),
             PRIMARY KEY(id),
             CONSTRAINT `customer_attachment_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-        ) ENGINE = InnoDB');        
+        ) ');        
         
         $this->addSql('CREATE TABLE customer_location (
             id SERIAL PRIMARY KEY NOT NULL,
@@ -98,7 +98,7 @@ final class Version20220630192440 extends AbstractMigration
             INDEX customer_id (customer_id),
             PRIMARY KEY(id),
             CONSTRAINT `customer_location_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-        ) ENGINE = InnoDB');
+        ) ');
 
         $this->addSql('CREATE TABLE customer_contact (
             id SERIAL PRIMARY KEY NOT NULL,
@@ -121,7 +121,7 @@ final class Version20220630192440 extends AbstractMigration
             INDEX lastname (lastname),
             PRIMARY KEY(id),
             CONSTRAINT `customer_contact_ibfk_1` FOREIGN KEY (`customer_location_id`) REFERENCES `customer_location` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-        ) ENGINE = InnoDB');
+        ) ');
 
 
         $this->addSql('CREATE TABLE customer_location_place (
@@ -139,7 +139,7 @@ final class Version20220630192440 extends AbstractMigration
             INDEX customer_location_id (customer_location_id),
             PRIMARY KEY(id),
             CONSTRAINT `customer_location_place_ibfk_1` FOREIGN KEY (`customer_location_id`) REFERENCES `customer_location` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-        ) ENGINE = InnoDB');
+        ) ');
         
         $this->addSql('CREATE TABLE customer_location_place_asset (
             id SERIAL PRIMARY KEY NOT NULL,
@@ -160,7 +160,7 @@ final class Version20220630192440 extends AbstractMigration
             PRIMARY KEY(id),
             CONSTRAINT `customer_location_place_asset_ibfk_1` FOREIGN KEY (`customer_location_place_id`) REFERENCES `customer_location_place` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
             CONSTRAINT `customer_location_place_asset_ibfk_2` FOREIGN KEY (`asset_id`) REFERENCES `asset` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-        ) ENGINE = InnoDB');
+        ) ');
         
         $this->addSql('CREATE TABLE customer_location_place_asset_attachment (
             id SERIAL PRIMARY KEY NOT NULL,
@@ -185,7 +185,7 @@ final class Version20220630192440 extends AbstractMigration
             INDEX stuff_id (customer_location_place_asset_id),
             INDEX updated_at (updated_at),
             PRIMARY KEY(id)
-        ) ENGINE = InnoDB');
+        ) ');
         
         $this->addSql('CREATE TABLE customer_profile (
             id SERIAL PRIMARY KEY NOT NULL,
@@ -203,14 +203,14 @@ final class Version20220630192440 extends AbstractMigration
             PRIMARY KEY(id),
             UNIQUE INDEX(customer_id),
             CONSTRAINT `customer_profile_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-        ) ENGINE = InnoDB');
+        ) ');
 
         $this->addSql('CREATE TABLE customer_group (
             id SERIAL PRIMARY KEY NOT NULL,
             name VARCHAR(255) DEFAULT NULL,
             INDEX name (name),
             PRIMARY KEY(id)
-        ) ENGINE = InnoDB');
+        ) ');
 
         $this->addSql('CREATE TABLE customer_group_assigned (
             id SERIAL PRIMARY KEY NOT NULL,
@@ -219,7 +219,7 @@ final class Version20220630192440 extends AbstractMigration
             PRIMARY KEY(id),
             CONSTRAINT `customer_customer_group_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
             CONSTRAINT `customer_customer_group_ibfk_2` FOREIGN KEY (`customer_group_id`) REFERENCES `customer_group` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-        ) ENGINE = InnoDB');
+        ) ');
 
         $this->addSql('CREATE TABLE customer_role (
             id SMALLSERIAL PRIMARY KEY NOT NULL,
@@ -230,7 +230,7 @@ final class Version20220630192440 extends AbstractMigration
             UNIQUE INDEX slug (slug),
             UNIQUE INDEX code (code),
             PRIMARY KEY(id)
-        ) ENGINE = InnoDB');
+        ) ');
 
         $this->addSql('CREATE TABLE customer_role_assigned (
             customer_id INT NOT NULL,
@@ -240,7 +240,7 @@ final class Version20220630192440 extends AbstractMigration
             PRIMARY KEY(customer_id, customer_role_id),
             CONSTRAINT `customer_customer_role_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
             CONSTRAINT `customer_customer_role_ibfk_2` FOREIGN KEY (`customer_role_id`) REFERENCES `customer_role` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-        ) ENGINE = InnoDB');
+        ) ');
     }
 
     public function down(Schema $schema): void

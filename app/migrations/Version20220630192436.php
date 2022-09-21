@@ -20,16 +20,16 @@ final class Version20220630192436 extends AbstractMigration
     public function up(Schema $schema): void
     {
         $this->addSql('CREATE TABLE user_type (
-            id SMALLSERIAL PRIMARY KEY NOT NULL,
+            id SMALLSERIAL NOT NULL,
             name VARCHAR(128) NOT NULL,
             slug VARCHAR(128) NOT NULL,
-            INDEX name (name),
-            UNIQUE INDEX slug (slug),
-            PRIMARY KEY(id)
-        ) ENGINE = InnoDB ');
+            PRIMARY KEY (id)
+        )');
+        $this->addSql('CREATE INDEX ON user_type (name)');
+        $this->addSql('CREATE UNIQUE INDEX ON user_type (slug)');
 
-        $this->addSql('CREATE TABLE user(
-            id SERIAL PRIMARY KEY NOT NULL,
+        $this->addSql('CREATE TABLE "user" (
+            id SERIAL NOT NULL,
             code VARCHAR(64) NOT NULL,
             username VARCHAR(255) NOT NULL,
             email VARCHAR(255) NOT NULL,
@@ -44,17 +44,17 @@ final class Version20220630192436 extends AbstractMigration
             updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             deleted_at TIMESTAMP DEFAULT NULL,
             last_login_at TIMESTAMP DEFAULT NULL,
-            PRIMARY KEY(id),
-            UNIQUE INDEX email (email),
-            UNIQUE INDEX username (username),
-            UNIQUE INDEX code (code),
-            INDEX type_id (type_id),
-            INDEX active (active),
-            CONSTRAINT `user_ibfk_1` FOREIGN KEY (`type_id`) REFERENCES `user_type` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-        ) ENGINE = InnoDB');
+            PRIMARY KEY (id)
+        )');
+        $this->addSql('CREATE UNIQUE INDEX ON "user" (email)');
+        $this->addSql('CREATE UNIQUE INDEX ON "user" (username)');
+        $this->addSql('CREATE UNIQUE INDEX ON "user" (code)');
+        $this->addSql('CREATE INDEX ON "user" (type_id)');
+        $this->addSql('CREATE INDEX ON "user" (active)');
+        $this->addSql('ALTER TABLE "user" ADD CONSTRAINT user_ibfk_1 FOREIGN KEY (type_id) REFERENCES user_type (id) ON DELETE NO ACTION ON UPDATE NO ACTION');
         
         $this->addSql('CREATE TABLE user_customer_assigned (
-            id INT AUTO_INCREMENT NOT NULL,
+            id SERIAL NOT NULL,
             user_id INT NOT NULL,
             customer_id INT NOT NULL,
             customer_location_id INT DEFAULT NULL,
@@ -64,25 +64,25 @@ final class Version20220630192436 extends AbstractMigration
             created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             deleted_at TIMESTAMP DEFAULT NULL,
-            INDEX customer_location_place_asset (customer_location_place_asset_id),
-            INDEX active (active),
-            INDEX updated_at (updated_at),
-            INDEX customer_location_place (customer_location_place_id),
-            INDEX user_id (user_id),
-            UNIQUE INDEX customer_id (
+            PRIMARY KEY (id)
+        )');
+        $this->addSql('CREATE INDEX ON user_customer_assigned (customer_location_place_asset_id)');
+        $this->addSql('CREATE INDEX ON user_customer_assigned (active)');
+        $this->addSql('CREATE INDEX ON user_customer_assigned (updated_at)');
+        $this->addSql('CREATE INDEX ON user_customer_assigned (customer_location_place_id)');
+        $this->addSql('CREATE INDEX ON user_customer_assigned (user_id)');
+        $this->addSql('CREATE UNIQUE INDEX ON user_customer_assigned (
                 customer_id,
                 customer_location_id,
                 customer_location_place_id,
                 customer_location_place_asset_id,
                 user_id
-            ),
-            INDEX created_at (created_at),
-            INDEX customer_location (customer_location_id),
-            PRIMARY KEY(id)
-        ) ENGINE = InnoDB');
+            )');
+        $this->addSql('CREATE INDEX ON user_customer_assigned (created_at)');
+        $this->addSql('CREATE INDEX ON user_customer_assigned (customer_location_id)');
         
         $this->addSql('CREATE TABLE user_attachment (
-            id SERIAL PRIMARY KEY NOT NULL,
+            id SERIAL NOT NULL,
             user_id INT DEFAULT NULL,
             name VARCHAR(255) NOT NULL,
             type VARCHAR(32) NOT NULL,
@@ -93,30 +93,31 @@ final class Version20220630192436 extends AbstractMigration
             created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             deleted_at TIMESTAMP DEFAULT NULL,
-            INDEX stuff_id (user_id),
-            INDEX updated_at (updated_at),
-            INDEX created_at (created_at),
-            INDEX active (active),
-            INDEX size (size),
-            INDEX type_2 (type),
-            INDEX name (name),
-            INDEX filename (filename),
-            INDEX path (path),
-            INDEX type (type),
-            PRIMARY KEY(id)
-        ) ENGINE = InnoDB');
+            PRIMARY KEY (id)
+        )');
+        $this->addSql('CREATE INDEX ON user_attachment (user_id)');
+        $this->addSql('CREATE INDEX ON user_attachment (updated_at)');
+        $this->addSql('CREATE INDEX ON user_attachment (created_at)');
+        $this->addSql('CREATE INDEX ON user_attachment (active)');
+        $this->addSql('CREATE INDEX ON user_attachment (size)');
+        $this->addSql('CREATE INDEX ON user_attachment (type)');
+        $this->addSql('CREATE INDEX ON user_attachment (name)');
+        $this->addSql('CREATE INDEX ON user_attachment (filename)');
+        $this->addSql('CREATE INDEX ON user_attachment (path)');
+        $this->addSql('CREATE INDEX ON user_attachment (type)');
+        
         
         $this->addSql('CREATE TABLE user_group (
-            id SMALLSERIAL PRIMARY KEY NOT NULL,
+            id SMALLSERIAL NOT NULL,
             name VARCHAR(64) NOT NULL,
             slug VARCHAR(64) NOT NULL,
-            INDEX name (name),
-            UNIQUE INDEX slug (slug),
-            PRIMARY KEY(id)
-        ) ENGINE = InnoDB');
-        
+            PRIMARY KEY (id)
+        )');
+        $this->addSql('CREATE INDEX ON user_group (name)');
+        $this->addSql('CREATE UNIQUE INDEX ON user_group (slug)');
+
         $this->addSql('CREATE TABLE user_profile (
-            id SERIAL PRIMARY KEY NOT NULL,
+            id SERIAL NOT NULL,
             user_id INT NOT NULL,
             firstname VARCHAR(255) DEFAULT NULL,
             lastname VARCHAR(64) DEFAULT NULL,
@@ -127,44 +128,43 @@ final class Version20220630192436 extends AbstractMigration
             website VARCHAR(255) DEFAULT NULL,
             bio TEXT DEFAULT NULL,
             timezone VARCHAR(40) DEFAULT NULL,
-            setting LONGTEXT DEFAULT NULL,
-            PRIMARY KEY(id),
-            UNIQUE INDEX(user_id),
-            CONSTRAINT `user_profile_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-        ) ENGINE = InnoDB');
+            setting TEXT DEFAULT NULL,
+            PRIMARY KEY (id)
+        )');
+        $this->addSql('CREATE UNIQUE INDEX ON user_profile (user_id)');
+        $this->addSql('ALTER TABLE user_profile ADD CONSTRAINT user_profile_ibfk_1 FOREIGN KEY (user_id) REFERENCES "user" (id) ON DELETE NO ACTION ON UPDATE NO ACTION');
         
         $this->addSql('CREATE TABLE user_role (
-            id SMALLSERIAL PRIMARY KEY NOT NULL,
+            id SMALLSERIAL NOT NULL,
             name VARCHAR(64) NOT NULL,
             slug VARCHAR(64) NOT NULL,
             code VARCHAR(64) NOT NULL,
-            INDEX name (name),
-            UNIQUE INDEX slug (slug),
-            UNIQUE INDEX code (code),
             PRIMARY KEY(id)
-        ) ENGINE = InnoDB');
+        )');
+        $this->addSql('CREATE INDEX ON user_role (name)');
+        $this->addSql('CREATE UNIQUE INDEX ON user_role (slug)');
+        $this->addSql('CREATE UNIQUE INDEX ON user_role (code)');
         
         $this->addSql('CREATE TABLE user_role_assigned (
-            user_id INT NOT NULL,
+            user_id SERIAL NOT NULL,
             user_role_id SMALLINT NOT NULL,
-            INDEX FK_D95AB405A76ED397 (user_role_id),
-            INDEX IDX_CFC787FBA76ED395 (user_id),
-            PRIMARY KEY(user_id, user_role_id),
-            CONSTRAINT `user_role_assigned_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-            CONSTRAINT `user_role_assigned_ibfk_2` FOREIGN KEY (`user_role_id`) REFERENCES `user_role` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-        ) DEFAULT COLLATE `utf8mb4_general_ci` ENGINE = InnoDB');
+            PRIMARY KEY(user_id, user_role_id)
+        )');
+        $this->addSql('CREATE INDEX FK_D95AB405A76ED397 ON user_role_assigned (user_role_id)');
+        $this->addSql('CREATE INDEX IDX_CFC787FBA76ED395 ON user_role_assigned (user_id)');
+        $this->addSql('ALTER TABLE user_role_assigned ADD CONSTRAINT user_role_assigned_ibfk_1 FOREIGN KEY (user_id) REFERENCES "user" (id) ON DELETE NO ACTION ON UPDATE NO ACTION');
+        $this->addSql('ALTER TABLE user_role_assigned ADD CONSTRAINT user_role_assigned_ibfk_2 FOREIGN KEY (user_role_id) REFERENCES user_role (id) ON DELETE NO ACTION ON UPDATE NO ACTION');
         
-        $this->addSql('CREATE TABLE `user_group_assigned` (
-            `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-            `user_id` int(10) unsigned NOT NULL,
-            `user_group_id` SMALLINT(10) unsigned NOT NULL,
-            PRIMARY KEY (`id`),
-            KEY `user_group_assigned_ibfk_1` (`user_id`),
-            KEY `user_group_assigned_ibfk_2` (`user_group_id`),
-            CONSTRAINT `user_group_assigned_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-            CONSTRAINT `user_group_assigned_ibfk_2` FOREIGN KEY (`user_group_id`) REFERENCES `user_group` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-          ) ENGINE=InnoDB AUTO_INCREMENT=151 DEFAULT CHARSET=utf8mb4');
-
+        $this->addSql('CREATE TABLE user_group_assigned (
+            id SERIAL NOT NULL,
+            user_id INT NOT NULL CHECK (user_id > 0),
+            user_group_id SMALLINT NOT NULL CHECK(user_group_id > 0),
+            PRIMARY KEY (id)
+            )');
+        $this->addSql('CREATE INDEX ON user_group_assigned (user_id)');
+        $this->addSql('CREATE INDEX ON user_group_assigned (user_group_id)');
+        $this->addSql('ALTER TABLE user_group_assigned ADD CONSTRAINT user_group_assigned_ibfk_1 FOREIGN KEY (user_id) REFERENCES "user" (id) ON DELETE NO ACTION ON UPDATE NO ACTION');
+        $this->addSql('ALTER TABLE user_group_assigned ADD CONSTRAINT user_group_assigned_ibfk_2 FOREIGN KEY (user_group_id) REFERENCES user_group (id) ON DELETE NO ACTION ON UPDATE NO ACTION');
     }
 
     public function down(Schema $schema): void

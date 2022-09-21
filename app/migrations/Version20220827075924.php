@@ -26,7 +26,7 @@ final class Version20220827075924 extends AbstractMigration
                 INDEX IDX_1799CA265DB75757 (parent), 
                 INDEX IDX_1799CA26445207D8 (parent), 
                 PRIMARY KEY(parent, child)
-            ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+            ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ');
         
         $this->addSql('ALTER TABLE user_role_hierarchy ADD CONSTRAINT FK_1799CA265DB75758 FOREIGN KEY (parent) REFERENCES user_role (id) ON DELETE CASCADE');
         $this->addSql('ALTER TABLE user_role_hierarchy ADD CONSTRAINT FK_1799CA26445207D9 FOREIGN KEY (child) REFERENCES user_role (id) ON DELETE CASCADE');
@@ -38,7 +38,7 @@ final class Version20220827075924 extends AbstractMigration
                 INDEX IDX_1799CA265DB75757 (parent), 
                 INDEX IDX_1799CA26445207D8 (parent), 
                 PRIMARY KEY(parent, child)
-            ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+            ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ');
         
         $this->addSql('ALTER TABLE customer_role_hierarchy ADD CONSTRAINT FK_1799CA265DB75759 FOREIGN KEY (parent) REFERENCES customer_role (id) ON DELETE CASCADE');
         $this->addSql('ALTER TABLE customer_role_hierarchy ADD CONSTRAINT FK_1799CA26445207D0 FOREIGN KEY (child) REFERENCES customer_role (id) ON DELETE CASCADE');

@@ -41,8 +41,8 @@ final class CustomerLocationPlaceAssetFactory extends ModelFactory
             'customerLocationPlaceId' => self::faker()->randomNumber(),
             'assetId' => self::faker()->randomNumber(),
             'active' => self::faker()->boolean(),
-            'createdAt' => null, // TODO add DATETIME ORM type manually
-            'updatedAt' => null, // TODO add DATETIME ORM type manually
+            'createdAt' => null, // TODO add TIMESTAMP ORM type manually
+            'updatedAt' => null, // TODO add TIMESTAMP ORM type manually
         ];
     }
 

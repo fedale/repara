@@ -42,8 +42,8 @@ final class CustomerLocationPlaceAssetAttachmentFactory extends ModelFactory
             'path' => self::faker()->text(),
             'filename' => self::faker()->text(),
             'active' => self::faker()->boolean(),
-            'createdAt' => null, // TODO add DATETIME ORM type manually
-            'updatedAt' => null, // TODO add DATETIME ORM type manually
+            'createdAt' => null, // TODO add TIMESTAMP ORM type manually
+            'updatedAt' => null, // TODO add TIMESTAMP ORM type manually
         ];
     }
 

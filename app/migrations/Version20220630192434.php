@@ -20,22 +20,23 @@ final class Version20220630192434 extends AbstractMigration
     public function up(Schema $schema): void
     {
         $this->addSql('CREATE TABLE asset (
-            id INT UNSIGNED AUTO_INCREMENT NOT NULL,
+            id SMALLSERIAL PRIMARY KEY NOT NULL,
             name VARCHAR(128) NOT NULL,
             slug VARCHAR(100) NOT NULL,
-            model_id SMALLINT UNSIGNED DEFAULT NULL,
-            active tinyint DEFAULT 1 NOT NULL,
-            created_at DATETIME NOT NULL DEFAULT current_timestamp(),
-            updated_at DATETIME NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-            deleted_at DATETIME DEFAULT NULL,
-            INDEX updated_at (updated_at),
-            INDEX active (active),
-            INDEX model_id (model_id),
-            INDEX created_at (created_at),
-            INDEX name (name),
-            UNIQUE INDEX slug (slug),
-            PRIMARY KEY(id)
-        ) ENGINE = InnoDB ');
+            model_id SMALLINT DEFAULT NULL CHECK (model_id > 0),
+            active SMALLINT DEFAULT 1 NOT NULL,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            deleted_at TIMESTAMP DEFAULT NULL
+            )'
+        );
+
+        $this->addSql('CREATE INDEX ON asset (updated_at)');
+        $this->addSql('CREATE INDEX ON asset (active)');
+        $this->addSql('CREATE INDEX ON asset (model_id)');
+        $this->addSql('CREATE INDEX ON asset (created_at)');
+        $this->addSql('CREATE INDEX ON asset (name)');
+        $this->addSql('CREATE UNIQUE INDEX ON asset (slug)');
         
         $this->addSql('CREATE TABLE asset_attachment (
             id INT UNSIGNED AUTO_INCREMENT NOT NULL,
@@ -47,9 +48,9 @@ final class Version20220630192434 extends AbstractMigration
             path VARCHAR(128) NOT NULL,
             filename VARCHAR(128) NOT NULL,
             active tinyint DEFAULT 1 NOT NULL,
-            created_at DATETIME NOT NULL DEFAULT current_timestamp(),
-            updated_at DATETIME NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-            deleted_at DATETIME DEFAULT NULL,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            deleted_at TIMESTAMP DEFAULT NULL,
             INDEX created_at (created_at),
             INDEX active (active),
             INDEX filename (filename),
@@ -68,9 +69,9 @@ final class Version20220630192434 extends AbstractMigration
             name VARCHAR(128) NOT NULL,
             slug VARCHAR(128) NOT NULL,
             active tinyint DEFAULT 1 NOT NULL,
-            created_at DATETIME NOT NULL DEFAULT current_timestamp(),
-            updated_at DATETIME NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-            deleted_at DATETIME DEFAULT NULL,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            deleted_at TIMESTAMP DEFAULT NULL,
             INDEX active (active),
             INDEX created_at (created_at),
             INDEX updated_at (updated_at),
@@ -86,9 +87,9 @@ final class Version20220630192434 extends AbstractMigration
             brand_id SMALLINT UNSIGNED DEFAULT NULL,
             type_id SMALLINT NOT NULL,
             active tinyint DEFAULT 1 NOT NULL,
-            created_at DATETIME NOT NULL DEFAULT current_timestamp(),
-            updated_at DATETIME NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-            deleted_at DATETIME DEFAULT NULL,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            deleted_at TIMESTAMP DEFAULT NULL,
             INDEX type_id (type_id),
             INDEX created_at (created_at),
             INDEX active (active),
@@ -104,9 +105,9 @@ final class Version20220630192434 extends AbstractMigration
             name VARCHAR(64) NOT NULL,
             slug VARCHAR(64) NOT NULL,
             active tinyint DEFAULT 1 NOT NULL,
-            created_at DATETIME NOT NULL DEFAULT current_timestamp(),
-            updated_at DATETIME NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-            deleted_at DATETIME DEFAULT NULL,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            deleted_at TIMESTAMP DEFAULT NULL,
             INDEX active (active),
             INDEX created_at (created_at),
             INDEX updated_at (updated_at),
@@ -126,9 +127,9 @@ final class Version20220630192434 extends AbstractMigration
             root INT UNSIGNED DEFAULT NULL,
             lvl INT UNSIGNED DEFAULT NULL,
             active tinyint DEFAULT 1 NOT NULL,
-            created_at DATETIME NOT NULL DEFAULT current_timestamp(),
-            updated_at DATETIME NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-            deleted_at DATETIME DEFAULT NULL,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            deleted_at TIMESTAMP DEFAULT NULL,
             PRIMARY KEY (id),
             INDEX name (name),
             UNIQUE INDEX slug (slug),

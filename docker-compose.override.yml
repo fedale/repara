@@ -1,7 +1,13 @@
 version: '3.8'
 
 services:
+
   app:
     build:
       context: .
       target: app
+  
+  # database:
+  #   build:
+  #     context: .
+  #     target: database

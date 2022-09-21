@@ -56,7 +56,7 @@ if [ "$1" = 'php-fpm' ] || [ "$1" = 'php' ] || [ "$1" = 'bin/console' ]; then
 			php bin/console doctrine:migrations:migrate --no-interaction --env=$APP_ENV
 		fi
 
-		if [ "$APP_ENV" == "test" ]; then
+		if [ "$APP_ENV" = "test" ]; then
 			php bin/console hautelook:fixtures:load --no-interaction
 		fi
 	fi

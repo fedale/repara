@@ -20,9 +20,9 @@ final class Version20220630192739 extends AbstractMigration
     public function up(Schema $schema): void
     {        
         $this->addSql('CREATE TABLE project_task_type (
-            id SMALLINT UNSIGNED AUTO_INCREMENT NOT NULL,
+            id SMALLSERIAL PRIMARY KEY NOT NULL,
             name VARCHAR(128) NOT NULL,
-            active tinyint DEFAULT 1 NOT NULL,
+            active SMALLINT DEFAULT 1 NOT NULL,
             created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             deleted_at TIMESTAMP DEFAULT NULL,
@@ -34,11 +34,11 @@ final class Version20220630192739 extends AbstractMigration
         ) ENGINE = InnoDB');
 
         $this->addSql('CREATE TABLE project_task (
-            id INT UNSIGNED AUTO_INCREMENT NOT NULL,
-            customer_id INT UNSIGNED DEFAULT NULL,
-            project_id INT UNSIGNED DEFAULT NULL,
-            type_id SMALLINT UNSIGNED DEFAULT NULL,
-            customer_location_place_asset_id INT UNSIGNED DEFAULT NULL,
+            id SERIAL PRIMARY KEY NOT NULL,
+            customer_id INT DEFAULT NULL,
+            project_id INT DEFAULT NULL,
+            type_id SMALLINT DEFAULT NULL,
+            customer_location_place_asset_id INT DEFAULT NULL,
             name VARCHAR(128) NOT NULL,
             description TEXT DEFAULT NULL,
             state enum("requested", "rejected", "approved", "current", "dead", "completed", "on_hold", "signed") NOT NULL COMMENT "DC2Type::ProjectTaskStateType", 
@@ -46,7 +46,7 @@ final class Version20220630192739 extends AbstractMigration
             priority enum("low", "normal", "high") NOT NULL COMMENT "DC2Type::ProjectTaskPriorityType", 
             visible SMALLINT DEFAULT 1 NOT NULL,
             finished_at TIMESTAMP DEFAULT NULL,
-            active tinyint DEFAULT 1 NOT NULL,
+            active SMALLINT DEFAULT 1 NOT NULL,
             created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             deleted_at TIMESTAMP DEFAULT NULL,
@@ -69,11 +69,11 @@ final class Version20220630192739 extends AbstractMigration
         ) ENGINE = InnoDB');
  
         $this->addSql('CREATE TABLE project_task_activity (
-            id INT UNSIGNED AUTO_INCREMENT NOT NULL,
+            id SERIAL PRIMARY KEY NOT NULL,
             name VARCHAR(128) NOT NULL,
             TIMESTAMP DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            user_id INT UNSIGNED NOT NULL,
-            project_task_id INT UNSIGNED NOT NULL,
+            user_id INT NOT NULL,
+            project_task_id INT NOT NULL,
             INDEX name (name),
             INDEX user_id (user_id),
             INDEX project_task_id (project_task_id),
@@ -83,10 +83,10 @@ final class Version20220630192739 extends AbstractMigration
         ) ENGINE = InnoDB');
 
         $this->addSql('CREATE TABLE project_task_user_assigned (
-            id INT UNSIGNED AUTO_INCREMENT NOT NULL,
-            user_id INT UNSIGNED NOT NULL,
-            project_task_id INT UNSIGNED NOT NULL,
-            active tinyint DEFAULT 1 NOT NULL,
+            id SERIAL PRIMARY KEY NOT NULL,
+            user_id INT NOT NULL,
+            project_task_id INT NOT NULL,
+            active SMALLINT DEFAULT 1 NOT NULL,
             created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             deleted_at TIMESTAMP DEFAULT NULL,
@@ -101,15 +101,15 @@ final class Version20220630192739 extends AbstractMigration
         ) ENGINE = InnoDB');
         
         $this->addSql('CREATE TABLE project_task_attachment (
-            id INT UNSIGNED AUTO_INCREMENT NOT NULL,
-            user_id INT UNSIGNED DEFAULT NULL,
-            project_task_id INT UNSIGNED DEFAULT NULL,
+            id SERIAL PRIMARY KEY NOT NULL,
+            user_id INT DEFAULT NULL,
+            project_task_id INT DEFAULT NULL,
             name VARCHAR(255) NOT NULL,
             type VARCHAR(32) DEFAULT \'image\' NOT NULL,
-            size INT UNSIGNED NOT NULL,
+            size INT NOT NULL,
             path VARCHAR(128) NOT NULL,
             filename VARCHAR(128) NOT NULL,
-            active tinyint DEFAULT 1 NOT NULL,
+            active SMALLINT DEFAULT 1 NOT NULL,
             created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             deleted_at TIMESTAMP DEFAULT NULL,
@@ -129,14 +129,14 @@ final class Version20220630192739 extends AbstractMigration
         ) ENGINE = InnoDB');
 
         $this->addSql('CREATE TABLE project_task_tag (
-            id INT UNSIGNED AUTO_INCREMENT NOT NULL, 
+            id SERIAL PRIMARY KEY NOT NULL, 
             name VARCHAR(255) NOT NULL, 
             PRIMARY KEY(id)
         ) ENGINE = InnoDB');
 
         $this->addSql('CREATE TABLE project_task_tag_assigned (
-            project_task_id INT UNSIGNED NOT NULL, 
-            project_task_tag_id INT UNSIGNED NOT NULL, 
+            project_task_id INT NOT NULL, 
+            project_task_tag_id INT NOT NULL, 
             INDEX IDX_87F3F1931BA80DE3 (project_task_id), 
             INDEX IDX_87F3F19349B41039 (project_task_tag_id), 
             PRIMARY KEY(project_task_id, project_task_tag_id),
@@ -145,10 +145,10 @@ final class Version20220630192739 extends AbstractMigration
         ) ENGINE = InnoDB');
 
         $this->addSql('CREATE TABLE project_task_milestone (
-            id INT UNSIGNED AUTO_INCREMENT NOT NULL,
-            project_milestone_id INT UNSIGNED NOT NULL,
-            project_task_id INT UNSIGNED NOT NULL,
-            active tinyint DEFAULT 1 NOT NULL,
+            id SERIAL PRIMARY KEY NOT NULL,
+            project_milestone_id INT NOT NULL,
+            project_task_id INT NOT NULL,
+            active SMALLINT DEFAULT 1 NOT NULL,
             created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             deleted_at TIMESTAMP DEFAULT NULL,
@@ -161,7 +161,7 @@ final class Version20220630192739 extends AbstractMigration
         ) ENGINE = InnoDB');
         
         $this->addSql('CREATE TABLE project_task_item (
-            id INT UNSIGNED AUTO_INCREMENT NOT NULL,
+            id SERIAL PRIMARY KEY NOT NULL,
             name VARCHAR(255) NOT NULL,
             description TEXT DEFAULT NULL,
             difficulty TINYINT(1) NOT NULL,
@@ -169,8 +169,8 @@ final class Version20220630192739 extends AbstractMigration
             -- "type" field to add to refer to task item type
             datetime_start TIMESTAMP DEFAULT NULL,
             datetime_end TIMESTAMP DEFAULT NULL,
-            project_task_id INT UNSIGNED NOT NULL,
-            active tinyint DEFAULT 1 NOT NULL,
+            project_task_id INT NOT NULL,
+            active SMALLINT DEFAULT 1 NOT NULL,
             created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             deleted_at TIMESTAMP DEFAULT NULL,
@@ -188,10 +188,10 @@ final class Version20220630192739 extends AbstractMigration
         ) ENGINE = InnoDB');
         
         $this->addSql('CREATE TABLE project_task_item_assigned (
-            id INT UNSIGNED AUTO_INCREMENT NOT NULL,
-            user_id INT UNSIGNED DEFAULT NULL,
-            project_task_item_id INT UNSIGNED DEFAULT NULL,
-            active tinyint DEFAULT 1 NOT NULL,
+            id SERIAL PRIMARY KEY NOT NULL,
+            user_id INT DEFAULT NULL,
+            project_task_item_id INT DEFAULT NULL,
+            active SMALLINT DEFAULT 1 NOT NULL,
             created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             deleted_at TIMESTAMP DEFAULT NULL,
@@ -206,10 +206,10 @@ final class Version20220630192739 extends AbstractMigration
         ) ENGINE = InnoDB');
         
         $this->addSql('CREATE TABLE project_task_template (
-            id INT UNSIGNED AUTO_INCREMENT NOT NULL,
+            id SERIAL PRIMARY KEY NOT NULL,
             name VARCHAR(128) NOT NULL,
             description MEDIUMTEXT DEFAULT NULL,
-            active tinyint DEFAULT 1 NOT NULL,
+            active SMALLINT DEFAULT 1 NOT NULL,
             created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             deleted_at TIMESTAMP DEFAULT NULL,
@@ -222,12 +222,12 @@ final class Version20220630192739 extends AbstractMigration
         
         // check task_id if refers to project_task or to project_task_template (I suppose latter)
         $this->addSql('CREATE TABLE project_task_item_template (
-            id INT UNSIGNED AUTO_INCREMENT NOT NULL,
+            id SERIAL PRIMARY KEY NOT NULL,
             name VARCHAR(255) NOT NULL,
-            task_template_id INT UNSIGNED DEFAULT NULL,
-            task_type_id SMALLINT UNSIGNED DEFAULT 1 NOT NULL COMMENT \'Item template type: string, number, widget, select combo\',
+            task_template_id INT DEFAULT NULL,
+            task_type_id SMALLINT DEFAULT 1 NOT NULL COMMENT \'Item template type: string, number, widget, select combo\',
             sort SMALLINT NOT NULL,
-            active tinyint DEFAULT 1 NOT NULL,
+            active SMALLINT DEFAULT 1 NOT NULL,
             created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             deleted_at TIMESTAMP DEFAULT NULL,

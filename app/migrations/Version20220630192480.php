@@ -20,9 +20,9 @@ final class Version20220630192480 extends AbstractMigration
     public function up(Schema $schema): void
     {
         $this->addSql('CREATE TABLE project_type (
-            id SMALLINT UNSIGNED AUTO_INCREMENT NOT NULL,
+            id SMALLSERIAL PRIMARY KEY NOT NULL,
             name VARCHAR(128) NOT NULL,
-            active tinyint DEFAULT 1 NOT NULL,
+            active SMALLINT DEFAULT 1 NOT NULL,
             created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             deleted_at TIMESTAMP DEFAULT NULL,
@@ -34,7 +34,7 @@ final class Version20220630192480 extends AbstractMigration
         ) ENGINE = InnoDB');
 
         $this->addSql('CREATE TABLE project (
-            id INT UNSIGNED AUTO_INCREMENT NOT NULL,
+            id SERIAL PRIMARY KEY NOT NULL,
             code VARCHAR(32) NOT NULL,
             name VARCHAR(128) NOT NULL,
             description TEXT DEFAULT NULL,
@@ -44,9 +44,9 @@ final class Version20220630192480 extends AbstractMigration
             budget NUMERIC(15, 2) DEFAULT NULL,
             color CHAR(6) DEFAULT NULL,
             priority TINYINT(1) NOT NULL,
-            type_id SMALLINT UNSIGNED NOT NULL,
+            type_id SMALLINT NOT NULL,
             visible TINYINT(1) DEFAULT 1 NOT NULL,
-            active tinyint DEFAULT 1 NOT NULL,
+            active SMALLINT DEFAULT 1 NOT NULL,
             created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             deleted_at TIMESTAMP DEFAULT NULL,
@@ -68,11 +68,11 @@ final class Version20220630192480 extends AbstractMigration
         ) ENGINE = InnoDB');
         
         $this->addSql('CREATE TABLE project_activity (
-            id INT UNSIGNED AUTO_INCREMENT NOT NULL,
+            id SERIAL PRIMARY KEY NOT NULL,
             name VARCHAR(128) NOT NULL,
             TIMESTAMP DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            user_id INT UNSIGNED NOT NULL,
-            project_id INT UNSIGNED NOT NULL,
+            user_id INT NOT NULL,
+            project_id INT NOT NULL,
             INDEX name (name),
             INDEX user_id (user_id),
             INDEX project_id (project_id),
@@ -82,10 +82,10 @@ final class Version20220630192480 extends AbstractMigration
         ) ENGINE = InnoDB');
 
         $this->addSql('CREATE TABLE project_milestone (
-            id INT UNSIGNED AUTO_INCREMENT NOT NULL,
+            id SERIAL PRIMARY KEY NOT NULL,
             name VARCHAR(32) NOT NULL,
             expiration_date TIMESTAMP NOT NULL,
-            active tinyint DEFAULT 1 NOT NULL,
+            active SMALLINT DEFAULT 1 NOT NULL,
             created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             deleted_at TIMESTAMP DEFAULT NULL,

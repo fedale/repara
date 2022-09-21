@@ -20,25 +20,25 @@ final class Version20220630192440 extends AbstractMigration
     public function up(Schema $schema): void
     {
         $this->addSql('CREATE TABLE customer_type (
-            id SMALLINT UNSIGNED AUTO_INCREMENT NOT NULL,
+            id SMALLSERIAL PRIMARY KEY NOT NULL,
             name VARCHAR(255) DEFAULT NULL,
             INDEX name (name),
             PRIMARY KEY(id)
         ) ENGINE = InnoDB ');
 
         $this->addSql('CREATE TABLE customer (
-            id INT UNSIGNED AUTO_INCREMENT NOT NULL,
+            id SERIAL PRIMARY KEY NOT NULL,
             code VARCHAR(64) NOT NULL,
             username VARCHAR(255) NOT NULL,
             email VARCHAR(255) NOT NULL,
             password VARCHAR(60) NOT NULL,
             unconfirmed_email VARCHAR(255) DEFAULT NULL,
             registration_ip VARCHAR(45) DEFAULT NULL,
-            type_id SMALLINT UNSIGNED DEFAULT 1 NOT NULL,
+            type_id SMALLINT DEFAULT 1 NOT NULL,
             confirmed_at TIMESTAMP DEFAULT NULL,
             last_login_at TIMESTAMP DEFAULT NULL,
             blocked_at TIMESTAMP DEFAULT NULL,
-            active tinyint DEFAULT 1 NOT NULL,
+            active SMALLINT DEFAULT 1 NOT NULL,
             created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             deleted_at TIMESTAMP DEFAULT NULL,
@@ -52,14 +52,14 @@ final class Version20220630192440 extends AbstractMigration
         ) ENGINE = InnoDB');
         
         $this->addSql('CREATE TABLE customer_attachment (
-            id INT UNSIGNED AUTO_INCREMENT NOT NULL,
-            customer_id INT UNSIGNED NOT NULL,
+            id SERIAL PRIMARY KEY NOT NULL,
+            customer_id INT NOT NULL,
             name VARCHAR(255) NOT NULL,
             type VARCHAR(32) NOT NULL,
-            size INT UNSIGNED NOT NULL,
+            size INT NOT NULL,
             path VARCHAR(128) NOT NULL,
             filename VARCHAR(128) NOT NULL,
-            active tinyint DEFAULT 1 NOT NULL,
+            active SMALLINT DEFAULT 1 NOT NULL,
             created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             deleted_at TIMESTAMP DEFAULT NULL,
@@ -78,14 +78,14 @@ final class Version20220630192440 extends AbstractMigration
         ) ENGINE = InnoDB');        
         
         $this->addSql('CREATE TABLE customer_location (
-            id INT UNSIGNED AUTO_INCREMENT NOT NULL,
-            customer_id INT UNSIGNED NOT NULL,
+            id SERIAL PRIMARY KEY NOT NULL,
+            customer_id INT NOT NULL,
             name VARCHAR(128) NOT NULL,
             address VARCHAR(64) NOT NULL,
             zipcode VARCHAR(8) DEFAULT NULL,
             city VARCHAR(64) NOT NULL,
             country VARCHAR(32) DEFAULT \'Italia\' NOT NULL,
-            active tinyint DEFAULT 1 NOT NULL,
+            active SMALLINT DEFAULT 1 NOT NULL,
             created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             deleted_at TIMESTAMP DEFAULT NULL,
@@ -101,13 +101,13 @@ final class Version20220630192440 extends AbstractMigration
         ) ENGINE = InnoDB');
 
         $this->addSql('CREATE TABLE customer_contact (
-            id INT UNSIGNED AUTO_INCREMENT NOT NULL,
-            customer_location_id INT UNSIGNED DEFAULT NULL,
+            id SERIAL PRIMARY KEY NOT NULL,
+            customer_location_id INT DEFAULT NULL,
             firstname VARCHAR(64) NOT NULL,
             lastname VARCHAR(64) NOT NULL,
             phone VARCHAR(32) DEFAULT NULL,
             email VARCHAR(32) DEFAULT NULL,
-            active tinyint DEFAULT 1 NOT NULL,
+            active SMALLINT DEFAULT 1 NOT NULL,
             created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             deleted_at TIMESTAMP DEFAULT NULL,
@@ -125,10 +125,10 @@ final class Version20220630192440 extends AbstractMigration
 
 
         $this->addSql('CREATE TABLE customer_location_place (
-            id INT UNSIGNED AUTO_INCREMENT NOT NULL,
-            customer_location_id INT UNSIGNED NOT NULL,
+            id SERIAL PRIMARY KEY NOT NULL,
+            customer_location_id INT NOT NULL,
             name VARCHAR(64) NOT NULL,
-            active tinyint DEFAULT 1 NOT NULL,
+            active SMALLINT DEFAULT 1 NOT NULL,
             created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             deleted_at TIMESTAMP DEFAULT NULL,
@@ -142,12 +142,12 @@ final class Version20220630192440 extends AbstractMigration
         ) ENGINE = InnoDB');
         
         $this->addSql('CREATE TABLE customer_location_place_asset (
-            id INT UNSIGNED AUTO_INCREMENT NOT NULL,
+            id SERIAL PRIMARY KEY NOT NULL,
             name VARCHAR(64) NOT NULL,
             code VARCHAR(64) NOT NULL,
-            customer_location_place_id INT UNSIGNED NOT NULL,
-            asset_id INT UNSIGNED NOT NULL,
-            active tinyint DEFAULT 1 NOT NULL,
+            customer_location_place_id INT NOT NULL,
+            asset_id INT NOT NULL,
+            active SMALLINT DEFAULT 1 NOT NULL,
             created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             deleted_at TIMESTAMP DEFAULT NULL,
@@ -163,14 +163,14 @@ final class Version20220630192440 extends AbstractMigration
         ) ENGINE = InnoDB');
         
         $this->addSql('CREATE TABLE customer_location_place_asset_attachment (
-            id INT UNSIGNED AUTO_INCREMENT NOT NULL,
-            customer_location_place_asset_id INT UNSIGNED DEFAULT NULL,
+            id SERIAL PRIMARY KEY NOT NULL,
+            customer_location_place_asset_id INT DEFAULT NULL,
             name VARCHAR(255) NOT NULL,
             type VARCHAR(32) NOT NULL,
-            size INT UNSIGNED NOT NULL,
+            size INT NOT NULL,
             path VARCHAR(128) NOT NULL,
             filename VARCHAR(128) NOT NULL,
-            active tinyint DEFAULT 1 NOT NULL,
+            active SMALLINT DEFAULT 1 NOT NULL,
             created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             deleted_at TIMESTAMP DEFAULT NULL,
@@ -188,8 +188,8 @@ final class Version20220630192440 extends AbstractMigration
         ) ENGINE = InnoDB');
         
         $this->addSql('CREATE TABLE customer_profile (
-            id INT UNSIGNED AUTO_INCREMENT NOT NULL,
-            customer_id INT UNSIGNED NOT NULL,
+            id SERIAL PRIMARY KEY NOT NULL,
+            customer_id INT NOT NULL,
             firstname VARCHAR(255) DEFAULT NULL,
             lastname VARCHAR(64) NOT NULL,
             public_email VARCHAR(255) DEFAULT NULL,
@@ -206,23 +206,23 @@ final class Version20220630192440 extends AbstractMigration
         ) ENGINE = InnoDB');
 
         $this->addSql('CREATE TABLE customer_group (
-            id INT UNSIGNED AUTO_INCREMENT NOT NULL,
+            id SERIAL PRIMARY KEY NOT NULL,
             name VARCHAR(255) DEFAULT NULL,
             INDEX name (name),
             PRIMARY KEY(id)
         ) ENGINE = InnoDB');
 
         $this->addSql('CREATE TABLE customer_group_assigned (
-            id INT UNSIGNED AUTO_INCREMENT NOT NULL,
-            customer_id INT UNSIGNED NOT NULL,
-            customer_group_id INT UNSIGNED NOT NULL,
+            id SERIAL PRIMARY KEY NOT NULL,
+            customer_id INT NOT NULL,
+            customer_group_id INT NOT NULL,
             PRIMARY KEY(id),
             CONSTRAINT `customer_customer_group_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
             CONSTRAINT `customer_customer_group_ibfk_2` FOREIGN KEY (`customer_group_id`) REFERENCES `customer_group` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
         ) ENGINE = InnoDB');
 
         $this->addSql('CREATE TABLE customer_role (
-            id SMALLINT UNSIGNED AUTO_INCREMENT NOT NULL,
+            id SMALLSERIAL PRIMARY KEY NOT NULL,
             name VARCHAR(64) NOT NULL,
             slug VARCHAR(64) NOT NULL,
             code VARCHAR(64) NOT NULL,
@@ -233,8 +233,8 @@ final class Version20220630192440 extends AbstractMigration
         ) ENGINE = InnoDB');
 
         $this->addSql('CREATE TABLE customer_role_assigned (
-            customer_id INT UNSIGNED NOT NULL,
-            customer_role_id SMALLINT UNSIGNED NOT NULL,
+            customer_id INT NOT NULL,
+            customer_role_id SMALLINT NOT NULL,
             INDEX FK_D95AB405A76ED398 (customer_role_id),
             INDEX IDX_CFC787FBA76ED396 (customer_id),
             PRIMARY KEY(customer_id, customer_role_id),

@@ -20,90 +20,94 @@ final class Version20220630192739 extends AbstractMigration
     public function up(Schema $schema): void
     {        
         $this->addSql('CREATE TABLE project_task_type (
-            id SMALLSERIAL PRIMARY KEY NOT NULL,
+            id SMALLSERIAL NOT NULL,
             name VARCHAR(128) NOT NULL,
             active SMALLINT DEFAULT 1 NOT NULL,
             created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             deleted_at TIMESTAMP DEFAULT NULL,
-            INDEX active (active),
-            INDEX created_at (created_at),
-            INDEX updated_at (updated_at),
-            INDEX name (name),
-            PRIMARY KEY(id)
-        ) ');
-
+            PRIMARY KEY (id)
+        )');
+        $this->addSql('CREATE INDEX ON project_task_type (active)');
+        $this->addSql('CREATE INDEX ON project_task_type (created_at)');
+        $this->addSql('CREATE INDEX ON project_task_type (updated_at)');
+        $this->addSql('CREATE INDEX ON project_task_type (name)');
+        
+        $this->addSql('CREATE TYPE priority AS ENUM (\'low\', \'normal\', \'high\')');
         $this->addSql('CREATE TABLE project_task (
-            id SERIAL PRIMARY KEY NOT NULL,
-            customer_id INT DEFAULT NULL,
-            project_id INT DEFAULT NULL,
-            type_id SMALLINT DEFAULT NULL,
-            customer_location_place_asset_id INT DEFAULT NULL,
+            id SERIAL NOT NULL,
+            customer_id INT DEFAULT NULL CHECK (customer_id > 0),
+            project_id INT DEFAULT NULL CHECK (project_id > 0),
+            type_id SMALLINT DEFAULT NULL CHECK (type_id > 0),
+            customer_location_place_asset_id INT DEFAULT NULL CHECK (customer_location_place_asset_id > 0),
             name VARCHAR(128) NOT NULL,
             description TEXT DEFAULT NULL,
-            state enum("requested", "rejected", "approved", "current", "dead", "completed", "on_hold", "signed") NOT NULL COMMENT "DC2Type::ProjectTaskStateType", 
-            asset_type VARCHAR(8) DEFAULT "N/A" NOT NULL COMMENT "Update with assetType value",
-            priority enum("low", "normal", "high") NOT NULL COMMENT "DC2Type::ProjectTaskPriorityType", 
+            state state NOT NULL, 
+            asset_type VARCHAR(8) DEFAULT \'N/A\' NOT NULL,
+            priority priority NOT NULL, 
             visible SMALLINT DEFAULT 1 NOT NULL,
             finished_at TIMESTAMP DEFAULT NULL,
             active SMALLINT DEFAULT 1 NOT NULL,
             created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             deleted_at TIMESTAMP DEFAULT NULL,
-            INDEX state (state),
-            INDEX active (active),
-            INDEX project_id (project_id),
-            INDEX visible (visible),
-            INDEX created_on (created_at),
-            INDEX place_id (customer_id),
-            INDEX customer_location_place_asset_id (customer_location_place_asset_id),
-            INDEX updated_at (updated_at),
-            INDEX type_id (type_id),
-            INDEX name (name),
-            INDEX stuff_type (asset_type),
-            INDEX priority (priority),
-            PRIMARY KEY(id),
-            CONSTRAINT `project_task_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-            CONSTRAINT `project_task_ibfk_2` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-            CONSTRAINT `project_task_ibfk_3` FOREIGN KEY (`type_id`) REFERENCES `project_task_type` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-        ) ');
+            PRIMARY KEY (id),
+            CONSTRAINT project_task_ibfk_1 FOREIGN KEY (customer_id) REFERENCES customer (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+            CONSTRAINT project_task_ibfk_2 FOREIGN KEY (project_id) REFERENCES project (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+            CONSTRAINT project_task_ibfk_3 FOREIGN KEY (type_id) REFERENCES project_task_type (id) ON DELETE NO ACTION ON UPDATE NO ACTION
+        )');
+        $this->addSql('COMMENT ON COLUMN project_task.state IS \'DC2Type::ProjectTaskStateType\'');
+        $this->addSql('COMMENT ON COLUMN project_task.asset_type IS \'Update with assetType value\'');
+        $this->addSql('COMMENT ON COLUMN project_task.priority IS \'DC2Type::ProjectTaskPriorityType\'');
+        $this->addSql('CREATE INDEX ON project_task (state)');
+        $this->addSql('CREATE INDEX ON project_task (active)');
+        $this->addSql('CREATE INDEX ON project_task (project_id)');
+        $this->addSql('CREATE INDEX ON project_task (visible)');
+        $this->addSql('CREATE INDEX ON project_task (created_at)');
+        $this->addSql('CREATE INDEX ON project_task (customer_id)');
+        $this->addSql('CREATE INDEX ON project_task (customer_location_place_asset_id)');
+        $this->addSql('CREATE INDEX ON project_task (updated_at)');
+        $this->addSql('CREATE INDEX ON project_task (type_id)');
+        $this->addSql('CREATE INDEX ON project_task (name)');
+        $this->addSql('CREATE INDEX ON project_task (asset_type)');
+        $this->addSql('CREATE INDEX ON project_task (priority)');
  
         $this->addSql('CREATE TABLE project_task_activity (
-            id SERIAL PRIMARY KEY NOT NULL,
+            id SERIAL NOT NULL,
             name VARCHAR(128) NOT NULL,
-            TIMESTAMP DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            user_id INT NOT NULL,
-            project_task_id INT NOT NULL,
-            INDEX name (name),
-            INDEX user_id (user_id),
-            INDEX project_task_id (project_task_id),
-            PRIMARY KEY(id),
-            CONSTRAINT `project_task_activity_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-            CONSTRAINT `project_task_activity_ibfk_2` FOREIGN KEY (`project_task_id`) REFERENCES `project_task` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-        ) ');
+            timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            user_id INT NOT NULL CHECK (user_id > 0),
+            project_task_id INT NOT NULL CHECK (project_task_id > 0),
+            PRIMARY KEY (id),
+            CONSTRAINT project_task_activity_ibfk_1 FOREIGN KEY (user_id) REFERENCES "user" (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+            CONSTRAINT project_task_activity_ibfk_2 FOREIGN KEY (project_task_id) REFERENCES project_task (id) ON DELETE NO ACTION ON UPDATE NO ACTION
+        )');
+        $this->addSql('CREATE INDEX ON project_task_activity (name)');
+        $this->addSql('CREATE INDEX ON project_task_activity (user_id)');
+        $this->addSql('CREATE INDEX ON project_task_activity (project_task_id)');
 
         $this->addSql('CREATE TABLE project_task_user_assigned (
-            id SERIAL PRIMARY KEY NOT NULL,
-            user_id INT NOT NULL,
-            project_task_id INT NOT NULL,
+            id SERIAL NOT NULL,
+            user_id INT NOT NULL CHECK (user_id > 0),
+            project_task_id INT NOT NULL CHECK (project_task_id > 0),
             active SMALLINT DEFAULT 1 NOT NULL,
             created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             deleted_at TIMESTAMP DEFAULT NULL,
-            INDEX created_at (created_at),
-            INDEX updated_at (updated_at),
-            INDEX project_task_id (project_task_id),
-            INDEX active (active),
-            INDEX user_id (user_id),
-            PRIMARY KEY(id),
-            CONSTRAINT `project_task_user_assigned_ibfk_1` FOREIGN KEY (`project_task_id`) REFERENCES `project_task` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-            CONSTRAINT `project_task_user_assigned_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-        ) ');
+            PRIMARY KEY (id),
+            CONSTRAINT project_task_user_assigned_ibfk_1 FOREIGN KEY (project_task_id) REFERENCES project_task (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+            CONSTRAINT project_task_user_assigned_ibfk_2 FOREIGN KEY (user_id) REFERENCES "user" (id) ON DELETE NO ACTION ON UPDATE NO ACTION
+        )');
+        $this->addSql('CREATE INDEX ON project_task_user_assigned (created_at)');
+        $this->addSql('CREATE INDEX ON project_task_user_assigned (updated_at)');
+        $this->addSql('CREATE INDEX ON project_task_user_assigned (project_task_id)');
+        $this->addSql('CREATE INDEX ON project_task_user_assigned (active)');
+        $this->addSql('CREATE INDEX ON project_task_user_assigned (user_id)');
         
         $this->addSql('CREATE TABLE project_task_attachment (
-            id SERIAL PRIMARY KEY NOT NULL,
-            user_id INT DEFAULT NULL,
-            project_task_id INT DEFAULT NULL,
+            id SERIAL NOT NULL,
+            user_id INT DEFAULT NULL CHECK (user_id > 0),
+            project_task_id INT DEFAULT NULL CHECK (project_task_id > 0),
             name VARCHAR(255) NOT NULL,
             type VARCHAR(32) DEFAULT \'image\' NOT NULL,
             size INT NOT NULL,
@@ -113,135 +117,136 @@ final class Version20220630192739 extends AbstractMigration
             created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             deleted_at TIMESTAMP DEFAULT NULL,
-            INDEX created_at (created_at),
-            INDEX active (active),
-            INDEX user_id (user_id),
-            INDEX type (type),
-            INDEX size (size),
-            INDEX name (name),
-            INDEX filename (filename),
-            INDEX path (path),
-            INDEX project_task_id (project_task_id),
-            INDEX updated_at (updated_at),
-            PRIMARY KEY(id),
-            CONSTRAINT `project_task_attachment_ibfk_1` FOREIGN KEY (`project_task_id`) REFERENCES `project_task` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-            CONSTRAINT `project_task_attachment_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-        ) ');
+            PRIMARY KEY (id),
+            CONSTRAINT project_task_attachment_ibfk_1 FOREIGN KEY (project_task_id) REFERENCES project_task (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+            CONSTRAINT project_task_attachment_ibfk_2 FOREIGN KEY (user_id) REFERENCES "user" (id) ON DELETE NO ACTION ON UPDATE NO ACTION
+        )');
+        $this->addSql('CREATE INDEX ON project_task_attachment (created_at)');
+        $this->addSql('CREATE INDEX ON project_task_attachment (active)');
+        $this->addSql('CREATE INDEX ON project_task_attachment (user_id)');
+        $this->addSql('CREATE INDEX ON project_task_attachment (type)');
+        $this->addSql('CREATE INDEX ON project_task_attachment (size)');
+        $this->addSql('CREATE INDEX ON project_task_attachment (name)');
+        $this->addSql('CREATE INDEX ON project_task_attachment (filename)');
+        $this->addSql('CREATE INDEX ON project_task_attachment (path)');
+        $this->addSql('CREATE INDEX ON project_task_attachment (project_task_id)');
+        $this->addSql('CREATE INDEX ON project_task_attachment (updated_at)');
 
         $this->addSql('CREATE TABLE project_task_tag (
-            id SERIAL PRIMARY KEY NOT NULL, 
+            id SERIAL NOT NULL, 
             name VARCHAR(255) NOT NULL, 
-            PRIMARY KEY(id)
-        ) ');
+            PRIMARY KEY (id)
+        )');
 
         $this->addSql('CREATE TABLE project_task_tag_assigned (
-            project_task_id INT NOT NULL, 
-            project_task_tag_id INT NOT NULL, 
-            INDEX IDX_87F3F1931BA80DE3 (project_task_id), 
-            INDEX IDX_87F3F19349B41039 (project_task_tag_id), 
-            PRIMARY KEY(project_task_id, project_task_tag_id),
-            CONSTRAINT `project_task_tag_assigned_ibfk_1` FOREIGN KEY (`project_task_id`) REFERENCES `project_task` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-            CONSTRAINT `project_task_tag_assigned_ibfk_2` FOREIGN KEY (`project_task_tag_id`) REFERENCES `project_task_tag` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-        ) ');
-
+            project_task_id INT NOT NULL CHECK (project_task_id > 0),
+            project_task_tag_id INT NOT NULL CHECK (project_task_tag_id > 0),
+            PRIMARY KEY (project_task_id, project_task_tag_id),
+            CONSTRAINT project_task_tag_assigned_ibfk_1 FOREIGN KEY (project_task_id) REFERENCES project_task (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+            CONSTRAINT project_task_tag_assigned_ibfk_2 FOREIGN KEY (project_task_tag_id) REFERENCES project_task_tag (id) ON DELETE NO ACTION ON UPDATE NO ACTION
+        )');
+        $this->addSql('CREATE INDEX ON project_task_tag_assigned (project_task_id)');
+        $this->addSql('CREATE INDEX ON project_task_tag_assigned (project_task_tag_id)');
+            
         $this->addSql('CREATE TABLE project_task_milestone (
-            id SERIAL PRIMARY KEY NOT NULL,
-            project_milestone_id INT NOT NULL,
-            project_task_id INT NOT NULL,
+            id SERIAL NOT NULL,
+            project_milestone_id INT NOT NULL CHECK (project_milestone_id > 0),
+            project_task_id INT NOT NULL CHECK (project_task_id > 0),
             active SMALLINT DEFAULT 1 NOT NULL,
             created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             deleted_at TIMESTAMP DEFAULT NULL,
-            INDEX project_task_it (project_task_id),
-            INDEX active (active),
-            INDEX project_milestone_it (project_milestone_id),
-            PRIMARY KEY(id),
-            CONSTRAINT `project_task_milestone_ibfk_1` FOREIGN KEY (`project_milestone_id`) REFERENCES `project_milestone` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-            CONSTRAINT `project_task_milestone_ibfk_2` FOREIGN KEY (`project_task_id`) REFERENCES `project_task` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-        ) ');
-        
+            PRIMARY KEY (id),
+            CONSTRAINT project_task_milestone_ibfk_1 FOREIGN KEY (project_milestone_id) REFERENCES project_milestone (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+            CONSTRAINT project_task_milestone_ibfk_2 FOREIGN KEY (project_task_id) REFERENCES project_task (id) ON DELETE NO ACTION ON UPDATE NO ACTION
+        )');
+        $this->addSql('CREATE INDEX ON project_task_milestone (project_task_id)');
+        $this->addSql('CREATE INDEX ON project_task_milestone (active)');
+        $this->addSql('CREATE INDEX ON project_task_milestone (project_milestone_id)');
+            
         $this->addSql('CREATE TABLE project_task_item (
-            id SERIAL PRIMARY KEY NOT NULL,
+            id SERIAL NOT NULL,
             name VARCHAR(255) NOT NULL,
             description TEXT DEFAULT NULL,
-            difficulty TINYINT(1) NOT NULL,
+            difficulty SMALLINT NOT NULL,
             value CHAR(1) DEFAULT NULL,
             -- "type" field to add to refer to task item type
             datetime_start TIMESTAMP DEFAULT NULL,
             datetime_end TIMESTAMP DEFAULT NULL,
-            project_task_id INT NOT NULL,
+            project_task_id INT NOT NULL CHECK (project_task_id > 0),
             active SMALLINT DEFAULT 1 NOT NULL,
             created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             deleted_at TIMESTAMP DEFAULT NULL,
-            INDEX difficulty (difficulty),
-            INDEX updated_at (updated_at),
-            INDEX project_task_id (project_task_id),
-            INDEX active (active),
-            INDEX value (value),
-            INDEX datetime_end (datetime_end),
-            INDEX datetime_start (datetime_start),
-            INDEX name (name),
-            INDEX created_at (created_at),
-            PRIMARY KEY(id),
-            CONSTRAINT `project_task_item_ibfk_1` FOREIGN KEY (`project_task_id`) REFERENCES `project_task` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-        ) ');
+            PRIMARY KEY (id),
+            CONSTRAINT project_task_item_ibfk_1 FOREIGN KEY (project_task_id) REFERENCES project_task (id) ON DELETE NO ACTION ON UPDATE NO ACTION
+        )');
+        $this->addSql('CREATE INDEX ON project_task_item (difficulty)');
+        $this->addSql('CREATE INDEX ON project_task_item (updated_at)');
+        $this->addSql('CREATE INDEX ON project_task_item (project_task_id)');
+        $this->addSql('CREATE INDEX ON project_task_item (active)');
+        $this->addSql('CREATE INDEX ON project_task_item (value)');
+        $this->addSql('CREATE INDEX ON project_task_item (datetime_end)');
+        $this->addSql('CREATE INDEX ON project_task_item (datetime_start)');
+        $this->addSql('CREATE INDEX ON project_task_item (name)');
+        $this->addSql('CREATE INDEX ON project_task_item (created_at)');
         
         $this->addSql('CREATE TABLE project_task_item_assigned (
-            id SERIAL PRIMARY KEY NOT NULL,
-            user_id INT DEFAULT NULL,
-            project_task_item_id INT DEFAULT NULL,
+            id SERIAL NOT NULL,
+            user_id INT DEFAULT NULL CHECK (user_id > 0),
+            project_task_item_id INT DEFAULT NULL CHECK (project_task_item_id > 0),
             active SMALLINT DEFAULT 1 NOT NULL,
             created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             deleted_at TIMESTAMP DEFAULT NULL,
-            INDEX created_at (created_at),
-            INDEX updated_at (updated_at),
-            INDEX project_task_item_id (project_task_item_id),
-            INDEX active (active),
-            INDEX user_id (user_id),
-            PRIMARY KEY(id),
-            CONSTRAINT `project_task_item_assigned_ibfk_1` FOREIGN KEY (`project_task_item_id`) REFERENCES `project_task_item` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-            CONSTRAINT `project_task_item_assigned_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-        ) ');
+            PRIMARY KEY (id),
+            CONSTRAINT project_task_item_assigned_ibfk_1 FOREIGN KEY (project_task_item_id) REFERENCES project_task_item (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+            CONSTRAINT project_task_item_assigned_ibfk_2 FOREIGN KEY (user_id) REFERENCES "user" (id) ON DELETE NO ACTION ON UPDATE NO ACTION
+        )');
+        $this->addSql('CREATE INDEX ON project_task_item_assigned (created_at)');
+        $this->addSql('CREATE INDEX ON project_task_item_assigned (updated_at)');
+        $this->addSql('CREATE INDEX ON project_task_item_assigned (project_task_item_id)');
+        $this->addSql('CREATE INDEX ON project_task_item_assigned (active)');
+        $this->addSql('CREATE INDEX ON project_task_item_assigned (user_id)');
         
         $this->addSql('CREATE TABLE project_task_template (
-            id SERIAL PRIMARY KEY NOT NULL,
+            id SERIAL NOT NULL,
             name VARCHAR(128) NOT NULL,
-            description MEDIUMTEXT DEFAULT NULL,
+            description TEXT DEFAULT NULL,
             active SMALLINT DEFAULT 1 NOT NULL,
             created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             deleted_at TIMESTAMP DEFAULT NULL,
-            INDEX active (active),
-            INDEX created_at (created_at),
-            INDEX updated_at (updated_at),
-            INDEX name (name),
-            PRIMARY KEY(id)
-        ) ');
+            PRIMARY KEY (id)
+        )');
+        $this->addSql('CREATE INDEX ON project_task_template (active)');
+        $this->addSql('CREATE INDEX ON project_task_template (created_at)');
+        $this->addSql('CREATE INDEX ON project_task_template (updated_at)');
+        $this->addSql('CREATE INDEX ON project_task_template (name)');
         
         // check task_id if refers to project_task or to project_task_template (I suppose latter)
         $this->addSql('CREATE TABLE project_task_item_template (
-            id SERIAL PRIMARY KEY NOT NULL,
+            id SERIAL NOT NULL,
             name VARCHAR(255) NOT NULL,
-            task_template_id INT DEFAULT NULL,
-            task_type_id SMALLINT DEFAULT 1 NOT NULL COMMENT \'Item template type: string, number, widget, select combo\',
+            task_template_id INT DEFAULT NULL CHECK (task_template_id > 0),
+            task_type_id SMALLINT DEFAULT 1 NOT NULL CHECK (task_type_id > 0),
             sort SMALLINT NOT NULL,
             active SMALLINT DEFAULT 1 NOT NULL,
             created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             deleted_at TIMESTAMP DEFAULT NULL,
-            INDEX created_at (created_at),
-            INDEX active (active),
-            INDEX updated_at (updated_at),
-            INDEX task_template_id (task_template_id),
-            INDEX sort (sort),
-            INDEX task_type_id (task_type_id),
-            INDEX name (name),
-            PRIMARY KEY(id),
-            CONSTRAINT `project_task_item_template_ibfk_1` FOREIGN KEY (`task_template_id`) REFERENCES `project_task_template` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-            -- CONSTRAINT `project_task_item_template_ibfk_2` FOREIGN KEY (`task_type_id`) REFERENCES `project_task_type` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-        ) ');
+            PRIMARY KEY (id),
+            CONSTRAINT project_task_item_template_ibfk_1 FOREIGN KEY (task_template_id) REFERENCES project_task_template (id) ON DELETE NO ACTION ON UPDATE NO ACTION
+            -- CONSTRAINT project_task_item_template_ibfk_2 FOREIGN KEY (task_type_id) REFERENCES project_task_type (id) ON DELETE NO ACTION ON UPDATE NO ACTION
+        )');
+        $this->addSql('COMMENT ON COLUMN project_task_item_template.task_type_id IS \'Item template type: string, number, widget, select combo\'');
+        $this->addSql('CREATE INDEX ON project_task_item_template (created_at)');
+        $this->addSql('CREATE INDEX ON project_task_item_template (active)');
+        $this->addSql('CREATE INDEX ON project_task_item_template (updated_at)');
+        $this->addSql('CREATE INDEX ON project_task_item_template (task_template_id)');
+        $this->addSql('CREATE INDEX ON project_task_item_template (sort)');
+        $this->addSql('CREATE INDEX ON project_task_item_template (task_type_id)');
+        $this->addSql('CREATE INDEX ON project_task_item_template (name)');
     }
 
     public function down(Schema $schema): void

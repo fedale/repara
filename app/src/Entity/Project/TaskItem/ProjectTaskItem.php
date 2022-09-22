@@ -35,8 +35,8 @@ class ProjectTaskItem
     #[ORM\Column(name: 'datetime_end', type: 'datetime', nullable: true, options: ['default' => null])]
     private $datetimeEnd = NULL;
     
-    #[ORM\Column(name: 'active', type: 'boolean', nullable: false, options: ['default' => 1])]
-    private $active = true;
+    #[ORM\Column()]
+    private bool $active = true;
 
     #[ORM\ManyToOne(targetEntity: ProjectTask::class, inversedBy: 'projectTaskItems')]
     #[ORM\JoinColumn(nullable: false)]

@@ -18,17 +18,13 @@ class ProjectMilestone
 {
     use TimestampableEntity;
 
-    /**
-     * @var int
-     */
+     
     #[ORM\Column(name: 'id', type: 'integer', nullable: false, options: ['unsigned' => true])]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private $id;
     
-    /**
-     * @var string
-     */
+     
     #[ORM\Column(name: 'name', type: 'string', length: 32, nullable: false)]
     private $name;
     
@@ -41,8 +37,8 @@ class ProjectMilestone
     /**
      * @var bool
      */
-    #[ORM\Column(name: 'active', type: 'boolean', nullable: false, options: ['default' => 1])]
-    private $active = true;
+    #[ORM\Column()]
+    private bool $active = true;
 
     // #[ORM\OneToMany(mappedBy: 'milestone', targetEntity: ProjectTaskMilestone::class)]
     // private $projectTaskMilestones;

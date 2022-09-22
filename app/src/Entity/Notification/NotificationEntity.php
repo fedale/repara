@@ -11,31 +11,21 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity]
 class NotificationEntity
 {
-    /**
-     * @var int
-     */
+     
     #[ORM\Column(name: 'id', type: 'integer', nullable: false, options: ['unsigned' => true])]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private $id;
-    /**
-     * @var string
-     */
+     
     #[ORM\Column(name: 'name', type: 'string', length: 64, nullable: false, options: ['comment' => 'post,comment,task,template'])]
     private $name;
-    /**
-     * @var string
-     */
+     
     #[ORM\Column(name: 'action', type: 'string', length: 16, nullable: false)]
     private $action;
-    /**
-     * @var string
-     */
+     
     #[ORM\Column(name: 'subject', type: 'string', length: 128, nullable: false)]
     private $subject;
-    /**
-     * @var string
-     */
+     
     #[ORM\Column(name: 'template', type: 'string', length: 255, nullable: false)]
     private $template;
     public function getId(): ?int

@@ -14,9 +14,7 @@ class Notification
 {
     use TimestampableEntity;
 
-    /**
-     * @var int
-     */
+     
     #[ORM\Column(name: 'id', type: 'integer', nullable: false, options: ['unsigned' => true])]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
@@ -28,9 +26,7 @@ class Notification
     #[ORM\Column(name: 'entity_id', type: 'integer', nullable: true, options: ['default' => null, 'unsigned' => true, 'comment' => 'NULL with deleted entities'])]
     private $entityId = NULL;
     
-    /**
-     * @var string
-     */
+     
     #[ORM\Column(name: 'message', type: 'text', length: 16777215, nullable: false)]
     private $message;
     

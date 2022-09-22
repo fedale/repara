@@ -12,21 +12,15 @@ use App\Entity\User\User;
 #[ORM\Entity]
 class NotificationItem
 {
-    /**
-     * @var int
-     */
+     
     #[ORM\Column(name: 'id', type: 'integer', nullable: false, options: ['unsigned' => true])]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private $id;
-    /**
-     * @var int
-     */
+     
     #[ORM\Column(name: 'sender_id', type: 'integer', nullable: false, options: ['unsigned' => true])]
     private $senderId;
-    /**
-     * @var int
-     */
+     
     #[ORM\Column(name: 'status', type: 'smallint', nullable: false)]
     private $status;
     /**

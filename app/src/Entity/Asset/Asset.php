@@ -27,9 +27,7 @@ class Asset
 {
     use TimestampableEntity;
     
-    /**
-     * @var int
-     */
+     
     #[ORM\Column(name: 'id', type: 'integer', nullable: false, options: ['unsigned' => true])]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
@@ -42,8 +40,8 @@ class Asset
     #[ORM\Column(type: 'string', length: 128, unique: true)]
     private $slug;
     
-    #[ORM\Column(name: 'active', type: 'boolean', nullable: false, options: ['default' => 1])]
-    private $active = true;
+    #[ORM\Column()]
+    private bool $active = true;
     
     #[ORM\ManyToOne(targetEntity: AssetModel::class, fetch: 'EAGER')]
     #[ORM\JoinColumn(name: 'model_id', referencedColumnName: 'id')]

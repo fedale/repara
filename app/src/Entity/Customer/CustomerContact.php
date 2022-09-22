@@ -27,23 +27,17 @@ class CustomerContact
 {
     use TimestampableEntity;
 
-    /**
-     * @var int
-     */
+     
     #[ORM\Column(name: 'id', type: 'integer', nullable: false, options: ['unsigned' => true])]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private $id;
     
-    /**
-     * @var string
-     */
+     
     #[ORM\Column(name: 'firstname', type: 'string', length: 64, nullable: false)]
     private $firstname;
     
-    /**
-     * @var string
-     */
+     
     #[ORM\Column(name: 'lastname', type: 'string', length: 64, nullable: false)]
     private $lastname;
     
@@ -62,8 +56,8 @@ class CustomerContact
     /**
      * @var bool
      */
-    #[ORM\Column(name: 'active', type: 'boolean', nullable: false, options: ['default' => 1])]
-    private $active = true;
+    #[ORM\Column()]
+    private bool $active = true;
     
     /**
      * @var CustomerLocation

@@ -44,7 +44,7 @@ class CustomerLocation
     #[Assert\Length(max: 32)]
     private string $country = 'Italia';
 
-    #[ORM\Column]
+    #[ORM\Column()]
     private bool $active = true;
 
     #[ORM\ManyToOne(targetEntity: Customer::class, inversedBy: 'locations')]

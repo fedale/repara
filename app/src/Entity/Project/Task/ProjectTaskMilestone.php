@@ -18,8 +18,8 @@ class ProjectTaskMilestone
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private $id;
     
-    #[ORM\Column(name: 'active', type: 'boolean', nullable: false, options: ['default' => 1])]
-    private $active = true;
+    #[ORM\Column()]
+    private bool $active = true;
 
     // #[ORM\ManyToOne(targetEntity: ProjectTaskMilestone::class, inversedBy: 'projectTaskMilestones')]
     // #[ORM\JoinColumn(nullable: false)]

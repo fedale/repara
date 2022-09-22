@@ -26,7 +26,7 @@ class AssetType
     #[ORM\Column(type: 'string', length: 64, unique: true)]
     private $slug;
 
-    #[ORM\Column(nullable: false)]
+    #[ORM\Column()]
     private bool $active = true;
 
     #[ORM\OneToMany(mappedBy: 'type', targetEntity: AssetModel::class)]

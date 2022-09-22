@@ -11,25 +11,21 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity]
 class ProjectTaskType
 {
-    /**
-     * @var int
-     */
+     
     #[ORM\Column(name: 'id', type: 'integer', nullable: false, options: ['unsigned' => true])]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private $id;
 
-    /**
-     * @var string
-     */
+     
     #[ORM\Column(name: 'name', type: 'string', length: 128, nullable: false)]
     private $name;
 
     /**
      * @var bool
      */
-    #[ORM\Column(name: 'active', type: 'boolean', nullable: false, options: ['default' => 1])]
-    private $active = true;
+    #[ORM\Column()]
+    private bool $active = true;
 
     
     public function __toString()

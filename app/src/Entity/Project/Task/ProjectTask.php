@@ -64,8 +64,8 @@ class ProjectTask
     #[EnumType(entity: ProjectTaskPriorityType::class)]
     private string $priority = ProjectTaskPriorityType::PRIORITY_NORMAL;
 
-    #[ORM\Column(name: 'active', type: 'boolean', nullable: false, options: ['default' => 1])]
-    private $active = true;
+    #[ORM\Column()]
+    private bool $active = true;
     
     #[ORM\Column(name: 'visible', type: 'boolean', nullable: false, options: ['default' => 1])]
     private $visible = true;

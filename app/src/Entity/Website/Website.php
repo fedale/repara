@@ -15,43 +15,29 @@ class Website
 {
     use TimestampableEntity;
     
-    /**
-     * @var int
-     */
+     
     #[ORM\Column(name: 'id', type: 'integer', nullable: false)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private $id;
     
-    /**
-     * @var string
-     */
+     
     #[ORM\Column(name: 'name', type: 'string', length: 32, nullable: false)]
     private $name;
     
-    /**
-     * @var string
-     *
-     * @Gedmo\Slug(fields={"name"})
-     */
+    #[Gedmo\Slug(fields:["name"])]
     #[ORM\Column(name: 'code', type: 'string', length: 32, nullable: false, unique: true)]
     private $code;
     
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'active', type: 'smallint', nullable: false, options: ['default' => 1])]
-    private $active = 1;
+     
+    #[ORM\Column()]
+    private bool $active = true;
     
-    /**
-     * @var int
-     */
+     
     #[ORM\Column(name: 'default_group_id', type: 'integer', nullable: false)]
     private $defaultGroupId;
     
-    /**
-     * @var int
-     */
+     
     #[ORM\Column(name: 'sort', type: 'smallint', nullable: false)]
     private $sort = 0;
     
@@ -84,12 +70,12 @@ class Website
         return $this;
     }
     
-    public function getActive(): ?int
+    public function getActive(): ?bool
     {
         return $this->active;
     }
     
-    public function setActive(int $active): self
+    public function setActive(bool $active): self
     {
         $this->active = $active;
 

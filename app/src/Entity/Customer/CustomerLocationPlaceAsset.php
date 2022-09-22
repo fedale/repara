@@ -27,8 +27,8 @@ class CustomerLocationPlaceAsset
     #[ORM\Column(name: 'code', type: 'string', length: 64, nullable: false)]
     private $code;
     
-    #[ORM\Column(name: 'active', type: 'boolean', nullable: false, options: ['default' => 1])]
-    private $active = true;
+    #[ORM\Column()]
+    private bool $active = true;
 
     #[ORM\ManyToOne(targetEntity: CustomerLocationPlace::class, inversedBy: 'customerLocationPlaceAssets')]
     #[ORM\JoinColumn(name: 'customer_location_place_id', nullable: false)]

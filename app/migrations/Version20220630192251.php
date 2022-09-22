@@ -29,7 +29,7 @@ final class Version20220630192251 extends AbstractMigration
             methods VARCHAR(255) DEFAULT NULL, 
             allow SMALLINT DEFAULT 1 NOT NULL, 
             sort SMALLINT DEFAULT 0 NOT NULL, 
-            active SMALLINT DEFAULT 1 NOT NULL, 
+            active BOOLEAN DEFAULT TRUE NOT NULL, 
             created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP, 
             updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP
             )
@@ -53,7 +53,7 @@ final class Version20220630192251 extends AbstractMigration
             name VARCHAR(32) NOT NULL, 
             default_group_id SMALLINT NOT NULL, 
             sort SMALLINT DEFAULT 0 NOT NULL, 
-            active SMALLINT DEFAULT 1 NOT NULL, 
+            active BOOLEAN DEFAULT TRUE NOT NULL, 
             created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP, 
             updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP, 
             deleted_at timestamptz DEFAULT NULL

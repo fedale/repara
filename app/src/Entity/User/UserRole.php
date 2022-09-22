@@ -18,9 +18,7 @@ use App\Repository\User\UserRoleRepository;
 #[ORM\Entity(repositoryClass: UserRoleRepository::class)]
 class UserRole
 {
-    /**
-     * @var int
-     */
+     
     #[ORM\Column(name: 'id', type: 'smallint', nullable: false, options: ['unsigned' => true])]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]

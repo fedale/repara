@@ -25,8 +25,8 @@ class ProjectTaskUserAssigned
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private $id;
     
-    #[ORM\Column(name: 'active', type: 'boolean', nullable: false, options: ['default' => 1])]
-    private $active = true;
+    #[ORM\Column()]
+    private bool $active = true;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'projectTaskUserAssigneds')]
     #[ORM\JoinColumn(name: 'user_id', nullable: false)]

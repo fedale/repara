@@ -15,8 +15,8 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
-
-#[ORM\Table(name: 'user', 
+// https://stackoverflow.com/a/61235380/1313265
+#[ORM\Table(name: "`user`", 
     uniqueConstraints: [
         new ORM\UniqueConstraint(name: 'user_unique_username', columns: ['username']), 
         new ORM\UniqueConstraint(name: 'user_unique_email', columns: ['email'])], 
@@ -65,8 +65,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(name: 'registration_ip', type: 'string', length: 45, nullable: true, options: ['default' => null])]
     private $registrationIp;
 
-    #[ORM\Column(name: 'active', type: 'boolean', nullable: false, options: ['default' => 1])]
-    private $active = true;
+    #[ORM\Column()]
+    private bool $active = true;
     
     #[ORM\Column(name: 'deleted_at', type: 'datetime', nullable: true, options: ['default' => null])]
     private $deletedAt;
@@ -313,10 +313,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+    
     /**
      * @see PasswordAuthenticatedUserInterface
      */
-    
     public function getPassword(): string
     {
         return $this->password;

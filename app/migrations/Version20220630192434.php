@@ -25,7 +25,7 @@ final class Version20220630192434 extends AbstractMigration
             name VARCHAR(128) NOT NULL,
             slug VARCHAR(100) NOT NULL,
             model_id SMALLINT DEFAULT NULL CHECK (model_id > 0),
-            active SMALLINT DEFAULT 1 NOT NULL,
+            active BOOLEAN DEFAULT TRUE NOT NULL,
             created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
             deleted_at timestamptz DEFAULT NULL
@@ -52,7 +52,7 @@ final class Version20220630192434 extends AbstractMigration
             size INT  NOT NULL CHECK(size > 0),
             path VARCHAR(128) NOT NULL,
             filename VARCHAR(128) NOT NULL,
-            active SMALLINT DEFAULT 1 NOT NULL,
+            active BOOLEAN DEFAULT TRUE NOT NULL,
             created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
             deleted_at timestamptz DEFAULT NULL
@@ -78,7 +78,7 @@ final class Version20220630192434 extends AbstractMigration
             id SMALLSERIAL PRIMARY KEY NOT NULL,
             name VARCHAR(128) NOT NULL,
             slug VARCHAR(128) NOT NULL,
-            active SMALLINT DEFAULT 1 NOT NULL,
+            active BOOLEAN DEFAULT TRUE NOT NULL,
             created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
             deleted_at timestamptz DEFAULT NULL
@@ -101,7 +101,7 @@ final class Version20220630192434 extends AbstractMigration
             slug VARCHAR(64) NOT NULL,
             brand_id SMALLINT DEFAULT NULL,
             type_id SMALLINT NOT NULL,
-            active SMALLINT DEFAULT 1 NOT NULL,
+            active BOOLEAN DEFAULT TRUE NOT NULL,
             created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
             deleted_at timestamptz DEFAULT NULL
@@ -124,7 +124,7 @@ final class Version20220630192434 extends AbstractMigration
             id SMALLSERIAL PRIMARY KEY NOT NULL,
             name VARCHAR(64) NOT NULL,
             slug VARCHAR(64) NOT NULL,
-            active SMALLINT DEFAULT 1 NOT NULL,
+            active BOOLEAN DEFAULT TRUE NOT NULL,
             created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
             deleted_at timestamptz DEFAULT NULL
@@ -152,7 +152,7 @@ final class Version20220630192434 extends AbstractMigration
             parent_id INT DEFAULT NULL,
             root INT DEFAULT NULL,
             lvl INT DEFAULT NULL,
-            active SMALLINT DEFAULT 1 NOT NULL,
+            active BOOLEAN DEFAULT TRUE NOT NULL,
             created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
             deleted_at timestamptz DEFAULT NULL

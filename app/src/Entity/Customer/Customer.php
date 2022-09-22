@@ -44,7 +44,7 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 64, nullable: true)]
     private ?string $registrationIp;
 
-    #[ORM\Column(nullable: false)]
+    #[ORM\Column()]
     private bool $active = true;
 
     #[ORM\Column(nullable: true)]

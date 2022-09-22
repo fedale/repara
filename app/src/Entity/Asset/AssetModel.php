@@ -27,8 +27,8 @@ class AssetModel
     #[ORM\Column(type: 'string', length: 64, unique: true)]
     private $slug;
     
-    #[ORM\Column(name: 'active', type: 'boolean', nullable: false, options: ['default' => 1])]
-    private $active = true;
+    #[ORM\Column()]
+    private bool $active = true;
     
     #[ORM\ManyToOne(targetEntity: 'AssetBrand')]
     #[ORM\JoinColumn(name: 'brand_id', referencedColumnName: 'id', nullable: false)]

@@ -15,23 +15,17 @@ use App\Repository\User\UserGroupRepository;
 #[ORM\Entity(repositoryClass: UserGroupRepository::class)]
 class UserGroup
 {
-    /**
-     * @var int
-     */
+     
     #[ORM\Column(name: 'id', type: 'integer', nullable: false)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private $id;
 
-    /**
-     * @var string
-     */
+     
     #[ORM\Column(name: 'name', type: 'string', length: 64, nullable: false)]
     private $name;
 
-    /**
-     * @var string
-     */
+     
     #[Gedmo\Slug(fields:['name'])]
     #[ORM\Column(name: 'slug', type: 'string', length: 64, nullable: false)]
     private $slug;

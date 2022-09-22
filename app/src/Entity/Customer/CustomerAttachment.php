@@ -14,49 +14,37 @@ class CustomerAttachment
 {
     use TimestampableEntity;
 
-    /**
-     * @var int
-     */
+     
     #[ORM\Column(name: 'id', type: 'integer', nullable: false, options: ['unsigned' => true])]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private $id;
 
-    /**
-     * @var string
-     */
+     
     #[ORM\Column(name: 'name', type: 'string', length: 255, nullable: false)]
     private $name;
 
-    /**
-     * @var string
-     */
+     
     #[ORM\Column(name: 'type', type: 'string', length: 32, nullable: false)]
     private $type;
 
-    /**
-     * @var int
-     */
+     
     #[ORM\Column(name: 'size', type: 'integer', nullable: false, options: ['unsigned' => true])]
     private $size;
 
-    /**
-     * @var string
-     */
+     
     #[ORM\Column(name: 'path', type: 'string', length: 128, nullable: false)]
     private $path;
 
-    /**
-     * @var string
-     */
+     
     #[ORM\Column(name: 'filename', type: 'string', length: 128, nullable: false)]
     private $filename;
 
     /**
      * @var bool
      */
-    #[ORM\Column(name: 'active', type: 'boolean', nullable: false, options: ['default' => 1])]
-    private $active = true;
+    #[ORM\Column()]
+    private bool $active = true;
     
     /**
      * @var Customer

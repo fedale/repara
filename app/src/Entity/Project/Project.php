@@ -16,23 +16,17 @@ class Project
 {
     use TimestampableEntity;
 
-    /**
-     * @var int
-     */
+     
     #[ORM\Column(name: 'id', type: 'integer', nullable: false, options: ['unsigned' => true])]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private $id;
 
-    /**
-     * @var string
-     */
+     
     #[ORM\Column(name: 'code', type: 'string', length: 32, nullable: false)]
     private $code;
 
-    /**
-     * @var string
-     */
+     
     #[ORM\Column(name: 'name', type: 'string', length: 128, nullable: false)]
     private $name;
 
@@ -54,9 +48,7 @@ class Project
     #[ORM\Column(name: 'datetime_end', type: 'datetime', nullable: true, options: ['default' => null])]
     private $datetimeEnd = null;
 
-    /**
-     * @var string
-     */
+     
     #[ORM\Column(name: 'status', type: 'string', length: 32, nullable: false)]
     private $status = '0';
 
@@ -81,8 +73,8 @@ class Project
     /**
      * @var bool
      */
-    #[ORM\Column(name: 'active', type: 'boolean', nullable: false, options: ['default' => 1])]
-    private $active = true;
+    #[ORM\Column()]
+    private bool $active = true;
 
     /**
      * @var bool

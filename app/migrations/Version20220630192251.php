@@ -30,9 +30,14 @@ final class Version20220630192251 extends AbstractMigration
             allow SMALLINT DEFAULT 1 NOT NULL, 
             sort SMALLINT DEFAULT 0 NOT NULL, 
             active SMALLINT DEFAULT 1 NOT NULL, 
-            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, 
-            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+            created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP, 
+            updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP
             )
+        ');
+        $this->addSql('CREATE TRIGGER set_updated_at
+            BEFORE UPDATE ON access_control
+            FOR EACH ROW
+            EXECUTE PROCEDURE trigger_set_update();
         ');
             
         $this->addSql('CREATE INDEX ON access_control (sort)');
@@ -49,10 +54,14 @@ final class Version20220630192251 extends AbstractMigration
             default_group_id SMALLINT NOT NULL, 
             sort SMALLINT DEFAULT 0 NOT NULL, 
             active SMALLINT DEFAULT 1 NOT NULL, 
-            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, 
-            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, 
-            deleted_at TIMESTAMP DEFAULT NULL
-            )
+            created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP, 
+            updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP, 
+            deleted_at timestamptz DEFAULT NULL
+        )');
+        $this->addSql('CREATE TRIGGER set_updated_at
+            BEFORE UPDATE ON website
+            FOR EACH ROW
+            EXECUTE PROCEDURE trigger_set_update();
         ');
             
         $this->addSql('CREATE INDEX ON website (active)');

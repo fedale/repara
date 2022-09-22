@@ -23,15 +23,20 @@ final class Version20220630192480 extends AbstractMigration
             id SMALLSERIAL NOT NULL,
             name VARCHAR(128) NOT NULL,
             active SMALLINT DEFAULT 1 NOT NULL,
-            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            deleted_at TIMESTAMP DEFAULT NULL,
+            created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            deleted_at timestamptz DEFAULT NULL,
             PRIMARY KEY(id)
         )');
         $this->addSql('CREATE INDEX ON project_type (active)');
         $this->addSql('CREATE INDEX ON project_type (created_at)');
         $this->addSql('CREATE INDEX ON project_type (updated_at)');
         $this->addSql('CREATE INDEX ON project_type (name)');
+        $this->addSql('CREATE TRIGGER set_updated_at
+            BEFORE UPDATE ON project_type
+            FOR EACH ROW
+            EXECUTE PROCEDURE trigger_set_update();
+        ');
 
         $this->addSql('CREATE TYPE state AS ENUM (\'requested\', \'rejected\', \'approved\', \'current\', \'dead\', \'completed\', \'on_hold\', \'signed\')');
         $this->addSql('CREATE TABLE project (
@@ -48,10 +53,10 @@ final class Version20220630192480 extends AbstractMigration
             type_id SMALLINT NOT NULL CHECK (type_id > 0),
             visible SMALLINT DEFAULT 1 NOT NULL,
             active SMALLINT DEFAULT 1 NOT NULL,
-            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            deleted_at TIMESTAMP DEFAULT NULL,
-            finished_at TIMESTAMP DEFAULT NULL,
+            created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            deleted_at timestamptz DEFAULT NULL,
+            finished_at timestamptz DEFAULT NULL,
             PRIMARY KEY(id),
             CONSTRAINT project_type_ibfk_1 FOREIGN KEY (type_id) REFERENCES project_type (id) ON DELETE NO ACTION ON UPDATE NO ACTION
         )');
@@ -68,7 +73,12 @@ final class Version20220630192480 extends AbstractMigration
         $this->addSql('CREATE INDEX ON project (created_at)');
         $this->addSql('CREATE INDEX ON project (budget)');
         $this->addSql('CREATE UNIQUE INDEX ON project (code)');
-        
+        $this->addSql('CREATE TRIGGER set_updated_at
+            BEFORE UPDATE ON project
+            FOR EACH ROW
+            EXECUTE PROCEDURE trigger_set_update();
+        ');
+
         $this->addSql('CREATE TABLE project_activity (
             id SERIAL NOT NULL,
             name VARCHAR(128) NOT NULL,
@@ -82,25 +92,30 @@ final class Version20220630192480 extends AbstractMigration
         $this->addSql('CREATE INDEX ON project_activity (name)');
         $this->addSql('CREATE INDEX ON project_activity (user_id)');
         $this->addSql('CREATE INDEX ON project_activity (project_id)');
-        // $this->addSql('ALTER TABLE ');
-        // $this->addSql('ALTER TABLE ');
 
         $this->addSql('CREATE TABLE project_milestone (
             id SERIAL NOT NULL,
             name VARCHAR(32) NOT NULL,
             expiration_date TIMESTAMP NOT NULL,
             active SMALLINT DEFAULT 1 NOT NULL,
-            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            deleted_at TIMESTAMP DEFAULT NULL,
+            created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            deleted_at timestamptz DEFAULT NULL,
             PRIMARY KEY(id)
         )');
         $this->addSql('CREATE INDEX ON project_milestone (active)');
         $this->addSql('CREATE INDEX ON project_milestone (name)');
+        $this->addSql('CREATE TRIGGER set_updated_at
+            BEFORE UPDATE ON project_milestone
+            FOR EACH ROW
+            EXECUTE PROCEDURE trigger_set_update();
+        ');
     }
 
     public function down(Schema $schema): void
     {
+        
+     
         $this->addSql('DROP TABLE project_activity');
       
         $this->addSql('DROP TABLE project_milestone');        
@@ -108,5 +123,7 @@ final class Version20220630192480 extends AbstractMigration
         $this->addSql('DROP TABLE project');
      
         $this->addSql('DROP TABLE project_type');
+
+        $this->addSql('DROP TYPE state');
     }
 }

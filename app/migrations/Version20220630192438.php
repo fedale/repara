@@ -25,9 +25,9 @@ final class Version20220630192438 extends AbstractMigration
             entity_id INT DEFAULT NULL CHECK (entity_id > 0), 
             message TEXT NOT NULL, 
             status SMALLINT DEFAULT 1 NOT NULL, 
-            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, 
-            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, 
-            deleted_at TIMESTAMP DEFAULT NULL, 
+            created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP, 
+            updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP, 
+            deleted_at timestamptz DEFAULT NULL, 
             PRIMARY KEY (id)
         )');
         $this->addSql('COMMENT ON COLUMN notification.entity_id IS  \'NULL with deleted entities\''); 
@@ -36,6 +36,11 @@ final class Version20220630192438 extends AbstractMigration
         $this->addSql('CREATE INDEX ON notification (entity_id)');
         $this->addSql('CREATE INDEX ON notification (status)');
         $this->addSql('CREATE INDEX ON notification (notification_entity_id)');
+        $this->addSql('CREATE TRIGGER set_updated_at
+            BEFORE UPDATE ON notification
+            FOR EACH ROW
+            EXECUTE PROCEDURE trigger_set_update();
+        ');
         
         $this->addSql('CREATE TABLE notification_entity (
             id SERIAL NOT NULL, 

@@ -23,16 +23,21 @@ final class Version20220630192739 extends AbstractMigration
             id SMALLSERIAL NOT NULL,
             name VARCHAR(128) NOT NULL,
             active SMALLINT DEFAULT 1 NOT NULL,
-            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            deleted_at TIMESTAMP DEFAULT NULL,
+            created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            deleted_at timestamptz DEFAULT NULL,
             PRIMARY KEY (id)
         )');
         $this->addSql('CREATE INDEX ON project_task_type (active)');
         $this->addSql('CREATE INDEX ON project_task_type (created_at)');
         $this->addSql('CREATE INDEX ON project_task_type (updated_at)');
         $this->addSql('CREATE INDEX ON project_task_type (name)');
-        
+        $this->addSql('CREATE TRIGGER set_updated_at
+            BEFORE UPDATE ON project_task_type
+            FOR EACH ROW
+            EXECUTE PROCEDURE trigger_set_update();
+        ');
+
         $this->addSql('CREATE TYPE priority AS ENUM (\'low\', \'normal\', \'high\')');
         $this->addSql('CREATE TABLE project_task (
             id SERIAL NOT NULL,
@@ -46,11 +51,11 @@ final class Version20220630192739 extends AbstractMigration
             asset_type VARCHAR(8) DEFAULT \'N/A\' NOT NULL,
             priority priority NOT NULL, 
             visible SMALLINT DEFAULT 1 NOT NULL,
-            finished_at TIMESTAMP DEFAULT NULL,
+            finished_at timestamptz DEFAULT NULL,
             active SMALLINT DEFAULT 1 NOT NULL,
-            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            deleted_at TIMESTAMP DEFAULT NULL,
+            created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            deleted_at timestamptz DEFAULT NULL,
             PRIMARY KEY (id),
             CONSTRAINT project_task_ibfk_1 FOREIGN KEY (customer_id) REFERENCES customer (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
             CONSTRAINT project_task_ibfk_2 FOREIGN KEY (project_id) REFERENCES project (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
@@ -71,6 +76,11 @@ final class Version20220630192739 extends AbstractMigration
         $this->addSql('CREATE INDEX ON project_task (name)');
         $this->addSql('CREATE INDEX ON project_task (asset_type)');
         $this->addSql('CREATE INDEX ON project_task (priority)');
+        $this->addSql('CREATE TRIGGER set_updated_at
+            BEFORE UPDATE ON project_task
+            FOR EACH ROW
+            EXECUTE PROCEDURE trigger_set_update();
+        ');
  
         $this->addSql('CREATE TABLE project_task_activity (
             id SERIAL NOT NULL,
@@ -91,9 +101,9 @@ final class Version20220630192739 extends AbstractMigration
             user_id INT NOT NULL CHECK (user_id > 0),
             project_task_id INT NOT NULL CHECK (project_task_id > 0),
             active SMALLINT DEFAULT 1 NOT NULL,
-            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            deleted_at TIMESTAMP DEFAULT NULL,
+            created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            deleted_at timestamptz DEFAULT NULL,
             PRIMARY KEY (id),
             CONSTRAINT project_task_user_assigned_ibfk_1 FOREIGN KEY (project_task_id) REFERENCES project_task (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
             CONSTRAINT project_task_user_assigned_ibfk_2 FOREIGN KEY (user_id) REFERENCES "user" (id) ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -103,6 +113,11 @@ final class Version20220630192739 extends AbstractMigration
         $this->addSql('CREATE INDEX ON project_task_user_assigned (project_task_id)');
         $this->addSql('CREATE INDEX ON project_task_user_assigned (active)');
         $this->addSql('CREATE INDEX ON project_task_user_assigned (user_id)');
+        $this->addSql('CREATE TRIGGER set_updated_at
+            BEFORE UPDATE ON project_task_user_assigned
+            FOR EACH ROW
+            EXECUTE PROCEDURE trigger_set_update();
+        ');
         
         $this->addSql('CREATE TABLE project_task_attachment (
             id SERIAL NOT NULL,
@@ -114,9 +129,9 @@ final class Version20220630192739 extends AbstractMigration
             path VARCHAR(128) NOT NULL,
             filename VARCHAR(128) NOT NULL,
             active SMALLINT DEFAULT 1 NOT NULL,
-            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            deleted_at TIMESTAMP DEFAULT NULL,
+            created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            deleted_at timestamptz DEFAULT NULL,
             PRIMARY KEY (id),
             CONSTRAINT project_task_attachment_ibfk_1 FOREIGN KEY (project_task_id) REFERENCES project_task (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
             CONSTRAINT project_task_attachment_ibfk_2 FOREIGN KEY (user_id) REFERENCES "user" (id) ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -131,6 +146,11 @@ final class Version20220630192739 extends AbstractMigration
         $this->addSql('CREATE INDEX ON project_task_attachment (path)');
         $this->addSql('CREATE INDEX ON project_task_attachment (project_task_id)');
         $this->addSql('CREATE INDEX ON project_task_attachment (updated_at)');
+        $this->addSql('CREATE TRIGGER set_updated_at
+            BEFORE UPDATE ON project_task_attachment
+            FOR EACH ROW
+            EXECUTE PROCEDURE trigger_set_update();
+        ');
 
         $this->addSql('CREATE TABLE project_task_tag (
             id SERIAL NOT NULL, 
@@ -153,9 +173,9 @@ final class Version20220630192739 extends AbstractMigration
             project_milestone_id INT NOT NULL CHECK (project_milestone_id > 0),
             project_task_id INT NOT NULL CHECK (project_task_id > 0),
             active SMALLINT DEFAULT 1 NOT NULL,
-            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            deleted_at TIMESTAMP DEFAULT NULL,
+            created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            deleted_at timestamptz DEFAULT NULL,
             PRIMARY KEY (id),
             CONSTRAINT project_task_milestone_ibfk_1 FOREIGN KEY (project_milestone_id) REFERENCES project_milestone (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
             CONSTRAINT project_task_milestone_ibfk_2 FOREIGN KEY (project_task_id) REFERENCES project_task (id) ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -163,6 +183,11 @@ final class Version20220630192739 extends AbstractMigration
         $this->addSql('CREATE INDEX ON project_task_milestone (project_task_id)');
         $this->addSql('CREATE INDEX ON project_task_milestone (active)');
         $this->addSql('CREATE INDEX ON project_task_milestone (project_milestone_id)');
+        $this->addSql('CREATE TRIGGER set_updated_at
+            BEFORE UPDATE ON project_task_milestone
+            FOR EACH ROW
+            EXECUTE PROCEDURE trigger_set_update();
+        ');
             
         $this->addSql('CREATE TABLE project_task_item (
             id SERIAL NOT NULL,
@@ -175,9 +200,9 @@ final class Version20220630192739 extends AbstractMigration
             datetime_end TIMESTAMP DEFAULT NULL,
             project_task_id INT NOT NULL CHECK (project_task_id > 0),
             active SMALLINT DEFAULT 1 NOT NULL,
-            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            deleted_at TIMESTAMP DEFAULT NULL,
+            created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            deleted_at timestamptz DEFAULT NULL,
             PRIMARY KEY (id),
             CONSTRAINT project_task_item_ibfk_1 FOREIGN KEY (project_task_id) REFERENCES project_task (id) ON DELETE NO ACTION ON UPDATE NO ACTION
         )');
@@ -190,15 +215,20 @@ final class Version20220630192739 extends AbstractMigration
         $this->addSql('CREATE INDEX ON project_task_item (datetime_start)');
         $this->addSql('CREATE INDEX ON project_task_item (name)');
         $this->addSql('CREATE INDEX ON project_task_item (created_at)');
+        $this->addSql('CREATE TRIGGER set_updated_at
+            BEFORE UPDATE ON project_task_item
+            FOR EACH ROW
+            EXECUTE PROCEDURE trigger_set_update();
+        ');
         
         $this->addSql('CREATE TABLE project_task_item_assigned (
             id SERIAL NOT NULL,
             user_id INT DEFAULT NULL CHECK (user_id > 0),
             project_task_item_id INT DEFAULT NULL CHECK (project_task_item_id > 0),
             active SMALLINT DEFAULT 1 NOT NULL,
-            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            deleted_at TIMESTAMP DEFAULT NULL,
+            created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            deleted_at timestamptz DEFAULT NULL,
             PRIMARY KEY (id),
             CONSTRAINT project_task_item_assigned_ibfk_1 FOREIGN KEY (project_task_item_id) REFERENCES project_task_item (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
             CONSTRAINT project_task_item_assigned_ibfk_2 FOREIGN KEY (user_id) REFERENCES "user" (id) ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -208,21 +238,31 @@ final class Version20220630192739 extends AbstractMigration
         $this->addSql('CREATE INDEX ON project_task_item_assigned (project_task_item_id)');
         $this->addSql('CREATE INDEX ON project_task_item_assigned (active)');
         $this->addSql('CREATE INDEX ON project_task_item_assigned (user_id)');
-        
+        $this->addSql('CREATE TRIGGER set_updated_at
+            BEFORE UPDATE ON project_task_item_assigned
+            FOR EACH ROW
+            EXECUTE PROCEDURE trigger_set_update();
+        ');
+
         $this->addSql('CREATE TABLE project_task_template (
             id SERIAL NOT NULL,
             name VARCHAR(128) NOT NULL,
             description TEXT DEFAULT NULL,
             active SMALLINT DEFAULT 1 NOT NULL,
-            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            deleted_at TIMESTAMP DEFAULT NULL,
+            created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            deleted_at timestamptz DEFAULT NULL,
             PRIMARY KEY (id)
         )');
         $this->addSql('CREATE INDEX ON project_task_template (active)');
         $this->addSql('CREATE INDEX ON project_task_template (created_at)');
         $this->addSql('CREATE INDEX ON project_task_template (updated_at)');
         $this->addSql('CREATE INDEX ON project_task_template (name)');
+        $this->addSql('CREATE TRIGGER set_updated_at
+            BEFORE UPDATE ON project_task_template
+            FOR EACH ROW
+            EXECUTE PROCEDURE trigger_set_update();
+        ');
         
         // check task_id if refers to project_task or to project_task_template (I suppose latter)
         $this->addSql('CREATE TABLE project_task_item_template (
@@ -232,9 +272,9 @@ final class Version20220630192739 extends AbstractMigration
             task_type_id SMALLINT DEFAULT 1 NOT NULL CHECK (task_type_id > 0),
             sort SMALLINT NOT NULL,
             active SMALLINT DEFAULT 1 NOT NULL,
-            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            deleted_at TIMESTAMP DEFAULT NULL,
+            created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            deleted_at timestamptz DEFAULT NULL,
             PRIMARY KEY (id),
             CONSTRAINT project_task_item_template_ibfk_1 FOREIGN KEY (task_template_id) REFERENCES project_task_template (id) ON DELETE NO ACTION ON UPDATE NO ACTION
             -- CONSTRAINT project_task_item_template_ibfk_2 FOREIGN KEY (task_type_id) REFERENCES project_task_type (id) ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -247,6 +287,11 @@ final class Version20220630192739 extends AbstractMigration
         $this->addSql('CREATE INDEX ON project_task_item_template (sort)');
         $this->addSql('CREATE INDEX ON project_task_item_template (task_type_id)');
         $this->addSql('CREATE INDEX ON project_task_item_template (name)');
+        $this->addSql('CREATE TRIGGER set_updated_at
+            BEFORE UPDATE ON project_task_item_template
+            FOR EACH ROW
+            EXECUTE PROCEDURE trigger_set_update();
+        ');
     }
 
     public function down(Schema $schema): void
@@ -267,11 +312,11 @@ final class Version20220630192739 extends AbstractMigration
         
         $this->addSql('DROP TABLE project_task_item');
         
-        $this->addSql('ALTER TABLE project_task drop foreign key project_task_ibfk_1');
+        $this->addSql('ALTER TABLE project_task DROP CONSTRAINT project_task_ibfk_1');
         
-        $this->addSql('ALTER TABLE project_task drop foreign key project_task_ibfk_2');
+        $this->addSql('ALTER TABLE project_task DROP CONSTRAINT project_task_ibfk_2');
         
-        $this->addSql('ALTER TABLE project_task drop foreign key project_task_ibfk_3');
+        $this->addSql('ALTER TABLE project_task DROP CONSTRAINT project_task_ibfk_3');
 
         $this->addSql('DROP TABLE project_task_item_template');
 
@@ -281,5 +326,6 @@ final class Version20220630192739 extends AbstractMigration
 
         $this->addSql('DROP TABLE project_task');
 
+        $this->addSql('DROP TYPE priority');
     }
 }

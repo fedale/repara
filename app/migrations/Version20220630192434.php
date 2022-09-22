@@ -26,9 +26,9 @@ final class Version20220630192434 extends AbstractMigration
             slug VARCHAR(100) NOT NULL,
             model_id SMALLINT DEFAULT NULL CHECK (model_id > 0),
             active SMALLINT DEFAULT 1 NOT NULL,
-            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            deleted_at TIMESTAMP DEFAULT NULL
+            created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            deleted_at timestamptz DEFAULT NULL
             )'
         );
         $this->addSql('CREATE INDEX ON asset (updated_at)');
@@ -37,6 +37,11 @@ final class Version20220630192434 extends AbstractMigration
         $this->addSql('CREATE INDEX ON asset (created_at)');
         $this->addSql('CREATE INDEX ON asset (name)');
         $this->addSql('CREATE UNIQUE INDEX ON asset (slug)');
+        $this->addSql('CREATE TRIGGER set_updated_at
+            BEFORE UPDATE ON asset
+            FOR EACH ROW
+            EXECUTE PROCEDURE trigger_set_update();
+        ');
         
         $this->addSql('CREATE TABLE asset_attachment (
             id SERIAL PRIMARY KEY NOT NULL,
@@ -48,9 +53,9 @@ final class Version20220630192434 extends AbstractMigration
             path VARCHAR(128) NOT NULL,
             filename VARCHAR(128) NOT NULL,
             active SMALLINT DEFAULT 1 NOT NULL,
-            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            deleted_at TIMESTAMP DEFAULT NULL
+            created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            deleted_at timestamptz DEFAULT NULL
             )'
         );
         $this->addSql('CREATE INDEX ON asset_attachment (created_at)');
@@ -63,16 +68,20 @@ final class Version20220630192434 extends AbstractMigration
         $this->addSql('CREATE INDEX ON asset_attachment (asset_id)');
         $this->addSql('CREATE INDEX ON asset_attachment (size)');
         $this->addSql('CREATE UNIQUE INDEX ON asset_attachment (slug)');
-        
+        $this->addSql('CREATE TRIGGER set_updated_at
+            BEFORE UPDATE ON asset_attachment
+            FOR EACH ROW
+            EXECUTE PROCEDURE trigger_set_update();
+        ');
 
         $this->addSql('CREATE TABLE asset_brand (
             id SMALLSERIAL PRIMARY KEY NOT NULL,
             name VARCHAR(128) NOT NULL,
             slug VARCHAR(128) NOT NULL,
             active SMALLINT DEFAULT 1 NOT NULL,
-            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            deleted_at TIMESTAMP DEFAULT NULL
+            created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            deleted_at timestamptz DEFAULT NULL
             )'
         );
         $this->addSql('CREATE INDEX ON asset_brand (active)');
@@ -80,6 +89,11 @@ final class Version20220630192434 extends AbstractMigration
         $this->addSql('CREATE INDEX ON asset_brand (updated_at)');
         $this->addSql('CREATE INDEX ON asset_brand (name)');
         $this->addSql('CREATE UNIQUE INDEX ON asset_brand (slug)');
+        $this->addSql('CREATE TRIGGER set_updated_at
+            BEFORE UPDATE ON asset_brand
+            FOR EACH ROW
+            EXECUTE PROCEDURE trigger_set_update();
+        ');
         
         $this->addSql('CREATE TABLE asset_model (
             id SMALLSERIAL PRIMARY KEY NOT NULL,
@@ -88,9 +102,9 @@ final class Version20220630192434 extends AbstractMigration
             brand_id SMALLINT DEFAULT NULL,
             type_id SMALLINT NOT NULL,
             active SMALLINT DEFAULT 1 NOT NULL,
-            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            deleted_at TIMESTAMP DEFAULT NULL
+            created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            deleted_at timestamptz DEFAULT NULL
             )'
         );
         $this->addSql('CREATE INDEX ON asset_model (type_id)');
@@ -100,17 +114,27 @@ final class Version20220630192434 extends AbstractMigration
         $this->addSql('CREATE INDEX ON asset_model (updated_at)');
         $this->addSql('CREATE INDEX ON asset_model (name)');
         $this->addSql('CREATE UNIQUE INDEX ON asset_model (slug)');
+        $this->addSql('CREATE TRIGGER set_updated_at
+            BEFORE UPDATE ON asset_model
+            FOR EACH ROW
+            EXECUTE PROCEDURE trigger_set_update();
+        ');
         
         $this->addSql('CREATE TABLE asset_type (
             id SMALLSERIAL PRIMARY KEY NOT NULL,
             name VARCHAR(64) NOT NULL,
             slug VARCHAR(64) NOT NULL,
             active SMALLINT DEFAULT 1 NOT NULL,
-            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            deleted_at TIMESTAMP DEFAULT NULL
+            created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            deleted_at timestamptz DEFAULT NULL
             )'
         );
+        $this->addSql('CREATE TRIGGER set_updated_at
+            BEFORE UPDATE ON asset_type
+            FOR EACH ROW
+            EXECUTE PROCEDURE trigger_set_update();
+        ');
         
         $this->addSql('CREATE INDEX ON asset_type (active)');
         $this->addSql('CREATE INDEX ON asset_type (created_at)');
@@ -129,12 +153,11 @@ final class Version20220630192434 extends AbstractMigration
             root INT DEFAULT NULL,
             lvl INT DEFAULT NULL,
             active SMALLINT DEFAULT 1 NOT NULL,
-            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            deleted_at TIMESTAMP DEFAULT NULL
+            created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            deleted_at timestamptz DEFAULT NULL
             )'
         );
-
         $this->addSql('CREATE INDEX ON asset_category (name)');
         $this->addSql('CREATE UNIQUE INDEX ON asset_category (slug)');
         $this->addSql('CREATE INDEX ON asset_category (lft)');
@@ -144,6 +167,11 @@ final class Version20220630192434 extends AbstractMigration
         $this->addSql('CREATE INDEX ON asset_category (lvl)');
         $this->addSql('CREATE INDEX ON asset_category (active)');
         $this->addSql('ALTER TABLE asset_category ADD CONSTRAINT asset_category_fk_1 FOREIGN KEY (parent_id) REFERENCES asset_category (id) ON DELETE CASCADE ON UPDATE NO ACTION');
+        $this->addSql('CREATE TRIGGER set_updated_at
+            BEFORE UPDATE ON asset_category
+            FOR EACH ROW
+            EXECUTE PROCEDURE trigger_set_update();
+        ');
     }
 
     public function down(Schema $schema): void

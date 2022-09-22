@@ -36,13 +36,13 @@ final class Version20220630192440 extends AbstractMigration
             unconfirmed_email VARCHAR(255) DEFAULT NULL,
             registration_ip VARCHAR(45) DEFAULT NULL,
             type_id SMALLINT DEFAULT 1 NOT NULL,
-            confirmed_at TIMESTAMP DEFAULT NULL,
-            last_login_at TIMESTAMP DEFAULT NULL,
-            blocked_at TIMESTAMP DEFAULT NULL,
+            confirmed_at timestamptz DEFAULT NULL,
+            last_login_at timestamptz DEFAULT NULL,
+            blocked_at timestamptz DEFAULT NULL,
             active SMALLINT DEFAULT 1 NOT NULL,
-            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            deleted_at TIMESTAMP DEFAULT NULL,
+            created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            deleted_at timestamptz DEFAULT NULL,
             PRIMARY KEY(id)
         )');
         $this->addSql('CREATE UNIQUE INDEX ON customer (email)');
@@ -62,9 +62,9 @@ final class Version20220630192440 extends AbstractMigration
             path VARCHAR(128) NOT NULL,
             filename VARCHAR(128) NOT NULL,
             active SMALLINT DEFAULT 1 NOT NULL,
-            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            deleted_at TIMESTAMP DEFAULT NULL,
+            created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            deleted_at timestamptz DEFAULT NULL,
             PRIMARY KEY(id)
         )');
         $this->addSql('CREATE INDEX ON customer_attachment  (active)');
@@ -86,9 +86,9 @@ final class Version20220630192440 extends AbstractMigration
             city VARCHAR(64) NOT NULL,
             country VARCHAR(32) NOT NULL DEFAULT \'Italia\',
             active SMALLINT DEFAULT 1 NOT NULL,
-            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            deleted_at TIMESTAMP DEFAULT NULL,
+            created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            deleted_at timestamptz DEFAULT NULL,
             PRIMARY KEY(id)
         )');
         $this->addSql('CREATE INDEX ON customer_location (city)');
@@ -108,9 +108,9 @@ final class Version20220630192440 extends AbstractMigration
             phone VARCHAR(32) DEFAULT NULL,
             email VARCHAR(32) DEFAULT NULL,
             active SMALLINT DEFAULT 1 NOT NULL,
-            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            deleted_at TIMESTAMP DEFAULT NULL,
+            created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            deleted_at timestamptz DEFAULT NULL,
             PRIMARY KEY(id)
         )');
         $this->addSql('CREATE INDEX ON customer_contact (active)');
@@ -128,9 +128,9 @@ final class Version20220630192440 extends AbstractMigration
             customer_location_id INT NOT NULL CHECK (customer_location_id > 0),
             name VARCHAR(64) NOT NULL,
             active SMALLINT DEFAULT 1 NOT NULL,
-            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            deleted_at TIMESTAMP DEFAULT NULL,
+            created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            deleted_at timestamptz DEFAULT NULL,
             PRIMARY KEY(id)
         )');
         $this->addSql('CREATE INDEX ON customer_location_place (created_at)');
@@ -139,7 +139,12 @@ final class Version20220630192440 extends AbstractMigration
         $this->addSql('CREATE INDEX ON customer_location_place (active)');
         $this->addSql('CREATE INDEX ON customer_location_place (customer_location_id)');
         $this->addSql('ALTER TABLE customer_location_place ADD CONSTRAINT customer_location_place_ibfk_1 FOREIGN KEY (customer_location_id) REFERENCES customer_location (id) ON DELETE NO ACTION ON UPDATE NO ACTION');
-        
+        $this->addSql('CREATE TRIGGER set_updated_at
+            BEFORE UPDATE ON customer_location_place
+            FOR EACH ROW
+            EXECUTE PROCEDURE trigger_set_update();
+        ');
+
         $this->addSql('CREATE TABLE customer_location_place_asset (
             id SERIAL NOT NULL,
             name VARCHAR(64) NOT NULL,
@@ -147,9 +152,9 @@ final class Version20220630192440 extends AbstractMigration
             customer_location_place_id INT NOT NULL CHECK (customer_location_place_id > 0),
             asset_id INT NOT NULL CHECK (asset_id > 0),
             active SMALLINT DEFAULT 1 NOT NULL,
-            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            deleted_at TIMESTAMP DEFAULT NULL,
+            created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            deleted_at timestamptz DEFAULT NULL,
             PRIMARY KEY(id)
         )');
         $this->addSql('CREATE INDEX ON customer_location_place_asset (updated_at)');
@@ -160,7 +165,12 @@ final class Version20220630192440 extends AbstractMigration
         $this->addSql('CREATE UNIQUE INDEX ON customer_location_place_asset (code)');
         $this->addSql('ALTER TABLE customer_location_place_asset ADD CONSTRAINT customer_location_place_asset_ibfk_1 FOREIGN KEY (customer_location_place_id) REFERENCES customer_location_place (id) ON DELETE NO ACTION ON UPDATE NO ACTION');
         $this->addSql('ALTER TABLE customer_location_place_asset ADD CONSTRAINT customer_location_place_asset_ibfk_2 FOREIGN KEY (asset_id) REFERENCES asset (id) ON DELETE NO ACTION ON UPDATE NO ACTION');
-        
+        $this->addSql('CREATE TRIGGER set_updated_at
+            BEFORE UPDATE ON customer_location_place_asset
+            FOR EACH ROW
+            EXECUTE PROCEDURE trigger_set_update();
+        ');
+
         $this->addSql('CREATE TABLE customer_location_place_asset_attachment (
             id SERIAL NOT NULL,
             customer_location_place_asset_id INT DEFAULT NULL CHECK (customer_location_place_asset_id > 0),
@@ -170,9 +180,9 @@ final class Version20220630192440 extends AbstractMigration
             path VARCHAR(128) NOT NULL,
             filename VARCHAR(128) NOT NULL,
             active SMALLINT DEFAULT 1 NOT NULL,
-            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            deleted_at TIMESTAMP DEFAULT NULL,
+            created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            deleted_at timestamptz DEFAULT NULL,
             PRIMARY KEY(id)
         )');
         $this->addSql('CREATE INDEX ON customer_location_place_asset_attachment (created_at)');
@@ -185,7 +195,12 @@ final class Version20220630192440 extends AbstractMigration
         $this->addSql('CREATE INDEX ON customer_location_place_asset_attachment (type)');
         $this->addSql('CREATE INDEX ON customer_location_place_asset_attachment (customer_location_place_asset_id)');
         $this->addSql('CREATE INDEX ON customer_location_place_asset_attachment (updated_at)');
-        
+        $this->addSql('CREATE TRIGGER set_updated_at
+            BEFORE UPDATE ON customer_location_place_asset_attachment
+            FOR EACH ROW
+            EXECUTE PROCEDURE trigger_set_update();
+        ');
+
         $this->addSql('CREATE TABLE customer_profile (
             id SERIAL NOT NULL,
             customer_id INT NOT NULL CHECK (customer_id > 0),
@@ -204,13 +219,16 @@ final class Version20220630192440 extends AbstractMigration
         $this->addSql('CREATE UNIQUE INDEX ON customer_profile (customer_id)');
         $this->addSql('ALTER TABLE customer_profile ADD CONSTRAINT customer_profile_ibfk_1 FOREIGN KEY (customer_id) REFERENCES customer (id) ON DELETE NO ACTION ON UPDATE NO ACTION');
 
-
         $this->addSql('CREATE TABLE customer_group (
             id SERIAL NOT NULL,
             name VARCHAR(255) DEFAULT NULL,
+            slug VARCHAR(255) NOT NULL,
+            sort SMALLINT NOT NULL DEFAULT 0,
             PRIMARY KEY(id)
         )');
         $this->addSql('CREATE INDEX ON customer_group (name)');
+        $this->addSql('CREATE INDEX ON customer_group (sort)');
+        $this->addSql('CREATE UNIQUE INDEX ON customer_group (slug)');
 
         $this->addSql('CREATE TABLE customer_group_assigned (
             id SERIAL NOT NULL,

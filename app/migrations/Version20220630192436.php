@@ -40,10 +40,10 @@ final class Version20220630192436 extends AbstractMigration
             registration_ip VARCHAR(45) DEFAULT NULL,
             type_id SMALLINT DEFAULT 1,
             active SMALLINT DEFAULT 1 NOT NULL,
-            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            deleted_at TIMESTAMP DEFAULT NULL,
-            last_login_at TIMESTAMP DEFAULT NULL,
+            created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            deleted_at timestamptz DEFAULT NULL,
+            last_login_at timestamptz DEFAULT NULL,
             PRIMARY KEY (id)
         )');
         $this->addSql('CREATE UNIQUE INDEX ON "user" (email)');
@@ -52,7 +52,12 @@ final class Version20220630192436 extends AbstractMigration
         $this->addSql('CREATE INDEX ON "user" (type_id)');
         $this->addSql('CREATE INDEX ON "user" (active)');
         $this->addSql('ALTER TABLE "user" ADD CONSTRAINT user_ibfk_1 FOREIGN KEY (type_id) REFERENCES user_type (id) ON DELETE NO ACTION ON UPDATE NO ACTION');
-        
+        $this->addSql('CREATE TRIGGER set_updated_at
+            BEFORE UPDATE ON "user"
+            FOR EACH ROW
+            EXECUTE PROCEDURE trigger_set_update();
+        ');
+
         $this->addSql('CREATE TABLE user_customer_assigned (
             id SERIAL NOT NULL,
             user_id INT NOT NULL,
@@ -61,9 +66,9 @@ final class Version20220630192436 extends AbstractMigration
             customer_location_place_id INT DEFAULT NULL,
             customer_location_place_asset_id INT DEFAULT NULL,
             active SMALLINT DEFAULT 1 NOT NULL,
-            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            deleted_at TIMESTAMP DEFAULT NULL,
+            created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            deleted_at timestamptz DEFAULT NULL,
             PRIMARY KEY (id)
         )');
         $this->addSql('CREATE INDEX ON user_customer_assigned (customer_location_place_asset_id)');
@@ -80,6 +85,11 @@ final class Version20220630192436 extends AbstractMigration
             )');
         $this->addSql('CREATE INDEX ON user_customer_assigned (created_at)');
         $this->addSql('CREATE INDEX ON user_customer_assigned (customer_location_id)');
+        $this->addSql('CREATE TRIGGER set_updated_at
+            BEFORE UPDATE ON user_customer_assigned
+            FOR EACH ROW
+            EXECUTE PROCEDURE trigger_set_update();
+        ');
         
         $this->addSql('CREATE TABLE user_attachment (
             id SERIAL NOT NULL,
@@ -90,9 +100,9 @@ final class Version20220630192436 extends AbstractMigration
             path VARCHAR(128) NOT NULL,
             filename VARCHAR(128) NOT NULL,
             active SMALLINT DEFAULT 1 NOT NULL,
-            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            deleted_at TIMESTAMP DEFAULT NULL,
+            created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            deleted_at timestamptz DEFAULT NULL,
             PRIMARY KEY (id)
         )');
         $this->addSql('CREATE INDEX ON user_attachment (user_id)');
@@ -105,15 +115,21 @@ final class Version20220630192436 extends AbstractMigration
         $this->addSql('CREATE INDEX ON user_attachment (filename)');
         $this->addSql('CREATE INDEX ON user_attachment (path)');
         $this->addSql('CREATE INDEX ON user_attachment (type)');
-        
+        $this->addSql('CREATE TRIGGER set_updated_at
+            BEFORE UPDATE ON user_attachment
+            FOR EACH ROW
+            EXECUTE PROCEDURE trigger_set_update();
+        ');
         
         $this->addSql('CREATE TABLE user_group (
             id SMALLSERIAL NOT NULL,
             name VARCHAR(64) NOT NULL,
             slug VARCHAR(64) NOT NULL,
+            sort SMALLINT NOT NULL DEFAULT 0,
             PRIMARY KEY (id)
         )');
         $this->addSql('CREATE INDEX ON user_group (name)');
+        $this->addSql('CREATE INDEX ON user_group (sort)');
         $this->addSql('CREATE UNIQUE INDEX ON user_group (slug)');
 
         $this->addSql('CREATE TABLE user_profile (
@@ -183,7 +199,7 @@ final class Version20220630192436 extends AbstractMigration
         
         $this->addSql('DROP TABLE user_role');
 
-        $this->addSql('DROP TABLE user');
+        $this->addSql('DROP TABLE "user"');
 
         $this->addSql('DROP TABLE user_type');
     }

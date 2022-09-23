@@ -8,7 +8,7 @@
     {% set has_filters = filters|length > 0 %}
     {% set num_results = entities|length %}
 
-
+{{ dump(ea.search) }}
 <div class="card">
     <div class="card-body border-bottom py-3">
       <div class="d-flex justify-content-between">
@@ -171,6 +171,25 @@
                     </tr>
                 
                 {% endblock table_head %}
+
+                {% block table_filter %}
+                    <tr>
+                        <th>
+                        First cell is empty
+                        </th>
+                        {% for field in entities|first.fields ?? [] %}
+                        {# {{ form_widget(field) }} #}
+                            <th class="">
+                                {# {{ form_widget(field) }} #}
+                                {# {{ dump(field) }} #}
+                            </th>
+                        {% endfor %}
+                        <th>
+                            <span class="">Last cell is empty!</span>
+                        </th>
+                    </tr>   
+                {% endblock table_filter %}
+
                 </thead>
             {% endif %}
 

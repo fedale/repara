@@ -25,7 +25,7 @@ class AccessControlRepository extends ServiceEntityRepository
         parent::__construct($registry, AccessControl::class);
     }
 
-    public function findActive($active = 1)
+    public function findActive($active = true)
     {
         return parent::findBy(['active' => $active], ['sort' => self::SORT_ASC]);
     }

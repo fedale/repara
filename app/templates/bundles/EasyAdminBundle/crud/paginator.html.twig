@@ -3,9 +3,9 @@
 {% trans_default_domain 'EasyAdminBundle' %}
 
     <p class="m-0 text-muted">
-        {% if render_detailed_pagination is defined ? render_detailed_pagination : true %}
+        {# {% if render_detailed_pagination is defined ? render_detailed_pagination : true %}
             {{ 'paginator.counter'|trans({'%results%': paginator.numResults|format, '%start%': paginator.startResults|format,'%end%': paginator.endResults|format })|raw }}
-        {% endif %}
+        {% endif %} #}
     </p>
 
     <ul class="pagination m-0 ms-auto {{ not paginator.hasPreviousPage ? 'first-page' }} {{ not paginator.hasNextPage ? 'last-page' }}">

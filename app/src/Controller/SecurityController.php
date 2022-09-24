@@ -42,6 +42,7 @@ class SecurityController extends AbstractController
                 'last_username' => $lastUsername, 
                 'error' => $error,
                 'csrf_token_intention' => 'authenticate',
+                'remember_me_enabled' => true,
             ]
         );
     }

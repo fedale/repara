@@ -3,6 +3,12 @@
     "license": "proprietary",
     "minimum-stability": "stable",
     "prefer-stable": true,
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/fedale/EasyAdminBundle"
+        }
+    ],
     "require": {
         "php": ">=8.1",
         "ext-ctype": "*",
@@ -11,7 +17,7 @@
         "doctrine/doctrine-bundle": "^2.7",
         "doctrine/doctrine-migrations-bundle": "^3.2",
         "doctrine/orm": "^2.12",
-        "easycorp/easyadmin-bundle": "^4.3",
+        "easycorp/easyadmin-bundle": "4.x-dev",
         "fakerphp/faker": "^1.19",
         "fresh/doctrine-enum-bundle": "^9.0",
         "lexik/jwt-authentication-bundle": "^2.16",

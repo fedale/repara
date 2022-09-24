@@ -30,10 +30,9 @@ security:
                 path: admin_logout
                 # where to redirect after logout
                 target: admin
-            # custom_authenticators:
-            #     - App\Security\BackendAuthenticator
-            # entry_point: App\Security\BackendAuthenticator
-
+            remember_me:
+                secret:   '%kernel.secret%' # required
+                lifetime: 604800 # 1 week in seconds
         
         api:
             pattern: ^/authentication

@@ -1,0 +1,27 @@
+{% block filter_form %}
+{# {{ dump(field) }} #}
+
+{# {{ form_start(field) }}
+{{ form_end(field) }} #}
+
+    {# <div class="form-group">
+        <div class="input-icon">
+                <input 
+                    class="form-control {{ app.request.get('query') is null ? 'is-blank' }}" 
+                    type="search" 
+                    name="query" 
+                    value="{{ app.request.get('query') ?? '' }}" 
+                    placeholder="{{ t('action.search', ea.i18n.translationParameters, 'EasyAdminBundle')|trans }}" 
+                    spellcheck="false" 
+                    autocorrect="off" 
+                >
+                <span class="input-icon-addon">
+                {% if app.request.get('query') %}
+                    <a href="{{ ea_url().unset('query') }}" class="content-search-reset">
+                        <i class="fas fa-fw fa-times"></i>
+                    </a>
+                {% endif %}
+            </span>
+        </div>
+    </div> #}
+{% endblock %}

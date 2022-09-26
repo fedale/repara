@@ -84,11 +84,15 @@
                     <div class="datagrid-filters d-inline-block">
                         {% block filters %}
                             {% set applied_filters = ea.request.query.all['filters']|default([])|keys %}
-                            <div class="btn-group action-filters">
-                                <a  href="#" data-href="{{ ea_url().setAction('renderFilters').includeReferrer() }}" 
+                            <div class="btn-group action-filters" {{ stimulus_controller('filter') }}>
+                                <a  href="#" 
+                                    data-href="{{ ea_url().setAction('renderFilters').includeReferrer() }}" 
                                     class="btn btn-secondary btn-labeled btn-labeled-right action-filters-button disabled {{ applied_filters ? 'action-filters-applied' }}" 
                                     data-bs-toggle="modal" 
                                     data-bs-target="#modal-filters"
+                                    data-filter-target="button"
+                                    data-action="filter#showModal"
+                                    data-filter-tm-value="dsadasd"
                                 >
                                     <i class="fa fa-filter fa-fw"></i> {{ t('filter.title', ea.i18n.translationParameters, 'EasyAdminBundle')|trans }}{% if applied_filters %} <span class="action-filters-button-count">({{ applied_filters|length }})</span>{% endif %}
                                 </a>

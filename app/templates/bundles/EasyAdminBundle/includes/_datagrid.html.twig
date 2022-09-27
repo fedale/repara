@@ -84,18 +84,26 @@
                     <div class="datagrid-filters d-inline-block">
                         {% block filters %}
                             {% set applied_filters = ea.request.query.all['filters']|default([])|keys %}
-                            <div class="btn-group action-filters" {{ stimulus_controller('filter') }}>
+                            <div class="btn-group action-filters" 
+                                {{ stimulus_controller('modal-form', {
+                                        formUrl: 'my URL',
+                                    }) 
+                                }}
+                                >
                                 <a  href="#" 
                                     data-href="{{ ea_url().setAction('renderFilters').includeReferrer() }}" 
                                     class="btn btn-secondary btn-labeled btn-labeled-right action-filters-button disabled {{ applied_filters ? 'action-filters-applied' }}" 
                                     data-bs-toggle="modal" 
-                                    data-bs-target="#modal-filters"
-                                    data-filter-target="button"
-                                    data-action="filter#showModal"
-                                    data-filter-tm-value="dsadasd"
+                                    {# data-bs-target="#modal-filters" #}
+                                    data-modal-form-target="button"
+                                    data-action="modal-form#openModal"
                                 >
                                     <i class="fa fa-filter fa-fw"></i> {{ t('filter.title', ea.i18n.translationParameters, 'EasyAdminBundle')|trans }}{% if applied_filters %} <span class="action-filters-button-count">({{ applied_filters|length }})</span>{% endif %}
                                 </a>
+                                {{ include('@EasyAdmin/includes/_modal.html.twig', {
+                                        modalTitle: 'Filters',
+                                    }) 
+                                }}
                                 {% if applied_filters %}
                                     <a href="{{ ea_url().unset('filters') }}" class="btn btn-secondary action-filters-reset">
                                         <i class="fa fa-close"></i>

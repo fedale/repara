@@ -578,7 +578,6 @@
     {% set applied_filters = ea.request.query.all()['filters']|default([])|keys %}
 
     {% for field in form %}
-    {{ dump(field) }}
         <div class="col-12">
             <div class="filter-field py-1 px-3 {% if loop.last %}pb-2{% endif %}" data-filter-property="{{ field.vars.name }}">
                 <div class="filter-heading" id="filter-heading-{{ loop.index }}">

@@ -86,15 +86,14 @@
                             {% set applied_filters = ea.request.query.all['filters']|default([])|keys %}
                             <div class="btn-group action-filters" 
                                 {{ stimulus_controller('modal-form', {
-                                        formUrl: 'my URL',
                                     }) 
                                 }}
-                                >
+                            >
                                 <a  href="#" 
                                     data-href="{{ ea_url().setAction('renderFilters').includeReferrer() }}" 
                                     class="btn btn-secondary btn-labeled btn-labeled-right action-filters-button disabled {{ applied_filters ? 'action-filters-applied' }}" 
-                                    data-bs-toggle="modal" 
-                                    {# data-bs-target="#modal-filters" #}
+                                    {# data-bs-toggle="modal" 
+                                    data-bs-target="#modal-filters" #}
                                     data-modal-form-target="button"
                                     data-action="modal-form#openModal"
                                 >

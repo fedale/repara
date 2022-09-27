@@ -16,10 +16,20 @@
             {{ modalContent|default('Loading...') }}
           </div>
           <div class="modal-footer">
-            <a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">
-              {{ cancelButton|default('Cancel') }}
+            <a 
+              href="#" 
+              class="btn btn-link link-secondary" 
+              data-bs-dismiss="modal"
+              data-action="modal-form#clearForm"
+            >
+              {{ cancelButton|default('Clear') }}
             </a>
-            <a href="#" class="btn btn-primary ms-auto" data-bs-dismiss="modal" data-action="modal-form#submitForm">
+            <a 
+              href="#" 
+              class="btn btn-primary ms-auto" 
+              data-bs-dismiss="modal" 
+              data-action="modal-form#submitForm"
+            >
               {{ submitButton|default('Submit') }}
             </a>
           </div>

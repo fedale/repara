@@ -3,14 +3,13 @@ import { Modal } from 'bootstrap';
 
 export default class extends Controller {
 
-    static targets = ['button', 'modal', 'modalBody'];
+    static targets = ['button', 'modal', 'modalBody', 'filterField'];
 
     static values = {
         url: String
     }
 
     connect () {
-        // console.log(this.urlValue);
         let filterButton = this.buttonTarget;
         filterButton.setAttribute('href', filterButton.getAttribute('data-href'));
         filterButton.removeAttribute('data-href');
@@ -29,10 +28,34 @@ export default class extends Controller {
                     // this.#createAutoCompleteFields();
                     // this.#createFilterToggles();
                 })
+                .catch((error) => { console.error(error); });
+        event.preventDefault();
     }
 
-    submitForm() {
+    submitForm(event) {
         const form = this.modalBodyTarget.getElementsByTagName('form')[0];
         form.submit();
     }
+
+    clearForm(event) {
+        this.filterFieldTargets.forEach( (filterField) => {
+            console.log(filterField);
+            filterField.closest('form').querySelectorAll(`input[name^="filters[${filterField.dataset.filterProperty}]"]`).forEach((filterFieldInput) => {
+                filterFieldInput.remove();
+            });
+        
+            filterField.remove();
+        });
+        const form = this.modalBodyTarget.getElementsByTagName('form')[0];
+        form.submit();
+    }
+
  }
+
+ const removeFilter = (filterField) => {
+    filterField.closest('form').querySelectorAll(`input[name^="filters[${filterField.dataset.filterProperty}]"]`).forEach((filterFieldInput) => {
+        filterFieldInput.remove();
+    });
+
+    filterField.remove();
+};

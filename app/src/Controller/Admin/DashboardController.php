@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Controller\Admin\Customer\CustomerCrudController;
 use App\Entity\Asset\Asset;
 use App\Entity\Asset\AssetBrand;
 use App\Entity\Asset\AssetCategory;
@@ -38,7 +39,7 @@ class DashboardController extends AbstractDashboardController
     {
         // redirect to some CRUD controller
         $routeBuilder = $this->container->get(AdminUrlGenerator::class);
-        return $this->redirect($routeBuilder->setController(WebsiteCrudController::class)->generateUrl());
+        return $this->redirect($routeBuilder->setController(CustomerCrudController::class)->generateUrl());
     }
     
     public function configureCrud(): Crud

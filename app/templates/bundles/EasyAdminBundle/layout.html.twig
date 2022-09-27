@@ -152,15 +152,15 @@
           <div class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
             <a href="{{ path(ea.dashboardRouteName) }}">
               {# <img src="./static/logo.svg" width="110" height="32" alt="Tabler" class="navbar-brand-image"> #}
-                <span class="logo-compact"><i class="fas fa-home"></i></span>
-                <span class="logo-custom">{{ ea.dashboardTitle|raw }}</span>
+                <span class="logo-compact" style="visibility: hidden"><i class="fas fa-home"></i></span>
+                <span class="logo-custom" style="visibility: hidden">{{ ea.dashboardTitle|raw }}</span>
             </a>
           </div>
 
           <div class="navbar-expand-md">
             <div class="collapse navbar-collapse" id="navbar-menu" data-controller="menu">
               <div class="navbar navbar-light">
-                {{ include(ea.templatePath('main_menu')) }}
+                {# {{ include(ea.templatePath('main_menu')) }} #}
               </div>
             </div>
           </div>

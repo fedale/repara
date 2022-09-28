@@ -33,7 +33,10 @@ export default class extends Controller {
     }
 
     submitForm(event) {
-        const form = this.modalBodyTarget.getElementsByTagName('form')[0];
+        const form = this.modalBodyTarget.querySelector('form');
+        console.log(this.filterFieldTargets);
+        // event.preventDefault();
+        console.log(form);
         form.submit();
     }
 

@@ -7,7 +7,6 @@ export default class extends Controller {
 
     connect() {
         this.checkboxTargets.forEach(filterCheckbox => {
-            console.log(filterCheckbox);
             filterCheckbox.addEventListener('change', () => {
                 const filterToggleLink = filterCheckbox.nextElementSibling;
                 const filterExpandedAttribute = filterCheckbox.nextElementSibling.getAttribute('aria-expanded');
@@ -17,8 +16,5 @@ export default class extends Controller {
                 }
             });
         });
-
-
     }
-
- }
+}

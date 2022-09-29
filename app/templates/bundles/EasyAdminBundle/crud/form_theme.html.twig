@@ -577,16 +577,11 @@
 {% block ea_filters_widget %}
     {% set applied_filters = ea.request.query.all()['filters']|default([])|keys %}
 
-    <div data-controller="filter-form">
     {% for field in form %}
         <div class="col-12">
-            <div 
-                class="filter-field py-1 px-3 {% if loop.last %}pb-2{% endif %}" 
-                data-filter-property="{{ field.vars.name }}"
-                data-modal-form-target="fiterField" 
-            >
+            <div class="filter-field py-1 px-3 {% if loop.last %}pb-2{% endif %}" data-filter-property="{{ field.vars.name }}">
                 <div class="filter-heading" id="filter-heading-{{ loop.index }}">
-                    <input type="checkbox" data-modal-form-target="filterField" class="filter-checkbox" {% if field.vars.name in applied_filters %}checked{% endif %}>
+                    <input type="checkbox" class="filter-checkbox" {% if field.vars.name in applied_filters %}checked{% endif %}>
                     <a data-bs-toggle="collapse" href="#filter-content-{{ loop.index }}" aria-expanded="{{ field.vars.name in applied_filters ? 'true' : 'false' }}" aria-controls="filter-content-{{ loop.index }}"
                         {% for name, value in field.vars.label_attr|default([]) %}{{ name }}="{{ value|e('html_attr') }}" {% endfor %}>
                         {{ field.vars.label|default(field.vars.name|humanize)|trans(domain = ea.i18n.translationDomain) }}
@@ -600,7 +595,6 @@
             </div>
         </div>
     {% endfor %}
-    </div>
 {% endblock ea_filters_widget %}
 
 {% block comparison_widget %}

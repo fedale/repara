@@ -77,43 +77,48 @@ CMD ["php-fpm"]
 
 
 # "database" stage
-# https://github.com/jbergstroem/mariadb-alpine/blob/master/Dockerfile
-FROM alpine:latest as database
+FROM postgres:${POSTGRES_VERSION:-14.5}-bullseye AS database
 
-RUN apk update && apk add mariadb mariadb-client mariadb-server-utils pwgen && rm -f /var/cache/apk/*
+EXPOSE 5432
+# RUN apk update && apk add mariadb mariadb-client mariadb-server-utils pwgen && rm -f /var/cache/apk/*
 
-RUN mkdir /run/mysqld && \
-  chown mysql:mysql /etc/my.cnf.d/ /run/mysqld 
+# RUN mkdir /run/mysqld && \
+#   chown mysql:mysql /etc/my.cnf.d/ /run/mysqld 
 
-#COPY --chown=mysql:mysql docker/quote_database_backup.tar.gz /tmp/backup.tar.gz
+# #COPY --chown=mysql:mysql docker/quote_database_backup.tar.gz /tmp/backup.tar.gz
 
-COPY database/script.sh /run.sh
+# # COPY database/script.sh /run.sh
 
-COPY --chown=mysql:mysql database/mariadb-server.cnf /tmp
+# # COPY --chown=mysql:mysql database/mariadb-server.cnf /tmp
 
-COPY --chown=mysql:mysql database/docker-entrypoint-initdb.d /docker-entrypoint-initdb.d
+# # COPY --chown=mysql:mysql database/docker-entrypoint-initdb.d /docker-entrypoint-initdb.d
 
-VOLUME ["/var/lib/mysql"]
+# VOLUME ["/var/lib/mysql"]
 
-ENTRYPOINT ["sh", "/run.sh"]
+# ENTRYPOINT ["sh", "/run.sh"]
 
-EXPOSE 3306
+# EXPOSE 3306
 
 # "nginx" stage
-FROM nginx:stable as nginx
-RUN apt update && apt install -y vim
-COPY frontend /var/www/frontend
-COPY api/public /srv/api/public
+FROM nginx:${NGINX_VERSION:-1.23} AS nginx
+RUN apt update && apt install -y vim snapd 
 RUN rm -rfv /etc/conf.d/default.conf
+# COPY frontend /var/www/frontend
+COPY app/public /srv/api/public
 COPY nginx/config/nginx.conf /etc/nginx/nginx.conf
-COPY nginx/config/frontend_prod.conf /etc/nginx/conf.d/frontend.conf
-COPY nginx/config/api.conf /etc/nginx/conf.d/api.conf
-COPY nginx/config/certificate /etc/nginx/conf.d/certificate
+# COPY nginx/config/frontend_prod.conf /etc/nginx/conf.d/frontend.conf
+# COPY nginx/config/api.conf /etc/nginx/conf.d/api.conf
+# RUN snap install core
+# RUN snap refresh core
+# RUN snap install --classic certbot
+# RUN ln -s /snap/bin/certbot /usr/bin/certbot
+# RUN certbot certonly --nginx
+EXPOSE 80:443
+ENTRYPOINT nginx -g 'daemon off;'
 
 # "caddy" stage
 # depends on the "php" stage above
 FROM caddy:${CADDY_VERSION}-builder-alpine AS api_caddy_builder
-
 RUN xcaddy build \
     --with github.com/dunglas/mercure \
 	--with github.com/dunglas/mercure/caddy \
@@ -122,9 +127,7 @@ RUN xcaddy build \
     
 #'caddy' stage
 FROM caddy:${CADDY_VERSION} AS caddy
-
 WORKDIR /srv/api
-
 COPY --from=dunglas/mercure:v0.11 /srv/public /srv/mercure-assets/
 COPY --from=api_caddy_builder /usr/bin/caddy /usr/bin/caddy
 COPY --from=api /srv/api/public public/

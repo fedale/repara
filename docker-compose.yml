@@ -3,7 +3,7 @@ version: '3.8'
 services:
 
   database:
-    image: postgres:${POSTGRES_VERSION:-14.5}-bullseye
+    image: postgres:custom
     # command: --default-authentication-plugin=mysql_native_password
     restart: always
     environment:
@@ -11,17 +11,8 @@ services:
       # You should definitely change the password in production
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ChangeMe}
       POSTGRES_USER: ${POSTGRES_USER:-symfony}
-
-      # MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD} 
-      # MYSQL_HOST: ${MYSQL_HOST}
-      # MYSQL_DATABASE: ${MYSQL_DATABASE}
-      # MYSQL_USER: ${MYSQL_USER}
-      # MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-    ports:
-      - "5432:5432"
     volumes:
-      # - db_data:/var/lib/mysql
-      - db_data2:/var/lib/postgresql/data:rw
+      - db_data:/var/lib/postgresql/data:rw
 
   adminer:
     image: adminer
@@ -30,29 +21,41 @@ services:
       - 8080:8080
 
   app:
-    ports:
-      - '9000:9000'
-    volumes:
-      - ./app:/srv/app
     environment: 
     - APP_NAME=${APP_NAME}
     - APP_ENV=${APP_ENV}
-    - DATABASE_URL=mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@database:3306/${MYSQL_DATABASE}
     - APP_LOCALE=${APP_LOCALE}
     - DEFAULT_TIMEZONE=${DEFAULT_TIMEZONE}
     depends_on:
       - database
 
   nginx:
-    image: nginx:stable-alpine
+    image: danieldent/nginx-ssl-proxy
+    restart: always
+    environment:
+      UPSTREAM: 127.0.0.1:8080
+      SERVERNAME: orson
+      EXTRANAMES: www.test.example.com,test2.example.com
     ports:
-      - '80:80'
+      - "80:80"
+      - "443:443"
     volumes:
-      - ./app:/var/www/app
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
-    depends_on:
-      - app
-      - database
+      - "/etc/letsencrypt"
+    # image: nginx:1.23
+    # restart: always
+    # ports:
+    #   - '80:80'
+    #   - '443:443'
+    # depends_on:
+    #   - app
+    #   - database
+    # volumes:
+    #    - ./certbot/www/:/srv/certbot/:ro
+
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - ./certbot/www/:/srv/certbot/:rw
 
 volumes:
-  db_data2:
+  db_data:

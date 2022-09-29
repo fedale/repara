@@ -29,18 +29,34 @@ services:
     depends_on:
       - database
 
+  # https://pentacent.medium.com/nginx-and-lets-encrypt-with-docker-in-less-than-5-minutes-b4b8a60d3a71
   nginx:
-    image: danieldent/nginx-ssl-proxy
-    restart: always
-    environment:
-      UPSTREAM: 127.0.0.1:8080
-      SERVERNAME: orson
-      EXTRANAMES: www.test.example.com,test2.example.com
+    image: nginx:1.15-alpine
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - "/etc/letsencrypt"
+      - ./data/nginx:/etc/nginx/conf.d
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    # image: danieldent/nginx-ssl-proxy
+    # restart: always
+    # environment:
+    #   UPSTREAM: 127.0.0.1:8080
+    #   SERVERNAME: orson
+    #   # EXTRANAMES: www.test.example.com,test2.example.com
+    # ports:
+    #   - "80:80"
+    #   - "443:443"
+    # volumes:
+    #   - "/etc/letsencrypt"
     # image: nginx:1.23
     # restart: always
     # ports:

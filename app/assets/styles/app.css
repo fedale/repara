@@ -1,9 +1,26 @@
-@import "@tabler/core/dist/css/tabler.min.css";
-/* @import '~tabler/dist/css/tabler-buttons'; 
-@import '~tabler/dist/css/tabler-payments'; */
-/* @import "~bootstrap/dist/css/bootstrap.css"; */
 
-@import '~@fortawesome/fontawesome-free/css/all.css';
+.wrapper {
+    grid-template-columns: 100% auto;
+}
+
+body:not(.ea-content-width-full) .content-wrapper {
+    /* max-width: var(--body-max-width); */
+    max-width: 100%;
+}
+
+.content-top {
+    justify-content: normal;
+}
+
+@media (min-width: 992px) {
+    .responsive-header {
+        display: flex;
+    }
+    .wrapper {
+        display: blocK
+    }
+}
+
 
 header.navbar .navbar-brand {
     font-size: 2em;

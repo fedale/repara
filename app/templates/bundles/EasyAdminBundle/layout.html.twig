@@ -179,7 +179,8 @@
                     {% endblock responsive_header %}
                 </div>
 
-                <div class="sidebar-wrapper">
+                {# Commented by DDM #}
+                {# <div class="sidebar-wrapper">
                     <aside class="sidebar">
                         {% block sidebar %}
                             <header class="main-header">
@@ -206,7 +207,7 @@
 
                         <div id="sidebar-resizer-handler" class="resizer-handler resizer-handler-left"></div>
                     </aside>
-                </div>
+                </div> #}
 
                 <section class="main-content">
                     {% set has_search = ea.crud is not null and ea.crud.isSearchEnabled %}

@@ -132,4 +132,3 @@ COPY --from=dunglas/mercure:v0.11 /srv/public /srv/mercure-assets/
 COPY --from=api_caddy_builder /usr/bin/caddy /usr/bin/caddy
 COPY --from=api /srv/api/public public/
 COPY caddy/Caddyfile /etc/caddy/Caddyfile
-

@@ -28,7 +28,8 @@
     {% endblock %}
 
     {% block head_javascript %}
-        <script src="{{ asset('app.js', ea.assets.defaultAssetPackageName) }}"></script>
+   
+        {# <script src="{{ asset('app.js', ea.assets.defaultAssetPackageName) }}"></script> #}
     {% endblock head_javascript %}
 
     {% block configured_javascripts %}
@@ -98,16 +99,45 @@
                 <li><div class="dropdown-divider"></div></li>
                 <li><a href="#" class="dropdown-item">Settings</a></li>
                 <li><div class="dropdown-divider"></div></li>
-                <li>{{ 'settings.appearance.choose'|trans(domain = 'EasyAdminBundle') }}
-                    <a href="#" class="dropdown-item" data-ea-color-scheme="light">
-                        <i class="far fa-sun"></i>
-                    </a> | 
-                    <a href="#" class="dropdown-item" data-ea-color-scheme="dark">
-                        <i class="far fa-moon"></i>
-                    </a> |
-                    <a href="#" class="dropdown-item active" data-ea-color-scheme="auto">
-                        <i class="fas fa-desktop"></i>
-                    </a>
+                <li>
+                    <div 
+                        class="btn-group btn-group-sm d-flex justify-content-start align-items-cente" 
+                        role="group" 
+                        aria-label="Choose theme" 
+                        data-controller="page-color-scheme"
+                    >
+                        <span>{{ 'settings.appearance.choose'|trans(domain = 'EasyAdminBundle') }}</span>
+                        <a 
+                            href="#" 
+                            class="dropdown-item" 
+                            title="{{ 'settings.appearance.light'|trans(domain = 'EasyAdminBundle') }}" 
+                            data-ea-color-scheme="light" 
+                            data-action="page-color-scheme#changeScheme"
+                            data-page-color-scheme-target="schemeSelector"
+                        >
+                            <i class="far fa-sun"></i>
+                        </a>
+                        <a 
+                            href="#" 
+                            class="dropdown-item" 
+                            data-ea-color-scheme="dark" 
+                            title="{{ 'settings.appearance.dark'|trans(domain = 'EasyAdminBundle') }}" 
+                            data-action="page-color-scheme#changeScheme"
+                            data-page-color-scheme-target="schemeSelector"
+                        >
+                            <i class="far fa-moon"></i>
+                        </a>
+                        <a 
+                            href="#" 
+                            class="dropdown-item" 
+                            data-ea-color-scheme="auto" 
+                            title="{{ 'settings.appearance.auto'|trans(domain = 'EasyAdminBundle') }}" 
+                            data-action="page-color-scheme#changeScheme"
+                            data-page-color-scheme-target="schemeSelector"
+                        >
+                            <i class="fas fa-desktop"></i>
+                        </a>
+                    </div>
                 </li>
 
                 {% block user_menu %}

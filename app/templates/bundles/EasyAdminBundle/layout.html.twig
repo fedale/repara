@@ -82,87 +82,7 @@
 
         {% set impersonator_permission = constant('Symfony\\Component\\Security\\Core\\Authorization\\Voter\\AuthenticatedVoter::IS_IMPERSONATOR') is defined ? 'IS_IMPERSONATOR' : 'ROLE_PREVIOUS_ADMIN' %}
 
-        {% set user_menu_dropdown %}
-        <div class="nav-item dropdown">
-              <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Open user menu">
-                <span class="avatar avatar-sm" style="background-image: url(./static/avatars/000m.jpg)"></span>
-                <div class="d-none d-xl-block ps-2">
-                  <div>{{ app.user.profile }}</div>
-                  <div class="mt-1 small text-muted">{{ app.user.email }}</div>
-                </div>
-              </a>
-              <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                <li><a href="#" class="dropdown-item">Set status</a></li>
-                <li><a href="#" class="dropdown-item">Profile & account</a></li>
-                <li><a href="#" class="dropdown-item">Feedback</a></li>
-                <li><div class="dropdown-divider"></div></li>
-                <li><a href="#" class="dropdown-item">Settings</a></li>
-                {% if ea.dashboardHasDarkModeEnabled %}
-                    <li><div class="dropdown-divider"></div></li>
-                    <li>
-                        <div 
-                            class="btn-group btn-group-sm d-flex justify-content-start align-items-cente" 
-                            role="group" 
-                            aria-label="Choose theme" 
-                            data-controller="page-color-scheme"
-                        >
-                            <span>{{ 'settings.appearance.choose'|trans(domain = 'EasyAdminBundle') }}</span>
-                            <a 
-                                href="#" 
-                                class="dropdown-item" 
-                                title="{{ 'settings.appearance.light'|trans(domain = 'EasyAdminBundle') }}" 
-                                data-ea-color-scheme="light" 
-                                data-action="page-color-scheme#changeScheme"
-                                data-page-color-scheme-target="schemeSelector"
-                            >
-                                <i class="far fa-sun"></i>
-                            </a>
-                            <a 
-                                href="#" 
-                                class="dropdown-item" 
-                                data-ea-color-scheme="dark" 
-                                title="{{ 'settings.appearance.dark'|trans(domain = 'EasyAdminBundle') }}" 
-                                data-action="page-color-scheme#changeScheme"
-                                data-page-color-scheme-target="schemeSelector"
-                            >
-                                <i class="far fa-moon"></i>
-                            </a>
-                            <a 
-                                href="#" 
-                                class="dropdown-item" 
-                                data-ea-color-scheme="auto" 
-                                title="{{ 'settings.appearance.auto'|trans(domain = 'EasyAdminBundle') }}" 
-                                data-action="page-color-scheme#changeScheme"
-                                data-page-color-scheme-target="schemeSelector"
-                            >
-                                <i class="fas fa-desktop"></i>
-                            </a>
-                        </div>
-                    </li>
-                {% endif %}
-                
-                {% block user_menu %}
-                    {% if ea.userMenu.items|length > 0 %}
-                        <li><hr class="dropdown-divider"></li>
-                        {% for item in ea.userMenu.items %}
-                            <li>
-                                {% if item.isMenuSection and not loop.first %}
-                                    <hr class="dropdown-divider">
-                                {% elseif not item.isMenuSection %}
-                                    <a href="{{ item.linkUrl }}" class="dropdown-item user-action {{ item.cssClass }}"
-                                       target="{{ item.linkTarget }}" rel="{{ item.linkRel }}"
-                                       referrerpolicy="origin-when-cross-origin">
-                                        {% if item.icon is not empty %}<i class="fa fa-fw {{ item.icon }}"></i>{% endif %}
-                                        <span>{{ item.label|trans }}</span>
-                                    </a>
-                                {% endif %}
-                            </li>
-                        {% endfor %}
-                    {% endif %}
-                {% endblock user_menu %}
-            </ul>
-            </div>
-        {% endset %}
+        
 
         <div class="wrapper">
             {% block wrapper %}
@@ -172,7 +92,7 @@
                             <i class="fa fa-fw fa-bars"></i>
                         </button> #}
 
-                        <div id="responsive-header-logo" class="col-2 text-truncate">
+                        <div id="responsive-header-logo" class="logo">
                             {% block responsive_header_logo %}
                                 <a class="responsive-logo" title="{{ ea.dashboardTitle|striptags }}" href="{{ path(ea.dashboardRouteName) }}">
                                     {{ ea.dashboardTitle|raw }}
@@ -180,35 +100,120 @@
                             {% endblock responsive_header_logo %}
                         </div>
 
-                        <nav class="col-8 d-none d-lg-block">
+                        <nav class="main-menu">
                             {% block main_menu_wrapper %}
                                 {{ include(ea.templatePath('main_menu')) }}
                             {% endblock main_menu_wrapper %}
                         </nav>
 
-                        <div class="col-2 dropdown user-menu-wrapper {{ is_granted(impersonator_permission) ? 'user-is-impersonated' }} ms-auto">
-                            <div>
-                                <a class="user-details" type="button" data-bs-toggle="dropdown" data-bs-offset="0,5" aria-expanded="false">
-                                    {# to make the site design consistent, always display the user avatar in responsive header
-                                    and hide the user name (because there's no space left) regardless of the user config #}
-                                    {% if ea.userMenu.avatarDisplayed %}
-                                        {% if null == ea.userMenu.avatarUrl %}
-                                            <span class="user-avatar">
-                                                <span class="fa-stack">
-                                                    <i class="user-avatar-icon-background fas fa-square fa-stack-2x"></i>
-                                                    <i class="user-avatar-icon-foreground {{ ea.user is not null ? 'fa fa-user' : 'fas fa-user-slash' }} fa-stack-1x fa-inverse"></i>
-                                                </span>
-                                            </span>
-                                        {% else %}
-                                            <img class="user-avatar" src="{{ ea.userMenu.avatarUrl }}" />
-                                        {% endif %}
-                                    {% else %}
-                                        <i class="user-avatar fa fa-fw {{ ea.user is not null ? 'fa-user' : 'fa-user-times' }}"></i>
-                                    {% endif %}
-                                </a>
-                            </div>
+                        <div class="user-menu nav-item dropdown {{ is_granted(impersonator_permission) ? 'user-is-impersonated' }}">
                             
-                            {{ user_menu_dropdown }}
+                            {# <div class="nav-item dropdown" > #}
+
+                                {# <div>
+                                    <a class="user-details" type="button" data-bs-toggle="dropdown" data-bs-offset="0,5" aria-expanded="false">
+                                        {% if ea.userMenu.avatarDisplayed %}
+                                            {% if null == ea.userMenu.avatarUrl %}
+                                                <span class="user-avatar">
+                                                    <span class="fa-stack">
+                                                        <i class="user-avatar-icon-background fas fa-square fa-stack-2x"></i>
+                                                        <i class="user-avatar-icon-foreground {{ ea.user is not null ? 'fa fa-user' : 'fas fa-user-slash' }} fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </span>
+                                            {% else %}
+                                                <img class="user-avatar" src="{{ ea.userMenu.avatarUrl }}" />
+                                            {% endif %}
+                                        {% else %}
+                                            <i class="user-avatar fa fa-fw {{ ea.user is not null ? 'fa-user' : 'fa-user-times' }}"></i>
+                                        {% endif %}
+                                    </a>
+                                </div>
+
+                                <div> #}
+                                    <div class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Open user menu">
+                                       <span class="user-avatar">
+                                            <span class="fa-stack">
+                                                <i class="user-avatar-icon-background fas fa-square fa-stack-2x"></i>
+                                                <i class="user-avatar-icon-foreground {{ ea.user is not null ? 'fa fa-user' : 'fas fa-user-slash' }} fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </span>
+                                        <div class="">
+                                        {{ app.user.profile }}<br>
+                                        <span class="mt-1 small text-muted">{{ app.user.email }}</span>
+                                        </div>
+                                    </div>
+                                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                                        <li><a href="#" class="dropdown-item">Set status</a></li>
+                                        <li><a href="#" class="dropdown-item">Profile & account</a></li>
+                                        <li><a href="#" class="dropdown-item">Feedback</a></li>
+                                        <li><div class="dropdown-divider"></div></li>
+                                        <li><a href="#" class="dropdown-item">Settings</a></li>
+                                        {% if ea.dashboardHasDarkModeEnabled %}
+                                            <li><div class="dropdown-divider"></div></li>
+                                            <li>
+                                                <div 
+                                                    class="btn-group btn-group-sm d-flex justify-content-start align-items-cente" 
+                                                    role="group" 
+                                                    aria-label="Choose theme" 
+                                                    data-controller="page-color-scheme"
+                                                >
+                                                    <span>{{ 'settings.appearance.choose'|trans(domain = 'EasyAdminBundle') }}</span>
+                                                    <a 
+                                                        href="#" 
+                                                        class="dropdown-item" 
+                                                        title="{{ 'settings.appearance.light'|trans(domain = 'EasyAdminBundle') }}" 
+                                                        data-ea-color-scheme="light" 
+                                                        data-action="page-color-scheme#changeScheme"
+                                                        data-page-color-scheme-target="schemeSelector"
+                                                    >
+                                                        <i class="far fa-sun"></i>
+                                                    </a>
+                                                    <a 
+                                                        href="#" 
+                                                        class="dropdown-item" 
+                                                        data-ea-color-scheme="dark" 
+                                                        title="{{ 'settings.appearance.dark'|trans(domain = 'EasyAdminBundle') }}" 
+                                                        data-action="page-color-scheme#changeScheme"
+                                                        data-page-color-scheme-target="schemeSelector"
+                                                    >
+                                                        <i class="far fa-moon"></i>
+                                                    </a>
+                                                    <a 
+                                                        href="#" 
+                                                        class="dropdown-item" 
+                                                        data-ea-color-scheme="auto" 
+                                                        title="{{ 'settings.appearance.auto'|trans(domain = 'EasyAdminBundle') }}" 
+                                                        data-action="page-color-scheme#changeScheme"
+                                                        data-page-color-scheme-target="schemeSelector"
+                                                    >
+                                                        <i class="fas fa-desktop"></i>
+                                                    </a>
+                                                </div>
+                                            </li>
+                                        {% endif %}
+                                        
+                                        {% block user_menu %}
+                                            {% if ea.userMenu.items|length > 0 %}
+                                                <li><hr class="dropdown-divider"></li>
+                                                {% for item in ea.userMenu.items %}
+                                                    <li>
+                                                        {% if item.isMenuSection and not loop.first %}
+                                                            <hr class="dropdown-divider">
+                                                        {% elseif not item.isMenuSection %}
+                                                            <a href="{{ item.linkUrl }}" class="dropdown-item user-action {{ item.cssClass }}"
+                                                            target="{{ item.linkTarget }}" rel="{{ item.linkRel }}"
+                                                            referrerpolicy="origin-when-cross-origin">
+                                                                {% if item.icon is not empty %}<i class="fa fa-fw {{ item.icon }}"></i>{% endif %}
+                                                                <span>{{ item.label|trans }}</span>
+                                                            </a>
+                                                        {% endif %}
+                                                    </li>
+                                                {% endfor %}
+                                            {% endif %}
+                                        {% endblock user_menu %}
+                                    </ul>
+                                {# </div> #}
+                            {# </div> #}
                         </div>
 
                         

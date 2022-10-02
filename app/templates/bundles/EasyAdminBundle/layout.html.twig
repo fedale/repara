@@ -28,7 +28,7 @@
     {% endblock %}
 
     {% block head_javascript %}
-        <script src="{{ asset('app.js', ea.assets.defaultAssetPackageName) }}"></script>
+        {# <script src="{{ asset('app.js', ea.assets.defaultAssetPackageName) }}"></script> #}
     {% endblock head_javascript %}
 
     {% block configured_javascripts %}
@@ -50,7 +50,7 @@
 {% block body %}
     <body
         id="{% block body_id %}{% endblock %}"
-        class="ea {% block body_class %}{% endblock %}"
+        class="ea {% block body_class %}{% endblock %} ea-content-width-full"
         data-ea-content-width="{{ ea.crud.contentWidth ?? ea.dashboardContentWidth ?? 'normal' }}"
         data-ea-sidebar-width="{{ ea.crud.sidebarWidth ?? ea.dashboardSidebarWidth ?? 'normal' }}"
         data-ea-dark-scheme-is-enabled="{{ ea.dashboardHasDarkModeEnabled ? 'true' : 'false' }}"
@@ -166,11 +166,11 @@
 
         <div class="wrapper">
             {% block wrapper %}
-                <header class="responsive-header row">
+                <div class="page-header">
                     {% block responsive_header %}
-                        <button id="navigation-toggler" type="button" aria-label="Toggle navigation">
+                        {# <button id="navigation-toggler" type="button" aria-label="Toggle navigation">
                             <i class="fa fa-fw fa-bars"></i>
-                        </button>
+                        </button> #}
 
                         <div id="responsive-header-logo" class="col-2 text-truncate">
                             {% block responsive_header_logo %}
@@ -213,7 +213,7 @@
 
                         
                     {% endblock responsive_header %}
-                </header>
+                </div>
 
                 {# Commented by DDM #}
                 {# <div class="sidebar-wrapper">
@@ -245,7 +245,7 @@
                     </aside>
                 </div> #}
 
-                <section class="main-content">
+                <div class="main-content">
                     {# Commented by DDM #}
                     {# {% set has_search = ea.crud is not null and ea.crud.isSearchEnabled %} #}
 
@@ -369,21 +369,27 @@
                                     {% block main %}{% endblock %}
                                 </section>
 
-                                {% block content_footer_wrapper %}
-                                    {% set content_footer = block('content_footer') is defined ? block('content_footer') : '' %}
-                                    {% if content_footer is not empty %}
-                                        <section class="content-footer">
-                                            {{ content_footer }}
-                                        </section>
-                                    {% endif %}
-                                {% endblock %}
+                      
                             </article>
                         {% endblock content %}
 
                         <div id="content-resizer-handler" class="resizer-handler resizer-handler-right"></div>
                     </div>
-                </section>
-            {% endblock wrapper %}
+                </div>
+
+                <div class="page-footer">
+                Footer footer footer
+                    {% block content_footer_wrapper %}
+                            {% set content_footer = block('content_footer') is defined ? block('content_footer') : '' %}
+                            {% if content_footer is not empty %}
+                                <section class="content-footer">
+                                    {{ content_footer }}
+                                </section>
+                            {% endif %}
+                        {% endblock %}
+                    {% endblock wrapper %}
+                </div>
+
         </div>
     {% endblock wrapper_wrapper %}
 

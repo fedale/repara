@@ -27,8 +27,10 @@ div.page-header {
     grid-column-gap: 0px;
     grid-row-gap: 0px;
     align-items: center;
-    /* background: lightgray; */
+    /* background: var(--true-gray-700); */
     padding: 0 1em;
+    background: var(--responsive-header-bg);
+    box-shadow: inset 0 -1px 0 var(--responsive-header-border-color);
 }
 
 div.page-header > div.logo { 
@@ -78,11 +80,19 @@ nav ul.menu > li.nav-item.active,
 
 #navbar-menu ul.menu > li.nav-item.active > a {
     color: var(--tblr-light);
-    
 }
 
-a.nav-link.active {
-    background: var(--bs-link-hover-color);
+.dropdown.active a.nav-link.active {
+    background: var(--bs-dropdown-link-active-bg); 
+    font-weight: bold;
+}
+
+.page-color-scheme-selector .dropdown-item.active i, 
+.page-color-scheme-selector .dropdown-item.active  {
+    background: var(--dropdown-link-hover-bg);
+    color: var(--bs-dropdown-link-active-bg) !important; 
+    text-decoration: none;
+    font-weight: bold;
 }
 
 
@@ -109,6 +119,9 @@ a.nav-link.active {
     text-align: right;
 }
 
+.user-menu:hover {
+    cursor: pointer;
+}
 
 /* ###### 6.6 Navbar  ###### */
 @media (max-width: 768px) {

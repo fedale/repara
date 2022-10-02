@@ -15,7 +15,8 @@ return [
             'light' => 'chiaro',
             'dark' => 'scuro',
             'auto' => 'sistema',
-            'choose' => 'Sceglie:'
+            'choose' => 'Scegli:',
+            'theme' => 'Tema:'
         ],
     ],
 ];

@@ -100,7 +100,7 @@
                             {% endblock responsive_header_logo %}
                         </div>
 
-                        <nav class="main-menu">
+                        <nav class="main-menu d-none d-lg-block">
                             {% block main_menu_wrapper %}
                                 {{ include(ea.templatePath('main_menu')) }}
                             {% endblock main_menu_wrapper %}
@@ -137,7 +137,7 @@
                                                 <i class="user-avatar-icon-foreground {{ ea.user is not null ? 'fa fa-user' : 'fas fa-user-slash' }} fa-stack-1x fa-inverse"></i>
                                             </span>
                                         </span>
-                                        <div class="">
+                                        <div class="d-none d-lg-block">
                                         {{ app.user.profile }}<br>
                                         <span class="mt-1 small text-muted">{{ app.user.email }}</span>
                                         </div>
@@ -152,12 +152,12 @@
                                             <li><div class="dropdown-divider"></div></li>
                                             <li>
                                                 <div 
-                                                    class="btn-group btn-group-sm d-flex justify-content-start align-items-cente" 
+                                                    class="btn-group btn-group-sm page-color-scheme-selector align-items-center text-right" 
                                                     role="group" 
                                                     aria-label="Choose theme" 
                                                     data-controller="page-color-scheme"
                                                 >
-                                                    <span>{{ 'settings.appearance.choose'|trans(domain = 'EasyAdminBundle') }}</span>
+                                                    <span>{{ 'settings.appearance.theme'|trans(domain = 'EasyAdminBundle') }}</span>
                                                     <a 
                                                         href="#" 
                                                         class="dropdown-item" 

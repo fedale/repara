@@ -21,7 +21,8 @@
         {% endblock %}
 
         {% block head_javascript %}
-            <script src="{{ asset('app.js', constant('EasyCorp\\Bundle\\EasyAdminBundle\\Asset\\AssetPackage::PACKAGE_NAME')) }}"></script>
+         {{ encore_entry_script_tags('app') }}
+            {# <script src="{{ asset('app.js', constant('EasyCorp\\Bundle\\EasyAdminBundle\\Asset\\AssetPackage::PACKAGE_NAME')) }}"></script> #}
         {% endblock head_javascript %}
     </head>
 

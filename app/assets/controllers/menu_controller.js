@@ -8,6 +8,7 @@ export default class extends Controller {
     connect() {
        let dropdowns = this.dropdownTargets;
        dropdowns.map( (dropdown) => {
+        console.log(dropdown);
             for (const child of dropdown.children) {
                 if (child.classList.contains('active')) {
                     dropdown.parentElement.classList.add('active')  ;

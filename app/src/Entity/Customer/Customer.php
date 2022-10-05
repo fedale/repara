@@ -26,6 +26,7 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id;
 
     #[ORM\Column(length: 64, nullable: false, unique: true)]
+    #[Assert\NotBlank()]
     private string $code;
 
     #[ORM\Column(length: 255, nullable: false, unique: true)]

@@ -49,12 +49,12 @@ class DashboardController extends AbstractDashboardController
         ;
     }
     
-    // public function configureAssets(): Assets
-    // {
-    //     return parent::configureAssets()
-    //          ->addWebpackEncoreEntry('app')
-    //     ;
-    // }
+    public function configureAssets(): Assets
+    {
+        return parent::configureAssets()
+             ->addWebpackEncoreEntry('app')
+        ;
+    }
 
     public function configureDashboard(): Dashboard
     {

@@ -54,13 +54,13 @@ RUN set -eux; \
 	composer install --prefer-dist --no-dev --no-scripts --no-progress; \
 	composer clear-cache
 
-RUN set -eux; \
-	mkdir -p var/cache var/log; \
-	composer update; \
-	composer dump-autoload --classmap-authoritative --no-dev; \
-	composer dump-env prod; \
-	composer run-script --no-dev post-install-cmd; \
-	chmod +x bin/console; sync
+# RUN set -eux; \
+# 	mkdir -p var/cache var/log; \
+# 	composer update; \
+# 	composer dump-autoload --classmap-authoritative --no-dev; \
+# 	composer dump-env prod; \
+# 	composer run-script --no-dev post-install-cmd; \
+# 	chmod +x bin/console; sync
 
 COPY nginx/php/docker-healthcheck.sh /usr/local/bin/docker-healthcheck
 RUN chmod +x /usr/local/bin/docker-healthcheck
@@ -80,39 +80,16 @@ CMD ["php-fpm"]
 FROM postgres:${POSTGRES_VERSION:-14.5}-bullseye AS database
 
 EXPOSE 5432
-# RUN apk update && apk add mariadb mariadb-client mariadb-server-utils pwgen && rm -f /var/cache/apk/*
 
-# RUN mkdir /run/mysqld && \
-#   chown mysql:mysql /etc/my.cnf.d/ /run/mysqld 
-
-# #COPY --chown=mysql:mysql docker/quote_database_backup.tar.gz /tmp/backup.tar.gz
-
-# # COPY database/script.sh /run.sh
-
-# # COPY --chown=mysql:mysql database/mariadb-server.cnf /tmp
-
-# # COPY --chown=mysql:mysql database/docker-entrypoint-initdb.d /docker-entrypoint-initdb.d
-
-# VOLUME ["/var/lib/mysql"]
-
-# ENTRYPOINT ["sh", "/run.sh"]
-
-# EXPOSE 3306
 
 # "nginx" stage
 FROM nginx:${NGINX_VERSION:-1.23} AS nginx
-RUN apt update && apt install -y vim snapd 
+RUN apt update && apt install -y vim openssl
 RUN rm -rfv /etc/conf.d/default.conf
-# COPY frontend /var/www/frontend
-COPY app/public /srv/api/public
+COPY app/public /srv/app/public
 COPY nginx/config/nginx.conf /etc/nginx/nginx.conf
-# COPY nginx/config/frontend_prod.conf /etc/nginx/conf.d/frontend.conf
-# COPY nginx/config/api.conf /etc/nginx/conf.d/api.conf
-# RUN snap install core
-# RUN snap refresh core
-# RUN snap install --classic certbot
-# RUN ln -s /snap/bin/certbot /usr/bin/certbot
-# RUN certbot certonly --nginx
+COPY nginx/config/app.conf /etc/nginx/conf.d/app.conf
+RUN openssl req -x509 -nodes -days 365 -subj "/C=CA/ST=QC/O=Company, Inc./CN=mydomain.com" -addext "subjectAltName=DNS:mydomain.com" -newkey rsa:2048 -keyout /etc/ssl/private/nginx-selfsigned.key -out /etc/ssl/certs/nginx-selfsigned.crt;
 EXPOSE 80:443
 ENTRYPOINT nginx -g 'daemon off;'
 

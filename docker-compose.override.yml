@@ -18,10 +18,10 @@ services:
     ports:
       - "5432:5432"
 
-  # nginx:
-  #   build:
-  #     context: .
-  #     target: nginx
-  #   volumes:
-  #     - ./app:/srv/app
-  #     - ./nginx/config/nginx.conf:/etc/nginx/nginx.conf
+  nginx:
+    build:
+      context: .
+      target: nginx
+    volumes:
+      - ./app:/srv/app
+      - ./nginx/config/nginx.conf:/etc/nginx/nginx.conf

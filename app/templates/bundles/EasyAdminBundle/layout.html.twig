@@ -66,22 +66,6 @@
         {% block flash_messages %}
             {{ include(ea.templatePath('flash_messages')) }}
         {% endblock flash_messages %}
-
-        {% set user_menu_avatar %}
-            {% if null == ea.userMenu.avatarUrl %}
-                <span class="user-avatar">
-                    <span class="fa-stack">
-                        <i class="user-avatar-icon-background fas fa-square fa-stack-2x"></i>
-                        <i class="user-avatar-icon-foreground {{ ea.user is not null ? 'fa fa-user' : 'fas fa-user-slash' }} fa-stack-1x fa-inverse"></i>
-                    </span>
-                </span>
-            {% else %}
-                <img class="user-avatar" src="{{ ea.userMenu.avatarUrl }}" />
-            {% endif %}
-        {% endset %}
-
-        {% set impersonator_permission = constant('Symfony\\Component\\Security\\Core\\Authorization\\Voter\\AuthenticatedVoter::IS_IMPERSONATOR') is defined ? 'IS_IMPERSONATOR' : 'ROLE_PREVIOUS_ADMIN' %}
-
         
 
         <div class="wrapper">
@@ -106,116 +90,93 @@
                             {% endblock main_menu_wrapper %}
                         </nav>
 
+
+
+                        {% set impersonator_permission = constant('Symfony\\Component\\Security\\Core\\Authorization\\Voter\\AuthenticatedVoter::IS_IMPERSONATOR') is defined ? 'IS_IMPERSONATOR' : 'ROLE_PREVIOUS_ADMIN' %}
                         <div class="user-menu nav-item dropdown {{ is_granted(impersonator_permission) ? 'user-is-impersonated' }}">
-                            
-                            {# <div class="nav-item dropdown" > #}
-
-                                {# <div>
-                                    <a class="user-details" type="button" data-bs-toggle="dropdown" data-bs-offset="0,5" aria-expanded="false">
-                                        {% if ea.userMenu.avatarDisplayed %}
-                                            {% if null == ea.userMenu.avatarUrl %}
-                                                <span class="user-avatar">
-                                                    <span class="fa-stack">
-                                                        <i class="user-avatar-icon-background fas fa-square fa-stack-2x"></i>
-                                                        <i class="user-avatar-icon-foreground {{ ea.user is not null ? 'fa fa-user' : 'fas fa-user-slash' }} fa-stack-1x fa-inverse"></i>
-                                                    </span>
-                                                </span>
-                                            {% else %}
-                                                <img class="user-avatar" src="{{ ea.userMenu.avatarUrl }}" />
-                                            {% endif %}
-                                        {% else %}
-                                            <i class="user-avatar fa fa-fw {{ ea.user is not null ? 'fa-user' : 'fa-user-times' }}"></i>
-                                        {% endif %}
-                                    </a>
+                            <div class="d-flex lh-1" data-bs-toggle="dropdown" aria-label="Open user menu">
+                                <span class="user-avatar">
+                                    <span class="fa-stack">
+                                        <i class="user-avatar-icon-background fas fa-square fa-stack-3x"></i>
+                                        <i class="user-avatar-icon-foreground {{ ea.user is not null ? 'fa fa-user' : 'fas fa-user-slash' }} fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </span>
+                                <div class="user-fullname d-none d-lg-block ml-5 text-right">
+                                    {{ app.user.profile }}<br>
+                                <span class="mt-1 small text-muted">{{ app.user.email }}</span>
                                 </div>
-
-                                <div> #}
-                                    <div class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Open user menu">
-                                       <span class="user-avatar">
-                                            <span class="fa-stack">
-                                                <i class="user-avatar-icon-background fas fa-square fa-stack-2x"></i>
-                                                <i class="user-avatar-icon-foreground {{ ea.user is not null ? 'fa fa-user' : 'fas fa-user-slash' }} fa-stack-1x fa-inverse"></i>
-                                            </span>
-                                        </span>
-                                        <div class="d-none d-lg-block">
-                                        {{ app.user.profile }}<br>
-                                        <span class="mt-1 small text-muted">{{ app.user.email }}</span>
+                            </div>
+                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                                <li><a href="#" class="dropdown-item">Set status</a></li>
+                                <li><a href="#" class="dropdown-item">Profile & account</a></li>
+                                <li><a href="#" class="dropdown-item">Feedback</a></li>
+                                <li><div class="dropdown-divider"></div></li>
+                                <li><a href="#" class="dropdown-item">Settings</a></li>
+                                {% if ea.dashboardHasDarkModeEnabled %}
+                                    <li><div class="dropdown-divider"></div></li>
+                                    <li>
+                                        <div 
+                                            class="btn-group btn-group-sm page-color-scheme-selector align-items-center text-right" 
+                                            role="group" 
+                                            aria-label="Choose theme" 
+                                            data-controller="page-color-scheme"
+                                        >
+                                            <span>{{ 'settings.appearance.theme'|trans(domain = 'EasyAdminBundle') }}</span>
+                                            <a 
+                                                href="#" 
+                                                class="dropdown-item" 
+                                                title="{{ 'settings.appearance.light'|trans(domain = 'EasyAdminBundle') }}" 
+                                                data-ea-color-scheme="light" 
+                                                data-action="page-color-scheme#changeScheme"
+                                                data-page-color-scheme-target="schemeSelector"
+                                            >
+                                                <i class="far fa-sun"></i>
+                                            </a>
+                                            <a 
+                                                href="#" 
+                                                class="dropdown-item" 
+                                                data-ea-color-scheme="dark" 
+                                                title="{{ 'settings.appearance.dark'|trans(domain = 'EasyAdminBundle') }}" 
+                                                data-action="page-color-scheme#changeScheme"
+                                                data-page-color-scheme-target="schemeSelector"
+                                            >
+                                                <i class="far fa-moon"></i>
+                                            </a>
+                                            <a 
+                                                href="#" 
+                                                class="dropdown-item" 
+                                                data-ea-color-scheme="auto" 
+                                                title="{{ 'settings.appearance.auto'|trans(domain = 'EasyAdminBundle') }}" 
+                                                data-action="page-color-scheme#changeScheme"
+                                                data-page-color-scheme-target="schemeSelector"
+                                            >
+                                                <i class="fas fa-desktop"></i>
+                                            </a>
                                         </div>
-                                    </div>
-                                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                        <li><a href="#" class="dropdown-item">Set status</a></li>
-                                        <li><a href="#" class="dropdown-item">Profile & account</a></li>
-                                        <li><a href="#" class="dropdown-item">Feedback</a></li>
-                                        <li><div class="dropdown-divider"></div></li>
-                                        <li><a href="#" class="dropdown-item">Settings</a></li>
-                                        {% if ea.dashboardHasDarkModeEnabled %}
-                                            <li><div class="dropdown-divider"></div></li>
+                                    </li>
+                                {% endif %}
+                                
+                                {% block user_menu %}
+                                    {% if ea.userMenu.items|length > 0 %}
+                                        <li><hr class="dropdown-divider"></li>
+                                        {% for item in ea.userMenu.items %}
                                             <li>
-                                                <div 
-                                                    class="btn-group btn-group-sm page-color-scheme-selector align-items-center text-right" 
-                                                    role="group" 
-                                                    aria-label="Choose theme" 
-                                                    data-controller="page-color-scheme"
-                                                >
-                                                    <span>{{ 'settings.appearance.theme'|trans(domain = 'EasyAdminBundle') }}</span>
-                                                    <a 
-                                                        href="#" 
-                                                        class="dropdown-item" 
-                                                        title="{{ 'settings.appearance.light'|trans(domain = 'EasyAdminBundle') }}" 
-                                                        data-ea-color-scheme="light" 
-                                                        data-action="page-color-scheme#changeScheme"
-                                                        data-page-color-scheme-target="schemeSelector"
-                                                    >
-                                                        <i class="far fa-sun"></i>
+                                                {% if item.isMenuSection and not loop.first %}
+                                                    <hr class="dropdown-divider">
+                                                {% elseif not item.isMenuSection %}
+                                                    <a href="{{ item.linkUrl }}" class="dropdown-item user-action {{ item.cssClass }}"
+                                                    target="{{ item.linkTarget }}" rel="{{ item.linkRel }}"
+                                                    referrerpolicy="origin-when-cross-origin">
+                                                        {% if item.icon is not empty %}<i class="fa fa-fw {{ item.icon }}"></i>{% endif %}
+                                                        <span>{{ item.label|trans }}</span>
                                                     </a>
-                                                    <a 
-                                                        href="#" 
-                                                        class="dropdown-item" 
-                                                        data-ea-color-scheme="dark" 
-                                                        title="{{ 'settings.appearance.dark'|trans(domain = 'EasyAdminBundle') }}" 
-                                                        data-action="page-color-scheme#changeScheme"
-                                                        data-page-color-scheme-target="schemeSelector"
-                                                    >
-                                                        <i class="far fa-moon"></i>
-                                                    </a>
-                                                    <a 
-                                                        href="#" 
-                                                        class="dropdown-item" 
-                                                        data-ea-color-scheme="auto" 
-                                                        title="{{ 'settings.appearance.auto'|trans(domain = 'EasyAdminBundle') }}" 
-                                                        data-action="page-color-scheme#changeScheme"
-                                                        data-page-color-scheme-target="schemeSelector"
-                                                    >
-                                                        <i class="fas fa-desktop"></i>
-                                                    </a>
-                                                </div>
+                                                {% endif %}
                                             </li>
-                                        {% endif %}
-                                        
-                                        {% block user_menu %}
-                                            {% if ea.userMenu.items|length > 0 %}
-                                                <li><hr class="dropdown-divider"></li>
-                                                {% for item in ea.userMenu.items %}
-                                                    <li>
-                                                        {% if item.isMenuSection and not loop.first %}
-                                                            <hr class="dropdown-divider">
-                                                        {% elseif not item.isMenuSection %}
-                                                            <a href="{{ item.linkUrl }}" class="dropdown-item user-action {{ item.cssClass }}"
-                                                            target="{{ item.linkTarget }}" rel="{{ item.linkRel }}"
-                                                            referrerpolicy="origin-when-cross-origin">
-                                                                {% if item.icon is not empty %}<i class="fa fa-fw {{ item.icon }}"></i>{% endif %}
-                                                                <span>{{ item.label|trans }}</span>
-                                                            </a>
-                                                        {% endif %}
-                                                    </li>
-                                                {% endfor %}
-                                            {% endif %}
-                                        {% endblock user_menu %}
-                                    </ul>
-                                {# </div> #}
-                            {# </div> #}
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endblock user_menu %}
+                            </ul>
                         </div>
-
                         
                     {% endblock responsive_header %}
                 </div>
@@ -266,6 +227,7 @@
                         {{ include('@EasyAdmin/includes/_footer.html.twig') }}
                     {% endblock %}
                 </footer>
+
             {% endblock wrapper %}    
         </div>
     {% endblock wrapper_wrapper %}

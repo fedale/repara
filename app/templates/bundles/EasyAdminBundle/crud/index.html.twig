@@ -47,10 +47,10 @@
 {% set has_batch_actions = batch_actions|length > 0 %}
 {% block page_actions %}
     {% if filters|length > 0 %}
-        <div class="datagrid-filters">
+        <div class="datagrid-filters ">
             {% block filters %}
                 {% set applied_filters = ea.request.query.all['filters']|default([])|keys %}
-                <div class="btn-group action-filters">
+                <div class="btn-group action-filters input-group">
                     <a href="#" data-href="{{ ea_url().setAction('renderFilters').includeReferrer() }}" class="btn btn-secondary btn-labeled btn-labeled-right action-filters-button disabled {{ applied_filters ? 'action-filters-applied' }}" data-bs-toggle="modal" data-bs-target="#modal-filters">
                         <i class="fa fa-filter fa-fw"></i> {{ t('filter.title', ea.i18n.translationParameters, 'EasyAdminBundle')|trans }}{% if applied_filters %} <span class="action-filters-button-count">({{ applied_filters|length }})</span>{% endif %}
                     </a>

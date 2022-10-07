@@ -364,8 +364,8 @@
                                                 </h1>
                                             </div>
                                     </section>
-                                    <section class="content-header" style="padding: 0">
-                                        <div class="content-header-title" style="width:200px">
+                                    <section class="content-header" style="padding-top: 0">
+                                        <div class="content-header-title">
                                             {% set has_search = ea.crud is not null and ea.crud.isSearchEnabled %}
                                             {% if has_search %}
                                                 {% block search %}
@@ -399,30 +399,35 @@
                                                             <input type="hidden" name="submenuIndex" value="{{ ea.request.query.get('submenuIndex') }}">
                                                             <input type="hidden" name="page" value="1">
 
-                                                            <div class="input-group">
+                                                                <div class="form-widget">
+                                                                    <i class="fas fa-search content-search-icon"></i>
+                                                                    <label class="content-search-label" data-value="jorge">
+                                                            
+                                                                {# <span class="input-group-prepend">
+                                                                    <button class="btn" type="button">
+                                                                        <i class="fa fa-search"></i>
+                                                                    </button>
+                                                                </span> #}
                                                                 <input 
                                                                     id="grid-search-input"
-                                                                    class="form-control border-end-0 border {{ app.request.get('query') is null ? 'is-blank' }}" 
+                                                                    class="form-control  {{ app.request.get('query') is null ? 'is-blank' }}" 
                                                                     type="search" 
                                                                     name="query" 
                                                                     value="{{ app.request.get('query') ?? '' }}" 
                                                                     placeholder="{{ t('action.search', ea.i18n.translationParameters, 'EasyAdminBundle')|trans }}" 
                                                                     spellcheck="false" 
                                                                     autocorrect="off" 
-                                                                    onInput="this.parentNode.dataset.value=this.value"
+                                                                    autocomplete="off" 
+                                                                    
                                                                     {% if ea.crud.currentAction == 'index' and ea.crud.autofocusSearch == true %} 
                                                                         autofocus="autofocus"
                                                                     {% endif %}
                                                                 >
+                                                                </label>
                                                                 {% if app.request.get('query') %}
-                                                                    <script type="text/javascript">
-                                                                        document.getElementById('grid-search-input').addEventListener('input', (e) => {
-                                                                            console.log('input');
-                                                                            if (e.currentTarget.value == '') {
-                                                                                window.location.assign("{{ ea_url().unset('query') }}");
-                                                                            }
-                                                                        })
-                                                                    </script>
+                                                                        <a href="{{ ea_url().unset('query') }}" class="content-search-reset">
+                                                                            <i class="fas fa-fw fa-times"></i>
+                                                                        </a>
                                                                 {% endif %}
                                                                 {# <span class="input-group-append">
                                                                     <button class="btn btn-outline-secondary bg-white border-start-0 border-bottom-0 border ms-n5" type="button">

@@ -50,8 +50,24 @@
         <div class="datagrid-filters ">
             {% block filters %}
                 {% set applied_filters = ea.request.query.all['filters']|default([])|keys %}
+
                 <div class="btn-group action-filters input-group">
                     <a href="#" data-href="{{ ea_url().setAction('renderFilters').includeReferrer() }}" class="btn btn-secondary btn-labeled btn-labeled-right action-filters-button disabled {{ applied_filters ? 'action-filters-applied' }}" data-bs-toggle="modal" data-bs-target="#modal-filters">
+
+                <div class="btn-group action-filters"
+                    {{ stimulus_controller('modal-form', {
+                        }) 
+                    }}
+                >
+                    <a 
+                        href="#" 
+                        data-href="{{ ea_url().setAction('renderFilters').includeReferrer() }}" class="btn btn-secondary btn-labeled btn-labeled-right action-filters-button disabled {{ applied_filters ? 'action-filters-applied' }}" 
+                        {# data-bs-toggle="modal" 
+                        data-bs-target="#modal-filters" #}
+                        data-modal-form-target="button"
+                        data-action="modal-form#openModal"
+                    >
+
                         <i class="fa fa-filter fa-fw"></i> {{ t('filter.title', ea.i18n.translationParameters, 'EasyAdminBundle')|trans }}{% if applied_filters %} <span class="action-filters-button-count">({{ applied_filters|length }})</span>{% endif %}
                     </a>
                     {% if applied_filters %}
@@ -245,7 +261,10 @@
     {% endblock delete_form %}
 
     {% if has_filters %}
-        {{ include('@EasyAdmin/crud/includes/_filters_modal.html.twig') }}
+        {{ include('@EasyAdmin/crud/includes/_filters_modal.html.twig', {
+                modalTitle: 'Filters',
+            })
+        }}
     {% endif %}
 
     {% if has_batch_actions %}

@@ -50,7 +50,7 @@ final class Version20220630192739 extends AbstractMigration
             state state NOT NULL, 
             asset_type VARCHAR(8) DEFAULT \'N/A\' NOT NULL,
             priority priority NOT NULL, 
-            visible SMALLINT DEFAULT 1 NOT NULL,
+            visible BOOLEAN DEFAULT TRUE NOT NULL,
             finished_at timestamptz DEFAULT NULL,
             active BOOLEAN DEFAULT TRUE NOT NULL,
             created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,

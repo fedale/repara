@@ -67,7 +67,7 @@ class ProjectTask
     #[ORM\Column()]
     private bool $active = true;
     
-    #[ORM\Column(name: 'visible', type: 'boolean', nullable: false, options: ['default' => 1])]
+    #[ORM\Column()]
     private $visible = true;
     
     #[ORM\Column(name: 'finished_at', type: 'datetime', nullable: true)]

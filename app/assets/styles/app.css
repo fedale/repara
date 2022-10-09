@@ -134,3 +134,17 @@ header.navbar.show {
 }
 }
 
+.badge-project_task_priority_low {
+    background-color: #c0c0c0;
+    color: #fff;
+}
+
+.badge-project_task_priority_normal {
+    background-color: #F5C400; 
+    color: #fff;
+}
+
+.badge-project_task_priority_high {
+    background-color: red;
+    color: #fff;
+}

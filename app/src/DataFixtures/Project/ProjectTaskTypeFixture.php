@@ -10,7 +10,7 @@ class ProjectTaskTypeFixture extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        foreach ( $this->getTypes() as $type) {
+        foreach ( $this->getTypes() as $type ) {
             $item = new ProjectTaskType();
             $item->setName($type);
             $manager->persist($item);
@@ -22,9 +22,9 @@ class ProjectTaskTypeFixture extends Fixture
     private function getTypes(): array
     {
         return [
-            'Manutenzione ordinaria',
-            'Manutenzione straordinaria',
-            'Riparazione'
+            'Ordinary maintenance',
+            'Extraordinary maintenance',
+            'Repair'
         ];
     }
 }

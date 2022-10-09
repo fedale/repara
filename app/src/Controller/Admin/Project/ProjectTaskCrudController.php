@@ -63,18 +63,27 @@ class ProjectTaskCrudController extends AbstractCrudController
         
             AssociationField::new('type')
                 ->renderAsNativeWidget()
+                ->formatValue(function ($value) {
+                    return '<span>' . $value . '</span>';
+                })
             ,
             ChoiceField::new('priority')
                 ->setChoices(ProjectTaskPriorityType::getChoices())
                 ->renderAsNativeWidget()
                 ->setRequired(true)
                 ->addCssClass('col-md-7 col-xxl-6')
+                ->formatValue(function ($value) {
+                    return '<span class="badge badge-' . $value . '">' . $value . '</span>';
+                })
             ,
             ChoiceField::new('state')
                 ->setChoices(ProjectTaskStateType::getChoices())
                 ->renderAsNativeWidget()
                 ->setRequired(true)
                 ->addCssClass('col-md-7 col-xxl-6')
+                ->formatValue(function ($value) {
+                    return '<span class="badge badge-' . $value . '">' . $value . '</span>';
+                })
             ,
             AssociationField::new('projectTaskUserAssigneds')
                 // ->setFormTypeOption('expanded', true)

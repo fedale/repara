@@ -51,7 +51,7 @@ final class Version20220630192480 extends AbstractMigration
             color CHAR(6) DEFAULT NULL,
             priority SMALLINT NOT NULL,
             type_id SMALLINT NOT NULL CHECK (type_id > 0),
-            visible SMALLINT DEFAULT 1 NOT NULL,
+            visible BOOLEAN DEFAULT TRUE NOT NULL,
             active BOOLEAN DEFAULT TRUE NOT NULL,
             created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,

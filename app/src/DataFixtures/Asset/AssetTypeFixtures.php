@@ -11,8 +11,13 @@ class AssetTypeFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        return;
-    }
+        foreach (range(1, 10) as $type) {
+            $assetType = new AssetType();
+            $assetType->setName('Type ' . $type);
+            $assetType->setSlug('type-' . $type);
+            $manager->persist($assetType);
+        }
 
-  
+        $manager->flush();
+    }
 }

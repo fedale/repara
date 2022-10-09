@@ -44,11 +44,6 @@ class CustomerLocationPlaceAssetRepository extends ServiceEntityRepository
     public function findByCustomer($customer = null): array
     {
         return $this->createQueryBuilder('c')
-            // ->leftJoin('LED')
-            // ->andWhere('c.exampleField = :val')
-            // ->setParameter('val', $value)
-            // ->orderBy('c.id', 'ASC')
-            // ->setMaxResults(10)
             ->getQuery()
             ->getResult()
         ;

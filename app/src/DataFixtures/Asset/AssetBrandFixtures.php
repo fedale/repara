@@ -22,12 +22,6 @@ class AssetBrandFixtures extends Fixture
         $manager->flush();
     }
 
-    public function getDependencies()
-    {
-        return [
-            AssetTypeFixtures::class,
-        ];
-    }
 
     private function getAssetBrands() {
         // https://www.climamarket.it/brand # list all brands

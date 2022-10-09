@@ -30,5 +30,5 @@ npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
 
-/app/templates-tablerio/
-/app/templates-BAK/
+/templates-tablerio/
+/templates-BAK/

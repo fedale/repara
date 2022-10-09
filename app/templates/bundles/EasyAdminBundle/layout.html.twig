@@ -366,7 +366,7 @@
                                     </section>
                                     <section class="content-header" style="padding-top: 0">
                                         <div class="content-header-title">
-                                            {% set has_search = ea.crud is not null and ea.crud.isSearchEnabled %}
+                                            {% set has_search = ea.crud is not null and ea.crud.isSearchEnabled and ea.crud.currentAction == 'index' %}
                                             {% if has_search %}
                                                 {% block search %}
                                                     <form class="form-action-search" method="get">

@@ -79,7 +79,8 @@ nav ul.menu > li.nav-item.active,
 
 .dropdown.active a.nav-link.active {
     background: var(--bs-dropdown-link-active-bg); 
-    font-weight: bold;
+    /* font-weight: bold; */
+    color: var(--bs-dropdown-link-active-color);
 }
 
 .page-color-scheme-selector .dropdown-item.active i, 

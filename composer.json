@@ -1,0 +1,5 @@
+{
+    "require": {
+        "symfony/ux-turbo": "^2.4"
+    }
+}

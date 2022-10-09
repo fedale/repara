@@ -6,6 +6,7 @@ export default class extends Controller {
     static targets = ['checkbox'];
 
     connect() {
+        console.log('Filter-form');
         this.checkboxTargets.forEach(filterCheckbox => {
             filterCheckbox.addEventListener('change', () => {
                 const filterToggleLink = filterCheckbox.nextElementSibling;

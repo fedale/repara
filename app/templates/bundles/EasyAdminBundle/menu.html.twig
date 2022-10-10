@@ -5,7 +5,7 @@
         {% block main_menu %}
             {% for menuItem in ea.mainMenu.items %}
                 {% block menu_item %}
-                    <li class="nav-item {{ menuItem.isMenuSection ? 'menu-header' : 'menu-item' }} {{ menuItem.hasSubItems ? 'dropdown' }} {{ ea.mainMenu.isSelected(menuItem) ? 'active' }} {{ ea.mainMenu.isExpanded(menuItem) ? 'expanded' }}">
+                    <li class="nav-item {{ menuItem.isMenuSection ? 'menu-header' : 'menu-item' }} {{ menuItem.hasSubItems ? 'dropdown' }} {{ "App\\Entity\\Customer\\Customer" == ea.entity.fqcn ? 'active' }} {{ ea.mainMenu.isExpanded(menuItem) ? 'expanded' }}">
                         {{ _self.render_menu_item(menuItem) }}
                         {% if menuItem.hasSubItems %}
                             <div class="dropdown-menu" data-menu-target="dropdown">

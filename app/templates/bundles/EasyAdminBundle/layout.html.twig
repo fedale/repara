@@ -84,6 +84,11 @@
 
         <div class="wrapper">
             {% block wrapper %}
+            
+            {% for menuItem in ea.mainMenu.items %}
+                {{ dump (menuItem) }}
+                {# {{ dump (menuItem.routeParameters.entityFqcn) }} #}
+            {% endfor %}
                 <div class="page-header">
                     {% block responsive_header %}
                         {# <button id="navigation-toggler" type="button" aria-label="Toggle navigation">

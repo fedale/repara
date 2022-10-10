@@ -16,11 +16,7 @@
    
 div.page-header { grid-area: 1 / 1 / 2 / 2; }
 div.main-content { grid-area: 2 / 1 / 3 / 2; }
-footer.main { 
-    grid-area: 3 / 1 / 4 / 2; 
-    background: var(--responsive-header-bg);
-    box-shadow: inset 0 -1px 0 var(--responsive-header-border-color);
-}
+
 
 
 /*** HEADER ***/
@@ -113,6 +109,13 @@ nav ul.menu > li.nav-item.active,
 
 .content-top {
     justify-content: normal;
+}
+
+/*** FOOTER ***/
+footer.main { 
+    grid-area: 3 / 1 / 4 / 2; 
+    background: var(--responsive-header-bg);
+    box-shadow: inset 0 1px 0 var(--responsive-header-border-color);
 }
 
 /* @media (min-width: 992px) {

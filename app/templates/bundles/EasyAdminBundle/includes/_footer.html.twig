@@ -1,24 +1,15 @@
-<div class="container d-flex justify-content-between">
-    <div class="row ">
-        <div class="col-12 col-lg-auto mt-3 mt-lg-0">
-            <ul class="list-inline list-inline-dots mb-0">
-                <li class="list-inline-item">
-                Copyright © {{ 'now' | date('Y') }}
-                <a href="." class="link-secondary">Repara</a>.
-                All rights reserved.
-                </li>
-                <li class="list-inline-item">
-                Generated {{ 'now' | date('c') }}
-                </li>
-            </ul>
-        </div>
-        <div class="col-lg-auto ms-lg-auto">
-            <ul class="list-inline list-inline-dots mb-0">
-                <li class="list-inline-item"><a href="#" class="link-secondary">Documentation</a></li>
-                <li class="list-inline-item"><a href="#" class="link-secondary">License</a></li>
-                <li class="list-inline-item"><a href="#" target="_blank" class="link-secondary" rel="noopener">Source code</a></li>
-                <li class="list-inline-item"><a href="#" target="_blank" class="link-secondary" rel="noopener">Sponsor</a></li>
-            </ul>
-        </div>
-    </div>
+{% block footer %}
+<div class="d-flex justify-content-between">
+    <ul class="list-inline list-inline-dots mb-0">
+        <li class="list-inline-item">
+            Copyright &copy; {{ 'now' | date('Y') }} <a href=".">{{ 'Repara' }}</a>. All rights reserved.
+        </li>
+        <li class="list-inline-item">Generated 2022-08-31 11:00 UTC</li>
+    </ul>
+    <ul class="list-inline list-inline-dots mb-0">
+        <li class="list-inline-item">Documentation</li>
+        <li class="list-inline-item">License</li>
+        <li class="list-inline-item">Source code</li>
+    </ul>
 </div>
+{% endblock %}

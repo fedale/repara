@@ -483,19 +483,12 @@
                     </div>
                 </div>
 
-                <div class="page-footer">
-                Footer footer footer
+                <footer class="main">
                     {% block content_footer_wrapper %}
-                            {% set content_footer = block('content_footer') is defined ? block('content_footer') : '' %}
-                            {% if content_footer is not empty %}
-                                <section class="content-footer">
-                                    {{ content_footer }}
-                                </section>
-                            {% endif %}
-                        {% endblock %}
-                    {% endblock wrapper %}
-                </div>
-
+                        {{ include('@EasyAdmin/includes/_footer.html.twig') }}
+                    {% endblock %}
+                </footer>
+            {% endblock wrapper %}
         </div>
     {% endblock wrapper_wrapper %}
 

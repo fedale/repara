@@ -21,9 +21,9 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
     use TimestampableEntity;
 
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id;
+    #[ORM\Column()]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    private $id;
 
     #[ORM\Column(length: 64, nullable: false, unique: true)]
     #[Assert\NotBlank()]

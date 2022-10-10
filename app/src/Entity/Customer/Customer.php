@@ -21,7 +21,7 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
     use TimestampableEntity;
 
     #[ORM\Id]
-    #[ORM\Column()]
+    #[ORM\Column(type: 'integer', nullable: false)]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private $id;
 

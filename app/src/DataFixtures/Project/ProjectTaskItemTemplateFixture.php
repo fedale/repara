@@ -14,7 +14,7 @@ class ProjectTaskItemTemplateFixture extends Fixture implements DependentFixture
     public function load(ObjectManager $manager): void
     {
         $projectTaskTemplates = $manager->getRepository(ProjectTaskTemplate::class)->findAll();
-        $projectTaskType = $manager->getRepository(ProjectTaskType::class)->findOneBy(['name' => 'Riparazione']);
+        $projectTaskTypes = $manager->getRepository(ProjectTaskType::class)->findAll();
 
         $c = 1;
         foreach ($projectTaskTemplates as $projectTaskTemplate) {
@@ -23,7 +23,7 @@ class ProjectTaskItemTemplateFixture extends Fixture implements DependentFixture
                 $projectTaskItemTemplate = new ProjectTaskItemTemplate();
                 $projectTaskItemTemplate->setName('Project Task Item #' . $c);
                 $projectTaskItemTemplate->setTaskTemplate($projectTaskTemplate);
-                $projectTaskItemTemplate->setTaskType($projectTaskType);
+                $projectTaskItemTemplate->setTaskType($projectTaskTypes[array_rand($projectTaskTypes)]);
                 $projectTaskItemTemplate->setSort(\rand(1, 99));
                 $manager->persist($projectTaskItemTemplate);
                 $c++;

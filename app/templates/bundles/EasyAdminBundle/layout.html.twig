@@ -80,8 +80,6 @@
 
         {% set impersonator_permission = constant('Symfony\\Component\\Security\\Core\\Authorization\\Voter\\AuthenticatedVoter::IS_IMPERSONATOR') is defined ? 'IS_IMPERSONATOR' : 'ROLE_PREVIOUS_ADMIN' %}
 
-        
-
         <div class="wrapper">
             {% block wrapper %}
             

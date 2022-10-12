@@ -1,11 +1,10 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
-{# <div class="container-xl"> #}
-    {% block main_menu_before %}{% endblock %}
+{% block main_menu_before %}{% endblock %}
     <ul class="menu navbar-nav d-flex justify-content-evenly flex-row" data-controller="menu">
         {% block main_menu %}
             {% for menuItem in ea.mainMenu.items %}
                 {% block menu_item %}
-                    <li class="nav-item {{ menuItem.isMenuSection ? 'menu-header' : 'menu-item' }} {{ menuItem.hasSubItems ? 'dropdown' }} {{ "App\\Entity\\Customer\\Customer" == ea.entity.fqcn ? 'active' }} {{ ea.mainMenu.isExpanded(menuItem) ? 'expanded' }}">
+                    <li class="nav-item {{ menuItem.isMenuSection ? 'menu-header' : 'menu-item' }} {{ menuItem.hasSubItems ? 'dropdown' }} {{ ea.mainMenu.isSelected(menuItem) ? 'active' }} {{ ea.mainMenu.isExpanded(menuItem) ? 'expanded' }}">
                         {{ _self.render_menu_item(menuItem) }}
                         {% if menuItem.hasSubItems %}
                             <div class="dropdown-menu" data-menu-target="dropdown">
@@ -21,8 +20,7 @@
             {% endfor %}
         {% endblock main_menu %}
     </ul>
-    {% block main_menu_after %}{% endblock %}
-{# </div> #}
+{% block main_menu_after %}{% endblock %}
 
 {% macro render_menu_item(item) %}
     {% if item.isMenuSection %}

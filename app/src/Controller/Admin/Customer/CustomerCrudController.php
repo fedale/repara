@@ -24,24 +24,35 @@ class CustomerCrudController extends AbstractCrudController
     
     public function configureFields(string $pageName): iterable
     {
-        yield TextField::new('username');
-        yield TextField::new('code');
-        yield TextField::new('email');
+        yield TextField::new('username')
+            ->setFormTypeOption('attr.class', 'form-control-lg')
+        ;
+        yield TextField::new('code')
+            ->setFormTypeOption('attr.class', 'form-control-lg')
+        ;
+        yield TextField::new('email')
+            ->setFormTypeOption('attr.class', 'form-control-lg')
+        ;
         yield TextField::new('profile')
             ->setFormType(CustomerProfileType::class)
-            ->setLabel(false)
+            // ->setLabel(false)
+            ->setFormTypeOption('attr.class', 'form-control-lg')
         ;
         yield TextField::new('plainPassword')
             ->hideOnIndex()
             ->setFormType(PasswordType::class)
             ->onlyWhenCreating()
             ->setFormTypeOption('validation_groups', 'registration')
+            ->setFormTypeOption('attr.class', 'form-control-lg')
         ;
         yield AssociationField::new('type')
             ->renderAsNativeWidget()
+            ->setColumns('col-md-6 col-xxl-5')
+            ->setFormTypeOption('attr.class', 'form-control-lg')
         ;
         yield DateField::new('createdAt')
             ->onlyOnIndex()
+            ->setFormTypeOption('attr.class', 'form-control-lg')
         ;
     }
 

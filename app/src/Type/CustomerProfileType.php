@@ -23,7 +23,8 @@ class CustomerProfileType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => CustomerProfile::class
+            'data_class' => CustomerProfile::class,
+            'class' => 'form-control-lg'
         ]);
     }
 }

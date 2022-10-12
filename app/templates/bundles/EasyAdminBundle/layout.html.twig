@@ -80,16 +80,17 @@
 
         {% set impersonator_permission = constant('Symfony\\Component\\Security\\Core\\Authorization\\Voter\\AuthenticatedVoter::IS_IMPERSONATOR') is defined ? 'IS_IMPERSONATOR' : 'ROLE_PREVIOUS_ADMIN' %}
 
-        
-
         <div class="wrapper">
             {% block wrapper %}
             
             {% for menuItem in ea.mainMenu.items %}
-                {{ dump (menuItem) }}
+                {% set params = menuItem.routeParameters %}
+                {# {{ attribute(params, 'entityFqcn') }} #}
                 {# {{ dump (menuItem.routeParameters.entityFqcn) }} #}
             {% endfor %}
+            
                 <div class="page-header">
+                 
                     {% block responsive_header %}
                         {# <button id="navigation-toggler" type="button" aria-label="Toggle navigation">
                             <i class="fa fa-fw fa-bars"></i>
@@ -228,17 +229,15 @@
                 {% endblock flash_messages %}
 
                 <div class="main-content">
-                    <div class="content-wrapper">
                         {% block content %}
-                            <article class="content">
+                            <section class="content">
                                 {% block content_header_wrapper %}
                                     {% set has_help_message = (ea.crud.helpMessage ?? '') is not empty %}
-                                    <section class="content-header">
+                                    <header class="content-header">
                                         {% block content_header %}
                                             <div class="content-header-title">
                                                 <h1 class="title">
                                                     {% block content_title %}{% endblock %}
-
                                                     {% block content_help %}
                                                         {% if has_help_message %}
                                                             <a tabindex="0" class="content-header-help" data-bs-toggle="popover" data-bs-custom-class="ea-content-help-popover" data-bs-animation="true" data-bs-html="true" data-bs-placement="bottom" data-bs-trigger="focus" data-bs-content="{{ ea.crud.helpMessage|trans|e('html_attr') }}">
@@ -248,8 +247,11 @@
                                                     {% endblock %}
                                                 </h1>
                                             </div>
-                                    </section>
-                                    <section class="content-header" style="padding-top: 0">
+                                            {% block page_actions_wrapper %}
+                                                <div class="page-actions">{% block page_actions %}{% endblock %}</div>
+                                            {% endblock %}
+                                    </header>
+                                    <header class="content-header" style="padding-top: 0">
                                         <div class="content-header-title">
                                             {% set has_search = ea.crud is not null and ea.crud.isSearchEnabled and ea.crud.currentAction == 'index' %}
                                             {% if has_search %}
@@ -320,11 +322,8 @@
                                                 {% endblock search %}
                                             {% endif %}
                                         </div>
-                                      {% block page_actions_wrapper %}
-                                                <div class="page-actions">{% block page_actions %}{% endblock %}</div>
-                                            {% endblock %}
-                                        {% endblock content_header %}
-                                    </section>
+                                    {% endblock content_header %}
+                                    </header>
                                 {% endblock content_header_wrapper %}
 
                                 <section id="main" class="content-body">
@@ -332,11 +331,8 @@
                                 </section>
 
                       
-                            </article>
+                            </section>
                         {% endblock content %}
-
-                        <div id="content-resizer-handler" class="resizer-handler resizer-handler-right"></div>
-                    </div>
                 </div>
 
                 <footer class="main">

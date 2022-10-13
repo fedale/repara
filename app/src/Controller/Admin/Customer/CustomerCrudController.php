@@ -39,7 +39,7 @@ class CustomerCrudController extends AbstractCrudController
             ->setFormTypeOption('attr.class', 'form-control-lg')
         ;
         yield TextField::new('profile.lastname')
-            // ->setFormType(CustomerProfileType::class)
+            ->setFormType(CustomerProfileType::class)
             ->setLabel('Pofile lastname')
             ->setFormTypeOption('attr.class', 'form-control-lg')
         ;

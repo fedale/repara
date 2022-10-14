@@ -49,13 +49,13 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
     private bool $active = true;
 
     #[ORM\Column(nullable: true)]
-    private \DateTime $confirmedAt;
+    private ?\DateTime $confirmedAt;
 
     #[ORM\Column(nullable: true)]
-    private \DateTime $lastLoginAt;
+    private ?\DateTime $lastLoginAt;
 
     #[ORM\Column(nullable: true)]
-    private \DateTime $blockedAt;
+    private ?\DateTime $blockedAt;
 
     #[ORM\OneToOne(targetEntity: CustomerProfile::class, mappedBy: 'customer', cascade: ['persist', 'remove'])]
     private ?CustomerProfile $profile;

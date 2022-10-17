@@ -3,11 +3,7 @@
 namespace App\Controller\Customer;
 
 use App\Entity\Customer\Customer;
-use App\Entity\Customer\CustomerProfile;
-use App\Entity\Customer\CustomerType as CustomerCustomerType;
-use App\Form\Customer\CustomerRegistrationType;
 use App\Form\Customer\CustomerType;
-use App\Form\Model\CustomerCreateModel;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,30 +29,12 @@ class CustomerController extends AbstractController
     #[Route('/new', name: 'app_customer_customer_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $customer = new CustomerCreateModel();
-        $form = $this->createForm(CustomerRegistrationType::class);
+        $customer = new Customer();
+        $form = $this->createForm(CustomerType::class, $customer);
         $form->handleRequest($request);
-        $customerType = $entityManager->getRepository(CustomerCustomerType::class)->findOneById(11);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var CustomerCreateModel $customerModel */
-            $customerModel = $form->getData();
-
-            $customer = new Customer();
-            $customerProfile = new CustomerProfile();
-            
-            $customer->setCode($customerModel->code);
-            $customer->setUsername($customerModel->username);
-            $customer->setEmail($customerModel->email);
-            $customer->setPassword($customerModel->password);
-            $customer->setType($customerType);//$customerModel->type);
             $entityManager->persist($customer);
-
-            $customerProfile->setCustomer($customer);
-            $customerProfile->setFirstname($customerModel->firstname);
-            $customerProfile->setLastname($customerModel->lastname);
-            $entityManager->persist($customerProfile);
-
             $entityManager->flush();
 
             return $this->redirectToRoute('app_customer_customer_index', [], Response::HTTP_SEE_OTHER);

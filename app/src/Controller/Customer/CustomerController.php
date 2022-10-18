@@ -13,10 +13,19 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Grid\GridView;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
 #[Route('/customer')]
 class CustomerController extends AbstractController
 {
+    private GridView $grid;
+
+    public function __construct(GridView $grid)
+    {
+        $this->grid = $grid;    
+    }
+
     #[Route('/', name: 'app_customer_customer_index', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): Response
     {
@@ -24,9 +33,17 @@ class CustomerController extends AbstractController
             ->getRepository(Customer::class)
             ->findAll();
 
+            $propertyAccessor = PropertyAccess::createPropertyAccessor();
+            foreach ($customers as $customer) {
+                dump($customer);
+                dump($entityManager->getClassMetadata(Customer::class));
+            }
+            die();
         return $this->render('customer/index.html.twig', [
             'customers' => $customers,
-            'title' => 'My title'
+            'title' => 'My title',
+            'columns' => $entityManager->getClassMetadata(Customer::class)
+            // 'columns' => ['Id', 'Code', 'Username', 'Email', 'Password', 'UnconfirmedEmail', 'RegistrationIp', 'Active', 'ConfirmedAt', 'LastLoginAt', 'BlockedAt', 'CreatedAt', 'UpdatedAt', 'actions']
         ]);
     }
 

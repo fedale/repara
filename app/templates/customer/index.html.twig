@@ -1,5 +1,14 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+<style type="text/css">
+body {
+    background: #212529!important;
+    color: #d4d4d4!important;
+}
+</style>
+{% endblock %}
+
 {% block title %}Customer index{% endblock %}
 
 {% block body %}
@@ -8,42 +17,25 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Id</th>
-                <th>Code</th>
-                <th>Username</th>
-                <th>Email</th>
-                <th>Password</th>
-                <th>UnconfirmedEmail</th>
-                <th>RegistrationIp</th>
-                <th>Active</th>
-                <th>ConfirmedAt</th>
-                <th>LastLoginAt</th>
-                <th>BlockedAt</th>
-                <th>CreatedAt</th>
-                <th>UpdatedAt</th>
-                <th>actions</th>
+                {% for customer in customers %}
+                
+                <th>
+                    {# {{ column.getLabel() }} #}
+                    {{ customer }}
+                </th>
+                {% endfor %}
             </tr>
         </thead>
         <tbody>
         {% for customer in customers %}
+        {# {{ dump(customer) }} #}
             <tr>
-                <td>{{ customer.id }}</td>
-                <td>{{ customer.code }}</td>
-                <td>{{ customer.username }}</td>
-                <td>{{ customer.email }}</td>
-                <td>{{ customer.password }}</td>
-                <td>{{ customer.unconfirmedEmail }}</td>
-                <td>{{ customer.registrationIp }}</td>
-                <td>{{ customer.active ? 'Yes' : 'No' }}</td>
-                <td>{{ customer.confirmedAt ? customer.confirmedAt|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ customer.lastLoginAt ? customer.lastLoginAt|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ customer.blockedAt ? customer.blockedAt|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ customer.createdAt ? customer.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ customer.updatedAt ? customer.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
-                <td>
-                    <a href="{{ path('app_customer_customer_show', {'id': customer.id}) }}">show</a>
-                    <a href="{{ path('app_customer_customer_edit', {'id': customer.id}) }}">edit</a>
-                </td>
+                {% for column in columns %}
+                    <td>
+                        {# {{ column.format(record, source) | raw }} #}
+                        {{ customer }}
+                    </td>
+                {% endfor %}
             </tr>
         {% else %}
             <tr>

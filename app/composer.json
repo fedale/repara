@@ -7,6 +7,10 @@
         {
             "type": "vcs",
             "url": "https://github.com/fedale/EasyAdminBundle"
+        },
+        {
+            "type": "path",
+            "url": "../../APYDataGridBundle"
         }
     ],
     "require": {
@@ -17,6 +21,7 @@
         "doctrine/doctrine-bundle": "^2.7",
         "doctrine/doctrine-migrations-bundle": "^3.2",
         "doctrine/orm": "^2.12",
+        "apy/datagrid-bundle": "@dev",
         "easycorp/easyadmin-bundle": "4.x-dev",
         "fakerphp/faker": "^1.19",
         "fresh/doctrine-enum-bundle": "^9.0",
@@ -49,6 +54,7 @@
         "symfony/string": "6.1.*",
         "symfony/translation": "6.1.*",
         "symfony/twig-bundle": "6.1.*",
+        "symfony/ux-twig-component": "^2.4",
         "symfony/validator": "6.1.*",
         "symfony/web-link": "6.1.*",
         "symfony/webpack-encore-bundle": "^1.15",

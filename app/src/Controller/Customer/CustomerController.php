@@ -20,11 +20,12 @@ class CustomerController extends AbstractController
 {
 
     #[Route('/', name: 'app_customer_customer_index', methods: ['GET', 'POST'])]
-    public function index(EntityManagerInterface $entityManager, \APY\DataGridBundle\Grid\Grid $grid): Response
+    public function index(EntityManagerInterface $entityManager, \APY\DataGridBundle\Grid\Grid $grid, \Doctrine\Persistence\ManagerRegistry $doctrine): Response
     {
-        // $source = new Entity(Book::class);
-        // $this->grid->setSource($source);
-        // return $this->grid->getGridResponse('customer/index.html.twig');
+        $source = new Entity($doctrine, Customer::class);
+        $grid->setSource($source);
+        dump($grid);
+        return $grid->getGridResponse('customer/index.html.twig');
         $customers = $entityManager
             ->getRepository(Customer::class)
             ->findAll();

@@ -15,22 +15,24 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use APY\DataGridBundle\Grid\Source\Entity;
 use Doctrine\Persistence\ManagerRegistry;
+use APY\DataGridBundle\Grid\Grid;
 
 #[Route('/customer')]
 class CustomerController extends AbstractController
 {
 
     #[Route('/', name: 'app_customer_customer_index', methods: ['GET', 'POST'])]
-    public function index(EntityManagerInterface $entityManager, \APY\DataGridBundle\Grid\Grid $grid, ManagerRegistry $doctrine): Response
+    public function index(EntityManagerInterface $entityManager, Entity $entity, Grid $grid): Response
     {
-        $source = new Entity($doctrine, Customer::class);
+        $source = $entity->setSource(Customer::class);
         // $source = new Entity();
         $grid->setSource($source);
-        dump($grid);
-        return $grid->getGridResponse('customer/index.html.twig');
         $customers = $entityManager
-            ->getRepository(Customer::class)
-            ->findAll();
+        ->getRepository(Customer::class)
+        ->findAll();
+        
+        return $grid->getGridResponse('customer/apy_index.html.twig', [
+            'customers' => $customers]);
 
             // $propertyAccessor = PropertyAccess::createPropertyAccessor();
             // foreach ($customers as $customer) {

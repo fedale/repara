@@ -8,6 +8,7 @@ use App\Entity\Customer\CustomerType as CustomerCustomerType;
 use App\Form\Customer\CustomerRegistrationType;
 use App\Form\Customer\CustomerType;
 use App\Form\Model\CustomerCreateModel;
+use App\Type\CustomerGridType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,23 +17,68 @@ use Symfony\Component\Routing\Annotation\Route;
 use APY\DataGridBundle\Grid\Source\Entity;
 use Doctrine\Persistence\ManagerRegistry;
 use APY\DataGridBundle\Grid\Grid;
+use APY\DataGridBundle\Grid\Source\Source;
+use APY\DataGridBundle\Grid\GridFactory;
+use APY\DataGridBundle\Grid\GridManager;
 
 #[Route('/customer')]
 class CustomerController extends AbstractController
 {
 
     #[Route('/', name: 'app_customer_customer_index', methods: ['GET', 'POST'])]
-    public function index(EntityManagerInterface $entityManager, Entity $entity, Grid $grid): Response
+    public function index(
+        EntityManagerInterface $entityManager, 
+        Entity $entity, 
+        Grid $grid,
+        GridFactory $gridFactory,
+        GridManager $gridManager
+    ): Response
     {
         $source = $entity->setSource(Customer::class);
-        // $source = new Entity();
+
+         // Creates the grid from the type: does not work yet
+         //$grid = $this->createGrid($gridFactory, new CustomerGridType($entity));
+
+        // Method using GridManager. It works!
+        // $grid = $gridManager->createGrid();
+        // $grid->setSource($source);
+        // return $grid->getGridResponse('customer/apy_index.html.twig');
+        // dd($grid);
+
+         // Creates the builder does not work yet
+        //  $gridBuilder = $this->createGridBuilder (
+        //     $gridFactory,
+        //     $source, 
+        //     [
+        //         'persistence'  => true,
+        //         'route'        => 'product_list',
+        //         'filterable'   => false,
+        //         'sortable'     => false,
+        //         'max_per_page' => 20,
+        //     ]
+        // );
+        //  // Creates columns
+        //  $grid = $gridBuilder
+        //     ->add('id', 'number', [
+        //         'title'   => '#',
+        //         'primary' => 'true',
+        //     ])
+        //     ->add('name', 'text')
+        //     ->add('created_at', 'datetime', [
+        //         'field' => 'createdAt',
+        //     ])
+        //     ->add('status', 'text')
+        //     ->getGrid();
+
+        // dd($gridBuilder);
+
         $grid->setSource($source);
+        $grid->hideColumns(['username', 'email']);
         $customers = $entityManager
-        ->getRepository(Customer::class)
-        ->findAll();
+            ->getRepository(Customer::class)
+            ->findAll();
         
-        return $grid->getGridResponse('customer/apy_index.html.twig', [
-            'customers' => $customers]);
+        return $grid->getGridResponse('customer/apy_index.html.twig');
 
             // $propertyAccessor = PropertyAccess::createPropertyAccessor();
             // foreach ($customers as $customer) {
@@ -121,5 +167,21 @@ class CustomerController extends AbstractController
         }
 
         return $this->redirectToRoute('app_customer_customer_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    /**
+     * @return GridBuilder
+     */
+    public function createGridBuilder(GridFactory $gridFactory, Source $source = null, array $options = [])
+    {
+        return $gridFactory->createBuilder('grid', $source, $options);
+    }
+
+     /**
+     * @return Grid
+     */
+    public function createGrid(GridFactory $gridFactory, $type, Source $source = null, array $options = [])
+    {
+        return $gridFactory->create($type, $source, $options);
     }
 }

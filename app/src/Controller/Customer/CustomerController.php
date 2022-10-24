@@ -37,7 +37,7 @@ class CustomerController extends AbstractController
         $source = $entity->setSource(Customer::class);
 
          // Creates the grid from the type: does not work yet
-         //$grid = $this->createGrid($gridFactory, new CustomerGridType($entity));
+        //$grid = $this->createGrid($gridFactory, new CustomerGridType($entity));
 
         // Method using GridManager. It works!
         // $grid = $gridManager->createGrid();
@@ -45,32 +45,32 @@ class CustomerController extends AbstractController
         // return $grid->getGridResponse('customer/apy_index.html.twig');
         // dd($grid);
 
-         // Creates the builder does not work yet
-        //  $gridBuilder = $this->createGridBuilder (
-        //     $gridFactory,
-        //     $source, 
-        //     [
-        //         'persistence'  => true,
-        //         'route'        => 'product_list',
-        //         'filterable'   => false,
-        //         'sortable'     => false,
-        //         'max_per_page' => 20,
-        //     ]
-        // );
-        //  // Creates columns
-        //  $grid = $gridBuilder
-        //     ->add('id', 'number', [
-        //         'title'   => '#',
-        //         'primary' => 'true',
-        //     ])
-        //     ->add('name', 'text')
-        //     ->add('created_at', 'datetime', [
-        //         'field' => 'createdAt',
-        //     ])
-        //     ->add('status', 'text')
-        //     ->getGrid();
+        // Creates the builder does not work yet
+        $gridBuilder = $gridFactory->createBuilder (
+            'grid',
+            $source, 
+            [
+                'persistence'  => true,
+                'route'        => 'product_list',
+                'filterable'   => false,
+                'sortable'     => false,
+                'max_per_page' => 20,
+            ]
+        );
+        // Creates columns
+        $grid = $gridBuilder
+            ->add('id', 'number', [
+                'title'   => '#',
+                'primary' => 'true',
+            ])
+            ->add('name', 'text')
+            ->add('created_at', 'datetime', [
+                'field' => 'createdAt',
+            ])
+            ->add('status', 'text')
+            ->getGrid();
 
-        // dd($gridBuilder);
+        dd($gridBuilder);
 
         $grid->setSource($source);
         $grid->hideColumns(['username', 'email']);

@@ -34,29 +34,15 @@ class CustomerController extends AbstractController
         GridManager $gridManager
     ): Response
     {
-        $source = $entity->setSource(Customer::class);
+        // Creates the builder
+        $gridBuilder = $this->createGridBuilder(new Entity(Customer::class), [
+            'persistence'  => true,
+            'route'        => 'product_list',
+            'filterable'   => false,
+            'sortable'     => false,
+            'max_per_page' => 20,
+        ]);
 
-         // Creates the grid from the type: does not work yet
-        //$grid = $this->createGrid($gridFactory, new CustomerGridType($entity));
-
-        // Method using GridManager. It works!
-        // $grid = $gridManager->createGrid();
-        // $grid->setSource($source);
-        // return $grid->getGridResponse('customer/apy_index.html.twig');
-        // dd($grid);
-
-        // Creates the builder does not work yet
-        $gridBuilder = $gridFactory->createBuilder (
-            'grid',
-            $source, 
-            [
-                'persistence'  => true,
-                'route'        => 'product_list',
-                'filterable'   => false,
-                'sortable'     => false,
-                'max_per_page' => 20,
-            ]
-        );
         // Creates columns
         $grid = $gridBuilder
             ->add('id', 'number', [
@@ -69,6 +55,50 @@ class CustomerController extends AbstractController
             ])
             ->add('status', 'text')
             ->getGrid();
+
+        // Handles filters, sorts, exports, ...
+        $grid->handleRequest($request);
+
+        // Renders the grid
+        return $this->render('MyProjectBundle:Product:list', ['grid' => $grid]);
+
+
+
+        $source = $entity->setSource(Customer::class);
+
+         // Creates the grid from the type: does not work yet
+        $grid = $this->createGrid($gridFactory, new CustomerGridType($entity));
+
+        // Method using GridManager. It works!
+        // $grid = $gridManager->createGrid();
+        // $grid->setSource($source);
+        // return $grid->getGridResponse('customer/apy_index.html.twig');
+        // dd($grid);
+
+        // Creates the builder does not work yet
+        // $gridBuilder = $gridFactory->createBuilder (
+        //     'grid',
+        //     $source, 
+        //     [
+        //         'persistence'  => true,
+        //         'route'        => 'product_list',
+        //         'filterable'   => false,
+        //         'sortable'     => false,
+        //         'max_per_page' => 20,
+        //     ]
+        // );
+        // // Creates columns
+        // $grid = $gridBuilder
+        //     ->add('id', 'number', [
+        //         'title'   => '#',
+        //         'primary' => 'true',
+        //     ])
+        //     ->add('name', 'text')
+        //     ->add('created_at', 'datetime', [
+        //         'field' => 'createdAt',
+        //     ])
+        //     ->add('status', 'text')
+        //     ->getGrid();
 
         dd($gridBuilder);
 
@@ -172,9 +202,9 @@ class CustomerController extends AbstractController
     /**
      * @return GridBuilder
      */
-    public function createGridBuilder(GridFactory $gridFactory, Source $source = null, array $options = [])
+    public function createGridBuilder(Source $source = null, array $options = [])
     {
-        return $gridFactory->createBuilder('grid', $source, $options);
+        return $this->container->get('apy_grid.factory')->createBuilder('grid', $source, $options);
     }
 
      /**

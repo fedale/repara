@@ -40,7 +40,7 @@ class CustomerGridType extends GridType
         parent::configureOptions($resolver);
 
         $resolver->setDefaults([
-            'source'       => $this->entity->setSource(Customer::class),
+            'source'       => new Entity(Customer::class),
             'persistence'  => true,
             'route'        => 'product_list',
             'filterable'   => false,

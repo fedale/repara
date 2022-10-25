@@ -34,14 +34,18 @@ class CustomerController extends AbstractController
         GridManager $gridManager
     ): Response
     {
+        $source = $entity->setSource(Customer::class);
+      
+
         // Creates the builder
-        $gridBuilder = $this->createGridBuilder(new Entity(Customer::class), [
+        $gridBuilder =  $gridFactory->createBuilder('grid', new Entity(Customer::class, 'default'), [
             'persistence'  => true,
             'route'        => 'product_list',
             'filterable'   => false,
             'sortable'     => false,
             'max_per_page' => 20,
         ]);
+        dd($gridBuilder);
 
         // Creates columns
         $grid = $gridBuilder

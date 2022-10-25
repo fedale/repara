@@ -17,11 +17,12 @@
         "php": ">=8.1",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "ddm/datagrid-bundle": "@dev",
         "doctrine/annotations": "^1.13",
         "doctrine/doctrine-bundle": "^2.7",
         "doctrine/doctrine-migrations-bundle": "^3.2",
+        "doctrine/mongodb-odm-bundle": "^4.5",
         "doctrine/orm": "^2.12",
-        "apy/datagrid-bundle": "@dev",
         "easycorp/easyadmin-bundle": "4.x-dev",
         "fakerphp/faker": "^1.19",
         "fresh/doctrine-enum-bundle": "^9.0",
@@ -111,7 +112,7 @@
     },
     "extra": {
         "symfony": {
-            "allow-contrib": false,
+            "allow-contrib": "true",
             "require": "6.1.*",
             "docker": true
         }

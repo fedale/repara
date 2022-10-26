@@ -25,27 +25,32 @@ use APY\DataGridBundle\Grid\GridManager;
 class CustomerController extends AbstractController
 {
 
+    // public function __construct(private ManagerRegistry $registry, private Manager $manager)
+    // {
+        
+    // }
+
     #[Route('/', name: 'app_customer_customer_index', methods: ['GET', 'POST'])]
     public function index(
         EntityManagerInterface $entityManager, 
         Entity $entity, 
         Grid $grid,
         GridFactory $gridFactory,
-        GridManager $gridManager
+        GridManager $gridManager,
+        Request $request
     ): Response
     {
-        $source = $entity->setSource(Customer::class);
-      
+        // $source = $entity->setSource(Customer::class);
 
         // Creates the builder
-        $gridBuilder =  $gridFactory->createBuilder('grid', new Entity(Customer::class, 'default'), [
+        $gridBuilder =  $gridFactory->createBuilder('grid', $entity, [
             'persistence'  => true,
-            'route'        => 'product_list',
-            'filterable'   => false,
+            'route'        => 'app_customer_customer_index',
+            'filterable'   => true,
             'sortable'     => false,
-            'max_per_page' => 20,
+            'max_per_page' => 5,
         ]);
-        dd($gridBuilder);
+        // dd($gridBuilder);
 
         // Creates columns
         $grid = $gridBuilder
@@ -53,18 +58,21 @@ class CustomerController extends AbstractController
                 'title'   => '#',
                 'primary' => 'true',
             ])
-            ->add('name', 'text')
-            ->add('created_at', 'datetime', [
-                'field' => 'createdAt',
-            ])
-            ->add('status', 'text')
+            ->add('code', 'text')
+            ->add('username', 'text')
+            ->add('email', 'text')
+            ->add('active', 'boolean')
+            // ->add('created_at', 'datetime', [
+            //     'field' => 'createdAt',
+            // ])
+            // ->add('status', 'text')
             ->getGrid();
 
         // Handles filters, sorts, exports, ...
         $grid->handleRequest($request);
 
         // Renders the grid
-        return $this->render('MyProjectBundle:Product:list', ['grid' => $grid]);
+        return $this->render('customer/apy_index.html.twig', ['grid' => $grid]);
 
 
 

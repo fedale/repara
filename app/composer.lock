@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e4595f6c1a68546434a5d72aa9593083",
+    "content-hash": "8245ee4a77be7fd691468196c7bbe734",
     "packages": [
         {
             "name": "behat/transliterator",
@@ -54,6 +54,80 @@
                 "source": "https://github.com/Behat/Transliterator/tree/v1.5.0"
             },
             "time": "2022-03-30T09:27:43+00:00"
+        },
+        {
+            "name": "ddm/datagrid-bundle",
+            "version": "dev-master",
+            "dist": {
+                "type": "path",
+                "url": "../../APYDataGridBundle",
+                "reference": "22ad7c1330bcc6719b8fcccf9045df710a9a8714"
+            },
+            "require": {
+                "php": "^7.4||^8.1",
+                "symfony/config": "^5.3|^6.1",
+                "symfony/dependency-injection": "^5.3|^6.1",
+                "symfony/form": "^5.3|^6.1",
+                "symfony/http-foundation": "^5.3|^6.1",
+                "symfony/http-kernel": "^5.3|^6.1",
+                "symfony/options-resolver": "^5.3|^6.1",
+                "symfony/security-guard": "^5.3|^6.1",
+                "symfony/serializer": "^5.3|^6.1",
+                "twig/twig": "^3.4"
+            },
+            "provide": {
+                "ext-mongo": "1.5"
+            },
+            "require-dev": {
+                "doctrine/mongodb-odm": "^2.0",
+                "doctrine/orm": "~2.4,>=2.4.5",
+                "friendsofphp/php-cs-fixer": "^2.0",
+                "php-coveralls/php-coveralls": "^2.0",
+                "phpunit/phpunit": "~5.7",
+                "symfony/browser-kit": "^5.3|^6.1",
+                "symfony/expression-language": "^5.3|^6.1",
+                "symfony/framework-bundle": "^5.3|^6.1",
+                "symfony/templating": "^5.3|^6.1"
+            },
+            "suggest": {
+                "doctrine/mongodb-odm": "If you want to use Document as source, please require doctrine/mongodb-odm",
+                "doctrine/orm": "If you want to use Entity as source, please require doctrine/orm",
+                "ext-intl": "Translate the grid",
+                "ext-mbstring": "Convert your data with the right charset",
+                "phpoffice/phpspreadsheet": "Export the grid (Excel or HTML)"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-4": {
+                    "APY\\DataGridBundle\\": ""
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Yoann Petit",
+                    "email": "abhoryo@free.fr"
+                },
+                {
+                    "name": "Stanislav Turza",
+                    "email": "stanislav.turza@gmail.com"
+                },
+                {
+                    "name": "Evan Owens",
+                    "email": "eaowens@gmail.com"
+                }
+            ],
+            "description": "Symfony Datagrid Bundle",
+            "homepage": "https://github.com/apy/APYDataGridBundle",
+            "keywords": [
+                "Symfony",
+                "datagrid"
+            ],
+            "transport-options": {
+                "relative": true
+            }
         },
         {
             "name": "doctrine/annotations",
@@ -7341,6 +7415,73 @@
             "time": "2022-05-14T12:53:54+00:00"
         },
         {
+            "name": "symfony/security-guard",
+            "version": "v5.4.0-BETA1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/security-guard.git",
+                "reference": "80c6fabecc78e40cf2c804f7d2a738d447458471"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/security-guard/zipball/80c6fabecc78e40cf2c804f7d2a738d447458471",
+                "reference": "80c6fabecc78e40cf2c804f7d2a738d447458471",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2.5",
+                "symfony/polyfill-php80": "^1.15",
+                "symfony/security-core": "^5.0|^6.0",
+                "symfony/security-http": "^5.3|^6.0"
+            },
+            "require-dev": {
+                "psr/log": "^1|^2|^3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Security\\Guard\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony Security Component - Guard",
+            "homepage": "https://symfony.com",
+            "support": {
+                "source": "https://github.com/symfony/security-guard/tree/v5.4.0-BETA1"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2021-11-03T09:24:47+00:00"
+        },
+        {
             "name": "symfony/security-http",
             "version": "v6.1.6",
             "source": {
@@ -11844,8 +11985,9 @@
         }
     ],
     "aliases": [],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "stability-flags": {
+        "ddm/datagrid-bundle": 20,
         "easycorp/easyadmin-bundle": 20
     },
     "prefer-stable": true,

@@ -25,11 +25,6 @@ use APY\DataGridBundle\Grid\GridManager;
 class CustomerController extends AbstractController
 {
 
-    // public function __construct(private ManagerRegistry $registry, private Manager $manager)
-    // {
-        
-    // }
-
     #[Route('/', name: 'app_customer_customer_index', methods: ['GET', 'POST'])]
     public function index(
         EntityManagerInterface $entityManager, 
@@ -40,17 +35,17 @@ class CustomerController extends AbstractController
         Request $request
     ): Response
     {
-        // $source = $entity->setSource(Customer::class);
+        $entity->setup(['entity' => 'App\Entity\Customer\Customer']);
 
         // Creates the builder
         $gridBuilder =  $gridFactory->createBuilder('grid', $entity, [
             'persistence'  => true,
             'route'        => 'app_customer_customer_index',
             'filterable'   => true,
-            'sortable'     => false,
-            'max_per_page' => 5,
+            'sortable'     => true,
+            'max_per_page' => 10,
         ]);
-        // dd($gridBuilder);
+        // dd($entity, $gridBuilder);
 
         // Creates columns
         $grid = $gridBuilder

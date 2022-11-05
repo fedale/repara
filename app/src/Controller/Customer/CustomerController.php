@@ -8,6 +8,7 @@ use App\Entity\Customer\CustomerType as CustomerCustomerType;
 use App\Form\Customer\CustomerRegistrationType;
 use App\Form\Customer\CustomerType;
 use App\Form\Model\CustomerCreateModel;
+use App\Grid\Source\Entity as SourceEntity;
 use App\Type\CustomerGridType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,6 +25,14 @@ use APY\DataGridBundle\Grid\GridManager;
 #[Route('/customer')]
 class CustomerController extends AbstractController
 {
+
+    #[Route('/grid', name: 'app_grid', methods: ['GET'])]
+    public function grid(): Response
+    {
+        
+        dump($entity);
+        return new Response('Response');
+    }
 
     #[Route('/', name: 'app_customer_customer_index', methods: ['GET', 'POST'])]
     public function index(

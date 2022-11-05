@@ -1,0 +1,5 @@
+services:
+  App\Grid\Source\Entity:
+    public: true
+    arguments: 
+      - '@doctrine.orm.default_entity_manager'

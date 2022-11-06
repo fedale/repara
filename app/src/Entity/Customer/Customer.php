@@ -82,6 +82,8 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'assignedCustomers')]
     private Collection $users;
 
+    private $virtualField;
+
     public function __construct()
     {
         $this->locations = new ArrayCollection();
@@ -428,4 +430,13 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function getVirtualField() {
+        return $this->virtualField;
+    }
+
+    public function setVirtualField(string $virtualField) {
+        $this->virtualField = $virtualField;
+
+        return $this;
+    }
 }

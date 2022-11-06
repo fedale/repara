@@ -21,17 +21,85 @@ use APY\DataGridBundle\Grid\Grid;
 use APY\DataGridBundle\Grid\Source\Source;
 use APY\DataGridBundle\Grid\GridFactory;
 use APY\DataGridBundle\Grid\GridManager;
+use Doctrine\ORM\EntityManager;
 
 #[Route('/customer')]
 class CustomerController extends AbstractController
 {
+    private EntityManagerInterface $entityManager;
+
+    /**
+     * @var \Doctrine\ORM\Mapping\ClassMetadata
+     */
+    protected $ormMetadata;
+
+    public function __construct(EntityManagerInterface $entityManager) {
+        $this->entityManager = $entityManager;
+    }
 
     #[Route('/grid', name: 'app_grid', methods: ['GET'])]
-    public function grid(): Response
+    public function grid(EntityManagerInterface $entityManager): Response
     {
-        
-        dump($entity);
+        $customers = $this->entityManager
+            ->getRepository(Customer::class)
+            ->findAll();
+        $this->ormMetadata = $this->entityManager->getClassMetadata(Customer::class);
+
+        dd($this->ormMetadata, $this->ormMetadata->getReflectionClass(), $this->getFieldsMetadata(Customer::class));
+
         return new Response('Response');
+    }
+
+    public function getFieldsMetadata($class, $group = 'default')
+    {
+        $result = [];
+        foreach ($this->ormMetadata->getFieldNames() as $name) {
+            $mapping = $this->ormMetadata->getFieldMapping($name);
+            $values = ['title' => $name, 'source' => true];
+
+            if (isset($mapping['fieldName'])) {
+                $values['field'] = $mapping['fieldName'];
+                $values['id'] = $mapping['fieldName'];
+            }
+
+            if (isset($mapping['id']) && $mapping['id'] == 'id') {
+                $values['primary'] = true;
+            }
+
+            switch ($mapping['type']) {
+                case 'string':
+                case 'text':
+                    $values['type'] = 'text';
+                    break;
+                case 'integer':
+                case 'smallint':
+                case 'bigint':
+                case 'float':
+                case 'decimal':
+                    $values['type'] = 'number';
+                    break;
+                case 'boolean':
+                    $values['type'] = 'boolean';
+                    break;
+                case 'date':
+                    $values['type'] = 'date';
+                    break;
+                case 'datetime':
+                    $values['type'] = 'datetime';
+                    break;
+                case 'time':
+                    $values['type'] = 'time';
+                    break;
+                case 'array':
+                case 'object':
+                    $values['type'] = 'array';
+                    break;
+            }
+
+            $result[$name] = $values;
+        }
+
+        return $result;
     }
 
     #[Route('/', name: 'app_customer_customer_index', methods: ['GET', 'POST'])]

@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+<style type="text/css">
+body {
+    background: #212529!important;
+    color: #d4d4d4!important;
+}
+</style>
+{% endblock %}
+
+{% block title %}Customer index{% endblock %}
+
+{% block body %}
+
+
+<h1>Entity index</h1>
+<table class="table">
+        <thead>
+            <tr>
+                {% for column in columns %}
+                <th>
+                    {{ column.property }}
+                </th>
+                {% endfor %}
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for entity in entities %}
+            <tr>
+                {% for column in columns %}
+                    <td>
+                        {% if not column.value|default(false) %}
+                            {{ attribute(entity, column.property) }}
+                        {% else %}
+                            {{ column.value|default(null) }}
+                        {% endif %}
+                    </td>
+                {% endfor %}
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="14">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+
+</table>
+
+{#
+    <table class="table">
+        <thead>
+            <tr>
+                {% for customer in customers %}
+                
+                <th>
+                    {{ customer }}
+                </th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+        {% for customer in customers %}
+            <tr>
+                {% for column in columns %}
+                    <td>
+                        {{ customer }}
+                    </td>
+                {% endfor %}
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="14">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+#}
+    {# <a href="{{ path('app_customer_customer_new') }}">Create new</a> #}
+{% endblock %}

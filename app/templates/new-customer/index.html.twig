@@ -7,6 +7,11 @@ body {
     color: #d4d4d4!important;
 }
 </style>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
 {% endblock %}
 
 {% block title %}Customer index{% endblock %}
@@ -15,67 +20,13 @@ body {
 
 
 <h1>Entity index</h1>
-<table class="table">
-        <thead>
-            <tr>
-                {% for column in columns %}
-                <th>
-                    {{ column.property }}
-                </th>
-                {% endfor %}
-            </tr>
-        </thead>
+<table class="table2 table-dark">
+    {{ include('new-customer/_header.html.twig', {'columns': columns}) }}
 
-        <tbody>
-        {% for entity in entities %}
-            <tr>
-                {% for column in columns %}
-                    <td>
-                        {% if not column.value|default(false) %}
-                            {{ attribute(entity, column.property) }}
-                        {% else %}
-                            {{ column.value|default(null) }}
-                        {% endif %}
-                    </td>
-                {% endfor %}
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="14">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
+    {{ include('new-customer/_body.html.twig', {'columns': columns, 'entities': entities}) }}
+
+    {{ include('new-customer/_footer.html.twig', {'columns': columns}) }}
 
 </table>
 
-{#
-    <table class="table">
-        <thead>
-            <tr>
-                {% for customer in customers %}
-                
-                <th>
-                    {{ customer }}
-                </th>
-                {% endfor %}
-            </tr>
-        </thead>
-        <tbody>
-        {% for customer in customers %}
-            <tr>
-                {% for column in columns %}
-                    <td>
-                        {{ customer }}
-                    </td>
-                {% endfor %}
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="14">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-#}
-    {# <a href="{{ path('app_customer_customer_new') }}">Create new</a> #}
 {% endblock %}

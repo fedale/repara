@@ -8,6 +8,7 @@ use App\Entity\Customer\CustomerType as CustomerCustomerType;
 use App\Form\Customer\CustomerRegistrationType;
 use App\Form\Customer\CustomerType;
 use App\Form\Model\CustomerCreateModel;
+use App\Grid\GridView;
 use App\Grid\Source\Entity as SourceEntity;
 use App\Type\CustomerGridType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -33,8 +34,12 @@ class NewCustomerController extends AbstractController
      */
     protected $ormMetadata;
 
-    public function __construct(EntityManagerInterface $entityManager) {
+    private $gridView;
+
+    public function __construct(EntityManagerInterface $entityManager, GridView $gridView) {
         $this->entityManager = $entityManager;
+        $this->gridView = $gridView;
+
     }
 
     #[Route('/grid', name: 'new_app_grid', methods: ['GET'])]
@@ -74,13 +79,18 @@ class NewCustomerController extends AbstractController
             // ]
         ];
 
+        $this->gridView->setColumns($columns);
+        $this->gridView->setEntities($customers);
+        return $this->gridView->renderGrid('new-customer/index.html.twig');
+        
+
         // dd($this->ormMetadata, $this->ormMetadata->getReflectionClass(), $this->getFieldsMetadata(Customer::class));
 
-        return $this->render('new-customer/index.html.twig', [
-            'title' => 'My title',
-            'columns' => $columns,
-            'entities' => $customers
-        ]);
+        // return $this->render('new-customer/index.html.twig', [
+        //     'title' => 'My title',
+        //     'columns' => $columns,
+        //     'entities' => $customers
+        // ]);
     }
 
     public function getFieldsMetadata($class, $group = 'default')

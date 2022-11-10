@@ -1,7 +1,7 @@
 <?php
 namespace App\Grid;
 
-interface GruidBuilderInterface
+interface GridBuilderInterface
 {
     public function renderToolbar();
     

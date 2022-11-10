@@ -27,30 +27,17 @@ use Doctrine\ORM\EntityManager;
 #[Route('/new-customer')]
 class NewCustomerController extends AbstractController
 {
-    private EntityManagerInterface $entityManager;
-
-    /**
-     * @var \Doctrine\ORM\Mapping\ClassMetadata
-     */
-    protected $ormMetadata;
+    
 
     private $gridView;
 
     public function __construct(EntityManagerInterface $entityManager, GridView $gridView) {
-        $this->entityManager = $entityManager;
         $this->gridView = $gridView;
-
     }
 
     #[Route('/grid', name: 'new_app_grid', methods: ['GET'])]
     public function grid(EntityManagerInterface $entityManager): Response
     {
-        $entityClass = Customer::class;
-        $customers = $this->entityManager
-            ->getRepository(Customer::class)
-            ->findAll();
-        $this->ormMetadata = $this->entityManager->getClassMetadata($entityClass);
-
         $columns = [
             [
                 'property' => 'id',
@@ -79,70 +66,9 @@ class NewCustomerController extends AbstractController
             // ]
         ];
 
-        $this->gridView->setColumns($columns);
-        $this->gridView->setEntities($customers);
+        $this->gridView->init(Customer::class, $columns);
+
         return $this->gridView->renderGrid('new-customer/index.html.twig');
-        
-
-        // dd($this->ormMetadata, $this->ormMetadata->getReflectionClass(), $this->getFieldsMetadata(Customer::class));
-
-        // return $this->render('new-customer/index.html.twig', [
-        //     'title' => 'My title',
-        //     'columns' => $columns,
-        //     'entities' => $customers
-        // ]);
-    }
-
-    public function getFieldsMetadata($class, $group = 'default')
-    {
-        $result = [];
-        foreach ($this->ormMetadata->getFieldNames() as $name) {
-            $mapping = $this->ormMetadata->getFieldMapping($name);
-            $values = ['title' => $name, 'source' => true];
-
-            if (isset($mapping['fieldName'])) {
-                $values['field'] = $mapping['fieldName'];
-                $values['id'] = $mapping['fieldName'];
-            }
-
-            if (isset($mapping['id']) && $mapping['id'] == 'id') {
-                $values['primary'] = true;
-            }
-
-            switch ($mapping['type']) {
-                case 'string':
-                case 'text':
-                    $values['type'] = 'text';
-                    break;
-                case 'integer':
-                case 'smallint':
-                case 'bigint':
-                case 'float':
-                case 'decimal':
-                    $values['type'] = 'number';
-                    break;
-                case 'boolean':
-                    $values['type'] = 'boolean';
-                    break;
-                case 'date':
-                    $values['type'] = 'date';
-                    break;
-                case 'datetime':
-                    $values['type'] = 'datetime';
-                    break;
-                case 'time':
-                    $values['type'] = 'time';
-                    break;
-                case 'array':
-                case 'object':
-                    $values['type'] = 'array';
-                    break;
-            }
-
-            $result[$name] = $values;
-        }
-
-        return $result;
     }
 
     #[Route('/', name: 'app_customer_customer_index', methods: ['GET', 'POST'])]

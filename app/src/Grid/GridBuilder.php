@@ -5,7 +5,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\Environment;
 
-class GridBuilder implements GruidBuilderInterface 
+class GridBuilder implements GridBuilderInterface 
 {
     private Request $request;
     private Environment $twig;

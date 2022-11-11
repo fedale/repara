@@ -1,14 +1,18 @@
 <?php 
 namespace App\Grid;
 
+use App\Grid\Column\ColumnInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\Environment;
 
-class GridView {
+class Gridview {
 
     private $twig;
 
+    /**
+     * ColumnInterface[] $columns
+     */
     private $columns = [];
 
     private $entities = [];
@@ -21,23 +25,27 @@ class GridView {
     private EntityManagerInterface $entityManager;
 
 
-    public function __construct(Environment $twig, EntityManagerInterface $entityManager)
+    // public function __construct(Environment $twig, EntityManagerInterface $entityManager)
+    public function __construct(Environment $twig, array $columns)
     {
         $this->twig = $twig;
-        $this->entityManager = $entityManager;
+        $this->columns = $columns;
+        // $this->entityManager = $entityManager;
     }
 
-    public function init($entityClass, $columns)
+    /*public function init($entityClass, $columns)
     {
         $this->ormMetadata = $this->entityManager->getClassMetadata($entityClass);
         $this->setColumns($columns);
         $this->setEntities($entityClass);
-    }
+    }*/
 
+
+    /*
     public function setColumns($columns) {
         
         $this->columns = $columns;
-    }
+    }*/
 
     public function createColumn(string $column) 
     {
@@ -60,12 +68,12 @@ class GridView {
 
     private function renderTableHeader()
     {
-
+        // Must render the HTML of Table header
     }
 
     private function renderTableFooter()
     {
-        
+        // Must render the HTML of Table footer
     }
         
     public function renderGrid(string $view, array $parameters = [], Response $response = null): Response
@@ -135,4 +143,40 @@ class GridView {
 
         return $result;
     }
+
+
+    // https://github.com/tinustester/symfony-gridview-bundle/blob/e2cf9eec053ff21cd3d457b43babcd81d287fa39/src/Gridview.php
+     /**
+     * Renders full grid content.
+     *
+     * @return string
+     */
+    public function renderGrid2(): string
+    {
+        $this->containerOptions['id'] = $this->containerOptions['id'] ?? $this->getId();
+        $gridContainerOptions = $this->html->prepareTagAttributes($this->containerOptions);
+
+        return '<div ' . $gridContainerOptions . '>' . $this->renderTable() . '</div>';
+    }
+
+    /**
+     * Renders grid table.
+     *
+     * @return string
+     */
+    protected function renderTable(): string
+    {
+        $tableOptions = $this->html->prepareTagAttributes($this->tableOptions);
+
+        $tableHtml = '<table ' . $tableOptions . '>';
+        // $tableHtml .= $this->renderCaption();
+        // $tableHtml .= $this->renderTableHeader();
+        // $tableHtml .= $this->renderTableFilter();
+        // $tableHtml .= $this->renderTableBody();
+        $tableHtml .= '</table>';
+
+        return $tableHtml;
+    }
+
+
 }

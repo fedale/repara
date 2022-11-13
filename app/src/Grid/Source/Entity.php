@@ -3,7 +3,7 @@ namespace App\Grid\Source;
 
 use Doctrine\ORM\EntityManagerInterface;
 
-class Entity
+class Entity implements SourceInterface
 {
     private EntityManagerInterface $entityManager;
 
@@ -24,4 +24,8 @@ class Entity
         dump($entityManager);
     }
 
+    public function getSource()
+    {
+        return;
+    }
 }

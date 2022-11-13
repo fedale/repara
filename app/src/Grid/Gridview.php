@@ -2,6 +2,7 @@
 namespace App\Grid;
 
 use App\Grid\Column\ColumnInterface;
+use App\Grid\Source\SourceInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\Environment;
@@ -9,13 +10,10 @@ use Twig\Environment;
 class Gridview {
 
     private $twig;
-
-    /**
-     * ColumnInterface[] $columns
-     */
-    private $columns = [];
-
     private $entities = [];
+
+    private $columns;
+    private $source;
 
     /**
      * @var \Doctrine\ORM\Mapping\ClassMetadata
@@ -24,13 +22,13 @@ class Gridview {
 
     private EntityManagerInterface $entityManager;
 
+    private $response;
 
-    // public function __construct(Environment $twig, EntityManagerInterface $entityManager)
-    public function __construct(Environment $twig, array $columns)
+    public function __construct(Environment $twig, EntityManagerInterface $entityManager)
     {
         $this->twig = $twig;
-        $this->columns = $columns;
-        // $this->entityManager = $entityManager;
+//         $this->columns = $columns;
+        $this->entityManager = $entityManager;
     }
 
     /*public function init($entityClass, $columns)
@@ -40,12 +38,19 @@ class Gridview {
         $this->setEntities($entityClass);
     }*/
 
-
-    /*
-    public function setColumns($columns) {
-        
+    public function setColumns($columns) 
+    {    
         $this->columns = $columns;
-    }*/
+    }
+
+    public function setSource($source) 
+    {    
+        $this->source = $this->entityManager
+        ->getRepository(Customer::class)
+        ->findAll();
+        
+        return $this;
+    }
 
     public function createColumn(string $column) 
     {
@@ -61,35 +66,24 @@ class Gridview {
     }
 
     public function setEntities($entityClass) {
+        dd($entityClass);
         $this->entities = $this->entityManager
             ->getRepository($entityClass)
             ->findAll();
-    }
-
-    private function renderTableHeader()
-    {
-        // Must render the HTML of Table header
-    }
-
-    private function renderTableFooter()
-    {
-        // Must render the HTML of Table footer
+            dd($this->entities);
+        return $this;
     }
         
-    public function renderGrid(string $view, array $parameters = [], Response $response = null): Response
+    public function renderGrid(string $view, array $parameters = []): Response
     {
         $parameters['columns'] = $this->columns;
         $parameters['entities'] = $this->entities;
         $content = $this->twig->render($view, $parameters);
 
-        if (null === $response) {
-            $response = new Response();
-        }
-
+        $response = new Response();
         $response->setContent($content);
 
         return $response;
-
     }
 
     public function getFieldsMetadata($class, $group = 'default')
@@ -158,25 +152,5 @@ class Gridview {
 
         return '<div ' . $gridContainerOptions . '>' . $this->renderTable() . '</div>';
     }
-
-    /**
-     * Renders grid table.
-     *
-     * @return string
-     */
-    protected function renderTable(): string
-    {
-        $tableOptions = $this->html->prepareTagAttributes($this->tableOptions);
-
-        $tableHtml = '<table ' . $tableOptions . '>';
-        // $tableHtml .= $this->renderCaption();
-        // $tableHtml .= $this->renderTableHeader();
-        // $tableHtml .= $this->renderTableFilter();
-        // $tableHtml .= $this->renderTableBody();
-        $tableHtml .= '</table>';
-
-        return $tableHtml;
-    }
-
 
 }

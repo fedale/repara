@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8245ee4a77be7fd691468196c7bbe734",
+    "content-hash": "32c038493e3fd0fcfb9c8f83f6d31ad5",
     "packages": [
         {
             "name": "behat/transliterator",
@@ -61,7 +61,7 @@
             "dist": {
                 "type": "path",
                 "url": "../../APYDataGridBundle",
-                "reference": "58bb35defd4a7ad9816f257242d639a5424e3301"
+                "reference": "8c45998aa8547dc55f2126d9ad2f7878b510c358"
             },
             "require": {
                 "php": "^7.4||^8.1",
@@ -8357,16 +8357,16 @@
         },
         {
             "name": "symfony/ux-twig-component",
-            "version": "v2.4.0",
+            "version": "v2.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/ux-twig-component.git",
-                "reference": "877a1b479b6083472bbec6a9e7267f2cac11b5dd"
+                "reference": "a669df9c8f4f154d36957b2f2c3c8b53d7a0e225"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/ux-twig-component/zipball/877a1b479b6083472bbec6a9e7267f2cac11b5dd",
-                "reference": "877a1b479b6083472bbec6a9e7267f2cac11b5dd",
+                "url": "https://api.github.com/repos/symfony/ux-twig-component/zipball/a669df9c8f4f154d36957b2f2c3c8b53d7a0e225",
+                "reference": "a669df9c8f4f154d36957b2f2c3c8b53d7a0e225",
                 "shasum": ""
             },
             "require": {
@@ -8414,7 +8414,7 @@
                 "twig"
             ],
             "support": {
-                "source": "https://github.com/symfony/ux-twig-component/tree/v2.4.0"
+                "source": "https://github.com/symfony/ux-twig-component/tree/v2.5.0"
             },
             "funding": [
                 {
@@ -8430,7 +8430,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-06-17T07:08:52+00:00"
+            "time": "2022-11-07T13:45:36+00:00"
         },
         {
             "name": "symfony/validator",
@@ -11997,5 +11997,5 @@
         "ext-iconv": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.1.0"
 }

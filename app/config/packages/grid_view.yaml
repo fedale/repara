@@ -3,7 +3,7 @@ services:
     public: true
     arguments: 
       - '@doctrine.orm.default_entity_manager'
-  App\Grid\GridView:
-    arguments:
-      - '@doctrine.orm.default_entity_manager'
-      - '@doctrine.orm.default_entity_manager'
+  # App\Grid\Gridview:
+  #   arguments:
+  #     - '@twig'
+  # #     - '@doctrine.orm.default_entity_manager'

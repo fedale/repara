@@ -298,4 +298,5 @@ class CustomerController extends AbstractController
     {
         return $gridFactory->create($type, $source, $options);
     }
+
 }

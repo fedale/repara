@@ -36,9 +36,11 @@ abstract class AbstractColumn implements ColumnInterface
      */
     protected Environment $twig;
 
-    public function __construct(Environment $twig)
+    private $type;
+
+    public function __construct($type)
     {
-        $this->twig = $twig;
+        $this->type = $type;
     }
 
     public function renderHeaderCell()

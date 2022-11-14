@@ -48,9 +48,11 @@ class NewCustomerController extends AbstractController
                 'property' => 'id',
                 'type' => 'serial' // column type
             ],
+            'code',
             [
                 'property' => 'code',
-                'type' => 'serial' // column type
+                'type' => 'serial',
+                'visible' => true
             ],
             [
                 'property' => 'username',

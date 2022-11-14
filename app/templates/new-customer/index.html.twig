@@ -23,7 +23,7 @@ body {
 <table class="table2 table-dark">
     {{ include('new-customer/_header.html.twig', {'columns': columns}) }}
 
-    {{ include('new-customer/_body.html.twig', {'columns': columns, 'entities': entities}) }}
+    {{ include('new-customer/_body.html.twig', {'columns': columns, 'rows': data}) }}
 
     {{ include('new-customer/_footer.html.twig', {'columns': columns}) }}
 

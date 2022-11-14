@@ -10,14 +10,10 @@ use Twig\Environment;
 
 class GridviewBuilder implements GridviewBuilderInterface 
 {
-    private Request $request;
     private Environment $twig;
     private Gridview $gridview;
     private EntityManagerInterface $entityManager;
 
-    private $columns;
-    private $source;
-    
     public function __construct(
         private RequestStack $requestStack,
         Environment $twig,
@@ -42,21 +38,20 @@ class GridviewBuilder implements GridviewBuilderInterface
         return $this;
     }
 
-    public function setSource($source)
+    public function setData($data)
     {
-        $this->gridview->setSource($source);
+        $this->gridview->setData($data);
 
         return $this;
     }
 
-    public function renderGridview($path)
+    public function renderHeader()
     {
-        return $this->gridview->renderGrid($path);
+        return $this;
+    }
 
-            // $this->renderToolbar();
-            // $this->renderHeader();
-            // $this->renderBody();
-            // $this->renderFooter();
-            // $this->renderSummary();
+    public function renderGridview(): Gridview
+    {
+        return $this->gridview;
     }
 }

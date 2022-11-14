@@ -1,8 +1,10 @@
 <?php 
 namespace App\Grid;
 
+use App\Entity\Customer\Customer;
 use App\Grid\Column\ColumnInterface;
 use App\Grid\Source\SourceInterface;
+use APY\DataGridBundle\Grid\Columns;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\Environment;
@@ -10,45 +12,48 @@ use Twig\Environment;
 class Gridview {
 
     private $twig;
-    private $entities = [];
-
     private $columns;
-    private $source;
+    private $data;
+    private EntityManagerInterface $entityManager;
 
     /**
      * @var \Doctrine\ORM\Mapping\ClassMetadata
      */
     protected $ormMetadata;
 
-    private EntityManagerInterface $entityManager;
-
-    private $response;
-
     public function __construct(Environment $twig, EntityManagerInterface $entityManager)
     {
         $this->twig = $twig;
-//         $this->columns = $columns;
         $this->entityManager = $entityManager;
     }
 
-    /*public function init($entityClass, $columns)
+    public function getColumns() 
     {
-        $this->ormMetadata = $this->entityManager->getClassMetadata($entityClass);
-        $this->setColumns($columns);
-        $this->setEntities($entityClass);
-    }*/
+        return $this->columns;
+    }
 
     public function setColumns($columns) 
     {    
         $this->columns = $columns;
     }
 
-    public function setSource($source) 
+    public function addColumn(ColumnInterface $column)
+    {
+        $this->columns[] = $column;
+    }
+
+    public function getData()
+    {
+        return $this->data;
+    }
+
+    public function setData($data) 
     {    
-        $this->source = $this->entityManager
-        ->getRepository(Customer::class)
-        ->findAll();
-        
+        $this->data = $this->entityManager
+            ->getRepository(Customer::class)
+            ->findAll()
+        ;
+                
         return $this;
     }
 
@@ -64,20 +69,11 @@ class Gridview {
             // 'editable', 'enum', 'expand', 'formula', 
         };
     }
-
-    public function setEntities($entityClass) {
-        dd($entityClass);
-        $this->entities = $this->entityManager
-            ->getRepository($entityClass)
-            ->findAll();
-            dd($this->entities);
-        return $this;
-    }
         
     public function renderGrid(string $view, array $parameters = []): Response
     {
         $parameters['columns'] = $this->columns;
-        $parameters['entities'] = $this->entities;
+        $parameters['data'] = $this->data;
         $content = $this->twig->render($view, $parameters);
 
         $response = new Response();
@@ -137,20 +133,4 @@ class Gridview {
 
         return $result;
     }
-
-
-    // https://github.com/tinustester/symfony-gridview-bundle/blob/e2cf9eec053ff21cd3d457b43babcd81d287fa39/src/Gridview.php
-     /**
-     * Renders full grid content.
-     *
-     * @return string
-     */
-    public function renderGrid2(): string
-    {
-        $this->containerOptions['id'] = $this->containerOptions['id'] ?? $this->getId();
-        $gridContainerOptions = $this->html->prepareTagAttributes($this->containerOptions);
-
-        return '<div ' . $gridContainerOptions . '>' . $this->renderTable() . '</div>';
-    }
-
 }

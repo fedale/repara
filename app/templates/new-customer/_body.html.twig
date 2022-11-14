@@ -1,10 +1,10 @@
 <tbody>
-{% for entity in entities %}
+{% for row in rows %}
     <tr>
         {% for column in columns %}
             <td>
                 {% if not column.value|default(false) %}
-                    {{ attribute(entity, column.property) }}
+                    {{ attribute(row, column.property) }}
                 {% else %}
                     {{ column.value|default(null) }}
                 {% endif %}

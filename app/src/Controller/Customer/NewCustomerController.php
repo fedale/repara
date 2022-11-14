@@ -48,34 +48,36 @@ class NewCustomerController extends AbstractController
                 'property' => 'id',
                 'type' => 'serial' // column type
             ],
-            // [
-            //     'property' => 'code',
-            //     'type' => 'serial' // column type
-            // ],
-            // [
-            //     'property' => 'username',
-            //     'type' => 'serial' // column type
-            // ],
-            // [
-            //     'property' => 'email',
-            //     'type' => 'serial' // column type
-            // ],
-            // [
-            //     'property' => 'username',
-            //     'type' => 'serial',
-            //     'value' => 'my custom value'
-            // ],
+            [
+                'property' => 'code',
+                'type' => 'serial' // column type
+            ],
+            [
+                'property' => 'username',
+                'type' => 'serial' // column type
+            ],
+            [
+                'property' => 'email',
+                'type' => 'serial' // column type
+            ],
+            [
+                'property' => 'username',
+                'type' => 'serial',
+                'value' => 'my custom value'
+            ],
         ];
 
-        $source = $entityManager
-            ->getRepository(Customer::class)
+        $data = $entityManager
+            ->getRepository(\App\Entity\Customer\Customer::class)
             ->findAll();
 
-        return $this->createGridviewBuilder()
+        $gridview = $this->createGridviewBuilder()
             ->setColumns($columns)
-            ->setSource($source)
-            ->renderGridview('new-customer/index.html.twig');
+            ->setData($data)
+            ->renderGridview();
         ;
+
+        return $gridview->renderGrid('new-customer/index.html.twig');
     }
     
     public function createGridviewBuilder(): GridviewBuilder

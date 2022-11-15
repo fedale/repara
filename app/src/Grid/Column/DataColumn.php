@@ -1,7 +1,14 @@
 <?php 
 namespace App\Grid\Column;
 
-class DataColumn extends AbstractColumn {
+class DataColumn extends AbstractColumn 
+{
+    private $options;
+    
+    public function __construct($options)
+    {
+        $this->options = $options;    
+    }
         
     public function renderHeaderCell()
     {

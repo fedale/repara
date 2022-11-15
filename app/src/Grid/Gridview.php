@@ -74,7 +74,11 @@ class Gridview {
     {
         $parameters['columns'] = $this->columns;
         $parameters['data'] = $this->data;
+        dump($parameters);
+        
         $content = $this->twig->render($view, $parameters);
+
+        
 
         $response = new Response();
         $response->setContent($content);

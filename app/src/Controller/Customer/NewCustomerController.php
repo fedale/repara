@@ -52,7 +52,7 @@ class NewCustomerController extends AbstractController
             [
                 'property' => 'code',
                 'type' => 'serial',
-                'visible' => true
+                'visible' => false
             ],
             [
                 'property' => 'username',

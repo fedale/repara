@@ -2,6 +2,7 @@
 namespace App\Grid;
 
 use App\Grid\Column\SerialColumn;
+use App\Grid\Column\DataColumn;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -47,7 +48,7 @@ class GridviewBuilder implements GridviewBuilderInterface
         if (is_array($column)) {
             $type = $column['type'];
         } else if (is_string($column)) {
-            $type = $column;
+            $type = 'data';
         } else {
             throw new \Exception(); // to customize
         }
@@ -56,10 +57,14 @@ class GridviewBuilder implements GridviewBuilderInterface
 
         $column = match($type) {
             'serial' => new SerialColumn($options),
+            'data' => new DataColumn($options),
             default => throw new \Exception()
         };
+        $column->setLabel('Label');
+        $column->setContent('foo!');
 
-        $this->columns[] = $column;
+        $this->gridview->addColumn($column);
+        
     }
 
     public function setData($data)

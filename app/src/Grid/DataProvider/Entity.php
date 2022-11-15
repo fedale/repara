@@ -1,9 +1,9 @@
 <?php
-namespace App\Grid\Source;
+namespace App\Grid\DataProvider;
 
 use Doctrine\ORM\EntityManagerInterface;
 
-class Entity implements SourceInterface
+class Entity implements DataProviderInterface
 {
     private EntityManagerInterface $entityManager;
 

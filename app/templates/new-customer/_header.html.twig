@@ -2,7 +2,7 @@
     <tr>
         {% for column in columns %}
         <th>
-            {{ column.property }}
+            {{ dump(column.label) }}
         </th>
         {% endfor %}
     </tr>

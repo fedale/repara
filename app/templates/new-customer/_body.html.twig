@@ -3,10 +3,10 @@
     <tr>
         {% for column in columns %}
             <td>
-                {% if not column.value|default(false) %}
-                    {{ attribute(row, column.property) }}
+                {% if not column.content|default(false) %}
+                    {{ attribute(row, column.content) }}
                 {% else %}
-                    {{ column.value|default(null) }}
+                    {{ column.content|default(null) }}
                 {% endif %}
             </td>
         {% endfor %}

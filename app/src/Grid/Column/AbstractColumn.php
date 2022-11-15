@@ -30,17 +30,58 @@ abstract class AbstractColumn implements ColumnInterface
      */
     protected bool $exportable;
 
+     /**
+     * @var string|null Column header label
+     */
+    protected ?string $label = null;
+
+    /**
+     * @var string|callable Column cell content. This parameter can contain
+     * string value or callback function.
+     *
+     * Example with string value:
+     * 'content' => 'some value',
+     *
+     * Callable function takes two parameters:
+     *  - $entity - instance of entity
+     *  - $rowIndex - index of current row
+     * Example:
+     * 'content' => function ($entity, $rowIndex) {
+     *     return $entity->getCustomFieldValue();
+     * },
+     */
+    protected $content;
+
     /**
      * Twig instance
      * @var Environment 
      */
     protected Environment $twig;
 
-    private $type;
-
-    public function __construct($type)
+    public function getContent()
     {
-        $this->type = $type;
+        return $this->content;
+    }
+    
+    /**
+     * @param mixed $content
+     */
+    public function setContent($content)
+    {
+        $this->content = $content;
+    }
+
+    public function getLabel()
+    {
+        return $this->label;
+    }
+
+     /**
+     * @param mixed $label
+     */
+    public function setLabel($label)
+    {
+        $this->label = $label;
     }
 
     public function renderHeaderCell()

@@ -13,7 +13,7 @@ class Gridview {
 
     private $twig;
     private $columns;
-    private $data;
+    private $dataProvider;
     private EntityManagerInterface $entityManager;
 
     /**
@@ -47,14 +47,12 @@ class Gridview {
         return $this->data;
     }
 
-    public function setData($data) 
+    public function setDataProvider($dataProvider) 
     {    
-        $this->data = $this->entityManager
+        $this->dataProvider = $this->entityManager
             ->getRepository(Customer::class)
             ->findAll()
         ;
-                
-        return $this;
     }
 
     public function createColumn(string $column) 
@@ -73,7 +71,7 @@ class Gridview {
     public function renderGrid(string $view, array $parameters = []): Response
     {
         $parameters['columns'] = $this->columns;
-        $parameters['data'] = $this->data;
+        $parameters['data'] = $this->dataProvider;
         dump($parameters);
         
         $content = $this->twig->render($view, $parameters);

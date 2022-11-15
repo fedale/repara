@@ -8,6 +8,7 @@ use App\Entity\Customer\CustomerType as CustomerCustomerType;
 use App\Form\Customer\CustomerRegistrationType;
 use App\Form\Customer\CustomerType;
 use App\Form\Model\CustomerCreateModel;
+use App\Grid\DataProvider\EntityDataProvider;
 use App\Grid\GridView;
 use App\Grid\GridviewBuilder;
 use App\Grid\GridviewBuilderFactory;
@@ -41,7 +42,7 @@ class NewCustomerController extends AbstractController
     }
 
     #[Route('/grid', name: 'new_app_grid', methods: ['GET'])]
-    public function grid(EntityManagerInterface $entityManager): Response
+    public function grid(EntityManagerInterface $entityManager, EntityDataProvider $dataProvider): Response
     {
         $columns = [
             [
@@ -73,9 +74,11 @@ class NewCustomerController extends AbstractController
             ->getRepository(\App\Entity\Customer\Customer::class)
             ->findAll();
 
+//        $dataProvider = new EntityDataProvider
+
         $gridview = $this->createGridviewBuilder()
             ->setColumns($columns)
-            ->setData($data)
+            ->setDataProvider($dataProvider)
             ->renderGridview();
         ;
 

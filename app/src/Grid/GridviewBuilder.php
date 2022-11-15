@@ -3,6 +3,7 @@ namespace App\Grid;
 
 use App\Grid\Column\SerialColumn;
 use App\Grid\Column\DataColumn;
+use App\Grid\DataProvider\DataProviderInterface;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -67,9 +68,9 @@ class GridviewBuilder implements GridviewBuilderInterface
         
     }
 
-    public function setData($data)
+    public function setDataProvider(DataProviderInterface $dataProvider)
     {
-        $this->gridview->setData($data);
+        $this->gridview->setDataProvider($dataProvider);
 
         return $this;
     }

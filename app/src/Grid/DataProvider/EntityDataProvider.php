@@ -3,7 +3,7 @@ namespace App\Grid\DataProvider;
 
 use Doctrine\ORM\EntityManagerInterface;
 
-class Entity implements DataProviderInterface
+class EntityDataProvider extends AbstractDataProvider
 {
     private EntityManagerInterface $entityManager;
 
@@ -21,11 +21,12 @@ class Entity implements DataProviderInterface
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
-        dump($entityManager);
     }
 
-    public function getSource()
+    public function prepare(bool $forcePrepare = false)
     {
-        return;
+        return $this->entityManager
+            ->getRepository(\App\Entity\Customer\Customer::class)
+            ->findAll();
     }
 }

@@ -10,33 +10,9 @@ class SerialColumn extends AbstractColumn {
         $this->options = $options;    
     }
 
-    public function renderValue()
+    public function getLabel(): string
     {
         return 'SerialColumn';
     }
 
-    public function renderHeaderCell()
-    {
-        return 'HeaderCell';
-    }
-
-    public function renderFilterCell()
-    {
-        return 'FilterCell';
-    }
-
-    public function renderBodyCell()
-    {
-        return 'BodyCell';
-    }
-
-    public function renderFooterCell()
-    {
-        return 'FooterCell';
-    }
-
-    public function renderSummaryCell()
-    {
-        return 'SummaryCell';
-    }
 }

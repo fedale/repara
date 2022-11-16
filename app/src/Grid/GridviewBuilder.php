@@ -1,6 +1,7 @@
 <?php
 namespace App\Grid;
 
+use App\Grid\Column\ColumnInterface;
 use App\Grid\Column\SerialColumn;
 use App\Grid\Column\DataColumn;
 use App\Grid\DataProvider\DataProviderInterface;
@@ -47,15 +48,41 @@ class GridviewBuilder implements GridviewBuilderInterface
         }
 
         foreach ($columns as $column) {
+            $column = $this->initColumn($column);
             dump($column);
+            if ($column->isVisible()) {
+                $column->setGridview($this->gridview);
+                $this->addColumn($column);
+            }
             $this->addColumn($column);
         }
 
         return $this;
     }
 
-    public function addColumn($column) 
+    private function initColumn(array|string $columnData): ColumnInterface
     {
+        $options = [];
+
+        if (is_string($columnData)) {
+            $column = new DataColumn($options); 
+        }  else if (is_array($columnData)) {
+            $type = $columnData['type'];
+            $column = match($type) {
+                'serial' => new SerialColumn($options),
+                'data' => new DataColumn($options),
+                default => throw new \Exception()
+            };
+        }
+
+        return $column;
+    }
+
+    public function addColumn(ColumnInterface $column) 
+    {
+        $this->gridview->addColumn($column);
+        return $this;
+/*
         if (is_array($column)) {
             $type = $column['type'];
         } else if (is_string($column)) {
@@ -76,6 +103,7 @@ class GridviewBuilder implements GridviewBuilderInterface
         $column->setContent('foo!');
 
         $this->gridview->addColumn($column);
+        */
         
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Grid\Column;
 
+use App\Grid\Gridview;
 use Twig\Environment;
 
 abstract class AbstractColumn implements ColumnInterface
@@ -16,7 +17,7 @@ abstract class AbstractColumn implements ColumnInterface
      * Whether column is visible or not 
      * @var bool 
      */
-    protected bool $visible;
+    protected bool $visible = true;
     
     /**
      * Whether column is hidden or not 
@@ -34,6 +35,11 @@ abstract class AbstractColumn implements ColumnInterface
      * @var string|null Column header label
      */
     protected ?string $label = null;
+
+    /**
+     * @var Gridview
+     */
+    protected Gridview $gridview;
 
     /**
      * @var string|callable Column cell content. This parameter can contain
@@ -71,7 +77,7 @@ abstract class AbstractColumn implements ColumnInterface
         $this->content = $content;
     }
 
-    public function getLabel()
+    public function getLabel(): string
     {
         return $this->label;
     }
@@ -84,30 +90,37 @@ abstract class AbstractColumn implements ColumnInterface
         $this->label = $label;
     }
 
-    public function renderHeaderCell()
+    /**
+     * @return boolean
+     */
+    public function isVisible(): bool
     {
-        return 'HeaderCell';
+        return $this->visible;
     }
 
-    public function renderFilterCell()
+    /**
+     * @param callable $enabled
+     *
+     * @return $this
+     */
+    public function setVisible($enabled): static
     {
-        return 'FilterCell';
+        if ($enabled instanceof \Closure) {
+            $this->visible = call_user_func($enabled);
+        } else {
+            $this->visible = (bool)$enabled;
+        }
+
+        return $this;
     }
 
-    public function renderBodyCell()
+    /**
+     * @param Gridview $gridview
+     */
+    public function setGridview(Gridview $gridview)
     {
-        return 'BodyCell';
+        $this->gridview = $gridview;
     }
 
-    public function renderFooterCell()
-    {
-        return 'FooterCell';
-    }
-
-    public function renderSummaryCell()
-    {
-        return 'SummaryCell';
-    }
     
-
 }

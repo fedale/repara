@@ -2,6 +2,7 @@
 namespace App\Grid\DataProvider;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\QueryBuilder;
 
 class EntityDataProvider extends AbstractDataProvider
 {
@@ -10,7 +11,7 @@ class EntityDataProvider extends AbstractDataProvider
     /**
      * @var \Doctrine\ORM\QueryBuilder
      */
-    protected $query;
+    protected $queryBuilder;
 
     /**
      * @var \Doctrine\ORM\Mapping\ClassMetadata
@@ -18,15 +19,33 @@ class EntityDataProvider extends AbstractDataProvider
     protected $ormMetadata;
 
 
-    public function __construct(EntityManagerInterface $entityManager)
+    //  /**
+    //  * Inject dependencies
+    //  *
+    //  * @param Pagination $pagination
+    //  * @param Sort $sort
+    // TO DO...
+    //  */
+    // public function __construct(Pagination $pagination, Sort $sort){
+    //     $this->pagination = $pagination;
+    //     $this->sort = $sort;
+    // }
+
+    /**
+     * @return QueryBuilder
+     */
+    public function getDataProvider(): QueryBuilder
     {
-        $this->entityManager = $entityManager;
+        return $this->dataProvider;
+    }
+    
+    public function setQueryBuilder(QueryBuilder $queryBuilder)
+    {
+        $this->queryBuilder = $queryBuilder;
     }
 
     public function prepare(bool $forcePrepare = false)
     {
-        return $this->entityManager
-            ->getRepository(\App\Entity\Customer\Customer::class)
-            ->findAll();
+        return $this->queryBuilder->getQuery()->getresult();
     }
 }

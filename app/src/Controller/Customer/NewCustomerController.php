@@ -74,7 +74,14 @@ class NewCustomerController extends AbstractController
             ->getRepository(\App\Entity\Customer\Customer::class)
             ->findAll();
 
-//        $dataProvider = new EntityDataProvider
+        $queryBuilder = $entityManager
+            ->getRepository(\App\Entity\Customer\Customer::class)
+            ->createQueryBuilder('c');
+        
+        $dataProvider->setQueryBuilder($queryBuilder);
+
+        // dd($dataProvider);
+        
 
         $gridview = $this->createGridviewBuilder()
             ->setColumns($columns)

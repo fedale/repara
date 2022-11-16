@@ -14,17 +14,10 @@ class Gridview {
     private $twig;
     private $columns;
     private $dataProvider;
-    private EntityManagerInterface $entityManager;
 
-    /**
-     * @var \Doctrine\ORM\Mapping\ClassMetadata
-     */
-    protected $ormMetadata;
-
-    public function __construct(Environment $twig, EntityManagerInterface $entityManager)
+    public function __construct(Environment $twig)
     {
         $this->twig = $twig;
-        $this->entityManager = $entityManager;
     }
 
     public function getColumns() 
@@ -49,13 +42,10 @@ class Gridview {
 
     public function setDataProvider($dataProvider) 
     {    
-        $this->dataProvider = $this->entityManager
-            ->getRepository(Customer::class)
-            ->findAll()
-        ;
+        $this->dataProvider = $dataProvider;
     }
 
-    public function createColumn(string $column) 
+/*    public function createColumn(string $column) 
     {
         return match (strtolower($column)) {
             'action' => '', //this->createColumnBuilder()
@@ -67,7 +57,8 @@ class Gridview {
             // 'editable', 'enum', 'expand', 'formula', 
         };
     }
-        
+  */
+
     public function renderGrid(string $view, array $parameters = []): Response
     {
         $parameters['columns'] = $this->columns;
@@ -84,7 +75,7 @@ class Gridview {
         return $response;
     }
 
-    public function getFieldsMetadata($class, $group = 'default')
+  /*  public function getFieldsMetadata($class, $group = 'default')
     {
         $result = [];
         foreach ($this->ormMetadata->getFieldNames() as $name) {
@@ -135,4 +126,5 @@ class Gridview {
 
         return $result;
     }
+    */
 }

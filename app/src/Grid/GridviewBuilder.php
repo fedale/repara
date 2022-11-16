@@ -35,9 +35,19 @@ class GridviewBuilder implements GridviewBuilderInterface
         $this->gridview = new Gridview($this->twig, $this->entityManager);
     }
 
+    public function guessColumns()
+    {
+        return ['column1' => 'value1'];
+    }
+
     public function setColumns($columns)
     {
+        if (empty($this->columns)) {
+            $this->guessColumns();
+        }
+
         foreach ($columns as $column) {
+            dump($column);
             $this->addColumn($column);
         }
 
@@ -61,6 +71,7 @@ class GridviewBuilder implements GridviewBuilderInterface
             'data' => new DataColumn($options),
             default => throw new \Exception()
         };
+
         $column->setLabel('Label');
         $column->setContent('foo!');
 
@@ -82,6 +93,7 @@ class GridviewBuilder implements GridviewBuilderInterface
 
     public function renderGridview(): Gridview
     {
+        // dd($this->gridview);
         return $this->gridview;
     }
 }

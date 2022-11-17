@@ -44,39 +44,52 @@ class NewCustomerController extends AbstractController
     #[Route('/grid', name: 'new_app_grid', methods: ['GET'])]
     public function grid(EntityManagerInterface $entityManager, EntityDataProvider $dataProvider): Response
     {
+        /**
+         *
+         */
         $columns = [
             [
                 'property' => 'id',
-                'type' => 'serial' // column type
+                'type' => 'serial',
             ],
-            'code',
             [
                 'property' => 'code',
                 'type' => 'serial',
-                'visible' => false
+                'visible' => true,
+                'label' => 'code',
             ],
             [
                 'property' => 'username',
-                'type' => 'serial' // column type
+                'visible' => true,
+                'label' => 'username'
             ],
             [
                 'property' => 'email',
-                'type' => 'serial' // column type
+                'type' => 'serial',
+                'visible' => false,
+                'label' => 'email'
             ],
             [
                 'property' => 'username',
                 'type' => 'serial',
-                'value' => 'my custom value'
+                'value' => 'my custom value',
+                'visible' => false,
+                'label' => 'username'
             ],
         ];
 
+        /*
         $data = $entityManager
             ->getRepository(\App\Entity\Customer\Customer::class)
             ->findAll();
+        */
+        // dd($data);
 
         $queryBuilder = $entityManager
             ->getRepository(\App\Entity\Customer\Customer::class)
-            ->createQueryBuilder('c');
+            ->createQueryBuilder('c')
+            ->join('c.profile', 'p')
+            ;
         
         $dataProvider->setQueryBuilder($queryBuilder);
 
@@ -84,8 +97,8 @@ class NewCustomerController extends AbstractController
         
 
         $gridview = $this->createGridviewBuilder()
-            ->setColumns($columns)
             ->setDataProvider($dataProvider)
+            ->setColumns($columns)
             ->renderGridview();
         ;
 

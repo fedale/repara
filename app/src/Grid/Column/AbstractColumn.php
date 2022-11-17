@@ -32,8 +32,9 @@ abstract class AbstractColumn implements ColumnInterface
     protected bool $exportable;
 
      /**
-     * @var string|null Column header label
-     */
+      * Column header label
+      * @var string|null 
+      */
     protected ?string $label = null;
 
     /**
@@ -122,5 +123,9 @@ abstract class AbstractColumn implements ColumnInterface
         $this->gridview = $gridview;
     }
 
+    public function getHeader(): string
+    {
+        return $this->label;
+    }
     
 }

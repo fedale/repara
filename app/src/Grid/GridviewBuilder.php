@@ -50,11 +50,12 @@ class GridviewBuilder implements GridviewBuilderInterface
         foreach ($columns as $column) {
             $column = $this->initColumn($column);
             dump($column);
+
             if ($column->isVisible()) {
                 $column->setGridview($this->gridview);
                 $this->addColumn($column);
             }
-            $this->addColumn($column);
+            // $this->addColumn($column);
         }
 
         return $this;
@@ -67,12 +68,26 @@ class GridviewBuilder implements GridviewBuilderInterface
         if (is_string($columnData)) {
             $column = new DataColumn($options); 
         }  else if (is_array($columnData)) {
-            $type = $columnData['type'];
-            $column = match($type) {
-                'serial' => new SerialColumn($options),
-                'data' => new DataColumn($options),
-                default => throw new \Exception()
-            };
+            $type = isset($columnData['type']) ? ucfirst($columnData['type']) : 'Data';
+            unset($columnData['type']);
+            unset($columnData['property']);
+            unset($columnData['value']);
+            
+            $class = "App\\Grid\\Column\\$type" . 'Column';
+            if (class_exists($class)) { 
+                $column = new $class($options); 
+            } else {
+                throw new \Exception();
+            }
+
+            foreach ($columnData as $key => $value) {
+                $methodName = 'set' . ucfirst($key);
+                if (!method_exists($column, $methodName)) {
+                    throw new Exception('Column has no property '.$key);
+                }
+
+                $column->$methodName($value);
+            }
         }
 
         return $column;

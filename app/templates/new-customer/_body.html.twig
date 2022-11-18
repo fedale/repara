@@ -2,7 +2,8 @@
 {% for model in models %}
     <tr>
         {% for column in columns %}
-            <td>rh
+            <td>
+                {{ model.username }}
                 {# {% if not column.content|default(false) %}
                     {{ attribute(model, column.content) }}
                 {% else %}

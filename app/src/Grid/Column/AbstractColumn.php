@@ -66,7 +66,7 @@ abstract class AbstractColumn implements ColumnInterface
     protected Environment $twig;
 
     public function __construct(
-        private Gridview $grid, 
+        private Gridview $gridview,
         private string $attribute, 
         private string $format, 
         private ?string $label

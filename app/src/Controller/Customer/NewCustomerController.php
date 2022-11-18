@@ -70,11 +70,11 @@ class NewCustomerController extends AbstractController
                 'label' => 'email'
             ],
             [
-                'attribute' => 'username',
+                'attribute' => 'email',
                 'type' => 'serial',
                 'value' => 'my custom value',
-                'visible' => false,
-                'label' => 'username'
+                'visible' => true,
+                'label' => 'profile.firstname'
             ],
         ];
 

@@ -31,16 +31,16 @@ abstract class AbstractColumn implements ColumnInterface
      */
     protected bool $exportable;
 
-     /**
-      * Column header label
-      * @var string|null 
-      */
-    protected ?string $label = null;
+    //  /**
+    //   * Column header label
+    //   * @var string|null 
+    //   */
+    // protected ?string $label = null;
 
-    /**
-     * @var Gridview
-     */
-    protected Gridview $gridview;
+    // /**
+    //  * @var Gridview
+    //  */
+    // protected Gridview $gridview;
 
     /**
      * @var string|callable Column cell content. This parameter can contain
@@ -64,6 +64,13 @@ abstract class AbstractColumn implements ColumnInterface
      * @var Environment 
      */
     protected Environment $twig;
+
+    public function __construct(
+        private Gridview $grid, 
+        private string $attribute, 
+        private string $format, 
+        private ?string $label
+    ) {}
 
     public function getContent()
     {

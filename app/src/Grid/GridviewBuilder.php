@@ -63,19 +63,22 @@ class GridviewBuilder implements GridviewBuilderInterface
 
     private function initColumn(array|string $columnData): ColumnInterface
     {
-        $options = [];
-
         if (is_string($columnData)) {
-            $column = new DataColumn($options); 
+            $column = new DataColumn($this->gridview, $columnData, 'text', $columnData);
+
         }  else if (is_array($columnData)) {
             $type = isset($columnData['type']) ? ucfirst($columnData['type']) : 'Data';
-            unset($columnData['type']);
-            unset($columnData['property']);
-            unset($columnData['value']);
+            // unset($columnData['type']);
+            // unset($columnData['property']);
+            // unset($columnData['value']);
             
             $class = "App\\Grid\\Column\\$type" . 'Column';
             if (class_exists($class)) { 
-                $column = new $class($options); 
+                $column = new $class($this->gridview, $columnData['property'], 'text', $columnData['label'] ?? $columnData['property']);
+
+                unset($columnData['property']);
+                unset($columnData['value']);
+                unset($columnData['type']);
             } else {
                 throw new \Exception();
             }

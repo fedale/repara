@@ -48,4 +48,11 @@ class EntityDataProvider extends AbstractDataProvider
     {
         return $this->queryBuilder->getQuery()->getresult();
     }
+
+    public function getModels()
+    {
+        return $this->queryBuilder->getQuery()->getResult();
+    }
+
+
 }

@@ -49,28 +49,28 @@ class NewCustomerController extends AbstractController
          */
         $columns = [
             [
-                'property' => 'id',
+                'attribute' => 'id',
                 'type' => 'serial',
             ],
             [
-                'property' => 'code',
+                'attribute' => 'code',
                 'type' => 'serial',
                 'visible' => true,
                 'label' => 'code',
             ],
             [
-                'property' => 'username',
+                'attribute' => 'username',
                 'visible' => true,
                 'label' => 'username'
             ],
             [
-                'property' => 'email',
+                'attribute' => 'email',
                 'type' => 'serial',
-                'visible' => false,
+                'visible' => true,
                 'label' => 'email'
             ],
             [
-                'property' => 'username',
+                'attribute' => 'username',
                 'type' => 'serial',
                 'value' => 'my custom value',
                 'visible' => false,
@@ -92,9 +92,6 @@ class NewCustomerController extends AbstractController
             ;
         
         $dataProvider->setQueryBuilder($queryBuilder);
-
-        // dd($dataProvider);
-        
 
         $gridview = $this->createGridviewBuilder()
             ->setDataProvider($dataProvider)

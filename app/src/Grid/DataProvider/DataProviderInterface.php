@@ -36,7 +36,7 @@ interface DataProviderInterface
     //  * Returns the data models in the current page.
     //  * @return array the list of data models in the current page.
     //  */
-    // public function getModels();
+    public function getModels();
 
     // /**
     //  * Returns the key values associated with the data models.

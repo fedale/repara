@@ -49,7 +49,6 @@ class GridviewBuilder implements GridviewBuilderInterface
 
         foreach ($columns as $column) {
             $column = $this->initColumn($column);
-            dump($column);
 
             if ($column->isVisible()) {
                 $column->setGridview($this->gridview);
@@ -74,9 +73,9 @@ class GridviewBuilder implements GridviewBuilderInterface
             
             $class = "App\\Grid\\Column\\$type" . 'Column';
             if (class_exists($class)) { 
-                $column = new $class($this->gridview, $columnData['property'], 'text', $columnData['label'] ?? $columnData['property']);
+                $column = new $class($this->gridview, $columnData['attribute'], 'text', $columnData['label'] ?? $columnData['attribute']);
 
-                unset($columnData['property']);
+                unset($columnData['attribute']);
                 unset($columnData['value']);
                 unset($columnData['type']);
             } else {
@@ -86,7 +85,7 @@ class GridviewBuilder implements GridviewBuilderInterface
             foreach ($columnData as $key => $value) {
                 $methodName = 'set' . ucfirst($key);
                 if (!method_exists($column, $methodName)) {
-                    throw new Exception('Column has no property '.$key);
+                    throw new Exception('Column has no attribute '.$key);
                 }
 
                 $column->$methodName($value);

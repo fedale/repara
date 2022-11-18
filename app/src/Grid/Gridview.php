@@ -62,7 +62,7 @@ class Gridview {
     public function renderGrid(string $view, array $parameters = []): Response
     {
         $parameters['columns'] = $this->columns;
-        $parameters['data'] = $this->dataProvider;
+        $parameters['models'] = $this->dataProvider->getModels();
         dump($parameters);
         
         $content = $this->twig->render($view, $parameters);

@@ -1,13 +1,13 @@
 <tbody>
-{% for row in rows %}
+{% for model in models %}
     <tr>
         {% for column in columns %}
-            <td>
-                {% if not column.content|default(false) %}
-                    {{ attribute(row, column.content) }}
+            <td>rh
+                {# {% if not column.content|default(false) %}
+                    {{ attribute(model, column.content) }}
                 {% else %}
                     {{ column.content|default(null) }}
-                {% endif %}
+                {% endif %} #}
             </td>
         {% endfor %}
     </tr>

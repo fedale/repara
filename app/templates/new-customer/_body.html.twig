@@ -3,11 +3,7 @@
     <tr>
         {% for column in columns %}
             <td>
-                 {% if not column.content|default(false) %}
-                    {{ attribute(model, column.label) }}
-                {% else %}
-                    {{ column.label|default(null) }}
-                {% endif %}
+            {{ model[column.label] }}
             </td>
         {% endfor %}
     </tr>

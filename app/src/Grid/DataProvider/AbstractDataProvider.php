@@ -8,6 +8,8 @@ use App\Grid\Exception\DataProviderException;
 
 abstract class AbstractDataProvider implements DataProviderInterface
 {
+    protected array $models = [];
+
     /**
      * @var string Full class name of target entity.
      */

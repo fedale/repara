@@ -1,8 +1,12 @@
 <?php
 namespace App\Grid\DataProvider;
 
+use App\Grid\Model;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
 
 class EntityDataProvider extends AbstractDataProvider
 {
@@ -46,12 +50,29 @@ class EntityDataProvider extends AbstractDataProvider
 
     public function prepare(bool $forcePrepare = false)
     {
-        return $this->queryBuilder->getQuery()->getresult();
+        $this->prepareModels();
+        // Have to prepare keys too?
+        // $this->prepareKeys();
+    }
+
+    public function prepareModels()
+    {
+        $normalizers = [new ObjectNormalizer()];
+        $serializer = new Serializer($normalizers, []);
+
+        if (!$this->queryBuilder instanceof QueryBuilder) {
+            // throw new InvalidConfigException('The "query" property must be an instance of a class that implements the QueryInterface e.g. yii\db\Query or its subclasses.');
+            throw new \Exception('The "query" property must be an instance of a class that implements the QueryInterface e.g. yii\db\Query or its subclasses.');
+        }
+
+        $rows = $this->queryBuilder->getQuery()->getResult();
+        $this->models = $serializer->normalize($rows, null, [AbstractNormalizer::ATTRIBUTES => ['id', 'code', 'email', 'groups' => ['name'], 'profile' => ['firstname', 'lastname']]]);
     }
 
     public function getModels()
     {
-        return $this->queryBuilder->getQuery()->getResult();
+        $this->prepareModels();
+        return $this->models;
     }
 
 

@@ -69,7 +69,8 @@ abstract class AbstractColumn implements ColumnInterface
         private Gridview $gridview,
         private string $attribute, 
         private string $format, 
-        private ?string $label
+        private ?string $label,
+        private ?array $options = []
     ) {}
 
     public function getContent()

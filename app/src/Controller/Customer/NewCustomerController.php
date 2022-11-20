@@ -47,11 +47,8 @@ class NewCustomerController extends AbstractController
         /**
          *
          */
-        $columns = [
-            [
-                'attribute' => 'id',
-                'type' => 'serial',
-            ],
+        $columns2 = [
+            'code',
             [
                 'attribute' => 'code',
                 'type' => 'serial',
@@ -74,8 +71,13 @@ class NewCustomerController extends AbstractController
                 'type' => 'serial',
                 'value' => 'my custom value',
                 'visible' => true,
-                'label' => 'profile.firstname'
+                'label' => 'profile'
             ],
+        ];
+        $columns = [
+            'id',
+            'code',
+            'email'
         ];
 
         /*

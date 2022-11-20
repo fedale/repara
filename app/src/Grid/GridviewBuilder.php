@@ -63,8 +63,7 @@ class GridviewBuilder implements GridviewBuilderInterface
     private function initColumn(array|string $columnData): ColumnInterface
     {
         if (is_string($columnData)) {
-            $column = new DataColumn($this->gridview, $columnData, 'text', $columnData);
-
+            $column = $this->createDataColumn($columnData);
         }  else if (is_array($columnData)) {
             $type = isset($columnData['type']) ? ucfirst($columnData['type']) : 'Data';
             // unset($columnData['type']);
@@ -93,6 +92,27 @@ class GridviewBuilder implements GridviewBuilderInterface
         }
 
         return $column;
+    }
+
+    /**
+     * Creates a [[DataColumn]] object based on a string in the format of "attribute:format:label".
+     * @param string $text the column specification string
+     * @return DataColumn the column instance
+     * @throws InvalidConfigException if the column specification is invalid
+     */
+    private function createDataColumn($text) 
+    {
+        if (!preg_match('/^([^:]+)(:(\w*))?(:(.*))?$/', $text, $matches)) {
+            // throw new InvalidConfigException('The column must be specified in the format of "attribute", "attribute:format" or "attribute:format:label"');
+            throw new \Exception('The column must be specified in the format of "attribute", "attribute:format" or "attribute:format:label"');
+        }
+
+        return new DataColumn(
+            $this->gridview, 
+            $matches[1], 
+            isset($matches[3]) ? $matches[3] : 'text', 
+            isset($matches[5]) ? $matches[5] : $matches[1]
+        );
     }
 
     public function addColumn(ColumnInterface $column) 

@@ -2,6 +2,7 @@
 namespace App\Grid\DataProvider;
 
 use App\Grid\Model;
+use App\Grid\Serializer\ModelNormalizer;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
@@ -35,6 +36,10 @@ class EntityDataProvider extends AbstractDataProvider
     //     $this->sort = $sort;
     // }
 
+    // public function __construct(private ModelNormalizer $modelNormalizer)
+    // {
+    // }
+
     /**
      * @return QueryBuilder
      */
@@ -66,6 +71,7 @@ class EntityDataProvider extends AbstractDataProvider
         }
 
         $rows = $this->queryBuilder->getQuery()->getResult();
+        //$this->models = $this->modelNormalizer->normalize($rows, null, [AbstractNormalizer::ATTRIBUTES => ['id', 'code', 'email', 'groups' => ['name'], 'profile' => ['firstname', 'lastname']]]);
         $this->models = $serializer->normalize($rows, null, [AbstractNormalizer::ATTRIBUTES => ['id', 'code', 'email', 'groups' => ['name'], 'profile' => ['firstname', 'lastname']]]);
     }
 

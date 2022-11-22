@@ -151,10 +151,6 @@ class GridviewBuilder implements GridviewBuilderInterface
         return $this;
     }
 
-    public function renderHeader()
-    {
-        return $this;
-    }
 
     public function renderGridview(): Gridview
     {

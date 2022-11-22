@@ -9,6 +9,5 @@ interface GridviewBuilderInterface
     
     public function setDataProvider(DataProviderInterface $dataProvider);
 
-    public function renderHeader();
    
 }

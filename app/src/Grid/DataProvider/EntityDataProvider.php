@@ -36,9 +36,9 @@ class EntityDataProvider extends AbstractDataProvider
     //     $this->sort = $sort;
     // }
 
-    // public function __construct(private ModelNormalizer $modelNormalizer)
-    // {
-    // }
+    public function __construct(private ModelNormalizer $modelNormalizer)
+    {
+    }
 
     /**
      * @return QueryBuilder

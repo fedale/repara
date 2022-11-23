@@ -120,4 +120,12 @@ abstract class AbstractDataProvider implements DataProviderInterface
     //  * @return mixed
     //  */
     // abstract public function fetchEntities();
+
+    // abstract public function prepareModels();
+
+    public function getData()
+    {
+        $this->prepareData();
+        return $this->models;
+    }
 }

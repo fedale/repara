@@ -55,12 +55,12 @@ class EntityDataProvider extends AbstractDataProvider
 
     public function prepare(bool $forcePrepare = false)
     {
-        $this->prepareModels();
+        $this->prepareData();
         // Have to prepare keys too?
         // $this->prepareKeys();
     }
 
-    public function prepareModels()
+    public function prepareData()
     {
         $normalizers = [new ObjectNormalizer()];
         $serializer = new Serializer($normalizers, []);
@@ -71,15 +71,16 @@ class EntityDataProvider extends AbstractDataProvider
         }
 
         $rows = $this->queryBuilder->getQuery()->getResult();
-        //$this->models = $this->modelNormalizer->normalize($rows, null, [AbstractNormalizer::ATTRIBUTES => ['id', 'code', 'email', 'groups' => ['name'], 'profile' => ['firstname', 'lastname']]]);
+        $this->models = $this->modelNormalizer->normalize($rows, null, [AbstractNormalizer::ATTRIBUTES => ['id', 'code', 'email', 'groups' => ['name'], 'profile' => ['firstname', 'lastname']]]);
         $this->models = $serializer->normalize($rows, null, [AbstractNormalizer::ATTRIBUTES => ['id', 'code', 'email', 'groups' => ['name'], 'profile' => ['firstname', 'lastname']]]);
     }
 
+    /*
     public function getModels()
     {
         $this->prepareModels();
         return $this->models;
-    }
+    }*/
 
 
 }

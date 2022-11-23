@@ -5,6 +5,20 @@ namespace App\Grid\DataProvider;
 // https://github.com/tinustester/symfony-gridview-bundle/blob/main/src/DataProvider/DataProviderInterface.php
 interface DataProviderInterface
 {
+
+    /**
+     * Prepares the data models and keys.
+     *
+     * This method will prepare the data models and keys that can be retrieved via
+     * [[getModels()]] and [[getKeys()]].
+     *
+     * This method will be implicitly called by [[getModels()]] and [[getKeys()]] if it has not been called before.
+     *
+     * @param bool $forcePrepare whether to force data preparation even if it has been done before.
+     */
+    public function prepareData();
+
+
      /**
      * Prepares the data models and keys.
      *
@@ -36,7 +50,9 @@ interface DataProviderInterface
     //  * Returns the data models in the current page.
     //  * @return array the list of data models in the current page.
     //  */
-    public function getModels();
+    // public function getModels();
+    
+    
 
     // /**
     //  * Returns the key values associated with the data models.

@@ -29,6 +29,4 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
-    # EasyAdmin
-    # App\EasyAdmin\CustomerConfigurator:
-    #     tags: [ 'ea.field_configurator' ]
+    App\Grid\Serializer\ModelNormalizer:

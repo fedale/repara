@@ -60,7 +60,7 @@ class EntityDataProvider extends AbstractDataProvider
         // $this->prepareKeys();
     }
 
-    public function prepareData()
+    public function prepareData(bool $forcePrepare = false)
     {
         $normalizers = [new ObjectNormalizer()];
         $serializer = new Serializer($normalizers, []);
@@ -71,7 +71,7 @@ class EntityDataProvider extends AbstractDataProvider
         }
 
         $rows = $this->queryBuilder->getQuery()->getResult();
-        $this->models = $this->modelNormalizer->normalize($rows, null, [AbstractNormalizer::ATTRIBUTES => ['id', 'code', 'email', 'groups' => ['name'], 'profile' => ['firstname', 'lastname']]]);
+        // $this->models = $this->modelNormalizer->normalize($rows, null, [AbstractNormalizer::ATTRIBUTES => ['id', 'code', 'email', 'groups' => ['name'], 'profile' => ['firstname', 'lastname']]]);
         $this->models = $serializer->normalize($rows, null, [AbstractNormalizer::ATTRIBUTES => ['id', 'code', 'email', 'groups' => ['name'], 'profile' => ['firstname', 'lastname']]]);
     }
 

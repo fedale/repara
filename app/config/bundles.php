@@ -20,6 +20,5 @@ return [
     Zenstruck\Foundry\ZenstruckFoundryBundle::class => ['dev' => true, 'test' => true],
     Fresh\DoctrineEnumBundle\FreshDoctrineEnumBundle::class => ['all' => true],
     Symfony\UX\TwigComponent\TwigComponentBundle::class => ['all' => true],
-    APY\DataGridBundle\APYDataGridBundle::class => ['all' => true],
     Doctrine\Bundle\MongoDBBundle\DoctrineMongoDBBundle::class => ['all' => true],
 ];

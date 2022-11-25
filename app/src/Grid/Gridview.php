@@ -61,6 +61,7 @@ class Gridview {
 
     public function renderGrid(string $view, array $parameters = []): Response
     {
+        $this->prepareGrid();
         $parameters['columns'] = $this->columns;
         $parameters['models'] = $this->dataProvider->getData();
         dump($parameters);
@@ -73,6 +74,14 @@ class Gridview {
         $response->setContent($content);
 
         return $response;
+    }
+
+    public function prepareGrid()
+    {
+        // Use $data from dataProvider
+        $data = $this->dataProvider->getData();
+        // Add not sourceable column, i.e. column with fixed value as Serial, Checkbox and so on
+        // Get value per column from source, from Column (checkbox for example) or from callback
     }
 
   /*  public function getFieldsMetadata($class, $group = 'default')

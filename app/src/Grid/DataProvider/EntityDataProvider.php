@@ -36,9 +36,9 @@ class EntityDataProvider extends AbstractDataProvider
     //     $this->sort = $sort;
     // }
 
-    public function __construct(private ModelNormalizer $modelNormalizer)
-    {
-    }
+    // public function __construct(private Serializer $serializer)
+    // {
+    // }
 
     /**
      * @return QueryBuilder
@@ -62,7 +62,8 @@ class EntityDataProvider extends AbstractDataProvider
 
     public function prepareData(bool $forcePrepare = false)
     {
-        $normalizers = [new ModelNormalizer(), new ObjectNormalizer()];
+        // $normalizers = [new ObjectNormalizer(), new ModelNormalizer()];
+        $normalizers = [new ObjectNormalizer()];
         $serializer = new Serializer($normalizers, []);
 
         if (!$this->queryBuilder instanceof QueryBuilder) {
@@ -71,11 +72,8 @@ class EntityDataProvider extends AbstractDataProvider
         }
 
         $rows = $this->queryBuilder->getQuery()->getResult();
-        return $rows;
-        // foreach ($rows as $row) {
-        //     $this->models[] = $this->modelNormalizer->normalize($row, null, [AbstractNormalizer::ATTRIBUTES => ['id', 'code', 'email', 'groups' => ['name'], 'profile' => ['firstname', 'lastname']]]);
-        // }
         $this->models = $serializer->normalize($rows, null, [AbstractNormalizer::ATTRIBUTES => ['id', 'code', 'email', 'groups' => ['name'], 'profile' => ['firstname', 'lastname']]]);
+        // dump($this->models);
     }
 
     /*

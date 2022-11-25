@@ -28,4 +28,6 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
-
+    
+    App\Grid\Serializer\ModelNormalizer:
+        tags: [serializer.normalizer]

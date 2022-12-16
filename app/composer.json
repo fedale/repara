@@ -7,10 +7,6 @@
         {
             "type": "vcs",
             "url": "https://github.com/fedale/EasyAdminBundle"
-        },
-        {
-            "type": "path",
-            "url": "../../APYDataGridBundle"
         }
     ],
     "require": {

@@ -77,7 +77,8 @@ class NewCustomerController extends AbstractController
         $columns = [
             'id',
             'code',
-            'email'
+            'email',
+            'username'
         ];
 
         /*

@@ -11,16 +11,17 @@ RUN apt update \
     && apt install -y zlib1g-dev g++ git libpq-dev libicu-dev zip libzip-dev zip acl apt-transport-https gnupg apt-utils \
     && docker-php-ext-install intl opcache pdo pdo_mysql pdo_pgsql \
     && pecl install apcu-${APCU_VERSION} \
-    && pecl install redis \
+    && pecl install redis mongodb \
 	&& pecl clear-cache \
     && docker-php-ext-enable pdo_pgsql \
     && docker-php-ext-enable apcu \
     && docker-php-ext-enable opcache \
     && docker-php-ext-enable redis \
+    && docker-php-ext-enable mongodb \
     && docker-php-ext-configure zip \
     && docker-php-ext-install zip \
     && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
-    && docker-php-ext-install pgsql
+    && docker-php-ext-install pgsql 
 
 WORKDIR /srv/app
 

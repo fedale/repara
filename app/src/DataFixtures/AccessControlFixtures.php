@@ -34,6 +34,12 @@ class AccessControlFixtures extends Fixture
                 'sort' => 1
             ],
             [
+                'name' => 'New customer test',
+                'path' => '^/new-customer/grid',
+                'roles' => 'PUBLIC_ACCESS',
+                'sort' => 100
+            ],
+            [
                 'name' => 'Logout',
                 'path' => '^/admin/logout',
                 'roles' => 'IS_AUTHENTICATED_FULLY',

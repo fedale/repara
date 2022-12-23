@@ -102,6 +102,8 @@ class NewCustomerController extends AbstractController
             ->renderGridview();
         ;
 
+        dump($queryBuilder, $gridview);
+
         return $gridview->renderGrid('new-customer/index.html.twig');
     }
     

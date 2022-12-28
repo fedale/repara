@@ -3,6 +3,7 @@
 namespace App\Entity\Customer;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Ignore;
 
 /**
  * CustomerProfile
@@ -17,6 +18,7 @@ class CustomerProfile
     private $id;
 
     #[ORM\OneToOne(targetEntity: Customer::class, inversedBy: 'profile', cascade: ['persist', 'remove'])]
+    #[Ignore]
     private $customer;
     
     /**
@@ -69,16 +71,16 @@ class CustomerProfile
     private $setting = NULL;
 
     
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
     public function __toString()
     {
         return $this->getFullname();
     }
     
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
     public function getFullname()
     {
         return $this->firstname . ' ' . $this->lastname;

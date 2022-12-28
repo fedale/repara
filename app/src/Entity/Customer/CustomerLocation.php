@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Entity\Customer\Customer;
 use App\Repository\Customer\CustomerLocationRepository;
-
+use Symfony\Component\Serializer\Annotation\Ignore;
 
 #[ORM\Entity(CustomerLocationRepository::class)]
 class CustomerLocation
@@ -50,6 +50,7 @@ class CustomerLocation
     #[ORM\ManyToOne(targetEntity: Customer::class, inversedBy: 'locations')]
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotNull()]
+    #[Ignore]
     private $customer;
 
 

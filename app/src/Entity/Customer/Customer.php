@@ -11,6 +11,8 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Annotation\Ignore;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 #[ORM\Entity()]
 #[UniqueEntity('email')]
@@ -58,21 +60,29 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
     private ?\DateTime $blockedAt;
 
     #[ORM\OneToOne(targetEntity: CustomerProfile::class, mappedBy: 'customer', cascade: ['persist', 'remove'])]
+    #[MaxDepth(1)]
     private ?CustomerProfile $profile;
 
     #[ORM\OneToMany(targetEntity: CustomerLocation::class, mappedBy: 'customer')]
+    #[MaxDepth(1)]
     private $locations;
 
     #[ORM\ManyToOne(targetEntity: CustomerType::class)]
     #[ORM\JoinColumn(nullable: false)]
+    #[Ignore]
+    #[MaxDepth(1)]
     private $type;
 
     #[ORM\ManyToMany(targetEntity: CustomerGroup::class, inversedBy: 'customers')]
     #[ORM\JoinTable(name: 'customer_group_assigned')]
+    #[Ignore]
+    #[MaxDepth(1)]
     private $groups;
 
     #[ORM\ManyToMany(targetEntity: CustomerRole::class, inversedBy: 'customers')]
     #[ORM\JoinTable(name: 'customer_role_assigned', joinColumns: [new ORM\JoinColumn(name: 'customer_id', referencedColumnName: 'id')], inverseJoinColumns: [new ORM\JoinColumn(name: 'role_id', referencedColumnName: 'id')])]
+    #[Ignore]
+    #[MaxDepth(1)]
     private $roles;
 
     #[Assert\NotBlank(groups: ['registration'])]
@@ -80,9 +90,11 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $plainPassword = null;
 
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'assignedCustomers')]
+    #[Ignore]
+    #[MaxDepth(1)]
     private Collection $users;
 
-    private $virtualField;
+    // private $virtualField;
 
     public function __construct()
     {
@@ -430,13 +442,18 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getVirtualField() {
-        return $this->virtualField;
-    }
+    // public function getVirtualField() {
+    //     return $this->virtualField;
+    // }
 
-    public function setVirtualField(string $virtualField) {
-        $this->virtualField = $virtualField;
+    // public function setVirtualField(string $virtualField) {
+    //     $this->virtualField = $virtualField;
 
-        return $this;
+    //     return $this;
+    // }
+
+    public function getFullcode()
+    {
+        return $this->id . ' ' . $this->email;
     }
 }

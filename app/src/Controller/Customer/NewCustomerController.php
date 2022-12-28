@@ -30,7 +30,6 @@ use Doctrine\ORM\EntityManager;
 #[Route('/new-customer')]
 class NewCustomerController extends AbstractController
 {
-
     private $gridView;
 
     private GridviewBuilderFactory $gridviewBuilderFactory;
@@ -78,22 +77,19 @@ class NewCustomerController extends AbstractController
             'id',
             'code',
             'email',
-            'username'
+            'fullcode',
+            'username:text:nome utente',
+           // 'profile.firstname:text:profile'
         ];
-
-        /*
-        $data = $entityManager
-            ->getRepository(\App\Entity\Customer\Customer::class)
-            ->findAll();
-        */
-        // dd($data);
 
         $queryBuilder = $entityManager
             ->getRepository(\App\Entity\Customer\Customer::class)
             ->createQueryBuilder('c')
+            ->select('c ', 'p', 'l')
             ->join('c.profile', 'p')
+            ->join('c.locations', 'l')
             ;
-        
+
         $dataProvider->setQueryBuilder($queryBuilder);
 
         $gridview = $this->createGridviewBuilder()
@@ -102,7 +98,7 @@ class NewCustomerController extends AbstractController
             ->renderGridview();
         ;
 
-        dump($queryBuilder, $gridview);
+        // dump($queryBuilder, $gridview);
 
         return $gridview->renderGrid('new-customer/index.html.twig');
     }

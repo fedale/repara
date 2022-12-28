@@ -3,7 +3,9 @@
     <tr>
         {% for column in columns %}
             <td>
-            {{ model[column.label] }}
+            {# {{ model[column.label] }} #}
+            {# {{ column.content }} #}
+            {{ attribute(column, 'render', [loop.index, model]) }}
             </td>
         {% endfor %}
     </tr>

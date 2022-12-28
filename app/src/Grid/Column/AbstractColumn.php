@@ -71,7 +71,21 @@ abstract class AbstractColumn implements ColumnInterface
         private string $format, 
         private ?string $label,
         private ?array $options = []
-    ) {}
+    ) {
+        $this->initContent();
+    }
+
+    private function initContent()
+    {
+        $content = $this->setContent($this->attribute);
+        return $content;
+    }
+
+    public function render($instance, $model)
+    {
+        dump($instance, $model);
+        return $model['profile']['firstname'];
+    }
 
     public function getContent()
     {

@@ -3,9 +3,14 @@ namespace App\Grid\DataProvider;
 
 use App\Grid\Model;
 use App\Grid\Serializer\ModelNormalizer;
+use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
+use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
+use Symfony\Component\Serializer\NameConverter\MetadataAwareNameConverter;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
+use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 
@@ -63,7 +68,15 @@ class EntityDataProvider extends AbstractDataProvider
     public function prepareData(bool $forcePrepare = false)
     {
         // $normalizers = [new ObjectNormalizer(), new ModelNormalizer()];
-        $normalizers = [new ObjectNormalizer()];
+        $defaultContext = [
+            AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object, $format, $context) {
+                return $object->getId();
+            },
+        ];
+        $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
+        // $metadataAwareNameConverter = new MetadataAwareNameConverter($classMetadataFactory);
+        
+        $normalizers = [new ObjectNormalizer($classMetadataFactory)];
         $serializer = new Serializer($normalizers, []);
 
         if (!$this->queryBuilder instanceof QueryBuilder) {
@@ -74,7 +87,9 @@ class EntityDataProvider extends AbstractDataProvider
         $rows = $this->queryBuilder->getQuery()->getResult();
         // $this->models = $serializer->normalize($rows, null, [AbstractNormalizer::ATTRIBUTES => ['id', 'code', 'email', 'username', 'groups' => ['name'], 'profile' => ['firstname', 'lastname']]]);
         // $this->models = $serializer->normalize($rows, null, [AbstractNormalizer::ATTRIBUTES => ['id', 'code', 'email', 'username', 'groups' => ['name'], 'profile' => ['firstname', 'lastname']]]);
-        $this->models = $serializer->normalize($rows, null, []); //, [AbstractNormalizer::ATTRIBUTES => ['id', 'code', 'email', 'username', 'groups' => ['name'], 'profile' => ['firstname', 'lastname']]]);
+        //$result = $serializer->normalize($level1, null, [AbstractObjectNormalizer::ENABLE_MAX_DEPTH => true]);
+        $this->models = $serializer->normalize($rows, null); //, [AbstractNormalizer::ATTRIBUTES => ['id', 'code', 'email', 'username', 'groups' => ['name'], 'profile' => ['firstname', 'lastname']]]);
+        
         dump($this->models);
     }
 

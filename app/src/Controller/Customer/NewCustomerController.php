@@ -74,8 +74,14 @@ class NewCustomerController extends AbstractController
             ],
         ];
         $columns = [
+            [
+                'type' => 'serial',
+            ],
+            [
+                'type' => 'checkbox'
+            ],
             'id',
-            'code',
+            'code:text:codice',
             'email',
             'fullcode',
             'username:text:nome utente',
@@ -97,8 +103,6 @@ class NewCustomerController extends AbstractController
             ->setColumns($columns)
             ->renderGridview();
         ;
-
-        // dump($queryBuilder, $gridview);
 
         return $gridview->renderGrid('new-customer/index.html.twig');
     }

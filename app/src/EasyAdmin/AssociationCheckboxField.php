@@ -69,9 +69,8 @@ final class AssociationCheckboxField implements FieldInterface
 
     public function setQueryBuilder(\Closure $queryBuilderCallable): self
     {
-        dump($queryBuilderCallable);
         $this->setCustomOption(self::OPTION_QUERY_BUILDER_CALLABLE, $queryBuilderCallable);
-
+        
         return $this;
     }
 }

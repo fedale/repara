@@ -81,10 +81,9 @@ abstract class AbstractColumn implements ColumnInterface
         return $content;
     }
 
-    public function render($instance, $model)
+    public function render($index, $model)
     {
-        dump($instance, $model);
-        return $model['profile']['firstname'];
+        return $model[$this->attribute];
     }
 
     public function getContent()

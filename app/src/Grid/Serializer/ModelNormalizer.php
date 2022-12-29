@@ -18,7 +18,6 @@ class ModelNormalizer implements NormalizerInterface, NormalizerAwareInterface
     public function normalize(mixed $object, ?string $format = null, array $context = [])
     {
         $data = $this->normalizer->normalize($object, $format, $context);
-        dump($data);  
     }
     public function supportsNormalization(mixed $data, ?string $format = null)
     {

@@ -95,14 +95,14 @@ class GridviewBuilder implements GridviewBuilderInterface
         if (is_string($columnData)) {
             $column = $this->createDataColumn($columnData);
         }  else if (is_array($columnData)) {
-            $type = isset($columnData['type']) ? ucfirst($columnData['type']) : 'Data';
-            // unset($columnData['type']);
-            // unset($columnData['property']);
-            // unset($columnData['value']);
-
-            $class = "App\\Grid\\Column\\$type" . 'Column';
+            $type = isset($columnData['type']) ? $columnData['type'] : 'data'; //ucfirst($columnData['type']) : 'Data';
+            $attribute = isset($columndData['attribute']) ? $columnData['attribute'] : '#';
+            $class = "App\\Grid\\Column\\" . ucfirst($type) . 'Column';
+dump($attribute);
             if (class_exists($class)) { 
-                $column = new $class($this->gridview, $columnData['attribute'], 'text', $columnData['label'] ?? $columnData['attribute']);
+                
+                $column = new $class($this->gridview, $attribute, 'text', $columnData['label'] ?? $attribute);
+                dump($column);
 
                 unset($columnData['attribute']);
                 unset($columnData['value']);
@@ -110,9 +110,7 @@ class GridviewBuilder implements GridviewBuilderInterface
             } else {
                 throw new \Exception();
             }
-            // dump($columnData);
             foreach ($columnData as $key => $value) {
-                // dump($key, $value);
                 $methodName = 'set' . ucfirst($key);
                 if (!method_exists($column, $methodName)) {
                     throw new Exception('Column has no attribute ' . $key);
@@ -140,7 +138,6 @@ class GridviewBuilder implements GridviewBuilderInterface
             throw new \Exception('The column must be specified in the format of "attribute", "attribute:format" or "attribute:format:label"');
         }
 
-        dump($text, $matches);
         return new DataColumn(
             $this->gridview, 
             $matches[1], 

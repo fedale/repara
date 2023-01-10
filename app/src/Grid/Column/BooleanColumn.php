@@ -3,28 +3,8 @@ namespace App\Grid\Column;
 
 class BooleanColumn extends AbstractColumn {
         
-    public function renderHeaderCell()
+    public function render($model, $index)
     {
-        return 'HeaderCell';
-    }
-
-    public function renderFilterCell()
-    {
-        return 'FilterCell';
-    }
-
-    public function renderBodyCell()
-    {
-        return 'BodyCell';
-    }
-
-    public function renderFooterCell()
-    {
-        return 'FooterCell';
-    }
-
-    public function renderSummaryCell()
-    {
-        return 'SummaryCell';
+        return 'BoolenaColumn';
     }
 }

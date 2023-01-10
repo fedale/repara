@@ -7,11 +7,24 @@ use Twig\Environment;
 
 abstract class AbstractColumn implements ColumnInterface
 {
-    /**
-     * An unique identifier for the Column
-     * @var string 
+    // /**
+    //  * An unique identifier for the Column
+    //  * @var string 
+    //  */
+    // protected string $key;
+
+     /**
+     * @var ColumnFormat
      */
-    protected string $key;
+    protected ColumnFormat $columnFormat;
+
+     /**
+     * @var callable This is a callable that will be used to generate the content of each cell.
+     * The signature of the function should be the following: `function ($model, $key, $index, $column)`.
+     * Where `$model`, `$key`, and `$index` refer to the model, key and index of the row currently being rendered
+     * and `$column` is a reference to the [[Column]] object.
+     */
+    public $content;
 
     /**
      * Whether column is visible or not 
@@ -35,7 +48,7 @@ abstract class AbstractColumn implements ColumnInterface
     //   * Column header label
     //   * @var string|null 
     //   */
-    // protected ?string $label = null;
+    //private ?string $label = null;
 
     // /**
     //  * @var Gridview
@@ -57,7 +70,7 @@ abstract class AbstractColumn implements ColumnInterface
      *     return $entity->getCustomFieldValue();
      * },
      */
-    protected $content;
+    protected $value;
 
     /**
      * Twig instance
@@ -65,25 +78,24 @@ abstract class AbstractColumn implements ColumnInterface
      */
     protected Environment $twig;
 
-    public function __construct(
+    public function __construct (
         private Gridview $gridview,
-        private string $attribute, 
-        private string $format, 
-        private ?string $label,
-        private ?array $options = []
+        protected ?string $format = ColumnFormat::RAW_FORMAT, 
+        protected ?string $label = null,
+        protected ?array $options = []
     ) {
-        $this->initContent();
+        
+        $this->initColumn();
     }
 
-    private function initContent()
+    protected function initColumn()
     {
-        $content = $this->setContent($this->attribute);
-        return $content;
+      //  $content = $this->setContent($this->attribute);
     }
 
-    public function render($index, $model)
+    public function render($data, $index)
     {
-        return $model[$this->attribute];
+        return $data[$this->content];
     }
 
     public function getContent()
@@ -147,6 +159,19 @@ abstract class AbstractColumn implements ColumnInterface
     public function getHeader(): string
     {
         return $this->label;
+    }
+
+    public function getFormat(): string
+    {
+        return $this->format;
+    }
+    
+    /**
+     * @param string $format
+     */
+    public function setFormat(string $format)
+    {
+        $this->format = $format;
     }
     
 }

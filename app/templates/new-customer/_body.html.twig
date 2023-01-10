@@ -1,12 +1,11 @@
 <tbody>
-{% for model in models %}
+{% for data in models %}
     <tr>
         {% for column in columns %}
             <td>
-            {# {{ model[column.label] }} #}
-            {# {{ column.content }} #}
             {% set index = loop.parent.loop.index0 %}
-            {{ attribute(column, 'render', [index, model]) }}
+            {{ column.render(data, index)|apply_filter('upper') }}
+            {# {{ column.render(data, index) }} #}
             </td>
         {% endfor %}
     </tr>

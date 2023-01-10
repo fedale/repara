@@ -20,6 +20,11 @@ class Gridview {
         $this->twig = $twig;
     }
 
+    public function getTwig()
+    {
+        return $this->twig;
+    }
+
     public function getColumns() 
     {
         return $this->columns;
@@ -35,9 +40,9 @@ class Gridview {
         $this->columns[] = $column;
     }
 
-    public function getData()
+    public function getDataProvider()
     {
-        return $this->data;
+        return $this->dataProvider;
     }
 
     public function setDataProvider($dataProvider) 

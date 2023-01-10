@@ -3,28 +3,8 @@ namespace App\Grid\Column;
 
 class CheckboxColumn extends AbstractColumn {
         
-    public function renderHeaderCell()
-    {
-        return 'HeaderCell';
-    }
-
-    public function renderFilterCell()
-    {
-        return 'FilterCell';
-    }
-
-    public function renderBodyCell()
-    {
-        return 'BodyCell';
-    }
-
-    public function renderFooterCell()
-    {
-        return 'FooterCell';
-    }
-
-    public function renderSummaryCell()
-    {
-        return 'SummaryCell';
-    }
+   public function render($model, $index)
+   {
+        return '<input type="checkbox">';
+   }
 }

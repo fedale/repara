@@ -8,6 +8,7 @@ use App\Entity\Customer\CustomerType as CustomerCustomerType;
 use App\Form\Customer\CustomerRegistrationType;
 use App\Form\Customer\CustomerType;
 use App\Form\Model\CustomerCreateModel;
+use App\Grid\Column\ColumnInterface;
 use App\Grid\DataProvider\EntityDataProvider;
 use App\Grid\GridView;
 use App\Grid\GridviewBuilder;
@@ -46,45 +47,32 @@ class NewCustomerController extends AbstractController
         /**
          *
          */
-        $columns2 = [
-            'code',
-            [
-                'attribute' => 'code',
-                'type' => 'serial',
-                'visible' => true,
-                'label' => 'code',
-            ],
-            [
-                'attribute' => 'username',
-                'visible' => true,
-                'label' => 'username'
-            ],
-            [
-                'attribute' => 'email',
-                'type' => 'serial',
-                'visible' => true,
-                'label' => 'email'
-            ],
-            [
-                'attribute' => 'email',
-                'type' => 'serial',
-                'value' => 'my custom value',
-                'visible' => true,
-                'label' => 'profile'
-            ],
-        ];
         $columns = [
+            'id', // it's a string so it's a ColumnData
+            // [
+            //    'type' => 'serial', // array with SerialColumn
+            //    'visible' => rand(0, 10) > 5 ? true : false
+            // ],
             [
-                'type' => 'serial',
+            //    'attribute' => 'email',
+               'label' => 'E-Mail',
+               'format' => 'raw',
+               'value' => function (array $data, string $key, ColumnInterface $column) {
+                    return '<strong>' . $data['email'] . '</strong>';
+                },
             ],
-            [
-                'type' => 'checkbox'
-            ],
-            'id',
+            // [
+            //     'value' => function (array $data, string $key, ColumnInterface $column) {
+            //         return $data['profile']['fullname'];
+            //     },
+            //     'label' => 'Fullname'
+            // ],
             'code:text:codice',
-            'email',
-            'fullcode',
-            'username:text:nome utente',
+            // 'fullcode',
+            // 'username:text:nome utente',
+            // [
+            //     'type' => 'action'
+            // ]
            // 'profile.firstname:text:profile'
         ];
 

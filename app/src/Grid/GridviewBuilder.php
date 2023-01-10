@@ -54,7 +54,6 @@ class GridviewBuilder implements GridviewBuilderInterface
                 $column->setGridview($this->gridview);
                 $this->addColumn($column);
             }
-            // $this->addColumn($column);
         }
 
         return $this;
@@ -93,23 +92,31 @@ class GridviewBuilder implements GridviewBuilderInterface
     {
         // If $columnData is a string create a DataColumn which is the default column data type.
         if (is_string($columnData)) {
-            $column = $this->createDataColumn($columnData);
+            $column = $this->createDataColumnFromString($columnData);
         }  else if (is_array($columnData)) {
-            $type = isset($columnData['type']) ? $columnData['type'] : 'data'; //ucfirst($columnData['type']) : 'Data';
-            $attribute = isset($columndData['attribute']) ? $columnData['attribute'] : '#';
+            $type = isset($columnData['type']) ? $columnData['type'] : 'data';
+            $attribute = isset($columnData['attribute']) ? $columnData['attribute'] : '#';
+            $value = isset($columnData['value']) ? $columnData['value'] : null;
             $class = "App\\Grid\\Column\\" . ucfirst($type) . 'Column';
-dump($attribute);
-            if (class_exists($class)) { 
-                
-                $column = new $class($this->gridview, $attribute, 'text', $columnData['label'] ?? $attribute);
-                dump($column);
 
+            if (class_exists($class)) { 
+                switch ($type) {
+                    case 'data':
+                        $column = new $class($this->gridview, $attribute, 'text', $columnData['label'] ?? $attribute, []);
+                        $column->value = $value;
+                    break;
+                    default:
+                        $column = new $class($this->gridview, 'text', $columnData['label'] ?? $attribute, []);
+                    break;
+                }
+                
                 unset($columnData['attribute']);
                 unset($columnData['value']);
                 unset($columnData['type']);
             } else {
                 throw new \Exception();
             }
+            // dump($columnData);
             foreach ($columnData as $key => $value) {
                 $methodName = 'set' . ucfirst($key);
                 if (!method_exists($column, $methodName)) {
@@ -131,22 +138,20 @@ dump($attribute);
      * @return DataColumn the column instance
      * @throws InvalidConfigException if the column specification is invalid
      */
-    private function createDataColumn($text) 
+    private function createDataColumnFromString($text) 
     {
         if (!preg_match('/^([^:]+)(:(\w*))?(:(.*))?$/', $text, $matches)) {
             // throw new InvalidConfigException('The column must be specified in the format of "attribute", "attribute:format" or "attribute:format:label"');
             throw new \Exception('The column must be specified in the format of "attribute", "attribute:format" or "attribute:format:label"');
         }
-
+        
         return new DataColumn(
             $this->gridview, 
-            $matches[1], 
-            isset($matches[3]) ? $matches[3] : 'text', 
+            $matches[1],
+            isset($matches[3]) ? $matches[3] : 'html', 
             isset($matches[5]) ? $matches[5] : $matches[1]
         );
     }
-
-   
 
     public function setDataProvider(DataProviderInterface $dataProvider)
     {

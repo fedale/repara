@@ -2,29 +2,14 @@
 namespace App\Grid\Column;
 
 class ActionColumn extends AbstractColumn {
-        
-    public function renderHeaderCell()
+    
+    public function initColumn()
     {
-        return 'HeaderCell';
+        $this->label = 'Action';
     }
 
-    public function renderFilterCell()
+    public function render($model, $index)
     {
-        return 'FilterCell';
-    }
-
-    public function renderBodyCell()
-    {
-        return 'BodyCell';
-    }
-
-    public function renderFooterCell()
-    {
-        return 'FooterCell';
-    }
-
-    public function renderSummaryCell()
-    {
-        return 'SummaryCell';
+        return 'actionColumn';
     }
 }

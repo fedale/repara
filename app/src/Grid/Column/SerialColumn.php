@@ -22,6 +22,6 @@ class SerialColumn extends AbstractColumn {
 
     public function render($model, $index)
     {
-        return $model + 1;
+        return $index + 1;
     }
 }

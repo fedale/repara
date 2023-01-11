@@ -46,35 +46,43 @@ class DataColumn extends AbstractColumn
                 return $this->value;
             }
             
-            $twigFilter = $this->gridview->getTwig()->getFilter('raw');
-            // dd($data);
-            // $f = call_user_func($data, $index, $this);
-            // dd($f);
-            // $f = call_user_func($twigFilter->getCallable(), $this->value);
-            // dd($f);
-            // dd($twigFilter);
-            //$value = call_user_func_array($twigFilter->getCallable(), [$this->value]);
-            //return $this->value;
-            
             $value =  call_user_func($this->value, $data, $index, $this);
+
+            // return $value;
+
+
+            $applyFilter = true;
+            if ($applyFilter) {
+                
+                $value = $this->applyFilter($value, 'upper');
+            }
+
             return $value;
 
-
-
-            $f = call_user_func($twigFilter->getCallable(), $value);
-            dump($value, $f);
-            return $f;
-
-            return call_user_func($twigFilter->getCallable(), $data);
-            // $value = call_user_func_array($twigFilter->getCallable(), [$this->gridview->getTwig(), $this->value]);
-            $value = call_user_func_array($twigFilter->getCallable(), [$this->value]);
-            
-            return $value; //call_user_func($value, $data, $index, $this);
         } elseif ($this->attribute !== null) {
             return $data[$this->attribute];
         }
         
         return null;
+    }
+
+    public function applyFilter($value, string $filterName, ...$filterArguments)
+    {
+        dump($this->twigFilter);
+        $twigFilter = $this->gridview->getTwig()->getFilter($filterName);
+        
+        if (false === $twigFilter || null === $twigFilter) {
+            return $value;
+        }
+        
+        if ($twigFilter->needsEnvironment()) {
+            $filteredValue = call_user_func($twigFilter->getCallable(), $this->gridview->getTwig(), $value);     
+        } else {
+            $filteredValue = call_user_func($twigFilter->getCallable(), $value);
+        }
+        
+        
+        return $filteredValue;
     }
 
     public function getLabelDELETE(): string

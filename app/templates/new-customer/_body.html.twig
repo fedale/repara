@@ -4,7 +4,8 @@
         {% for column in columns %}
             <td>
             {% set index = loop.parent.loop.index0 %}
-            {{ column.render(data, index)|apply_filter('upper') }}
+            {{ column.render(data, index)|apply_filter('foo') }}
+            {# {{ column.render(data, index) }} #}
             {# {{ column.render(data, index) }} #}
             </td>
         {% endfor %}

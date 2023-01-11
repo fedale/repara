@@ -82,7 +82,8 @@ abstract class AbstractColumn implements ColumnInterface
         private Gridview $gridview,
         protected ?string $format = ColumnFormat::RAW_FORMAT, 
         protected ?string $label = null,
-        protected ?array $options = []
+        protected ?array $options = [],
+        protected ?string $twigFilter = null
     ) {
         
         $this->initColumn();
@@ -122,6 +123,11 @@ abstract class AbstractColumn implements ColumnInterface
     public function setLabel($label)
     {
         $this->label = $label;
+    }
+
+    public function setTwigFilter($twigFilter)
+    {
+        $this->twigFilter = $twigFilter;
     }
 
     /**

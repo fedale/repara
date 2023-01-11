@@ -10,28 +10,38 @@ use Twig\TwigFilter;
 
 class ApplyFilterExtension extends AbstractExtension
 {
+    public function __construct(private Environment $environment)
+    {}
+
     public function getFilters()
     {
         return [
             new TwigFilter('apply_filter', [$this, 'applyFilter'], [
-                    'needs_environment' => true,
+                  //  'needs_environment' => true,
+                  //  'is_safe' => ['html' => true]
                 ]
             )
         ];
     }
 
-    public function applyFilter(Environment $environment, $value, $filterName)
+    public function applyFilter($value, ?string $filterName, ...$filterArguments)
     {
-        // dump($value, $filterName);
-        $twigFilter = $environment->getFilter($filterName);
-        
-        if (!$twigFilter) {
+        if (null === $filterName) {
             return $value;
         }
-        [$class, $method] = $twigFilter->getCallable();
-        dd($twigFilter->getCallable());
-        $f = call_user_func($twigFilter->getCallable(), $environment, $value);
-        dump($f);
+        
+        $twigFilter = $this->environment->getFilter($filterName);
+        if (false === $twigFilter || null === $twigFilter) {
+            return $value;
+        }
+        
+        if ($twigFilter->needsEnvironment()) {
+            $f = call_user_func($twigFilter->getCallable(), $this->environment, $value);     
+        } else {
+            $f = call_user_func($twigFilter->getCallable(), $value);
+        }
+        
+        
         return $f;
     }
 

@@ -60,6 +60,7 @@ class NewCustomerController extends AbstractController
                'value' => function (array $data, string $key, ColumnInterface $column) {
                     return '<strong>' . $data['email'] . '</strong>';
                 },
+                'twigFilter' => 'uppper'
             ],
             // [
             //     'value' => function (array $data, string $key, ColumnInterface $column) {

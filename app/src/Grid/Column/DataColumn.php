@@ -32,9 +32,10 @@ class DataColumn extends AbstractColumn
         protected ?string $format = ColumnFormat::RAW_FORMAT, 
         protected ?string $label = null,
         protected ?array $options = [],
+        protected ?string $twigFilter = null
         
     ) { 
-        if (is_null($this->label)) {
+        if (null === $this->label) {
             $this->setLabel($attribute);
         }
     }
@@ -48,16 +49,14 @@ class DataColumn extends AbstractColumn
             
             $value =  call_user_func($this->value, $data, $index, $this);
 
-            // return $value;
-
-
-            $applyFilter = true;
-            if ($applyFilter) {
-                
-                $value = $this->applyFilter($value, 'upper');
-            }
-
             return $value;
+
+            // $applyFilter = true;
+            // if (null !== $this->twigFilter) {
+            //     $value = $this->applyFilter($value, $this->twigFilter);
+            // }
+
+            // return $value;
 
         } elseif ($this->attribute !== null) {
             return $data[$this->attribute];
@@ -66,9 +65,8 @@ class DataColumn extends AbstractColumn
         return null;
     }
 
-    public function applyFilter($value, string $filterName, ...$filterArguments)
+/*    public function applyFilter($value, string $filterName, ...$filterArguments)
     {
-        dump($this->twigFilter);
         $twigFilter = $this->gridview->getTwig()->getFilter($filterName);
         
         if (false === $twigFilter || null === $twigFilter) {
@@ -84,7 +82,7 @@ class DataColumn extends AbstractColumn
         
         return $filteredValue;
     }
-
+*/
     public function getLabelDELETE(): string
     {
         return $this->label;

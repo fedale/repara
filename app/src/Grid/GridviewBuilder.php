@@ -122,7 +122,7 @@ class GridviewBuilder implements GridviewBuilderInterface
                 if (!method_exists($column, $methodName)) {
                     throw new Exception('Column has no attribute ' . $key);
                 }
-
+dump($value);
                 $column->$methodName($value);
             }
         }

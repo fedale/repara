@@ -125,7 +125,12 @@ abstract class AbstractColumn implements ColumnInterface
         $this->label = $label;
     }
 
-    public function setTwigFilter($twigFilter)
+    public function getTwigFilter(): ?string
+    {
+        return $this->twigFilter;
+    }
+
+    public function setTwigFilter(string $twigFilter)
     {
         $this->twigFilter = $twigFilter;
     }

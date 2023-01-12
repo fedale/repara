@@ -54,13 +54,23 @@ class NewCustomerController extends AbstractController
             //    'visible' => rand(0, 10) > 5 ? true : false
             // ],
             [
+                'value' => function(array $data, string $key, ColumnInterface $column) {
+                    return $data['profile']['firstname'];
+                },
+                'twigFilter' => 'raw'
+            ],
+            [
+                'value' => function(array $data, string $key, ColumnInterface $column) {
+                    return $data['profile']['lastname'];
+                },
+            ],
+            [
             //    'attribute' => 'email',
                'label' => 'E-Mail',
-               'format' => 'raw',
                'value' => function (array $data, string $key, ColumnInterface $column) {
                     return '<strong>' . $data['email'] . '</strong>';
                 },
-                'twigFilter' => 'uppper'
+                'twigFilter' => 'upper'
             ],
             // [
             //     'value' => function (array $data, string $key, ColumnInterface $column) {

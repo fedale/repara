@@ -55,7 +55,7 @@ class NewCustomerController extends AbstractController
             // ],
             [
                 'value' => function(array $data, string $key, ColumnInterface $column) {
-                    return $data['profile']['firstname'];
+                    return '<strong>' . $data['profile']['firstname'] . '</strong>';
                 },
                 'twigFilter' => 'raw'
             ],

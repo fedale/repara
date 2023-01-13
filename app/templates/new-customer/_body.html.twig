@@ -3,9 +3,9 @@
     <tr>
         {% for column in columns %}
             <td>
-                {{ dump(column.twigFilter) }}
             {% set index = loop.parent.loop.index0 %}
-            {{ column.render(data, index)|apply_filter(column.twigFilter) }}
+            {% set myfilter = column.twigFilter %}
+            {{ column.render(data, index)| myfilter }}
             {# {{ column.render(data, index) }} #}
             {# {{ column.render(data, index) }} #}
             </td>
@@ -13,7 +13,7 @@
     </tr>
 {% else %}
     <tr>
-        <td colspan="14">no records found</td>
+        <td colspan="{{ columns.length }}">no records found</td>
     </tr>
 {% endfor %}
 </tbody>

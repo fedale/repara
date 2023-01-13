@@ -26,7 +26,7 @@ class ApplyFilterExtension extends AbstractExtension
     public function getFilters()
     {
         return [
-            new TwigFilter('apply_filter', [$this, 'applyFilter']
+            new TwigFilter('apply_filter', [$this, 'applyFilter'], ['need_environment' => true]
             )
         ];
     }
@@ -64,22 +64,21 @@ class ApplyFilterExtension extends AbstractExtension
         }
         
         $twigFilter = $this->environment->getFilter($filterName);
-        dump($twigFilter);
+        
         if (false === $twigFilter || null === $twigFilter) {
             return $value;
         }
-        $options = $twigFilter->getOptions();
+        
+        // $f = call_user_func($twigFilter->getCallable(), $value);
+        // return $f;
 
-
-        $f = call_user_func($twigFilter->getCallable(), $value);
-        return $f;
-
-        $f = call_user_func($twigFilter->getCallable(), [$this->getOptions($value), $value]);
-        return $f;
+        // $f = call_user_func($twigFilter->getCallable(), [$this->getOptions($value), $value]);
+        // return $f;
 
         if ($twigFilter->needsEnvironment()) {
             $f = call_user_func($twigFilter->getCallable(), $this->environment, $value);
         } else {
+            dump($twigFilter, $value);
             $f = call_user_func($twigFilter->getCallable(), $value);
         }
         

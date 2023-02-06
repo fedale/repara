@@ -3,6 +3,7 @@ namespace App\Grid\DataProvider;
 
 use App\Grid\Model;
 use App\Grid\Serializer\ModelNormalizer;
+use App\Grid\Component\Sort;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\EntityManagerInterface;
@@ -28,6 +29,8 @@ class EntityDataProvider extends AbstractDataProvider
      */
     protected $ormMetadata;
 
+    public function __construct(protected Sort $sort){
+    }
 
     //  /**
     //  * Inject dependencies

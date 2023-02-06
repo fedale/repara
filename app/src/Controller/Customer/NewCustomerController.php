@@ -28,6 +28,7 @@ use APY\DataGridBundle\Grid\Source\Source;
 use APY\DataGridBundle\Grid\GridFactory;
 use APY\DataGridBundle\Grid\GridManager;
 use Doctrine\ORM\EntityManager;
+use App\Grid\Component\Sort;
 
 #[Route('/new-customer')]
 class NewCustomerController extends AbstractController
@@ -36,13 +37,25 @@ class NewCustomerController extends AbstractController
 
     public function __construct(
         private GridviewBuilderFactory $gridviewBuilderFactory,
-        private ProxyFilter $proxyFilter
     ) {
     }
 
     #[Route('/grid', name: 'new_app_grid', methods: ['GET'])]
-    public function grid(EntityManagerInterface $entityManager, EntityDataProvider $dataProvider): Response
+    public function grid(EntityManagerInterface $entityManager, EntityDataProvider $dataProvider, Sort $sort): Response
     {
+        $sort->setAttributes([
+            'attributes' => [
+                        'age',
+                        'name' => [
+                            'asc' => ['first_name' => SORT_ASC, 'last_name' => SORT_ASC],
+                            'desc' => ['first_name' => SORT_DESC, 'last_name' => SORT_DESC],
+                            'default' => SORT_DESC,
+                            'label' => 'Name',
+                        ],
+                    ],
+                ]);
+
+
         /**
          *
          */
@@ -83,9 +96,9 @@ class NewCustomerController extends AbstractController
                 },
                 'twigFilter' => "join(', ', ' and ')|raw"
             ],
-            [
-                'attribute' => 'createdAt'
-            ]
+            // [
+            //     'attribute' => 'createdAt'
+            // ]
                 
         ];
 

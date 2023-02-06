@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7f315354a7bc5e99b02f59222bfe8319",
+    "content-hash": "965b24a2c8b055f2f20c391f5d4b7485",
     "packages": [
         {
             "name": "behat/transliterator",
@@ -6904,20 +6904,20 @@
         },
         {
             "name": "symfony/routing",
-            "version": "v6.1.0",
+            "version": "v6.0.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/routing.git",
-                "reference": "03c13cbaefdec9fbb7a62ed18235d487686540dd"
+                "reference": "e56ca9b41c1ec447193474cd86ad7c0b547755ac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/routing/zipball/03c13cbaefdec9fbb7a62ed18235d487686540dd",
-                "reference": "03c13cbaefdec9fbb7a62ed18235d487686540dd",
+                "url": "https://api.github.com/repos/symfony/routing/zipball/e56ca9b41c1ec447193474cd86ad7c0b547755ac",
+                "reference": "e56ca9b41c1ec447193474cd86ad7c0b547755ac",
                 "shasum": ""
             },
             "require": {
-                "php": ">=8.1"
+                "php": ">=8.0.2"
             },
             "conflict": {
                 "doctrine/annotations": "<1.12",
@@ -6926,7 +6926,7 @@
                 "symfony/yaml": "<5.4"
             },
             "require-dev": {
-                "doctrine/annotations": "^1.12",
+                "doctrine/annotations": "^1.12|^2",
                 "psr/log": "^1|^2|^3",
                 "symfony/config": "^5.4|^6.0",
                 "symfony/dependency-injection": "^5.4|^6.0",
@@ -6972,7 +6972,7 @@
                 "url"
             ],
             "support": {
-                "source": "https://github.com/symfony/routing/tree/v6.1.0"
+                "source": "https://github.com/symfony/routing/tree/v6.0.19"
             },
             "funding": [
                 {
@@ -6988,7 +6988,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-04-27T17:06:58+00:00"
+            "time": "2023-01-01T08:36:10+00:00"
         },
         {
             "name": "symfony/runtime",
@@ -11842,5 +11842,5 @@
         "ext-iconv": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.1.0"
+    "plugin-api-version": "2.3.0"
 }

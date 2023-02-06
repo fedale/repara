@@ -18,7 +18,6 @@ class AbstractCrudController extends \EasyCorp\Bundle\EasyAdminBundle\Controller
         foreach ($batchActionDto->getEntityIds() as $id) {
             
             $item = $entityManager->find($className, $id);
-            dump($item);
             $item->setActive(false);
         }
         $entityManager->flush();

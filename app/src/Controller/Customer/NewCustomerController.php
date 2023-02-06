@@ -14,6 +14,7 @@ use App\Grid\GridView;
 use App\Grid\GridviewBuilder;
 use App\Grid\GridviewBuilderFactory;
 use App\Grid\Source\Entity as SourceEntity;
+use App\Service\ProxyFilter;
 use App\Type\CustomerGridType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -33,12 +34,10 @@ class NewCustomerController extends AbstractController
 {
     private $gridView;
 
-    private GridviewBuilderFactory $gridviewBuilderFactory;
-
     public function __construct(
-        GridviewBuilderFactory $gridviewBuilderFactory
+        private GridviewBuilderFactory $gridviewBuilderFactory,
+        private ProxyFilter $proxyFilter
     ) {
-        $this->gridviewBuilderFactory = $gridviewBuilderFactory;
     }
 
     #[Route('/grid', name: 'new_app_grid', methods: ['GET'])]
@@ -48,21 +47,20 @@ class NewCustomerController extends AbstractController
          *
          */
         $columns = [
-            'id', // it's a string so it's a ColumnData
-            // [
-            //    'type' => 'serial', // array with SerialColumn
-            //    'visible' => rand(0, 10) > 5 ? true : false
-            // ],
             [
-                'value' => function(array $data, string $key, ColumnInterface $column) {
-                    return '<strong>' . $data['profile']['firstname'] . '</strong>';
-                },
-                'twigFilter' => 'raw'
+               'type' => 'serial', // array with SerialColumn
+            //   'visible' => rand(0, 10) > 5 ? true : false
             ],
+            'id',
+            'code:raw:codice',
             [
                 'value' => function(array $data, string $key, ColumnInterface $column) {
-                    return $data['profile']['lastname'];
+                    return rand(0, 10) > 5 ? 
+                        '<strong>' . $data['profile']['fullname'] . '</strong>'
+                        : 
+                        null;
                 },
+                'twigFilter' => 'raw',
             ],
             [
             //    'attribute' => 'email',
@@ -70,21 +68,25 @@ class NewCustomerController extends AbstractController
                'value' => function (array $data, string $key, ColumnInterface $column) {
                     return '<strong>' . $data['email'] . '</strong>';
                 },
-                'twigFilter' => 'upper'
+                'twigFilter' => 'raw'
             ],
-            // [
-            //     'value' => function (array $data, string $key, ColumnInterface $column) {
-            //         return $data['profile']['fullname'];
-            //     },
-            //     'label' => 'Fullname'
-            // ],
-            'code:text:codice',
-            // 'fullcode',
-            // 'username:text:nome utente',
-            // [
-            //     'type' => 'action'
-            // ]
-           // 'profile.firstname:text:profile'
+            
+            'profile.firstname:raw:codice',
+            [
+                'value' => function (array $data, string $key, ColumnInterface $column) {
+                    $arr = [];
+                    foreach ($data['locations'] as $location) {
+                        $link = sprintf('<a href="/location/%s">%s</a>', $location['id'], $location['zipcode']);
+                        \array_push($arr, $link);
+                    }
+                    return $arr;
+                },
+                'twigFilter' => "join(', ', ' and ')|raw"
+            ],
+            [
+                'attribute' => 'createdAt'
+            ]
+                
         ];
 
         $queryBuilder = $entityManager

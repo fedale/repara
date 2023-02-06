@@ -18,11 +18,12 @@ class GridviewBuilder implements GridviewBuilderInterface
     private Environment $twig;
     private Gridview $gridview;
     private EntityManagerInterface $entityManager;
+    private $request;
 
     public function __construct(
         private RequestStack $requestStack,
         Environment $twig,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
     )
     {
         $this->request = $requestStack->getCurrentRequest();
@@ -102,11 +103,11 @@ class GridviewBuilder implements GridviewBuilderInterface
             if (class_exists($class)) { 
                 switch ($type) {
                     case 'data':
-                        $column = new $class($this->gridview, $attribute, 'text', $columnData['label'] ?? $attribute, []);
+                        $column = new $class($this->gridview, $attribute, null, $columnData['label'] ?? $attribute, []);
                         $column->value = $value;
                     break;
                     default:
-                        $column = new $class($this->gridview, 'text', $columnData['label'] ?? $attribute, []);
+                        $column = new $class($this->gridview, null, $columnData['label'] ?? $attribute, []);
                     break;
                 }
                 
@@ -116,13 +117,13 @@ class GridviewBuilder implements GridviewBuilderInterface
             } else {
                 throw new \Exception();
             }
-            // dump($columnData);
+            
             foreach ($columnData as $key => $value) {
                 $methodName = 'set' . ucfirst($key);
                 if (!method_exists($column, $methodName)) {
                     throw new Exception('Column has no attribute ' . $key);
                 }
-dump($value);
+
                 $column->$methodName($value);
             }
         }
@@ -141,14 +142,13 @@ dump($value);
     private function createDataColumnFromString($text) 
     {
         if (!preg_match('/^([^:]+)(:(\w*))?(:(.*))?$/', $text, $matches)) {
-            // throw new InvalidConfigException('The column must be specified in the format of "attribute", "attribute:format" or "attribute:format:label"');
-            throw new \Exception('The column must be specified in the format of "attribute", "attribute:format" or "attribute:format:label"');
+            throw new \Exception('The column must be specified in the format of "attirbute", "attribute:filter" or "attribute:filter:label"');
         }
         
         return new DataColumn(
             $this->gridview, 
             $matches[1],
-            isset($matches[3]) ? $matches[3] : 'html', 
+            isset($matches[3]) ? $matches[3] : null, 
             isset($matches[5]) ? $matches[5] : $matches[1]
         );
     }

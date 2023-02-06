@@ -1,6 +1,7 @@
 <?php
 namespace App\Grid;
 
+use App\Service\ProxyFilter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\Environment;

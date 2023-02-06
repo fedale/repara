@@ -271,7 +271,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         
         return $this->roles->toArray();
         $defaultRoles[] = 'ROLE_USER';
-        dump($this->roles);
+        
         return $defaultRoles;
         return array_unique(array_merge($defaultRoles, $this->roles->toArray() ));
         

@@ -3,9 +3,6 @@ namespace App\Grid\Column;
 
 use App\Grid\Gridview;
 use \Closure;
-use Twig\Environment;
-use Twig\TwigFilter;
-use Twig\TwigFunction;
 
 class DataColumn extends AbstractColumn 
 {
@@ -29,10 +26,10 @@ class DataColumn extends AbstractColumn
     public function __construct (
         private Gridview $gridview,
         private string $attribute,
-        protected ?string $format = ColumnFormat::RAW_FORMAT, 
+        protected ?string $twigFilter = null,
         protected ?string $label = null,
         protected ?array $options = [],
-        protected ?string $twigFilter = null
+        
         
     ) { 
         if (null === $this->label) {
@@ -51,43 +48,30 @@ class DataColumn extends AbstractColumn
 
             return $value;
 
-            // $applyFilter = true;
-            // if (null !== $this->twigFilter) {
-            //     $value = $this->applyFilter($value, $this->twigFilter);
-            // }
-
-            // return $value;
-
+        } elseif (strpos($this->attribute, '.')) {
+            return $this->resolve($data, $this->attribute);
         } elseif ($this->attribute !== null) {
             return $data[$this->attribute];
         }
         
         return null;
-    }
+    }    
 
-/*    public function applyFilter($value, string $filterName, ...$filterArguments)
+    // https://stackoverflow.com/questions/14704984/access-a-multidimensional-array-with-dot-notation
+    private function resolve(array $a, $path, $default = null)
     {
-        $twigFilter = $this->gridview->getTwig()->getFilter($filterName);
-        
-        if (false === $twigFilter || null === $twigFilter) {
-            return $value;
+      $current = $a;
+      $p = strtok($path, '.');
+    
+      while ($p !== false) {
+        if (!isset($current[$p])) {
+          return $default;
         }
-        
-        if ($twigFilter->needsEnvironment()) {
-            $filteredValue = call_user_func($twigFilter->getCallable(), $this->gridview->getTwig(), $value);     
-        } else {
-            $filteredValue = call_user_func($twigFilter->getCallable(), $value);
-        }
-        
-        
-        return $filteredValue;
+        $current = $current[$p];
+        $p = strtok('.');
+      }
+    
+      return $current;
     }
-*/
-    public function getLabelDELETE(): string
-    {
-        return $this->label;
-    }
-
-
     
 }

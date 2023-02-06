@@ -38,7 +38,6 @@ final class FlashMessageSubscriber implements EventSubscriberInterface
 
     public function flashMessageAfterUpdate(AfterEntityUpdatedEvent $event): void
     {
-        dump('AfterUpdate');
         $this->requestStack->getSession()->getFlashBag()->add('success', new TranslatableMessage('content_admin.flash_message.update', [
             '%name%' => (string) $event->getEntityInstance(),
         ], 'admin'));
@@ -46,7 +45,6 @@ final class FlashMessageSubscriber implements EventSubscriberInterface
 
     public function flashMessageAfterDelete(AfterEntityDeletedEvent $event): void
     {
-        dump('AfterDelete');
         $this->requestStack->getSession()->getFlashBag()->add('success', new TranslatableMessage('content_admin.flash_message.delete', [
             '%name%' => (string) $event->getEntityInstance(),
         ], 'admin'));

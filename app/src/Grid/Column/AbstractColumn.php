@@ -7,17 +7,6 @@ use Twig\Environment;
 
 abstract class AbstractColumn implements ColumnInterface
 {
-    // /**
-    //  * An unique identifier for the Column
-    //  * @var string 
-    //  */
-    // protected string $key;
-
-     /**
-     * @var ColumnFormat
-     */
-    protected ColumnFormat $columnFormat;
-
      /**
      * @var callable This is a callable that will be used to generate the content of each cell.
      * The signature of the function should be the following: `function ($model, $key, $index, $column)`.
@@ -80,10 +69,9 @@ abstract class AbstractColumn implements ColumnInterface
 
     public function __construct (
         private Gridview $gridview,
-        protected ?string $format = ColumnFormat::RAW_FORMAT, 
+        protected ?string $twigFilter = null, 
         protected ?string $label = null,
-        protected ?array $options = [],
-        protected ?string $twigFilter = null
+        protected ?array $options = []
     ) {
         
         $this->initColumn();
@@ -171,18 +159,4 @@ abstract class AbstractColumn implements ColumnInterface
     {
         return $this->label;
     }
-
-    public function getFormat(): string
-    {
-        return $this->format;
-    }
-    
-    /**
-     * @param string $format
-     */
-    public function setFormat(string $format)
-    {
-        $this->format = $format;
-    }
-    
 }

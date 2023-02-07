@@ -48,6 +48,7 @@ abstract class AbstractDataProvider implements DataProviderInterface
      */
     public function setSort(Sort $sort): static
     {
+        dump($sort);
         $this->sort = $sort;
         return $this;
     }
@@ -125,7 +126,7 @@ abstract class AbstractDataProvider implements DataProviderInterface
 
     public function getData()
     {
-        $this->prepareData();
+        $this->prepare();
         return $this->models;
     }
 }

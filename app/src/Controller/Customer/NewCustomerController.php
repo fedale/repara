@@ -43,27 +43,41 @@ class NewCustomerController extends AbstractController
     #[Route('/grid', name: 'new_app_grid', methods: ['GET'])]
     public function grid(EntityManagerInterface $entityManager, EntityDataProvider $dataProvider, Sort $sort): Response
     {
+        /*
         $sort->setAttributes([
             'attributes' => [
-                        'age',
-                        'name' => [
-                            'asc' => ['first_name' => SORT_ASC, 'last_name' => SORT_ASC],
-                            'desc' => ['first_name' => SORT_DESC, 'last_name' => SORT_DESC],
-                            'default' => SORT_DESC,
-                            'label' => 'Name',
-                        ],
-                    ],
-                ]);
+                'id' => [
+                    'asc' => ['first_name' => SORT_ASC, 'last_name' => SORT_ASC],
+                    'desc' => ['first_name' => SORT_DESC, 'last_name' => SORT_DESC],
+                    'default' => SORT_DESC,
+                    'label' => 'Name',
+                ],
+            ],
+        ]);*/
 
+        $sort->setDefaultOrder([
+            'c.id' => Sort::DESC
+        ]);
+        
+        
+        $sort->setAttributes([
+            'c.id' => [
+                'asc' => ['c.id' => Sort::ASC],
+                'desc' => ['c.id' => Sort::DESC],
+                'default' => Sort::DESC,
+                'label' => 'IDDDD',
+            ]
+        ]);
+        
 
         /**
          *
          */
         $columns = [
-            [
-               'type' => 'serial', // array with SerialColumn
-            //   'visible' => rand(0, 10) > 5 ? true : false
-            ],
+            // [
+            //    'type' => 'serial', // array with SerialColumn
+            // //   'visible' => rand(0, 10) > 5 ? true : false
+            // ],
             'id',
             'code:raw:codice',
             [
@@ -74,6 +88,7 @@ class NewCustomerController extends AbstractController
                         null;
                 },
                 'twigFilter' => 'raw',
+                'visible' => false
             ],
             [
             //    'attribute' => 'email',
@@ -111,6 +126,7 @@ class NewCustomerController extends AbstractController
             ;
 
         $dataProvider->setQueryBuilder($queryBuilder);
+        $dataProvider->setSort($sort);
 
         $gridview = $this->createGridviewBuilder()
             ->setDataProvider($dataProvider)

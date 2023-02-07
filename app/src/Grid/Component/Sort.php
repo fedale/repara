@@ -6,7 +6,7 @@ use Exception;
 use App\Grid\Gridview;
 // use Tinustester\Bundle\GridviewBundle\Helper\Html;
 use Symfony\Component\HttpFoundation\Request;
-// use Symfony\Component\Routing\Router;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 // use Tinustester\Bundle\GridviewBundle\Helper\TextFormat;
 // use Tinustester\Bundle\GridviewBundle\Exception\SortException;
@@ -83,9 +83,9 @@ class Sort
     protected Request $request;
 
     /**
-     * @var Router
+     * @var RouterInterface
      */
-  //  protected Router $router;
+    protected RouterInterface $router;
 
     
     /**
@@ -94,11 +94,11 @@ class Sort
      * @param RequestStack $requestStack
      * @param Router $router
      */
-    // public function __construct(RequestStack $requestStack, Router $router)
-    // {
-    //     $this->request = $requestStack->getCurrentRequest();
-    //     $this->router = $router;
-    // }
+    public function __construct(RequestStack $requestStack, RouterInterface $router)
+    {
+        $this->request = $requestStack->getCurrentRequest();
+        $this->router = $router;
+    }
 
     /**
      * Set attributes sort order.
@@ -163,8 +163,10 @@ class Sort
 
         $orders = [];
 
+        dump($this->attributes);
+        
         foreach ($attributeOrders as $attribute => $sortType) {
-
+            
             $attributeSortData = $this->attributes[$attribute];
             $relatedAttributes = $attributeSortData[$sortType];
 
@@ -215,6 +217,7 @@ class Sort
         if (empty($this->attributeOrders) && is_array($this->defaultOrder)) {
             $this->attributeOrders = $this->defaultOrder;
         }
+
 
         return $this->attributeOrders;
     }
@@ -348,7 +351,7 @@ class Sort
         return $this->generateUrl(
             $this->request->get('_route'),
             $parameters,
-            $absolute ? Router::ABSOLUTE_URL : Router::ABSOLUTE_PATH
+            $absolute ? RouterInterface::ABSOLUTE_URL : RouterInterface::ABSOLUTE_PATH
         );
     }
 

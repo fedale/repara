@@ -155,6 +155,7 @@ class GridviewBuilder implements GridviewBuilderInterface
 
     public function setDataProvider(DataProviderInterface $dataProvider)
     {
+        dump($dataProvider);
         $this->gridview->setDataProvider($dataProvider);
 
         return $this;

@@ -29,7 +29,7 @@ class EntityDataProvider extends AbstractDataProvider
      */
     protected $ormMetadata;
 
-    public function __construct(protected Sort $sort){
+    public function __construct(){
     }
 
     //  /**
@@ -63,12 +63,21 @@ class EntityDataProvider extends AbstractDataProvider
 
     public function prepare(bool $forcePrepare = false)
     {
+        $sortParams = $this->getSort()->fetchOrders();
+        dump($sortParams);
+
+        foreach ($sortParams as $fieldName => $sortType) {
+            dump($fieldName, $sortType);
+            $this->queryBuilder->addOrderBy($fieldName, $sortType);
+        }
+
         $this->prepareData();
+        
         // Have to prepare keys too?
         // $this->prepareKeys();
     }
 
-    public function prepareData(bool $forcePrepare = false)
+    private function prepareData(bool $forcePrepare = false)
     {
         // $normalizers = [new ObjectNormalizer(), new ModelNormalizer()];
         $defaultContext = [

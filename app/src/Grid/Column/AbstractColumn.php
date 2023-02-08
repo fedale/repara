@@ -20,6 +20,12 @@ abstract class AbstractColumn implements ColumnInterface
      * @var bool 
      */
     protected bool $visible = true;
+
+    /**
+     * Whether column is sortable or not 
+     * @var bool 
+     */
+    protected bool $sortable = true;
     
     /**
      * Whether column is hidden or not 
@@ -136,12 +142,36 @@ abstract class AbstractColumn implements ColumnInterface
      *
      * @return $this
      */
-    public function setVisible($enabled): static
+    public function setVisible($visible): static
     {
-        if ($enabled instanceof \Closure) {
-            $this->visible = call_user_func($enabled);
+        if ($visible instanceof \Closure) {
+            $this->visible = call_user_func($visible);
         } else {
-            $this->visible = (bool)$enabled;
+            $this->visible = (bool)$visible;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isSortable(): bool
+    {
+        return $this->sortable;
+    }
+
+    /**
+     * @param callable $enabled
+     *
+     * @return $this
+     */
+    public function setSortable($sortable): static
+    {
+        if ($sortable instanceof \Closure) {
+            $this->sortable = call_user_func($sortable);
+        } else {
+            $this->sortable = (bool)$sortable;
         }
 
         return $this;

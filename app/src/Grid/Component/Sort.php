@@ -163,8 +163,6 @@ class Sort
 
         $orders = [];
 
-        dump($this->attributes);
-        
         foreach ($attributeOrders as $attribute => $sortType) {
             
             $attributeSortData = $this->attributes[$attribute];

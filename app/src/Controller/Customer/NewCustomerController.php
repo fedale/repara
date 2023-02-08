@@ -55,15 +55,16 @@ class NewCustomerController extends AbstractController
             ],
         ]);*/
 
+        /*
         $sort->setDefaultOrder([
             'c.id' => Sort::DESC
-        ]);
+        ]);*/
         
         
         $sort->setAttributes([
-            'c.id' => [
-                'asc' => ['c.id' => Sort::ASC],
-                'desc' => ['c.id' => Sort::DESC],
+            'E-Mail' => [
+                'asc' => ['c.email' => Sort::ASC],
+                'desc' => ['c.email' => Sort::DESC],
                 'default' => Sort::DESC,
                 'label' => 'IDDDD',
             ]

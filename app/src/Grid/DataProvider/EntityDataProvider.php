@@ -64,10 +64,8 @@ class EntityDataProvider extends AbstractDataProvider
     public function prepare(bool $forcePrepare = false)
     {
         $sortParams = $this->getSort()->fetchOrders();
-        dump($sortParams);
 
         foreach ($sortParams as $fieldName => $sortType) {
-            dump($fieldName, $sortType);
             $this->queryBuilder->addOrderBy($fieldName, $sortType);
         }
 

@@ -57,6 +57,24 @@ class DataColumn extends AbstractColumn
         return null;
     }    
 
+    public function renderHeader($label)
+    {        
+        if ($this->sortable) {
+            $sort = $this->gridview->getDataProvider()->getSort();
+            dump($sort, $this->label, $this->attribute);
+
+            $sortAttribute = $sort->hasAttribute($this->label) ? $label : ($sort->hasAttribute($this->attribute)
+                ? $this->attribute : null);
+
+            if ($sortAttribute) {
+                return $sort->createLink($sortAttribute, $this->gridview, ['label' => $label]);
+            }
+        }
+        
+        dump($this, $this->gridview);
+        return $label;
+    }
+
     // https://stackoverflow.com/questions/14704984/access-a-multidimensional-array-with-dot-notation
     private function resolve(array $a, $path, $default = null)
     {

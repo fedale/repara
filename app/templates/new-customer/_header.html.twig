@@ -2,7 +2,7 @@
     <tr class="">
         {% for column in columns %}
         <th class="">
-            {{ column.label }}
+            {{ column.renderHeader(column.label) }}
         </th>
         {% endfor %}
     </tr>

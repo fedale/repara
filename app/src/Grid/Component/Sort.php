@@ -316,8 +316,7 @@ class Sort
             $label = $options['label'];
             unset($options['label']);
         } else {
-           // $label = $this->attributes[$attribute]['label'] ?? TextFormat::camelCaseToWord($attribute);
-           $label = 'Set me @L319';
+           $label = $this->attributes[$attribute]['label'] ?? $attribute;
         }
 
         // backup
@@ -339,15 +338,16 @@ class Sort
     {
         $parameters = $this->request->query->all();
 
-        // Reset paging param
+        // Reset paging param // uncomment when pagination is OK @ddm 2023-02-08
+        /*
         $pageParamName = $gridview->getDataProvider()?->getPagination()?->getPageParamName();
         if($pageParamName && isset($parameters[$pageParamName])){
             unset($parameters[$pageParamName]);
         }
-
+        */
         $parameters[$this->sortParam] = $this->createSortParam($attribute);
 
-        return $this->generateUrl(
+        return $this->router->generate(
             $this->request->get('_route'),
             $parameters,
             $absolute ? RouterInterface::ABSOLUTE_URL : RouterInterface::ABSOLUTE_PATH

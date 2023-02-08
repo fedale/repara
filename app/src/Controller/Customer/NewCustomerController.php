@@ -62,12 +62,35 @@ class NewCustomerController extends AbstractController
         
         
         $sort->setAttributes([
+            'id' => [
+                'asc' => ['c.id' => Sort::ASC],
+                'desc' => ['c.id' => Sort::DESC],
+                'default' => Sort::DESC,
+            ],
+            'code' => [
+                'asc' => ['c.code' => Sort::ASC],
+                'desc' => ['c.code' => Sort::DESC],
+                'default' => Sort::DESC,
+            ],
             'E-Mail' => [
                 'asc' => ['c.email' => Sort::ASC],
                 'desc' => ['c.email' => Sort::DESC],
                 'default' => Sort::DESC,
                 'label' => 'IDDDD',
-            ]
+            ],
+            'Fullname' => [
+                'asc' => ['p.firstname' => Sort::ASC, 'p.lastname' => Sort::ASC],
+                'desc' => ['p.firstname' => Sort::DESC, 'p.lastname' => Sort::DESC],
+                'default' => ['p.firstname' => Sort::ASC, 'p.lastname' => Sort::ASC],
+                'label' => 'mylabel',
+            ],
+            '#' => [
+                'asc' => ['c.email' => Sort::ASC],
+                'desc' => ['c.email' => Sort::DESC],
+                'default' => Sort::DESC,
+                'label' => 'IDDDD',
+            ],
+
         ]);
         
 
@@ -100,7 +123,7 @@ class NewCustomerController extends AbstractController
                 'twigFilter' => 'raw'
             ],
             
-            'profile.firstname:raw:codice',
+            'profile.fullname:raw:Fullname',
             [
                 'value' => function (array $data, string $key, ColumnInterface $column) {
                     $arr = [];

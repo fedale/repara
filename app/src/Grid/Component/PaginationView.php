@@ -2,7 +2,7 @@
 
 namespace App\Grid\Component;
 
-use Symfony\Bundle\FrameworkBundle\Routing\Router;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\RequestStack;
 //use Tinustester\Bundle\GridviewBundle\Exception\PaginationException;
@@ -15,9 +15,9 @@ class PaginationView
     protected Pagination $pagination;
 
     /**
-     * @var Router
+     * @var RouterInterface
      */
-    protected Router $router;
+    protected RouterInterface $router;
 
     /**
      * @var ParameterBag|array
@@ -119,9 +119,9 @@ class PaginationView
      * PaginationView constructor.
      *
      * @param RequestStack $request
-     * @param Router $router
+     * @param RouterInterface $router
      */
-    public function __construct(RequestStack $request, Router $router)
+    public function __construct(RequestStack $request, RouterInterface $router)
     {
         $currentRequest = $request->getCurrentRequest();
 
@@ -290,7 +290,7 @@ class PaginationView
         return $this->router->generate(
             $this->pagination->getRoute(),
             $this->queryParameters,
-            $absoluteUrl ? Router::ABSOLUTE_URL : Router::ABSOLUTE_PATH
+            $absoluteUrl ? RouterInterface::ABSOLUTE_URL : RouterInterface::ABSOLUTE_PATH
         );
     }
 

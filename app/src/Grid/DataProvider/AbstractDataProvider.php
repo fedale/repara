@@ -44,11 +44,10 @@ abstract class AbstractDataProvider implements DataProviderInterface
     /**
      * @param Sort $sort
      *
-     * @return BaseDataProvider
+     * @return AbstractDataProvider
      */
     public function setSort(Sort $sort): static
     {
-        dump($sort);
         $this->sort = $sort;
         return $this;
     }

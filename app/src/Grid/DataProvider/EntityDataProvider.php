@@ -4,6 +4,7 @@ namespace App\Grid\DataProvider;
 use App\Grid\Model;
 use App\Grid\Serializer\ModelNormalizer;
 use App\Grid\Component\Sort;
+use App\Grid\Component\Pagination;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\EntityManagerInterface;
@@ -29,20 +30,16 @@ class EntityDataProvider extends AbstractDataProvider
      */
     protected $ormMetadata;
 
-    public function __construct(){
+    /**
+     * Inject dependencies
+     *
+     * @param Pagination $pagination
+     * @param Sort $sort
+     */
+    public function __construct(Pagination $pagination, Sort $sort){
+        $this->pagination = $pagination;
+        $this->sort = $sort;
     }
-
-    //  /**
-    //  * Inject dependencies
-    //  *
-    //  * @param Pagination $pagination
-    //  * @param Sort $sort
-    // TO DO...
-    //  */
-    // public function __construct(Pagination $pagination, Sort $sort){
-    //     $this->pagination = $pagination;
-    //     $this->sort = $sort;
-    // }
 
     // public function __construct(private Serializer $serializer)
     // {

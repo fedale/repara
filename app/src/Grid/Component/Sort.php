@@ -338,13 +338,13 @@ class Sort
     {
         $parameters = $this->request->query->all();
 
-        // Reset paging param // uncomment when pagination is OK @ddm 2023-02-08
-        /*
+        // Reset paging param
+        
         $pageParamName = $gridview->getDataProvider()?->getPagination()?->getPageParamName();
         if($pageParamName && isset($parameters[$pageParamName])){
             unset($parameters[$pageParamName]);
         }
-        */
+        
         $parameters[$this->sortParam] = $this->createSortParam($attribute);
 
         return $this->router->generate(

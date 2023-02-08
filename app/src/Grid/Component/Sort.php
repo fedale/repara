@@ -320,8 +320,9 @@ class Sort
            $label = 'Set me @L319';
         }
 
-        return '<a href="#">' . $label . '</a>';
+        // backup
         // return '<a '.$this->html->prepareTagAttributes($options) . ' href="'.$this->createUrl($attribute, $gridview).'">'.$label.'</a>';
+        return '<a href="'.$this->createUrl($attribute, $gridview).'">' . $label . '</a>';
     }
 
     /**

@@ -41,10 +41,6 @@ class EntityDataProvider extends AbstractDataProvider
         $this->sort = $sort;
     }
 
-    // public function __construct(private Serializer $serializer)
-    // {
-    // }
-
     /**
      * @return QueryBuilder
      */
@@ -60,6 +56,11 @@ class EntityDataProvider extends AbstractDataProvider
 
     public function prepare(bool $forcePrepare = false)
     {
+        $this->pagination->setTotalCount($this->getTotalCount());
+        $this->queryBuilder
+            ->setMaxResults($this->pagination->getPageSize())
+            ->setFirstResult($this->pagination->getOffset());
+
         $sortParams = $this->getSort()->fetchOrders();
 
         foreach ($sortParams as $fieldName => $sortType) {
@@ -96,6 +97,19 @@ class EntityDataProvider extends AbstractDataProvider
         // $this->models = $serializer->normalize($rows, null, [AbstractNormalizer::ATTRIBUTES => ['id', 'code', 'email', 'username', 'groups' => ['name'], 'profile' => ['firstname', 'lastname']]]);
         //$result = $serializer->normalize($level1, null, [AbstractObjectNormalizer::ENABLE_MAX_DEPTH => true]);
         $this->models = $serializer->normalize($rows, null); //, [AbstractNormalizer::ATTRIBUTES => ['id', 'code', 'email', 'username', 'groups' => ['name'], 'profile' => ['firstname', 'lastname']]]);
+        
+    }
+
+     /**
+     * @inheritdoc
+     */
+    public function getTotalCount($criteria = []): int
+    {
+        $paginator = new \Doctrine\ORM\Tools\Pagination\Paginator($this->queryBuilder);
+        $totalRows = count($paginator);
+        dump($totalRows);
+        
+        return $totalRows;
         
     }
 

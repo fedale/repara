@@ -194,7 +194,7 @@ class Pagination
      */
     public function getOffset(): int
     {
-        $pageSize = $this->getPageSize();
+        $pageSize = $this->getPageSize();   
 
         return $pageSize < 1 ? 0 : $this->getCurrentPage() * $pageSize;
     }

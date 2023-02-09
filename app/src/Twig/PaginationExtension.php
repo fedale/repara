@@ -45,7 +45,7 @@ class PaginationExtension extends AbstractExtension
     public function init(Pagination $pagination, array $paginationOptions = []): string
     {
         $this->paginationView->setPagination($pagination);
-
+dump($pagination);
         foreach ($paginationOptions as $optionName => $value) {
 
             $paginationView = new \ReflectionObject($this->paginationView);

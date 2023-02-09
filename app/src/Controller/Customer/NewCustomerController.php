@@ -9,6 +9,7 @@ use App\Form\Customer\CustomerRegistrationType;
 use App\Form\Customer\CustomerType;
 use App\Form\Model\CustomerCreateModel;
 use App\Grid\Column\ColumnInterface;
+use App\Grid\Component\Pagination;
 use App\Grid\DataProvider\EntityDataProvider;
 use App\Grid\GridView;
 use App\Grid\GridviewBuilder;
@@ -41,9 +42,9 @@ class NewCustomerController extends AbstractController
     }
 
     #[Route('/grid', name: 'new_app_grid', methods: ['GET'])]
-    public function grid(EntityManagerInterface $entityManager, EntityDataProvider $dataProvider, Sort $sort): Response
+    public function grid(EntityManagerInterface $entityManager, EntityDataProvider $dataProvider, Sort $sort, Pagination $pagination): Response
     {
-        
+
         $sort->setAttributes([
             'id' => [
                 'asc' => ['c.id' => Sort::ASC],
@@ -134,6 +135,7 @@ class NewCustomerController extends AbstractController
 
         $dataProvider->setQueryBuilder($queryBuilder);
         $dataProvider->setSort($sort);
+        $dataProvider->setPagination($pagination);
 
         $gridview = $this->createGridviewBuilder()
             ->setDataProvider($dataProvider)
@@ -141,7 +143,7 @@ class NewCustomerController extends AbstractController
             ->renderGridview();
         ;
 
-        return $gridview->renderGrid('new-customer/index.html.twig');
+        return $gridview->renderGrid('new-customer/index.html.twig', ['pagination' => $pagination]);
     }
     
     public function createGridviewBuilder(): GridviewBuilder

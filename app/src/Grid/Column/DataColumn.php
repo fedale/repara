@@ -61,7 +61,6 @@ class DataColumn extends AbstractColumn
     {        
         if ($this->sortable) {
             $sort = $this->gridview->getDataProvider()->getSort();
-            dump($sort, $this->label, $this->attribute);
 
             $sortAttribute = $sort->hasAttribute($this->label) ? $label : ($sort->hasAttribute($this->attribute)
                 ? $this->attribute : null);
@@ -71,7 +70,6 @@ class DataColumn extends AbstractColumn
             }
         }
         
-        dump($this, $this->gridview);
         return $label;
     }
 

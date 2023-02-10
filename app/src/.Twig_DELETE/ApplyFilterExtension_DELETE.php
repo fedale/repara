@@ -23,7 +23,7 @@ class ApplyFilterExtension extends AbstractExtension
             new \Twig\TwigFunction('call_filter', function($input, $filter, ...$args) {
                 if (null === $filter) { return $input; }
                 $options = $this->getFilterOptions($filter);
-                dump($input, $filter, $options);
+                
                 return $this->environment->getFilter($filter)->getCallable()($input, ...$args);
             }, ['is_safe' => ['all']])
         ];
@@ -95,8 +95,6 @@ class ApplyFilterExtension extends AbstractExtension
     public function applyFilter2(Environment $env, $context, $value, $filters)
     {
         return $value;
-        // dump($env, $context, $value, $filters);
-        // dump($env, $context, $value, $filters);
         $name = 'apply_filter_' . md5($filters);
 
         $template = sprintf('{{ %s|%s }}', $name, $filters);
@@ -143,8 +141,6 @@ class ApplyFilterExtension extends AbstractExtension
         }
         
         $twigFilter = $this->environment->getFilter($filterName);
-
-        dump($twigFilter);
         
         if (false === $twigFilter || null === $twigFilter) {
             return $value;

@@ -24,17 +24,6 @@ class ModelNormalizer implements NormalizerInterface, NormalizerAwareInterface
         dd($data);
     }
 
-    // public function supportsNormalization(mixed $data, ?string $format = null): bool
-    // {
-    //     dump($data, $format);
-    //     return true;
-    // }
-
-    // public function hasCacheableSupportsMethod(): bool
-    // {
-    //     return true;
-    // }
-
     public function setNormalizer(NormalizerInterface $normalizer)
     {
         $this->normalizer = $normalizer;

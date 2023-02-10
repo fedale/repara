@@ -21,8 +21,6 @@ class CustomerGridType extends GridType
     {
         parent::buildGrid($builder, $options);
 
-        // dump($builder, $options);
-        // dd();
         $builder
             ->add('id', 'number', [
                 'title'   => '#',

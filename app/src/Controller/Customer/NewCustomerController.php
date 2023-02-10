@@ -147,6 +147,40 @@ class NewCustomerController extends AbstractController
 
         return $gridview->renderGrid('new-customer/index.html.twig', ['pagination' => $pagination]);
     }
+
+    #[Route('/grid2', name: 'new_app_grid2', methods: ['GET'])]
+    public function grid2(EntityManagerInterface $entityManager, EntityDataProvider $dataProvider, Sort $sort, Pagination $pagination): Response
+    {
+
+        $pagination->setDefaultPageSize(10);
+
+        /**
+         *
+         */
+        $columns = [
+            'id',
+            'code:raw:codice',
+            'username',
+            'email'
+        ];
+
+        $queryBuilder = $entityManager
+            ->getRepository(\App\Entity\Customer\Customer::class)
+            ->createQueryBuilder('c')
+            ;
+
+        $dataProvider->setQueryBuilder($queryBuilder);
+        $dataProvider->setSort($sort);
+        $dataProvider->setPagination($pagination);
+
+        $gridview = $this->createGridviewBuilder()
+            ->setDataProvider($dataProvider)
+            ->setColumns($columns)
+            ->renderGridview();
+        ;
+
+        return $gridview->renderGrid('new-customer/index.html.twig', ['pagination' => $pagination]);
+    }
     
     public function createGridviewBuilder(): GridviewBuilder
     {

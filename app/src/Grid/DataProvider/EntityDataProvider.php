@@ -59,10 +59,10 @@ class EntityDataProvider extends AbstractDataProvider
     {
         $this->pagination->setTotalCount($this->getTotalCount());
         $this->queryBuilder
-            // ->setMaxResults($this->pagination->getPageSize())
-            // ->setFirstResult($this->pagination->getOffset())
-            ->setMaxResults(10)
-            ->setFirstResult(0)
+            ->setMaxResults($this->pagination->getPageSize())
+            ->setFirstResult($this->pagination->getOffset())
+            // ->setMaxResults(10)
+            // ->setFirstResult(0)
         ;
 
         $sortParams = $this->getSort()->fetchOrders();
@@ -99,7 +99,7 @@ class EntityDataProvider extends AbstractDataProvider
         $rows = $this->queryBuilder->getQuery()->getResult();
         $paginator = new Paginator($this->queryBuilder->getQuery(), $fetchJoinCollection = true);
 
-        dump(count($paginator));
+        dump($paginator);
         
         // $this->models = $serializer->normalize($rows, null, [AbstractNormalizer::ATTRIBUTES => ['id', 'code', 'email', 'username', 'groups' => ['name'], 'profile' => ['firstname', 'lastname']]]);
         // $this->models = $serializer->normalize($rows, null, [AbstractNormalizer::ATTRIBUTES => ['id', 'code', 'email', 'username', 'groups' => ['name'], 'profile' => ['firstname', 'lastname']]]);

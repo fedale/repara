@@ -45,6 +45,7 @@ class NewCustomerController extends AbstractController
     public function grid(EntityManagerInterface $entityManager, EntityDataProvider $dataProvider, Sort $sort, Pagination $pagination): Response
     {
 
+        $pagination->setDefaultPageSize(10);
 
         $sort->setAttributes([
             'id' => [

@@ -61,8 +61,6 @@ class EntityDataProvider extends AbstractDataProvider
         $this->queryBuilder
             ->setMaxResults($this->pagination->getPageSize())
             ->setFirstResult($this->pagination->getOffset())
-            // ->setMaxResults(10)
-            // ->setFirstResult(0)
         ;
 
         $sortParams = $this->getSort()->fetchOrders();
@@ -98,13 +96,13 @@ class EntityDataProvider extends AbstractDataProvider
 
         $rows = $this->queryBuilder->getQuery()->getResult();
         $paginator = new Paginator($this->queryBuilder->getQuery(), $fetchJoinCollection = true);
-
+       
         dump($paginator);
         
         // $this->models = $serializer->normalize($rows, null, [AbstractNormalizer::ATTRIBUTES => ['id', 'code', 'email', 'username', 'groups' => ['name'], 'profile' => ['firstname', 'lastname']]]);
         // $this->models = $serializer->normalize($rows, null, [AbstractNormalizer::ATTRIBUTES => ['id', 'code', 'email', 'username', 'groups' => ['name'], 'profile' => ['firstname', 'lastname']]]);
         //$result = $serializer->normalize($level1, null, [AbstractObjectNormalizer::ENABLE_MAX_DEPTH => true]);        
-        $this->models = $serializer->normalize($rows, null); //, [AbstractNormalizer::ATTRIBUTES => ['id', 'code', 'email', 'username', 'groups' => ['name'], 'profile' => ['firstname', 'lastname']]]);   
+        $this->models = $serializer->normalize($paginator, null); //, [AbstractNormalizer::ATTRIBUTES => ['id', 'code', 'email', 'username', 'groups' => ['name'], 'profile' => ['firstname', 'lastname']]]);   
         dump($this->models);
     }
 

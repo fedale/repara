@@ -57,18 +57,23 @@ class EntityDataProvider extends AbstractDataProvider
 
     public function prepare(bool $forcePrepare = false)
     {
+        /*
         $this->pagination->setTotalCount($this->getTotalCount());
+        */
+        /*
         $this->queryBuilder
             ->setMaxResults($this->pagination->getPageSize())
             ->setFirstResult($this->pagination->getOffset())
         ;
-
+        */
+        
         $sortParams = $this->getSort()->fetchOrders();
 
         foreach ($sortParams as $fieldName => $sortType) {
             $this->queryBuilder->addOrderBy($fieldName, $sortType);
         }
-
+        $rows = $this->queryBuilder->getQuery()->getResult();
+        dump($rows);
         $this->prepareData();
         
         // Have to prepare keys too?
@@ -95,10 +100,10 @@ class EntityDataProvider extends AbstractDataProvider
         }
 
         $rows = $this->queryBuilder->getQuery()->getResult();
-        $paginator = new Paginator($this->queryBuilder->getQuery(), $fetchJoinCollection = true);
+        dump($rows);
+        $paginator = new Paginator($this->queryBuilder->getQuery());
+        dump($rows);
        
-        dump($paginator);
-        
         // $this->models = $serializer->normalize($rows, null, [AbstractNormalizer::ATTRIBUTES => ['id', 'code', 'email', 'username', 'groups' => ['name'], 'profile' => ['firstname', 'lastname']]]);
         // $this->models = $serializer->normalize($rows, null, [AbstractNormalizer::ATTRIBUTES => ['id', 'code', 'email', 'username', 'groups' => ['name'], 'profile' => ['firstname', 'lastname']]]);
         //$result = $serializer->normalize($level1, null, [AbstractObjectNormalizer::ENABLE_MAX_DEPTH => true]);        

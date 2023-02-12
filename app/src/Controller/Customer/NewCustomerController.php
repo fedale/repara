@@ -42,7 +42,11 @@ class NewCustomerController extends AbstractController
     }
 
     #[Route('/grid', name: 'new_app_grid', methods: ['GET'])]
-    public function grid(EntityManagerInterface $entityManager, EntityDataProvider $dataProvider, Sort $sort, Pagination $pagination): Response
+    public function grid(
+        EntityManagerInterface $entityManager, 
+        EntityDataProvider $dataProvider, 
+        Sort $sort, 
+        Pagination $pagination): Response
     {
 
         $pagination->setDefaultPageSize(10);

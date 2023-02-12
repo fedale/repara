@@ -27,19 +27,18 @@ class AssetController extends AbstractController
             'id',
             'name',
             'slug',
-            'active'
+            'active',
+            'model.name',
+            'places' => [
+                'attribute' => 'customerLocationPlaceAssets',
+                'twigFilter' => "myFilter"
+            ]
         ];
 
         $queryBuilder = $this->entityManager
                 ->getRepository(\App\Entity\Asset\Asset::class)
                 ->createQueryBuilder('a')
-                ->setMaxResults(20)
-                ->setFirstResult(0)
-                ->getQuery()
-                ->getResult()
                 ;
-
-                dump($queryBuilder);
         
         $this->dataProvider->setQueryBuilder($queryBuilder);
 

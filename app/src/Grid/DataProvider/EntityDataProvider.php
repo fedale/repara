@@ -57,23 +57,20 @@ class EntityDataProvider extends AbstractDataProvider
 
     public function prepare(bool $forcePrepare = false)
     {
-        /*
         $this->pagination->setTotalCount($this->getTotalCount());
-        */
-        /*
+        
         $this->queryBuilder
             ->setMaxResults($this->pagination->getPageSize())
             ->setFirstResult($this->pagination->getOffset())
         ;
-        */
         
         $sortParams = $this->getSort()->fetchOrders();
 
         foreach ($sortParams as $fieldName => $sortType) {
             $this->queryBuilder->addOrderBy($fieldName, $sortType);
         }
-        $rows = $this->queryBuilder->getQuery()->getResult();
-        dump($rows);
+        // $rows = $this->queryBuilder->getQuery()->getResult();
+        // dump($rows);
         $this->prepareData();
         
         // Have to prepare keys too?
@@ -91,18 +88,17 @@ class EntityDataProvider extends AbstractDataProvider
         $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
         // $metadataAwareNameConverter = new MetadataAwareNameConverter($classMetadataFactory);
         
-        $normalizers = [new ObjectNormalizer($classMetadataFactory)];
-        $serializer = new Serializer($normalizers, []);
+        $normalizers = [new ObjectNormalizer($classMetadataFactory, null, null, null, null, null, $defaultContext)];
+        $serializer = new Serializer($normalizers);
 
         if (!$this->queryBuilder instanceof QueryBuilder) {
             // throw new InvalidConfigException('The "query" property must be an instance of a class that implements the QueryInterface e.g. yii\db\Query or its subclasses.');
             throw new \Exception('The "query" property must be an instance of a class that implements the QueryInterface e.g. yii\db\Query or its subclasses.');
         }
 
-        $rows = $this->queryBuilder->getQuery()->getResult();
-        dump($rows);
+        // $rows = $this->queryBuilder->getQuery()->getResult();
+        // dump($rows);
         $paginator = new Paginator($this->queryBuilder->getQuery());
-        dump($rows);
        
         // $this->models = $serializer->normalize($rows, null, [AbstractNormalizer::ATTRIBUTES => ['id', 'code', 'email', 'username', 'groups' => ['name'], 'profile' => ['firstname', 'lastname']]]);
         // $this->models = $serializer->normalize($rows, null, [AbstractNormalizer::ATTRIBUTES => ['id', 'code', 'email', 'username', 'groups' => ['name'], 'profile' => ['firstname', 'lastname']]]);

@@ -131,6 +131,9 @@ class NewCustomerController extends AbstractController
                 
         ];
 
+        // The form filter
+        $form = $this->createFormBuilder();
+
         $queryBuilder = $entityManager
             ->getRepository(\App\Entity\Customer\Customer::class)
             ->createQueryBuilder('c')
@@ -149,7 +152,7 @@ class NewCustomerController extends AbstractController
             ->renderGridview();
         ;
 
-        return $gridview->renderGrid('new-customer/index.html.twig', ['pagination' => $pagination]);
+        return $gridview->renderGrid('new-customer/index.html.twig', ['pagination' => $pagination, 'form' => $form]);
     }
 
     #[Route('/grid2', name: 'new_app_grid2', methods: ['GET'])]

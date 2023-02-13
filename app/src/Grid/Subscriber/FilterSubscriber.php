@@ -1,45 +1,54 @@
-<?php 
-// src/EventListener/DatabaseActivitySubscriber.php
+<?php
+// src/Form/EventListener/AddEmailFieldListener.php
 namespace App\Grid\Subscriber;
 
-use Doctrine\Bundle\DoctrineBundle\EventSubscriber\EventSubscriberInterface;
-use Doctrine\ORM\Events;
-use Doctrine\Persistence\Event\LifecycleEventArgs;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 
 class FilterSubscriber implements EventSubscriberInterface
 {
-    // this method can only return the event names; you cannot define a
-    // custom method name to execute when each event triggers
-    public function getSubscribedEvents(): array
+    public static function getSubscribedEvents(): array
     {
         return [
-            Events::postLoad
+            // FormEvents::PRE_SET_DATA => 'onPreSetData',
+            //FormEvents::PRE_SUBMIT   => 'onPreSubmit',
+            FormEvents::POST_SUBMIT   => 'onPostSubmit',
         ];
     }
 
-    // callback methods must be called exactly like the events they listen to;
-    // they receive an argument of type LifecycleEventArgs, which gives you access
-    // to both the entity object of the event and the entity manager itself
-    public function postLoad(LifecycleEventArgs $args): void
+    public function onPreSetData(FormEvent $event): void
     {
-        dump($args);
-        //$this->logActivity('persist', $args);
+        $user = $event->getData();
+        $form = $event->getForm();
+
+        // checks whether the user from the initial data has chosen to
+        // display their email or not.
+        if (true === $user->isShowEmail()) {
+            $form->add('email', EmailType::class);
+        }
     }
 
-    /* 
-    // No search? Then return data Provider
-    if (!($this->load($params) && $this->validate())) {
-        return $dataProvider;
-    }
-    // We have to do some search... Lets do some magic
-    $query->andFilterWhere([
-        //... other searched attributes here
-    ])
-    // Here we search the attributes of our relations using our previously configured
-    // ones in "TourSearch"
-    ->andFilterWhere(['like', 'tbl_city.name', $this->city])
-    ->andFilterWhere(['like', 'tbl_country.name', $this->country]);
+    public function onPostSubmit(FormEvent $event): void
+    {
+        $user = $event->getData();
+        $form = $event->getForm();
 
-    return $dataProvider;
-    */
+        dump($user, $form);
+        
+        if (!$user) {
+            return;
+        }
+
+        // checks whether the user has chosen to display their email or not.
+        // If the data was submitted previously, the additional value that
+        // is included in the request variables needs to be removed.
+        if (isset($user['showEmail']) && $user['showEmail']) {
+            $form->add('email', EmailType::class);
+        } else {
+            unset($user['email']);
+            $event->setData($user);
+        }
+    }
 }

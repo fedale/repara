@@ -1,7 +1,7 @@
 <?php
 namespace App\Service;
 
-class ProxyFilter 
+class GridFilter 
 {
     public $filter = 'myFilter';
 

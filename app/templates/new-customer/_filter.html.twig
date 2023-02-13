@@ -1,12 +1,13 @@
 <thead id="" class="filter" data="">
     <tr class="">
-        <form action="" method="GET">
+        {{ form_start(form) }}
         {% for column in columns %}
         <th class="">
-            <input type="text" name="{{column.label}}" placeholder="" style="background-color: #404040; border: 0">
+            {{ form_widget(form.task, {'attr': {'class': 'task_field'}}) }}
+            <!-- <input type="text" name="{{column.label}}" placeholder="" style="background-color: #404040; border: 0"> -->
         </th>
         {% endfor %}
         <input type="submit">
-    </form>
+    {{ form_end(form) }}
     </tr>
 </thead>

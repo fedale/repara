@@ -26,6 +26,12 @@ abstract class AbstractColumn implements ColumnInterface
      * @var bool 
      */
     protected bool $sortable = true;
+
+    /**
+     * Whether column is filterable or not 
+     * @var bool 
+     */
+    protected bool $filterable = true;
     
     /**
      * Whether column is hidden or not 
@@ -172,6 +178,30 @@ abstract class AbstractColumn implements ColumnInterface
             $this->sortable = call_user_func($sortable);
         } else {
             $this->sortable = (bool)$sortable;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isFilterable(): bool
+    {
+        return $this->filterable;
+    }
+
+    /**
+     * @param callable $enabled
+     *
+     * @return $this
+     */
+    public function setFilterable($filterable): static
+    {
+        if ($filterable instanceof \Closure) {
+            $this->filterable = call_user_func($filterable);
+        } else {
+            $this->filterable = (bool)$filterable;
         }
 
         return $this;

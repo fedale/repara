@@ -1,9 +1,12 @@
 <thead id="" class="filter" data="">
     <tr class="">
+        <form action="" method="GET">
         {% for column in columns %}
         <th class="">
-            <form><input type="text" placeholder=""></form>
+            <input type="text" name="{{column.label}}" placeholder="" style="background-color: #404040; border: 0">
         </th>
         {% endfor %}
+        <input type="submit">
+    </form>
     </tr>
 </thead>

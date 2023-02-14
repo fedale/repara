@@ -76,9 +76,8 @@ class EntityDataProvider extends AbstractDataProvider
         // $rows = $this->queryBuilder->getQuery()->getResult();
         // dump($rows);
         $criteria = $this->gridFilter->getCriteria();
-        $this->queryBuilder->addCriteria($criteria);
+//        $this->queryBuilder->addCriteria($criteria);
 
-        dump($criteria);
         $this->prepareData();
         
         // Have to prepare keys too?

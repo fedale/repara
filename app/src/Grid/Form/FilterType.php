@@ -28,15 +28,20 @@ class FilterType extends AbstractType
             'attr' => ['class' => 'save'],
         ]);
 
-        /*
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
-            // ... adding the name field if needed
-            $criteria = Criteria::create()
-                ->where(Criteria::expr()->eq("email", "elroy06@farrell.org"))
-                ;
-            $this->gridFilter->setCriteria($criteria);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
+            $data = $event->getData();
+            $criteria = Criteria::create();
+
+            foreach ($data as $item) {
+                if (null !== $item) {
+                    dump($item);
+                    $criteria->where(Criteria::expr()->eq("email", $item));
+                    $this->gridFilter->setCriteria($criteria);
+                }
+            }
+                
         });
-        */
+
     }
 
    

@@ -6,7 +6,10 @@ use Doctrine\Common\Collections\Criteria;
 class GridFilter
 {
     public string $filter = 'myFilter';
-    public Criteria $criteria;
+    
+    private $criteria;
+
+    // public function __construct(private Criteria $criteria) {}
 
     public function setFilter(string $filter) 
     {
@@ -18,7 +21,7 @@ class GridFilter
         return $this->criteria;
     }
 
-    public function setCriteria(Criteria $criteria) 
+    public function setCriteria($criteria) 
     {
         $this->criteria = $criteria;
     }

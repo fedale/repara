@@ -8,10 +8,15 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-
+use Doctrine\Common\Collections\Criteria;
+use App\Grid\Service\GridFilter;
 
 class FilterType extends AbstractType
 {
+    public function __construct(private GridFilter $gridFilter)
+    {
+        
+    }
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('id', TextType::class, ['required' => false]);
@@ -23,10 +28,15 @@ class FilterType extends AbstractType
             'attr' => ['class' => 'save'],
         ]);
 
+        /*
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             // ... adding the name field if needed
-            dump('Event_PRE_DATA');
+            $criteria = Criteria::create()
+                ->where(Criteria::expr()->eq("email", "elroy06@farrell.org"))
+                ;
+            $this->gridFilter->setCriteria($criteria);
         });
+        */
     }
 
    

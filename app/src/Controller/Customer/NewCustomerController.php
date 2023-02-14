@@ -47,7 +47,8 @@ class NewCustomerController extends AbstractController
         EntityManagerInterface $entityManager, 
         EntityDataProvider $dataProvider, 
         Sort $sort, 
-        Pagination $pagination): Response
+        Pagination $pagination,
+        Request $request): Response
     {
 
         $pagination->setDefaultPageSize(10);
@@ -134,8 +135,13 @@ class NewCustomerController extends AbstractController
         ];
 
         // $form = $this->createFormBuilder([], ['method' => 'GET']);
-        $form = $this->createForm(FilterType::class);
-        dump($form);
+        $form = $this->createForm(FilterType::class, [], ['method' => 'GET']);
+        $form->handleRequest($request);
+        
+        if ($form->isSubmitted() ) {
+            // dump($form->getData());
+        }
+        
 
         $queryBuilder = $entityManager
             ->getRepository(\App\Entity\Customer\Customer::class)

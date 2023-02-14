@@ -5,8 +5,10 @@ use App\Grid\Model;
 use App\Grid\Serializer\ModelNormalizer;
 use App\Grid\Component\Sort;
 use App\Grid\Component\Pagination;
+use App\Grid\Service\GridFilter;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
 use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
@@ -31,13 +33,15 @@ class EntityDataProvider extends AbstractDataProvider
      */
     protected $ormMetadata;
 
+    private $paginator;
+
     /**
      * Inject dependencies
      *
      * @param Pagination $pagination
      * @param Sort $sort
      */
-    public function __construct(Pagination $pagination, Sort $sort){
+    public function __construct(Pagination $pagination, Sort $sort, private GridFilter $gridFilter){
         $this->pagination = $pagination;
         $this->sort = $sort;
     }
@@ -71,6 +75,10 @@ class EntityDataProvider extends AbstractDataProvider
         }
         // $rows = $this->queryBuilder->getQuery()->getResult();
         // dump($rows);
+        $criteria = $this->gridFilter->getCriteria();
+        $this->queryBuilder->addCriteria($criteria);
+
+        dump($criteria);
         $this->prepareData();
         
         // Have to prepare keys too?
@@ -98,12 +106,12 @@ class EntityDataProvider extends AbstractDataProvider
 
         // $rows = $this->queryBuilder->getQuery()->getResult();
         // dump($rows);
-        $paginator = new Paginator($this->queryBuilder->getQuery());
+        $paginator = new Paginator($this->queryBuilder->getQuery(), true);
        
         // $this->models = $serializer->normalize($rows, null, [AbstractNormalizer::ATTRIBUTES => ['id', 'code', 'email', 'username', 'groups' => ['name'], 'profile' => ['firstname', 'lastname']]]);
         // $this->models = $serializer->normalize($rows, null, [AbstractNormalizer::ATTRIBUTES => ['id', 'code', 'email', 'username', 'groups' => ['name'], 'profile' => ['firstname', 'lastname']]]);
         //$result = $serializer->normalize($level1, null, [AbstractObjectNormalizer::ENABLE_MAX_DEPTH => true]);        
-        $this->models = $serializer->normalize($paginator, null); //, [AbstractNormalizer::ATTRIBUTES => ['id', 'code', 'email', 'username', 'groups' => ['name'], 'profile' => ['firstname', 'lastname']]]);   
+        $this->models = $serializer->normalize($this->paginator, null); //, [AbstractNormalizer::ATTRIBUTES => ['id', 'code', 'email', 'username', 'groups' => ['name'], 'profile' => ['firstname', 'lastname']]]);   
     }
 
      /**
@@ -111,9 +119,10 @@ class EntityDataProvider extends AbstractDataProvider
      */
     public function getTotalCount($criteria = []): int
     {
-        $paginator = new \Doctrine\ORM\Tools\Pagination\Paginator($this->queryBuilder, $fetchJoinCollection = true);
-        $totalRows = count($paginator);
+        $this->paginator = new \Doctrine\ORM\Tools\Pagination\Paginator($this->queryBuilder, $fetchJoinCollection = true);
+        $totalRows = count($this->paginator);
         
+        dump($totalRows);
         return $totalRows;
     }
 }

@@ -22,7 +22,6 @@ class FilterSubscriber implements EventSubscriberInterface
     // to both the entity object of the event and the entity manager itself
     public function postLoad(LifecycleEventArgs $args): void
     {
-        dump($args);
         //$this->logActivity('persist', $args);
     }
 

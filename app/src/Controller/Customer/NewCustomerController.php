@@ -30,6 +30,7 @@ use APY\DataGridBundle\Grid\GridFactory;
 use APY\DataGridBundle\Grid\GridManager;
 use Doctrine\ORM\EntityManager;
 use App\Grid\Component\Sort;
+use App\Grid\Form\FilterType;
 
 #[Route('/new-customer')]
 class NewCustomerController extends AbstractController
@@ -115,6 +116,7 @@ class NewCustomerController extends AbstractController
             
             'profile.fullname:raw:Fullname',
             [
+                'label' => 'location',
                 'value' => function (array $data, string $key, ColumnInterface $column) {
                     $arr = [];
                     foreach ($data['locations'] as $location) {
@@ -130,6 +132,10 @@ class NewCustomerController extends AbstractController
             // ]
                 
         ];
+
+        // $form = $this->createFormBuilder([], ['method' => 'GET']);
+        $form = $this->createForm(FilterType::class);
+        dump($form);
 
         $queryBuilder = $entityManager
             ->getRepository(\App\Entity\Customer\Customer::class)
@@ -149,7 +155,7 @@ class NewCustomerController extends AbstractController
             ->renderGridview();
         ;
 
-        return $gridview->renderGrid('new-customer/index.html.twig', ['pagination' => $pagination]);
+        return $gridview->renderGrid('new-customer/index.html.twig', ['pagination' => $pagination, 'form' => $form->createView()]);
     }
 
     #[Route('/grid2', name: 'new_app_grid2', methods: ['GET'])]

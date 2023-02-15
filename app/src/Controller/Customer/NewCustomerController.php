@@ -95,7 +95,7 @@ class NewCustomerController extends AbstractController
             // //   'visible' => rand(0, 10) > 5 ? true : false
             // ],
             'id',
-            'code:raw:codice',
+            'code:raw:code',
             [
                 'value' => function(array $data, string $key, ColumnInterface $column) {
                     return rand(0, 10) > 5 ? 
@@ -108,14 +108,13 @@ class NewCustomerController extends AbstractController
             ],
             [
             //    'attribute' => 'email',
-               'label' => 'E-Mail',
+               'label' => 'email',
                'value' => function (array $data, string $key, ColumnInterface $column) {
                     return '<strong>' . $data['email'] . '</strong>';
                 },
                 'twigFilter' => 'raw'
             ],
-            
-            'profile.fullname:raw:Fullname',
+            'profile.fullname:raw:fullname',
             [
                 'label' => 'location',
                 'value' => function (array $data, string $key, ColumnInterface $column) {

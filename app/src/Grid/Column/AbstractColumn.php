@@ -3,6 +3,9 @@
 namespace App\Grid\Column;
 
 use App\Grid\Gridview;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilder;
+use Symfony\Component\Form\FormInterface;
 use Twig\Environment;
 
 abstract class AbstractColumn implements ColumnInterface
@@ -92,6 +95,13 @@ abstract class AbstractColumn implements ColumnInterface
     protected function initColumn()
     {
       //  $content = $this->setContent($this->attribute);
+    }
+
+    public function renderFilter(FormBuilder $form )
+    {
+        dump($form);
+        $form->add('name', TextType::class);
+        //return '<input type="text" name="{{column.label}}" placeholder="" style="background-color: #404040; border: 0">';
     }
 
     public function render($data, $index)

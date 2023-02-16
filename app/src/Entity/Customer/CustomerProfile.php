@@ -70,7 +70,6 @@ class CustomerProfile
     #[ORM\Column(name: 'setting', type: 'text', length: 0, nullable: true, options: ['default' => null, 'comment' => 'settings preferences'])]
     private $setting = NULL;
 
-    
     public function __toString()
     {
         return $this->getFullname();

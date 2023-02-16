@@ -20,14 +20,16 @@ class FilterSubscriber implements EventSubscriberInterface
 
     public function onPreSetData(FormEvent $event): void
     {
-        $user = $event->getData();
-        $form = $event->getForm();
+    //     $user = $event->getData();
+    //     $form = $event->getForm();
+    //     //$this->logActivity('persist', $args);
+    // }
 
-        // checks whether the user from the initial data has chosen to
-        // display their email or not.
-        if (true === $user->isShowEmail()) {
-            $form->add('email', EmailType::class);
-        }
+    //     // checks whether the user from the initial data has chosen to
+    //     // display their email or not.
+    //     if (true === $user->isShowEmail()) {
+    //         $form->add('email', EmailType::class);
+    //     }
     }
 
     public function onPostSubmit(FormEvent $event): void

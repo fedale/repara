@@ -30,6 +30,7 @@ use APY\DataGridBundle\Grid\GridFactory;
 use APY\DataGridBundle\Grid\GridManager;
 use Doctrine\ORM\EntityManager;
 use App\Grid\Component\Sort;
+use App\Grid\Form\FilterType;
 
 #[Route('/new-customer')]
 class NewCustomerController extends AbstractController
@@ -46,7 +47,8 @@ class NewCustomerController extends AbstractController
         EntityManagerInterface $entityManager, 
         EntityDataProvider $dataProvider, 
         Sort $sort, 
-        Pagination $pagination): Response
+        Pagination $pagination,
+        Request $request): Response
     {
 
         $pagination->setDefaultPageSize(10);
@@ -93,7 +95,7 @@ class NewCustomerController extends AbstractController
             // //   'visible' => rand(0, 10) > 5 ? true : false
             // ],
             'id',
-            'code:raw:codice',
+            'code:raw:code',
             [
                 'value' => function(array $data, string $key, ColumnInterface $column) {
                     return rand(0, 10) > 5 ? 
@@ -106,15 +108,15 @@ class NewCustomerController extends AbstractController
             ],
             [
             //    'attribute' => 'email',
-               'label' => 'E-Mail',
+               'label' => 'email',
                'value' => function (array $data, string $key, ColumnInterface $column) {
                     return '<strong>' . $data['email'] . '</strong>';
                 },
                 'twigFilter' => 'raw'
             ],
-            
-            'profile.fullname:raw:Fullname',
+            'profile.fullname:raw:fullname',
             [
+                'label' => 'locations',
                 'value' => function (array $data, string $key, ColumnInterface $column) {
                     $arr = [];
                     foreach ($data['locations'] as $location) {
@@ -131,8 +133,14 @@ class NewCustomerController extends AbstractController
                 
         ];
 
-        // The form filter
-        $form = $this->createFormBuilder();
+        // $form = $this->createFormBuilder([], ['method' => 'GET']);
+        $form = $this->createForm(FilterType::class, [], ['method' => 'GET']);
+        $form->handleRequest($request);
+        
+        if ($form->isSubmitted() ) {
+            // dump($form->getData());
+        }
+        
 
         $queryBuilder = $entityManager
             ->getRepository(\App\Entity\Customer\Customer::class)
@@ -152,7 +160,7 @@ class NewCustomerController extends AbstractController
             ->renderGridview();
         ;
 
-        return $gridview->renderGrid('new-customer/index.html.twig', ['pagination' => $pagination, 'form' => $form]);
+        return $gridview->renderGrid('new-customer/index.html.twig', ['pagination' => $pagination, 'form' => $form->createView()]);
     }
 
     #[Route('/grid2', name: 'new_app_grid2', methods: ['GET'])]

@@ -456,4 +456,5 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->id . ' ' . $this->email;
     }
+
 }

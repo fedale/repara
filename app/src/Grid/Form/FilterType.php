@@ -23,7 +23,7 @@ class FilterType extends AbstractType
         $builder->add('code', TextType::class, ['required' => false]);
         $builder->add('email', TextType::class, ['required' => false]);
         $builder->add('fullname', TextType::class, ['required' => false]);
-        $builder->add('location', TextType::class, ['required' => false]);
+        $builder->add('locations', TextType::class, ['required' => false]);
         $builder->add('save', SubmitType::class, [
             'attr' => ['class' => 'save'],
         ]);
@@ -42,13 +42,14 @@ class FilterType extends AbstractType
                                 $expr->orX(
                                     $expr->contains('p.firstname', $item),
                                     $expr->contains('p.lastname', $item),
-                                    $expr->contains(
-                                        'CONCAT (p.lastname, " ", p.firstname)',
-                                        $item
-                                    )
+                                    //$expr->contains('CONCAT("p.firstname", " ", "p.lastname")', $item)
                                     // Example - $qb->expr()->concat('u.firstname', $qb->expr()->concat($qb->expr()->literal(' '), 'u.lastname'))
                                 )
                             // )
+                        );
+                    } else if ($key === 'locations') {
+                        $criteria->andWhere(
+                            $expr->contains('l.zipcode', $item)
                         );
                     } else {
                         $criteria->andWhere($expr->contains($key, $item));

@@ -124,7 +124,6 @@ class EntityDataProvider extends AbstractDataProvider
         $this->paginator = new \Doctrine\ORM\Tools\Pagination\Paginator($this->queryBuilder, $fetchJoinCollection = true);
         $totalRows = count($this->paginator);
         
-        dump($totalRows);
         return $totalRows;
     }
 }

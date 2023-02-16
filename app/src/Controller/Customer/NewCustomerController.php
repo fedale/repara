@@ -116,7 +116,7 @@ class NewCustomerController extends AbstractController
             ],
             'profile.fullname:raw:fullname',
             [
-                'label' => 'location',
+                'label' => 'locations',
                 'value' => function (array $data, string $key, ColumnInterface $column) {
                     $arr = [];
                     foreach ($data['locations'] as $location) {

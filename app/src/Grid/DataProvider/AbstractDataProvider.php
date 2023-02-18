@@ -6,10 +6,11 @@ use App\Grid\Component\Sort;
 use App\Grid\Component\Pagination;
 use App\Grid\Component\Row;
 use App\Grid\Exception\DataProviderException;
+use Doctrine\Common\Collections\Collection;
 
 abstract class AbstractDataProvider implements DataProviderInterface
 {
-    protected array $models = [];
+    protected Collection $models;
 
     /**
      * @var string Full class name of target entity.
@@ -108,25 +109,9 @@ abstract class AbstractDataProvider implements DataProviderInterface
         );
     }
 
-    // /**
-    //  * Returns list of entity attributes.
-    //  *
-    //  * @return mixed
-    //  */
-    // abstract public function fetchEntityFields();
-
-    // /**
-    //  * Returns prepared set of entities.
-    //  *
-    //  * @return mixed
-    //  */
-    // abstract public function fetchEntities();
-
-    // abstract public function prepareModels();
-
     public function getData()
     {
-        $this->prepare();
+        // $this->prepare();
         return $this->models;
     }
 }

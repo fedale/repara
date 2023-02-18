@@ -5,6 +5,7 @@ use App\Grid\Column\ColumnInterface;
 use App\Grid\Column\SerialColumn;
 use App\Grid\Column\DataColumn;
 use App\Grid\DataProvider\DataProviderInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -15,15 +16,13 @@ use Twig\Environment;
 
 class GridviewBuilder implements GridviewBuilderInterface 
 {
-    private Environment $twig;
     private Gridview $gridview;
-    private EntityManagerInterface $entityManager;
     private $request;
 
     public function __construct(
         private RequestStack $requestStack,
-        Environment $twig,
-        EntityManagerInterface $entityManager,
+        private Environment $twig,
+        private EntityManagerInterface $entityManager,
     )
     {
         $this->request = $requestStack->getCurrentRequest();
@@ -44,13 +43,13 @@ class GridviewBuilder implements GridviewBuilderInterface
 
     public function setColumns($columns)
     {
-        if (empty($this->columns)) {
+        if (empty($this->gridview->columns)) {
             $this->guessColumns();
         }
 
         foreach ($columns as $column) {
             $column = $this->initColumn($column);
-
+            
             if ($column->isVisible()) {
                 $column->setGridview($this->gridview);
                 $this->addColumn($column);
@@ -63,30 +62,7 @@ class GridviewBuilder implements GridviewBuilderInterface
     public function addColumn(ColumnInterface $column) 
     {
         $this->gridview->addColumn($column);
-        return $this;
-    /*
-        if (is_array($column)) {
-            $type = $column['type'];
-        } else if (is_string($column)) {
-            $type = 'data';
-        } else {
-            throw new \Exception(); // to customize
-        }
-
-        $options = [];
-
-        $column = match($type) {
-            'serial' => new SerialColumn($options),
-            'data' => new DataColumn($options),
-            default => throw new \Exception()
-        };
-
-        $column->setLabel('Label');
-        $column->setContent('foo!');
-
-        $this->gridview->addColumn($column);
-        */
-        
+        return $this;    
     }
 
     private function initColumn(array|string $columnData): ColumnInterface
@@ -159,7 +135,6 @@ class GridviewBuilder implements GridviewBuilderInterface
 
         return $this;
     }
-
 
     public function renderGridview(): Gridview
     {

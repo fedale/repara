@@ -225,8 +225,8 @@ abstract class AbstractColumn implements ColumnInterface
         $this->gridview = $gridview;
     }
 
-    public function getHeader(): string
+    public function renderHeader($label): string
     {
-        return $this->label;
+        return 'label';
     }
 }

@@ -91,8 +91,7 @@ class NewCustomerController extends AbstractController
          */
         $columns = [
             // [
-            //    'type' => 'serial', // array with SerialColumn
-            // //   'visible' => rand(0, 10) > 5 ? true : false
+            //     'type' => 'serial'
             // ],
             'id',
             'code:raw:code',

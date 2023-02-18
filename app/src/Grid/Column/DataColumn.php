@@ -37,8 +37,9 @@ class DataColumn extends AbstractColumn
         }
     }
 
-    public function render($data, $index)
+    public function render($model, $index)
     {
+        $data = $model->data;
         if ($this->value !== null) {
             if (is_string($this->value)) {
                 return $this->value;
@@ -57,7 +58,7 @@ class DataColumn extends AbstractColumn
         return null;
     }    
 
-    public function renderHeader($label)
+    public function renderHeader($label): string
     {        
         if ($this->sortable) {
             $sort = $this->gridview->getDataProvider()->getSort();

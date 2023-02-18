@@ -108,7 +108,7 @@ class EntityDataProvider extends AbstractDataProvider
 
         // $rows = $this->queryBuilder->getQuery()->getResult();
         // dump($rows);
-        $paginator = new Paginator($this->queryBuilder->getQuery(), true);
+        //$paginator = new Paginator($this->queryBuilder->getQuery(), true);
        
         // $this->models = $serializer->normalize($rows, null, [AbstractNormalizer::ATTRIBUTES => ['id', 'code', 'email', 'username', 'groups' => ['name'], 'profile' => ['firstname', 'lastname']]]);
         // $this->models = $serializer->normalize($rows, null, [AbstractNormalizer::ATTRIBUTES => ['id', 'code', 'email', 'username', 'groups' => ['name'], 'profile' => ['firstname', 'lastname']]]);

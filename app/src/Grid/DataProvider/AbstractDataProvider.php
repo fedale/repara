@@ -4,6 +4,7 @@ namespace App\Grid\DataProvider;
 
 use App\Grid\Component\Sort;
 use App\Grid\Component\Pagination;
+use App\Grid\Component\Row;
 use App\Grid\Exception\DataProviderException;
 
 abstract class AbstractDataProvider implements DataProviderInterface

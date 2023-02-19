@@ -59,11 +59,13 @@ class EntityDataProvider extends AbstractDataProvider
 
     public function getData()
     {
+        $this->pagination->setTotalCount($this->getTotalCount());
+
         $this->queryBuilder
             ->setMaxResults($this->pagination->getPageSize())
             ->setFirstResult($this->pagination->getOffset())
-        ;      
-        
+        ;
+
         $sortParams = $this->getSort()->fetchOrders();
 
         foreach ($sortParams as $fieldName => $sortType) {
@@ -75,10 +77,11 @@ class EntityDataProvider extends AbstractDataProvider
             $this->queryBuilder->addCriteria($criteria);    
         }
 
-        // Set paginator *after* sorting, criteria and so on.
-        $this->paginator = new \Doctrine\ORM\Tools\Pagination\Paginator($this->queryBuilder, $fetchJoinCollection = true);
-        $this->pagination->setTotalCount($this->getTotalCount());
-
+        // // Set paginator *after* sorting, criteria and so on.
+        // $this->paginator = new \Doctrine\ORM\Tools\Pagination\Paginator($this->queryBuilder, $fetchJoinCollection = true);
+        // dump('totalCount: ' . $this->getTotalCount());
+       
+        
         $this->prepareData();
 
         return $this->models;
@@ -102,6 +105,7 @@ class EntityDataProvider extends AbstractDataProvider
         $normalizers = [new ObjectNormalizer($classMetadataFactory, null, null, null, null, null, $defaultContext)];
         $serializer = new Serializer($normalizers);
 
+        $this->paginator = new \Doctrine\ORM\Tools\Pagination\Paginator($this->queryBuilder, $fetchJoinCollection = true);
         foreach ($this->paginator as $model) {
             $model = $serializer->normalize($model);
             $this->models->add(new Model($model));
@@ -113,6 +117,8 @@ class EntityDataProvider extends AbstractDataProvider
      */
     public function getTotalCount($criteria = []): int
     {
+        // This Paginator serves total rows
+        $this->paginator = new \Doctrine\ORM\Tools\Pagination\Paginator($this->queryBuilder, $fetchJoinCollection = true);
         $totalRows = count($this->paginator);
         
         return $totalRows;

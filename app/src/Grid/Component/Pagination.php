@@ -93,7 +93,7 @@ class Pagination
         if (!isset($this->currentPage)) {
             $currentPage = (int)$this->request->get($this->pageParam, 1) - 1;
 
-            $this->setPage($currentPage);
+            $this->setCurrentPage($currentPage);
         }
 
         return $this->currentPage;
@@ -106,7 +106,7 @@ class Pagination
      *
      * @return $this
      */
-    protected function setPage($pageNumber)
+    protected function setCurrentPage($pageNumber)
     {
         if (!is_numeric($pageNumber) || (int)$pageNumber <= 0) {
 
@@ -122,7 +122,7 @@ class Pagination
         if ($pageNumber >= $totalPageCount) {
             $pageNumber = $totalPageCount - 1;
         }
-
+        
         $this->currentPage = $pageNumber;
 
         return $this;
@@ -195,8 +195,9 @@ class Pagination
     public function getOffset(): int
     {
         $pageSize = $this->getPageSize();   
+        $offset = $pageSize < 1 ? 0 : $this->getCurrentPage() * $pageSize;
 
-        return $pageSize < 1 ? 0 : $this->getCurrentPage() * $pageSize;
+        return $offset;
     }
 
     /**

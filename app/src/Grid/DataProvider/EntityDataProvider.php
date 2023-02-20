@@ -5,6 +5,7 @@ use App\Grid\Component\Model;
 use App\Grid\Serializer\ModelNormalizer;
 use App\Grid\Component\Sort;
 use App\Grid\Component\Pagination;
+use App\Grid\Event\RowEvent;
 use App\Grid\Service\GridFilter;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
 use Doctrine\Common\Annotations\AnnotationReader;
@@ -19,6 +20,9 @@ use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use App\Grid\Subscriber\RowSubscriber;
+use stdClass;
 
 class EntityDataProvider extends AbstractDataProvider
 {
@@ -39,7 +43,8 @@ class EntityDataProvider extends AbstractDataProvider
     public function __construct(
         protected Pagination $pagination, 
         protected Sort $sort, 
-        private GridFilter $gridFilter
+        private GridFilter $gridFilter,
+        private EventDispatcherInterface $eventDispatcher
     ) {
         $this->models = new ArrayCollection();
     }
@@ -59,8 +64,16 @@ class EntityDataProvider extends AbstractDataProvider
 
     public function getData()
     {
+        // First apply criteria
+        $criteria = $this->gridFilter->getCriteria();
+        if ($criteria) {
+            $this->queryBuilder->addCriteria($criteria);    
+        }
+
+        // Calculate totalCount with applied criterias
         $this->pagination->setTotalCount($this->getTotalCount());
 
+        // Set offset and page size
         $this->queryBuilder
             ->setMaxResults($this->pagination->getPageSize())
             ->setFirstResult($this->pagination->getOffset())
@@ -72,16 +85,6 @@ class EntityDataProvider extends AbstractDataProvider
             $this->queryBuilder->addOrderBy($fieldName, $sortType);
         }
 
-        $criteria = $this->gridFilter->getCriteria();
-        if ($criteria) {
-            $this->queryBuilder->addCriteria($criteria);    
-        }
-
-        // // Set paginator *after* sorting, criteria and so on.
-        // $this->paginator = new \Doctrine\ORM\Tools\Pagination\Paginator($this->queryBuilder, $fetchJoinCollection = true);
-        // dump('totalCount: ' . $this->getTotalCount());
-       
-        
         $this->prepareData();
 
         return $this->models;
@@ -106,9 +109,18 @@ class EntityDataProvider extends AbstractDataProvider
         $serializer = new Serializer($normalizers);
 
         $this->paginator = new \Doctrine\ORM\Tools\Pagination\Paginator($this->queryBuilder, $fetchJoinCollection = true);
+
+        $event = new RowEvent();
+        
+        $this->eventDispatcher->addSubscriber(new RowSubscriber());
+        
+
+
         foreach ($this->paginator as $model) {
             $model = $serializer->normalize($model);
-            $this->models->add(new Model($model));
+            $event->model = $model;
+            $this->eventDispatcher->dispatch($event, RowEvent::NAME);
+            $this->models->add(new Model($event->model));
         }
     }
 

@@ -1,28 +1,17 @@
 <?php
 namespace App\Grid\Service;
-
-use Doctrine\Common\Collections\Criteria;
-
+use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\Form\FormBuilderInterface;
+        
 class GridFilter
 {
-    public string $filter = 'myFilter';
+    private FormBuilderInterface $builder;
     
-    private $criteria;
-
-    // public function __construct(private Criteria $criteria) {}
-
-    public function setFilter(string $filter) 
-    {
-        $this->filter = $filter;
+    public function __construct(private FormFactoryInterface $formFactory) {
+        $this->builder = $formFactory->createBuilder();
     }
 
-    public function getCriteria() 
-    {
-        return $this->criteria;
+    public function add(string $name, $class, array $options) {
+        $this->builder->add($name, $class, $options);
     }
-
-    public function setCriteria($criteria) 
-    {
-        $this->criteria = $criteria;
-    }
-}
+} 

@@ -111,7 +111,11 @@ class NewCustomerController extends AbstractController
                'value' => function (array $data, string $key, ColumnInterface $column) {
                     return '<strong>' . $data['email'] . '</strong>';
                 },
-                'twigFilter' => 'raw'
+                'twigFilter' => 'raw',
+                'filter' => [
+                    'type' => 'text',
+                    'visibile' => true
+                ]
             ],
             'profile.fullname:raw:fullname',
             [

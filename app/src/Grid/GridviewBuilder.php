@@ -52,7 +52,12 @@ class GridviewBuilder implements GridviewBuilderInterface
             
             if ($column->isVisible()) {
                 $column->setGridview($this->gridview);
+                if ($column->filter) {
+                    dump('Column filter is present');
+                    dump($column);
+                }
                 $this->addColumn($column);
+                
             }
         }
 

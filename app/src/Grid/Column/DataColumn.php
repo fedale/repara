@@ -21,6 +21,8 @@ class DataColumn extends AbstractColumn
      * If this is not set, `$data[$attribute]` will be used to obtain the value, where `$attribute` is the value of [[attribute]].
      */
     public $value;
+
+    public $filter;
     
 
     public function __construct (
@@ -56,7 +58,7 @@ class DataColumn extends AbstractColumn
         }
         
         return null;
-    }    
+    } 
 
     public function renderHeader($label): string
     {        
@@ -89,6 +91,10 @@ class DataColumn extends AbstractColumn
       }
     
       return $current;
+    }
+
+    public function setFilter($filter) {
+        $this->filter = $filter;
     }
     
 }

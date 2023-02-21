@@ -15,7 +15,9 @@ use App\Grid\Service\GridFilter;
 
 class FilterType extends AbstractType
 {
-    public function __construct(private GridFilter $gridFilter) {}
+    public function __construct(private GridFilter $gridFilter) {
+        dump($gridFilter);
+    }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -28,6 +30,7 @@ class FilterType extends AbstractType
             'attr' => ['class' => 'save'],
         ]);
 
+        
         $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
             $data = $event->getData();
             $criteria = Criteria::create();
@@ -56,6 +59,14 @@ class FilterType extends AbstractType
                     }
                 }
             }
+            $this->gridFilter->setCriteria($criteria);
+                
+        });
+        
+    }
+
+}
+
             /*  In Yii 2
             $query->andFilterWhere(['OR',
                 ['like', 'customer_location.name', $this->locations],
@@ -65,9 +76,3 @@ class FilterType extends AbstractType
                 ['like', 'customer_location_place.name', $this->locations],
             ]);
             **/
-            $this->gridFilter->setCriteria($criteria);
-                
-        });
-    }
-}
-

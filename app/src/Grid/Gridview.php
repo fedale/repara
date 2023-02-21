@@ -14,6 +14,7 @@ use Twig\Environment;
 class Gridview {
 
     private ArrayCollection $columns;
+    private ArrayCollection $filters;
     private DataProviderInterface $dataProvider;
     /**
      * @var string the HTML display when the content of a cell is empty.
@@ -29,6 +30,7 @@ class Gridview {
      * Gridview options
      */
     private $options = [];
+    
     /**
      * @var \App\Service\GridFilter|null the model that keeps the user-entered filter data. When this property is set,
      * the grid view will enable column-based filtering. Each data column by default will display a text field
@@ -40,7 +42,8 @@ class Gridview {
      *
      * When this property is not set (null) the filtering feature is disabled.
      */
-    public \App\Service\GridFilter|null $filterService;
+    public \App\Service\GridFilter|null $gridFilter;
+    
 
     public function __construct(private Environment $twig)
     {
@@ -57,7 +60,7 @@ class Gridview {
         return $this->columns;
     }
 
-    public function setColumns($columns) 
+    public function setColumns(ArrayCollection $columns) 
     {    
         $this->columns = $columns;
     }

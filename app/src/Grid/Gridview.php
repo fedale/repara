@@ -50,7 +50,6 @@ class Gridview {
     {
         $this->columns = new ArrayCollection();
         $this->gridFilter = $gridFilter;
-        
     }
 
     public function getTwig()

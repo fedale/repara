@@ -2,6 +2,7 @@
 
 namespace App\Grid\Form;
 
+use App\Grid\Gridview;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -15,12 +16,14 @@ use App\Grid\Service\GridFilter;
 
 class FilterType extends AbstractType
 {
-    public function __construct(private GridFilter $gridFilter) {
+    public function __construct(private GridFilter $gridFilter, private Gridview $gridview) {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        dump($this->gridFilter);
+        dump($this->gridFilter->getFilters());
+        dump($this->gridview);
+        
         $builder->add('id', TextType::class, ['required' => false]);
         $builder->add('code', TextType::class, ['required' => false]);
         $builder->add('email', TextType::class, ['required' => false]);
@@ -33,6 +36,7 @@ class FilterType extends AbstractType
 
         
         $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
+            dump($this->gridFilter->getFilters());
             $data = $event->getData();
             $criteria = Criteria::create();
             $expr = Criteria::expr();

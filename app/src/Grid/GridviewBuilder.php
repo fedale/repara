@@ -59,7 +59,8 @@ class GridviewBuilder implements GridviewBuilderInterface
                 $column->setGridview($this->gridview);
                 if ($column->filter) {
                     //  $this->gridview->gridFilter->add($column->filter['name'], $column->filter['class'], $column->filter['options']);
-                     $this->gridview->gridFilter->add('email', TextType::class, []);
+                    dump('Column filter');
+                     $this->gridview->gridFilter->addFilter('email', TextType::class, []);
                 }
                 $this->addColumn($column);
                 

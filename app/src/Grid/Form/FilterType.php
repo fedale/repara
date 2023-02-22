@@ -16,7 +16,6 @@ use App\Grid\Service\GridFilter;
 class FilterType extends AbstractType
 {
     public function __construct(private GridFilter $gridFilter) {
-        dump($gridFilter);
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void

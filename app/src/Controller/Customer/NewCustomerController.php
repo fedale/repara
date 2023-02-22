@@ -129,7 +129,10 @@ class NewCustomerController extends AbstractController
                     }
                     return $arr;
                 },
-                'twigFilter' => "join(', ', ' and ')|raw"
+                'twigFilter' => "join(', ', ' and ')|raw",
+                'filter' => [
+                    'type' => 'text',
+                ]
             ],
             // [
             //     'attribute' => 'createdAt'

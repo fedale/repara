@@ -100,10 +100,11 @@ class NewCustomerController extends AbstractController
                     return rand(0, 10) > 5 ? 
                         '<strong>' . $data['profile']['fullname'] . '</strong>'
                         : 
-                        null;
+                        '*****';
                 },
                 'twigFilter' => 'raw',
-                'visible' => false
+                'visible' => true,
+                'label' => 'ddm'
             ],
             [
             //    'attribute' => 'email',

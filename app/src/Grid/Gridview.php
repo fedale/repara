@@ -43,12 +43,13 @@ class Gridview {
      *
      * When this property is not set (null) the filtering feature is disabled.
      */
-    public GridFilter|null $gridFilter;
+    public GridFilter $gridFilter;
     
 
-    public function __construct(private Environment $twig)
+    public function __construct(private Environment $twig, GridFilter $gridFilter)
     {
         $this->columns = new ArrayCollection();
+        $this->gridFilter = $gridFilter;
         
     }
 

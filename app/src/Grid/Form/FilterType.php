@@ -21,11 +21,13 @@ class FilterType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        dump($this->gridFilter);
         $builder->add('id', TextType::class, ['required' => false]);
         $builder->add('code', TextType::class, ['required' => false]);
         $builder->add('email', TextType::class, ['required' => false]);
         $builder->add('fullname', TextType::class, ['required' => false]);
         $builder->add('locations', TextType::class, ['required' => false]);
+        $builder->add('ddm', TextType::class, ['required' => false]);
         $builder->add('save', SubmitType::class, [
             'attr' => ['class' => 'save'],
         ]);

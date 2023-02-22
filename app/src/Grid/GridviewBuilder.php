@@ -5,6 +5,7 @@ use App\Grid\Column\ColumnInterface;
 use App\Grid\Column\SerialColumn;
 use App\Grid\Column\DataColumn;
 use App\Grid\DataProvider\DataProviderInterface;
+use App\Grid\Service\GridFilter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -23,6 +24,7 @@ class GridviewBuilder implements GridviewBuilderInterface
         private RequestStack $requestStack,
         private Environment $twig,
         private EntityManagerInterface $entityManager,
+        private GridFilter $gridFilter
     )
     {
         $this->request = $requestStack->getCurrentRequest();
@@ -33,7 +35,7 @@ class GridviewBuilder implements GridviewBuilderInterface
 
     public function reset()
     {
-        $this->gridview = new Gridview($this->twig);
+        $this->gridview = new Gridview($this->twig, $this->gridFilter);
     }
 
     public function guessColumns()
@@ -47,14 +49,17 @@ class GridviewBuilder implements GridviewBuilderInterface
             $this->guessColumns();
         }
 
+
         foreach ($columns as $key => $column) {
+            
             $column = $this->initColumn($column);
             
             if ($column->isVisible()) {
 
                 $column->setGridview($this->gridview);
                 if ($column->filter) {
-                     $this->gridview->gridFilter->add($column->filter['name'], $column->filter['class'], $column->filter['options']);
+                    //  $this->gridview->gridFilter->add($column->filter['name'], $column->filter['class'], $column->filter['options']);
+                     $this->gridview->gridFilter->add('email', TextType::class, []);
                 }
                 $this->addColumn($column);
                 

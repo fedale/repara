@@ -10,6 +10,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\Environment;
+use App\Grid\Service\GridFilter;
 
 class Gridview {
 
@@ -42,12 +43,13 @@ class Gridview {
      *
      * When this property is not set (null) the filtering feature is disabled.
      */
-    public \App\Service\GridFilter|null $gridFilter;
+    public GridFilter|null $gridFilter;
     
 
     public function __construct(private Environment $twig)
     {
         $this->columns = new ArrayCollection();
+        
     }
 
     public function getTwig()

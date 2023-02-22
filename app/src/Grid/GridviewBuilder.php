@@ -33,7 +33,7 @@ class GridviewBuilder implements GridviewBuilderInterface
 
     public function reset()
     {
-        $this->gridview = new Gridview($this->twig, $this->entityManager);
+        $this->gridview = new Gridview($this->twig);
     }
 
     public function guessColumns()
@@ -47,13 +47,14 @@ class GridviewBuilder implements GridviewBuilderInterface
             $this->guessColumns();
         }
 
-        foreach ($columns as $column) {
+        foreach ($columns as $key => $column) {
             $column = $this->initColumn($column);
             
             if ($column->isVisible()) {
+
                 $column->setGridview($this->gridview);
                 if ($column->filter) {
-                    $this->gridview->gridFilter->add($column->filter['name'], $column->filter['class'], $column->filter['options']);
+                     $this->gridview->gridFilter->add($column->filter['name'], $column->filter['class'], $column->filter['options']);
                 }
                 $this->addColumn($column);
                 

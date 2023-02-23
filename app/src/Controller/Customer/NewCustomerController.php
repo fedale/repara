@@ -30,7 +30,7 @@ use APY\DataGridBundle\Grid\GridFactory;
 use APY\DataGridBundle\Grid\GridManager;
 use Doctrine\ORM\EntityManager;
 use App\Grid\Component\Sort;
-use App\Grid\Form\FilterType;
+use App\Grid\Form\FilterModelType;
 use App\Grid\GridviewBuilderInterface;
 use App\Grid\Service\FilterModel;
 
@@ -106,7 +106,7 @@ class NewCustomerController extends AbstractController
                 },
                 'twigFilter' => 'raw',
                 'visible' => true,
-                'label' => 'ddm'
+                'label' => 'Label 2'
             ],
             [
             //    'attribute' => 'email',
@@ -120,7 +120,7 @@ class NewCustomerController extends AbstractController
                     'visibile' => true
                 ]
             ],
-            'profile.fullname:raw:fullname',
+        //    'profile.fullname:raw:fullname',
             [
                 'label' => 'locations',
                 'value' => function (array $data, string $key, ColumnInterface $column) {
@@ -142,9 +142,6 @@ class NewCustomerController extends AbstractController
                 
         ];
 
-       
-        
-
         $queryBuilder = $entityManager
             ->getRepository(\App\Entity\Customer\Customer::class)
             ->createQueryBuilder('c')
@@ -165,7 +162,7 @@ class NewCustomerController extends AbstractController
         ;
 
          // $form = $this->createFormBuilder([], ['method' => 'GET']);
-         $form = $this->createForm(FilterType::class, [], ['method' => 'GET']);
+         $form = $this->createForm(FilterModelType::class, [], ['method' => 'GET']);
          $form->handleRequest($request);
          
          if ($form->isSubmitted() ) {

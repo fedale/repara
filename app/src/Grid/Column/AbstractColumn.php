@@ -10,6 +10,7 @@ use Twig\Environment;
 
 abstract class AbstractColumn implements ColumnInterface
 {
+
      /**
      * @var callable This is a callable that will be used to generate the content of each cell.
      * The signature of the function should be the following: `function ($model, $key, $index, $column)`.
@@ -92,6 +93,16 @@ abstract class AbstractColumn implements ColumnInterface
         $this->initColumn();
     }
 
+    public function getKey()
+    {
+        return $this->key;
+    }
+
+    public function setKey(string $key)
+    {
+        $this->key = $key;
+    }
+
     protected function initColumn()
     {
       //  $content = $this->setContent($this->attribute);
@@ -99,7 +110,6 @@ abstract class AbstractColumn implements ColumnInterface
 
     public function renderFilter(FormBuilder $form )
     {
-        dump($form);
         $form->add('name', TextType::class);
         //return '<input type="text" name="{{column.label}}" placeholder="" style="background-color: #404040; border: 0">';
     }

@@ -14,13 +14,15 @@ use Doctrine\ORM\Query\Expr;
 use App\Grid\Service\FilterModel;
 
 
-class FilterType extends AbstractType
+class FilterModelType extends AbstractType
 {
     public function __construct(private FilterModel $filterModel, private Gridview $gridview) {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        dump($this->gridview);
+        dump($this->filterModel->getFilters());
         foreach ($this->filterModel->getFilters() as $filter) {
             dump($filter);
         }
@@ -28,9 +30,11 @@ class FilterType extends AbstractType
         $builder->add('id', TextType::class, ['required' => false]);
         $builder->add('code', TextType::class, ['required' => false]);
         $builder->add('email', TextType::class, ['required' => false]);
-        $builder->add('fullname', TextType::class, ['required' => false]);
+        $builder->add('profile_fullname', TextType::class, ['required' => false]);
         $builder->add('locations', TextType::class, ['required' => false]);
-        $builder->add('ddm', TextType::class, ['required' => false]);
+        $builder->add('column_2', TextType::class, ['required' => false]);
+        $builder->add('column_3', TextType::class, ['required' => false]);
+        $builder->add('column_4', TextType::class, ['required' => false]);
         $builder->add('save', SubmitType::class, [
             'attr' => ['class' => 'save'],
         ]);

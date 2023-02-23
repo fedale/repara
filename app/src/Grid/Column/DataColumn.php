@@ -39,6 +39,11 @@ class DataColumn extends AbstractColumn
         }
     }
 
+    public function getAttribute(): string
+    {
+        return $this->attribute;
+    }
+
     public function render($model, $index)
     {
         $data = $model->data;

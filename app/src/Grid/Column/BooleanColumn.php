@@ -5,6 +5,6 @@ class BooleanColumn extends AbstractColumn {
         
     public function render($model, $index)
     {
-        return 'BoolenaColumn';
+        return 'BooleanColumn';
     }
 }

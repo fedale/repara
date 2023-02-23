@@ -13,6 +13,7 @@ use App\Grid\Service\FilterModel;
 use App\Grid\Column\ColumnInterface;
 use App\Grid\Column\SerialColumn;
 use App\Grid\Column\DataColumn;
+use App\Grid\Service\FilterModelInterface;
 
 class Gridview {
 
@@ -79,10 +80,9 @@ class Gridview {
         return $this->filterModel;
     }
 
-    public function setFilterModel($filterModel) 
+    public function setFilterModel(FilterModelInterface $filterModel) 
     {    
         $this->filterModel = $filterModel;
-        dump($filterModel);
     }
 
     public function getDataProvider()
@@ -109,7 +109,8 @@ class Gridview {
 
         foreach ($columns as $key => $column) {
             
-            $column = $this->initColumn($column);
+            $column = $this->initColumn($column, $key);
+
             
             if ($column->isVisible()) {
 
@@ -118,7 +119,6 @@ class Gridview {
                      $this->filterModel->addFilter('email', TextType::class, []);
                 }
                 $this->addColumn($column);
-                
             }
         }
 
@@ -132,14 +132,20 @@ class Gridview {
         return $this;    
     }*/
 
-    private function initColumn(array|string $columnData): ColumnInterface
+    private function defaultAttribute()
     {
+        return 'password';
+    }
+
+    private function initColumn(array|string $columnData, string $key): ColumnInterface
+    {
+
         // If $columnData is a string create a DataColumn which is the default column data type.
         if (is_string($columnData)) {
             $column = $this->createDataColumnFromString($columnData);
         }  else if (is_array($columnData)) {
             $type = isset($columnData['type']) ? $columnData['type'] : 'data';
-            $attribute = isset($columnData['attribute']) ? $columnData['attribute'] : '#';
+            $attribute = isset($columnData['attribute']) ? $columnData['attribute'] : 'column_' . $key;
             $value = isset($columnData['value']) ? $columnData['value'] : null;
             $class = "App\\Grid\\Column\\" . ucfirst($type) . 'Column';
 
@@ -147,10 +153,12 @@ class Gridview {
                 switch ($type) {
                     case 'data':
                         $column = new $class($this, $attribute, null, $columnData['label'] ?? $attribute, []);
+                        $column->setKey($attribute);
                         $column->value = $value;
                     break;
                     default:
                         $column = new $class($this, null, $columnData['label'] ?? $attribute, []);
+
                     break;
                 }
                 
@@ -188,12 +196,13 @@ class Gridview {
             throw new \Exception('The column must be specified in the format of "attirbute", "attribute:filter" or "attribute:filter:label"');
         }
         
-        return new DataColumn(
+        $column =  new DataColumn(
             $this, 
             $matches[1],
             isset($matches[3]) ? $matches[3] : null, 
             isset($matches[5]) ? $matches[5] : $matches[1]
         );
+        return $column;
     }
 
     public function renderGrid(string $view, array $parameters = []): Response

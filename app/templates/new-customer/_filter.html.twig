@@ -6,7 +6,7 @@
         {% for column in columns %}
         
         <th class="">
-            {{ form_widget(form[column.label], {'attr': {'class': 'foo'}}) }}
+            {{ form_widget(form[column.attribute], {'attr': {'class': 'foo'}}) }}
         </th>
         {% endfor %}
         {{ form_widget(form.save) }}

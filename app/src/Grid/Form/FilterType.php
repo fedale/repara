@@ -11,18 +11,19 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Query\Expr;
-use App\Grid\Service\GridFilter;
+use App\Grid\Service\FilterModel;
 
 
 class FilterType extends AbstractType
 {
-    public function __construct(private GridFilter $gridFilter, private Gridview $gridview) {
+    public function __construct(private FilterModel $filterModel, private Gridview $gridview) {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        dump($this->gridFilter->getFilters());
-        dump($this->gridview);
+        foreach ($this->filterModel->getFilters() as $filter) {
+            dump($filter);
+        }
         
         $builder->add('id', TextType::class, ['required' => false]);
         $builder->add('code', TextType::class, ['required' => false]);
@@ -36,7 +37,6 @@ class FilterType extends AbstractType
 
         
         $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
-            dump($this->gridFilter->getFilters());
             $data = $event->getData();
             $criteria = Criteria::create();
             $expr = Criteria::expr();
@@ -64,7 +64,7 @@ class FilterType extends AbstractType
                     }
                 }
             }
-            $this->gridFilter->setCriteria($criteria);
+            $this->filterModel->setCriteria($criteria);
                 
         });
         

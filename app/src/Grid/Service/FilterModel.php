@@ -7,7 +7,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Doctrine\Common\Collections\Criteria;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 
-class GridFilter implements GridFilterInterface
+class FilterModel implements FilterModelInterface
 {
     private FormBuilderInterface $builder;
     private Criteria $criteria;

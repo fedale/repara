@@ -31,6 +31,8 @@ use APY\DataGridBundle\Grid\GridManager;
 use Doctrine\ORM\EntityManager;
 use App\Grid\Component\Sort;
 use App\Grid\Form\FilterType;
+use App\Grid\GridviewBuilderInterface;
+use App\Grid\Service\FilterModel;
 
 #[Route('/new-customer')]
 class NewCustomerController extends AbstractController
@@ -140,13 +142,7 @@ class NewCustomerController extends AbstractController
                 
         ];
 
-        // $form = $this->createFormBuilder([], ['method' => 'GET']);
-        $form = $this->createForm(FilterType::class, [], ['method' => 'GET']);
-        $form->handleRequest($request);
-        
-        if ($form->isSubmitted() ) {
-            // dump($form->getData());
-        }
+       
         
 
         $queryBuilder = $entityManager
@@ -163,9 +159,18 @@ class NewCustomerController extends AbstractController
 
         $gridview = $this->createGridviewBuilder()
             ->setDataProvider($dataProvider)
+            ->setFilterModel(new FilterModel())
             ->setColumns($columns)
             ->renderGridview();
         ;
+
+         // $form = $this->createFormBuilder([], ['method' => 'GET']);
+         $form = $this->createForm(FilterType::class, [], ['method' => 'GET']);
+         $form->handleRequest($request);
+         
+         if ($form->isSubmitted() ) {
+             // dump($form->getData());
+         }
 
         return $gridview->renderGrid('new-customer/index.html.twig', ['pagination' => $pagination, 'form' => $form->createView()]);
     }
@@ -204,7 +209,7 @@ class NewCustomerController extends AbstractController
         return $gridview->renderGrid('new-customer/index.html.twig', ['pagination' => $pagination]);
     }
     
-    public function createGridviewBuilder(): GridviewBuilder
+    public function createGridviewBuilder(): GridviewBuilderInterface
     {
         return $this->gridviewBuilderFactory->createGridviewBuilder();
     }

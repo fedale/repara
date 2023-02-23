@@ -6,7 +6,7 @@ use App\Grid\Serializer\ModelNormalizer;
 use App\Grid\Component\Sort;
 use App\Grid\Component\Pagination;
 use App\Grid\Event\RowEvent;
-use App\Grid\Service\GridFilter;
+use App\Grid\Service\FilterModel;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Collections\Criteria;
@@ -43,7 +43,7 @@ class EntityDataProvider extends AbstractDataProvider
     public function __construct(
         protected Pagination $pagination, 
         protected Sort $sort, 
-        private GridFilter $gridFilter,
+        private FilterModel $filterModel,
         private EventDispatcherInterface $eventDispatcher
     ) {
         $this->models = new ArrayCollection();
@@ -65,7 +65,7 @@ class EntityDataProvider extends AbstractDataProvider
     public function getData()
     {
         // First apply criteria
-        $criteria = $this->gridFilter->getCriteria();
+        $criteria = $this->filterModel->getCriteria();
         if ($criteria) {
             $this->queryBuilder->addCriteria($criteria);    
         }

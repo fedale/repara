@@ -21,7 +21,7 @@ class FilterModelType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        dump($this->gridview);
+        dump($this->gridview->getFilterModel());
         dump($this->filterModel->getFilters());
         foreach ($this->filterModel->getFilters() as $filter) {
             dump($filter);

@@ -1,33 +1,32 @@
 <?php
 namespace App\Grid;
 
-
 use App\Grid\DataProvider\DataProviderInterface;
 use App\Grid\Service\FilterModelInterface;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityManagerInterface;
-use Exception;
-use Iterator;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Traversable;
+// use Doctrine\Common\Collections\ArrayCollection;
+// use Doctrine\ORM\EntityManager;
+// use Doctrine\ORM\EntityManagerInterface;
+// use Exception;
+// use Iterator;
+// use Symfony\Component\HttpFoundation\Response;
+// use Symfony\Component\HttpFoundation\Request;
+// use Symfony\Component\HttpFoundation\RequestStack;
+// use Traversable;
 use Twig\Environment;
 
 class GridviewBuilder implements GridviewBuilderInterface 
 {
     private Gridview $gridview;
-    private $request;
+    // private $request;
 
     public function __construct(
-        private RequestStack $requestStack,
+        // private RequestStack $requestStack,
         private Environment $twig,
       //  private EntityManagerInterface $entityManager,
     )
     {
-        $this->request = $requestStack->getCurrentRequest();
-        $this->twig = $twig;
+        // $this->request = $requestStack->getCurrentRequest();
+        // $this->twig = $twig;
         //$this->entityManager = $entityManager;
         $this->reset();
     }

@@ -1,0 +1,21 @@
+{
+    "name": "fedale/gridview-bundle",
+    "description": "Gridview in Yii2 style inside your Symfony projects",
+    "type": "symfony-bundle",
+    "require": {
+        "php": ">=7.4",
+        "symfony/framework-bundle": "^5.2|^6.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Fedale\\Gridview\\": "src/"
+        }
+    },  
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Danilo Di Moia",
+            "email": "zitter@gmail.com"
+        }
+    ]
+}

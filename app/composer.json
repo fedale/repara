@@ -7,6 +7,10 @@
         {
             "type": "vcs",
             "url": "https://github.com/fedale/EasyAdminBundle"
+        },
+        {
+            "type": "path", 
+            "url":  "../GridviewBundle"
         }
     ],
     "require": {
@@ -20,6 +24,7 @@
         "doctrine/orm": "^2.12",
         "easycorp/easyadmin-bundle": "4.x-dev",
         "fakerphp/faker": "^1.19",
+        "fedale/gridview-bundle": "dev-main",
         "fresh/doctrine-enum-bundle": "^8.1.2",
         "lexik/jwt-authentication-bundle": "^2.16",
         "phpdocumentor/reflection-docblock": "^5.3",

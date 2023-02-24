@@ -69,6 +69,9 @@
             "ref": "b131e6cbfe1b898a508987851963fff485986285"
         }
     },
+    "fedale/gridview-bundle": {
+        "version": "dev-main"
+    },
     "fresh/doctrine-enum-bundle": {
         "version": "9.0",
         "recipe": {

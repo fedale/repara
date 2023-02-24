@@ -8,13 +8,13 @@ use App\Entity\Customer\CustomerType as CustomerCustomerType;
 use App\Form\Customer\CustomerRegistrationType;
 use App\Form\Customer\CustomerType;
 use App\Form\Model\CustomerCreateModel;
-use App\Grid\Column\ColumnInterface;
-use App\Grid\Component\Pagination;
-use App\Grid\DataProvider\EntityDataProvider;
-use App\Grid\GridView;
-use App\Grid\GridviewBuilder;
-use App\Grid\GridviewBuilderFactory;
-use App\Grid\Source\Entity as SourceEntity;
+use Fedale\Gridview\Column\ColumnInterface;
+use Fedale\Gridview\Component\Pagination;
+use Fedale\Gridview\DataProvider\EntityDataProvider;
+use Fedale\Gridview\GridView;
+use Fedale\Gridview\GridviewBuilder;
+use Fedale\Gridview\GridviewBuilderFactory;
+use Fedale\Gridview\Source\Entity as SourceEntity;
 use App\Service\ProxyFilter;
 use App\Type\CustomerGridType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -22,17 +22,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use APY\DataGridBundle\Grid\Source\Entity;
 use Doctrine\Persistence\ManagerRegistry;
-use APY\DataGridBundle\Grid\Grid;
-use APY\DataGridBundle\Grid\Source\Source;
-use APY\DataGridBundle\Grid\GridFactory;
-use APY\DataGridBundle\Grid\GridManager;
 use Doctrine\ORM\EntityManager;
-use App\Grid\Component\Sort;
-use App\Grid\Form\FilterModelType;
-use App\Grid\GridviewBuilderInterface;
-use App\Grid\Service\FilterModel;
+use Fedale\Gridview\Component\PaginationInterface;
+use Fedale\Gridview\Component\Sort;
+use Fedale\Gridview\Component\SortInterface;
+use Fedale\Gridview\DataProvider\DataProviderInterface;
+use Fedale\Gridview\Form\FilterModelType;
+use Fedale\Gridview\GridviewBuilderInterface;
+use Fedale\Gridview\Service\FilterModel;
 
 #[Route('/new-customer')]
 class NewCustomerController extends AbstractController
@@ -47,12 +45,13 @@ class NewCustomerController extends AbstractController
     #[Route('/grid', name: 'new_app_grid', methods: ['GET'])]
     public function grid(
         EntityManagerInterface $entityManager, 
-        EntityDataProvider $dataProvider, 
-        Sort $sort, 
-        Pagination $pagination,
+        DataProviderInterface $dataProvider, 
+        // SortInterface $sort, 
+        // PaginationInterface $pagination,
         Request $request): Response
     {
 
+        /*
         $pagination->setDefaultPageSize(10);
 
         $sort->setAttributes([
@@ -86,7 +85,7 @@ class NewCustomerController extends AbstractController
             ],
 
         ]);
-        
+        */
 
         /**
          *
@@ -151,9 +150,10 @@ class NewCustomerController extends AbstractController
             ;
 
         $dataProvider->setQueryBuilder($queryBuilder);
-        $dataProvider->setSort($sort);
-        $dataProvider->setPagination($pagination);
+     //   $dataProvider->setSort($sort);
+       // $dataProvider->setPagination($pagination);
 
+        // Order matters! Try to switch setColumns() / setFilterModel()
         $gridview = $this->createGridviewBuilder()
             ->setDataProvider($dataProvider)
             ->setFilterModel(new FilterModel())

@@ -102,6 +102,7 @@ class Gridview {
 
     public function setColumns(array $columns)
     {
+        dump($this->filterModel);
         // To implement
         if (empty($this->columns)) {
             $this->guessColumns();
@@ -116,27 +117,21 @@ class Gridview {
 
                 $column->setGridview($this);
                 if ($column->filter) {
-                     $this->filterModel->addFilter('email', TextType::class, []);
+                    dump('I am setting a filter');
+                    $this->filterModel->addFilter('email', TextType::class, []);
                 }
+                dump($this->filterModel);
                 $this->addColumn($column);
             }
         }
 
         return $this;
     }
-
-    /*
-    public function addColumn(ColumnInterface $column) 
-    {
-        $this->gridview->addColumn($column);
-        return $this;    
-    }*/
-
-    private function defaultAttribute()
-    {
-        return 'password';
-    }
-
+    
+    /**
+     * @var array|string $columnData data coming from controller/service containing data to create a ColumnInterface object
+     * @var string $key the 0-based key used to identify column when attribute is not available
+     */
     private function initColumn(array|string $columnData, string $key): ColumnInterface
     {
 
@@ -153,7 +148,6 @@ class Gridview {
                 switch ($type) {
                     case 'data':
                         $column = new $class($this, $attribute, null, $columnData['label'] ?? $attribute, []);
-                        $column->setKey($attribute);
                         $column->value = $value;
                     break;
                     default:
@@ -172,7 +166,7 @@ class Gridview {
             foreach ($columnData as $key => $value) {
                 $methodName = 'set' . ucfirst($key);
                 if (!method_exists($column, $methodName)) {
-                    throw new Exception('Column has no attribute ' . $key);
+                    throw new \Exception('Column has no attribute ' . $key);
                 }
 
                 $column->$methodName($value);

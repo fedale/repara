@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services
+        https://symfony.com/schema/dic/services/services-1.0.xsd"
+>
+    <services>
+        <service id="gridview.builder_factory" class="Fedale\Gridview\GridviewBuilderFactory">
+            <argument type="service" id="twig"/>
+        </service>
+        <service id="Fedale\Gridview\GridviewBuilderFactory" alias="gridview.builder_factory"/>
+                     
+        <service id="Fedale\Gridview\DataProvider\EntityDataProvider"/>
+        <service id="Fedale\Gridview\DataProvider\DataProviderInterface" alias="Fedale\Gridview\DataProvider\EntityDataProvider"/>
+    </services>
+</container>
+<!--
+
+  <service id="App\Util\Rot13Transformer"/>
+
+        <service id="App\Util\TransformerInterface" alias="App\Util\Rot13Transformer"/>
+
+
+
+Too few arguments to function Fedale\Gridview\GridviewBuilderFactory::__construct(), 
+0 passed in /home/danilo/sp/repara/app/var/cache/dev/ContainerG30zlqb/getNewCustomerControllerService.php on line 24 and exactly 1 expected
+
+Too few arguments to function Twig\Environment::__construct(), 
+0 passed in /home/danilo/sp/repara/app/var/cache/dev/ContainerD9p3tbZ/getNewCustomerControllerService.php on line 24 and at least 1 expected
+-->
+<!--
+  tt_grid.query_data_provider:
+    class: Tinustester\Bundle\GridviewBundle\DataProvider\QueryDataProvider
+    shared: false
+    arguments:
+      - '@tt_grid.pagination'
+      - '@tt_grid.sort'
+
+
+  -->

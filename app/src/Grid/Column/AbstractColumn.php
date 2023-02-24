@@ -93,16 +93,6 @@ abstract class AbstractColumn implements ColumnInterface
         $this->initColumn();
     }
 
-    public function getKey()
-    {
-        return $this->key;
-    }
-
-    public function setKey(string $key)
-    {
-        $this->key = $key;
-    }
-
     protected function initColumn()
     {
       //  $content = $this->setContent($this->attribute);

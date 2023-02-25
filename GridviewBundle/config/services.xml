@@ -10,8 +10,23 @@
         </service>
         <service id="Fedale\Gridview\GridviewBuilderFactory" alias="gridview.builder_factory"/>
                      
-        <service id="Fedale\Gridview\DataProvider\EntityDataProvider"/>
+        <service id="Fedale\Gridview\DataProvider\EntityDataProvider">
+            <call method="setSort">
+                <argument type="service" id="gridview.sort"/>
+            </call>
+            <call method="setPagination">
+                <argument type="service" id="gridview.pagination"/>
+            </call>
+        </service>
         <service id="Fedale\Gridview\DataProvider\DataProviderInterface" alias="Fedale\Gridview\DataProvider\EntityDataProvider"/>
+
+        <service id="gridview.sort" class="Fedale\Gridview\Component\Sort">
+            <argument type="service" id="request_stack"/>
+            <argument type="service" id="router.default"/>
+        </service>
+        <service id="gridview.pagination" class="Fedale\Gridview\Component\Pagination">
+            <argument type="service" id="request_stack"/>
+        </service>
     </services>
 </container>
 <!--

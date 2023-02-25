@@ -51,7 +51,7 @@ class NewCustomerController extends AbstractController
         Request $request): Response
     {
 
-        /*
+        /*        
         $pagination->setDefaultPageSize(10);
 
         $sort->setAttributes([
@@ -150,13 +150,13 @@ class NewCustomerController extends AbstractController
             ;
 
         $dataProvider->setQueryBuilder($queryBuilder);
-     //   $dataProvider->setSort($sort);
-       // $dataProvider->setPagination($pagination);
+      //  $dataProvider->setSort($sort);
+      //  $dataProvider->setPagination($pagination);
 
         // Order matters! Try to switch setColumns() / setFilterModel()
         $gridview = $this->createGridviewBuilder()
             ->setDataProvider($dataProvider)
-            ->setFilterModel(new FilterModel())
+            //->setFilterModel(new FilterModel()) // bypass for the moment
             ->setColumns($columns)
             ->renderGridview();
         ;
@@ -169,7 +169,8 @@ class NewCustomerController extends AbstractController
              // dump($form->getData());
          }
 
-        return $gridview->renderGrid('new-customer/index.html.twig', ['pagination' => $pagination, 'form' => $form->createView()]);
+        // return $gridview->renderGrid('new-customer/index.html.twig', ['pagination' => $pagination, 'form' => $form->createView()]);
+        return $gridview->renderGrid('@Gridview/gridview/index.html.twig', ['form' => $form->createView()]);
     }
 
     #[Route('/grid2', name: 'new_app_grid2', methods: ['GET'])]

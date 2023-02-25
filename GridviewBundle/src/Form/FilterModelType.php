@@ -16,13 +16,13 @@ use Fedale\Gridview\Service\FilterModel;
 
 class FilterModelType extends AbstractType
 {
+    /*
     public function __construct(private FilterModel $filterModel, private Gridview $gridview) {
-    }
+    }*/
 
+    /*
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        dump($this->gridview->getFilterModel());
-        dump($this->filterModel->getFilters());
         foreach ($this->filterModel->getFilters() as $filter) {
             dump($filter);
         }
@@ -73,6 +73,7 @@ class FilterModelType extends AbstractType
         });
         
     }
+    */
 
 }
 

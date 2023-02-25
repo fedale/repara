@@ -31,7 +31,7 @@ class EntityDataProvider extends AbstractDataProvider
     /**
      * @var \Doctrine\ORM\QueryBuilder
      */
-    protected $queryBuilder;
+    protected QueryBuilder $queryBuilder;
 
     /**
      * @var \Doctrine\ORM\Mapping\ClassMetadata
@@ -40,11 +40,18 @@ class EntityDataProvider extends AbstractDataProvider
 
     private $paginator;
 
+    /*
     public function __construct(
         protected Pagination $pagination, 
         protected Sort $sort, 
         private FilterModel $filterModel,
         private EventDispatcherInterface $eventDispatcher
+    ) {
+        $this->models = new ArrayCollection();
+    }
+    */
+
+    public function __construct(
     ) {
         $this->models = new ArrayCollection();
     }
@@ -64,6 +71,10 @@ class EntityDataProvider extends AbstractDataProvider
 
     public function getData()
     {
+        $this->prepareData();
+
+        return $this->models;
+
         // First apply criteria
         $criteria = $this->filterModel->getCriteria();
         if ($criteria) {
@@ -110,17 +121,18 @@ class EntityDataProvider extends AbstractDataProvider
 
         $this->paginator = new \Doctrine\ORM\Tools\Pagination\Paginator($this->queryBuilder, $fetchJoinCollection = true);
 
+        /*
         $event = new RowEvent();
         
         $this->eventDispatcher->addSubscriber(new RowSubscriber());
-        
+        */
 
 
         foreach ($this->paginator as $model) {
             $model = $serializer->normalize($model);
-            $event->model = $model;
-            $this->eventDispatcher->dispatch($event, RowEvent::NAME);
-            $this->models->add(new Model($event->model));
+        //    $event->model = $model;
+          //  $this->eventDispatcher->dispatch($event, RowEvent::NAME);
+           // $this->models->add(new Model($event->model));
         }
     }
 

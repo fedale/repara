@@ -10,18 +10,6 @@ use Doctrine\Common\Collections\Collection;
 
 abstract class AbstractDataProvider implements DataProviderInterface
 {
-    protected Collection $models;
-
-    /**
-     * @var string Full class name of target entity.
-     */
-    protected string $entityName;
-
-    /**
-     * @var mixed
-     */
-    protected \Doctrine\ORM\QueryBuilder $dataProvider;
-
     /**
      * @var Pagination
      */
@@ -80,34 +68,6 @@ abstract class AbstractDataProvider implements DataProviderInterface
         return count($this->dataProvider);
     }
 
-    /**
-     * @param string $entityName
-     *
-     * @return $this
-     * @throws DataProviderException
-     */
-    public function setEntityName(string $entityName): static
-    {
-        $this->entityName = $entityName;
-        return $this;
-    }
-
-    /**
-     * Get short class name.
-     *
-     * @return bool|string
-     */
-    public function getEntityShortName(): bool|string
-    {
-        if (!$this->entityName || !is_string($this->entityName)) {
-            return false;
-        }
-
-        return substr(
-            $this->entityName,
-            strrpos($this->entityName, '\\') + 1
-        );
-    }
 
     public function getData()
     {

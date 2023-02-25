@@ -1,18 +1,12 @@
 <?php 
 namespace Fedale\Gridview;
 
-use App\Entity\Customer\Customer;
 use Fedale\Gridview\DataProvider\DataProviderInterface;
-use Fedale\Gridview\Source\SourceInterface;
-use APY\DataGridBundle\Grid\Columns;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\Environment;
 use Fedale\Gridview\Service\FilterModel;
 use Fedale\Gridview\Column\ColumnInterface;
-use Fedale\Gridview\Column\SerialColumn;
-use Fedale\Gridview\Column\DataColumn;
 use Fedale\Gridview\Service\FilterModelInterface;
 
 class Gridview {
@@ -36,7 +30,7 @@ class Gridview {
     private $options = [];
     
     /**
-     * @var \Fedale\Gridview\Service\FilterModel|null the model that keeps the user-entered filter data. When this property is set,
+     * @ var \Fedale\Gridview\Service\FilterModel|null the model that keeps the user-entered filter data. When this property is set,
      * the grid view will enable column-based filtering. Each data column by default will display a text field
      * at the top that users can fill in to filter the data.
      *
@@ -102,7 +96,6 @@ class Gridview {
 
     public function setColumns(array $columns)
     {
-        dump($this->filterModel);
         // To implement
         if (empty($this->columns)) {
             $this->guessColumns();
@@ -117,10 +110,9 @@ class Gridview {
 
                 $column->setGridview($this);
                 if ($column->filter) {
-                    dump('I am setting a filter');
+                    continue;
                     $this->filterModel->addFilter('email', TextType::class, []);
                 }
-                dump($this->filterModel);
                 $this->addColumn($column);
             }
         }
@@ -142,7 +134,7 @@ class Gridview {
             $type = isset($columnData['type']) ? $columnData['type'] : 'data';
             $attribute = isset($columnData['attribute']) ? $columnData['attribute'] : 'column_' . $key;
             $value = isset($columnData['value']) ? $columnData['value'] : null;
-            $class = "App\\Grid\\Column\\" . ucfirst($type) . 'Column';
+            $class = "Fedale\\Gridview\\Column\\" . ucfirst($type) . 'Column';
 
             if (class_exists($class)) { 
                 switch ($type) {
@@ -190,7 +182,7 @@ class Gridview {
             throw new \Exception('The column must be specified in the format of "attirbute", "attribute:filter" or "attribute:filter:label"');
         }
         
-        $column =  new DataColumn(
+        $column =  new \Fedale\Gridview\Column\DataColumn(
             $this, 
             $matches[1],
             isset($matches[3]) ? $matches[3] : null, 
@@ -201,6 +193,7 @@ class Gridview {
 
     public function renderGrid(string $view, array $parameters = []): Response
     {
+        dump($view);
         $parameters['columns'] = $this->columns;
         $parameters['models'] = $this->dataProvider->getData();
         

@@ -21,5 +21,5 @@ return [
     Fresh\DoctrineEnumBundle\FreshDoctrineEnumBundle::class => ['all' => true],
     Symfony\UX\TwigComponent\TwigComponentBundle::class => ['all' => true],
     Doctrine\Bundle\MongoDBBundle\DoctrineMongoDBBundle::class => ['all' => true],
-    Fedale\Gridview\GridviewBundle::class => ['all' => true],
+    Fedale\GridviewBundle\FedaleGridviewBundle::class => ['all' => true],
 ];

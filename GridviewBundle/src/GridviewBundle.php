@@ -1,13 +1,14 @@
 <?php 
 
-namespace Fedale\Gridview;
+namespace Fedale\GridviewBundle;
 
 
-use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
+
 
 /**
  * Gridview Bundle
  */
-class GridviewBundle extends Bundle
+class FedaleGridviewBundle extends AbstractBundle
 {
 }

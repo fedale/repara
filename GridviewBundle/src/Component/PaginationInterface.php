@@ -1,5 +1,5 @@
 <?php
 
-namespace Fedale\Gridview\Component;
+namespace Fedale\GridviewBundle\Component;
 
 interface PaginationInterface {}

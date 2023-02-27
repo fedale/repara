@@ -1,13 +1,13 @@
 <?php 
-namespace Fedale\Gridview;
+namespace Fedale\GridviewBundle\Grid;
 
-use Fedale\Gridview\DataProvider\DataProviderInterface;
+use Fedale\GridviewBundle\DataProvider\DataProviderInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\Environment;
-use Fedale\Gridview\Service\FilterModel;
-use Fedale\Gridview\Column\ColumnInterface;
-use Fedale\Gridview\Service\FilterModelInterface;
+use Fedale\GridviewBundle\Service\FilterModel;
+use Fedale\GridviewBundle\Column\ColumnInterface;
+use Fedale\GridviewBundle\Service\FilterModelInterface;
 
 class Gridview {
 
@@ -30,7 +30,7 @@ class Gridview {
     private $options = [];
     
     /**
-     * @ var \Fedale\Gridview\Service\FilterModel|null the model that keeps the user-entered filter data. When this property is set,
+     * @ var \Fedale\GridviewBundle\Service\FilterModel|null the model that keeps the user-entered filter data. When this property is set,
      * the grid view will enable column-based filtering. Each data column by default will display a text field
      * at the top that users can fill in to filter the data.
      *
@@ -182,7 +182,7 @@ class Gridview {
             throw new \Exception('The column must be specified in the format of "attirbute", "attribute:filter" or "attribute:filter:label"');
         }
         
-        $column =  new \Fedale\Gridview\Column\DataColumn(
+        $column =  new \Fedale\GridviewBundle\Column\DataColumn(
             $this, 
             $matches[1],
             isset($matches[3]) ? $matches[3] : null, 

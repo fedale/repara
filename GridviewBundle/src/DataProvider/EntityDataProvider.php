@@ -1,12 +1,12 @@
 <?php
-namespace Fedale\Gridview\DataProvider;
+namespace Fedale\GridviewBundle\DataProvider;
 
-use Fedale\Gridview\Component\Model;
-use Fedale\Gridview\Serializer\ModelNormalizer;
-use Fedale\Gridview\Component\Sort;
-use Fedale\Gridview\Component\Pagination;
-use Fedale\Gridview\Event\RowEvent;
-use Fedale\Gridview\Service\FilterModel;
+use Fedale\GridviewBundle\Component\Model;
+use Fedale\GridviewBundle\Serializer\ModelNormalizer;
+use Fedale\GridviewBundle\Component\Sort;
+use Fedale\GridviewBundle\Component\Pagination;
+use Fedale\GridviewBundle\Event\RowEvent;
+use Fedale\GridviewBundle\Service\FilterModel;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Collections\Criteria;
@@ -21,7 +21,7 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Fedale\Gridview\Subscriber\RowSubscriber;
+use Fedale\GridviewBundle\Subscriber\RowSubscriber;
 use stdClass;
 
 class EntityDataProvider extends AbstractDataProvider

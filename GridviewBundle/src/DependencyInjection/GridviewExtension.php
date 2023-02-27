@@ -1,5 +1,5 @@
 <?php 
-namespace Fedale\Gridview\DependencyInjection;
+namespace Fedale\GridviewBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;

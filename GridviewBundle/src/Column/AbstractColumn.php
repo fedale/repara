@@ -1,8 +1,8 @@
 <?php
 
-namespace Fedale\Gridview\Column;
+namespace Fedale\GridviewBundle\Column;
 
-use Fedale\Gridview\Gridview;
+use Fedale\GridviewBundle\Gridview;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\Form\FormInterface;

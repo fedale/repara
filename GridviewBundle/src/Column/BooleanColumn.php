@@ -1,5 +1,5 @@
 <?php 
-namespace Fedale\Gridview\Column;
+namespace Fedale\GridviewBundle\Column;
 
 class BooleanColumn extends AbstractColumn {
         

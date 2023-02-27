@@ -1,9 +1,9 @@
 <?php
 
-namespace Fedale\Gridview\Component;
+namespace Fedale\GridviewBundle\Component;
 
 use Exception;
-use Fedale\Gridview\Gridview;
+use Fedale\GridviewBundle\Gridview;
 // use Tinustester\Bundle\GridviewBundle\Helper\Html;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;

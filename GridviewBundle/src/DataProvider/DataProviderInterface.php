@@ -1,6 +1,6 @@
 <?php
 
-namespace Fedale\Gridview\DataProvider;
+namespace Fedale\GridviewBundle\DataProvider;
 
 // https://github.com/tinustester/symfony-gridview-bundle/blob/main/src/DataProvider/DataProviderInterface.php
 interface DataProviderInterface

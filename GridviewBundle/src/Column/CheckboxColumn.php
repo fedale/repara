@@ -1,5 +1,5 @@
 <?php 
-namespace Fedale\Gridview\Column;
+namespace Fedale\GridviewBundle\Column;
 
 class CheckboxColumn extends AbstractColumn {
         

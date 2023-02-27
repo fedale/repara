@@ -5,12 +5,12 @@
         https://symfony.com/schema/dic/services/services-1.0.xsd"
 >
     <services>
-        <service id="gridview.builder_factory" class="Fedale\Gridview\GridviewBuilderFactory">
+        <service id="gridview.builder_factory" class="Fedale\GridviewBundle\Grid\GridviewBuilderFactory">
             <argument type="service" id="twig"/>
         </service>
-        <service id="Fedale\Gridview\GridviewBuilderFactory" alias="gridview.builder_factory"/>
+        <service id="Fedale\GridviewBundle\Grid\GridviewBuilderFactory" alias="gridview.builder_factory"/>
                      
-        <service id="Fedale\Gridview\DataProvider\EntityDataProvider">
+        <service id="Fedale\GridviewBundle\DataProvider\EntityDataProvider">
             <call method="setSort">
                 <argument type="service" id="gridview.sort"/>
             </call>
@@ -18,7 +18,7 @@
                 <argument type="service" id="gridview.pagination"/>
             </call>
         </service>
-        <service id="Fedale\Gridview\DataProvider\DataProviderInterface" alias="Fedale\Gridview\DataProvider\EntityDataProvider"/>
+        <service id="Fedale\GridviewBundle\DataProvider\DataProviderInterface" alias="Fedale\GridviewBundle\DataProvider\EntityDataProvider"/>
 
         <service id="gridview.sort" class="Fedale\Gridview\Component\Sort">
             <argument type="service" id="request_stack"/>

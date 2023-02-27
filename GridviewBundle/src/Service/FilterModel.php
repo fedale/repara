@@ -1,5 +1,5 @@
 <?php
-namespace Fedale\Gridview\Service;
+namespace Fedale\GridviewBundle\Service;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Form\FormFactoryInterface;

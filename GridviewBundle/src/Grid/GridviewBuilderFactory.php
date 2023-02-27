@@ -1,6 +1,5 @@
 <?php
-namespace Fedale\Gridview;
-
+namespace Fedale\GridviewBundle\Grid;
 use Twig\Environment;
 
 class GridviewBuilderFactory 

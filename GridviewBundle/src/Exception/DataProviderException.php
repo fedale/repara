@@ -1,6 +1,6 @@
 <?php
 
-namespace Fedale\Gridview\Exception;
+namespace Fedale\GridviewBundle\Exception;
 
 class DataProviderException extends \Exception
 {

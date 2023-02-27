@@ -1,8 +1,8 @@
 <?php 
 
-namespace Fedale\Gridview\Form;
+namespace Fedale\GridviewBundle\Form;
 
-use Fedale\Gridview\Gridview;
+use Fedale\GridviewBundle\Gridview;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -11,7 +11,7 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Query\Expr;
-use Fedale\Gridview\Service\FilterModel;
+use Fedale\GridviewBundle\Service\FilterModel;
 
 
 class FilterModelType extends AbstractType

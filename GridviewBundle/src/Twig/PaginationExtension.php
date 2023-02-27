@@ -1,6 +1,6 @@
 <?php
 
-namespace Fedale\Gridview\Twig;
+namespace Fedale\GridviewBundle\Twig;
 
 use Exception;
 use App\Grid\Component\Pagination;

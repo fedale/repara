@@ -1,6 +1,6 @@
 <?php 
 
-namespace Fedale\Gridview\Component;
+namespace Fedale\GridviewBundle\Component;
 
 class Filter
 {

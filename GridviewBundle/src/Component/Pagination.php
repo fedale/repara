@@ -1,6 +1,6 @@
 <?php
 
-namespace Fedale\Gridview\Component;
+namespace Fedale\GridviewBundle\Component;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;

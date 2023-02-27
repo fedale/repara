@@ -8,13 +8,13 @@ use App\Entity\Customer\CustomerType as CustomerCustomerType;
 use App\Form\Customer\CustomerRegistrationType;
 use App\Form\Customer\CustomerType;
 use App\Form\Model\CustomerCreateModel;
-use Fedale\Gridview\Column\ColumnInterface;
-use Fedale\Gridview\Component\Pagination;
-use Fedale\Gridview\DataProvider\EntityDataProvider;
-use Fedale\Gridview\GridView;
-use Fedale\Gridview\GridviewBuilder;
-use Fedale\Gridview\GridviewBuilderFactory;
-use Fedale\Gridview\Source\Entity as SourceEntity;
+use Fedale\GridviewBundle\Column\ColumnInterface;
+use Fedale\GridviewBundle\Component\Pagination;
+use Fedale\GridviewBundle\DataProvider\EntityDataProvider;
+use Fedale\GridviewBundle\Grid\GridView;
+use Fedale\GridviewBundle\Grid\GridviewBuilder;
+use Fedale\GridviewBundle\Grid\GridviewBuilderFactory;
+use Fedale\GridviewBundle\Source\Entity as SourceEntity;
 use App\Service\ProxyFilter;
 use App\Type\CustomerGridType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -24,13 +24,13 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManager;
-use Fedale\Gridview\Component\PaginationInterface;
-use Fedale\Gridview\Component\Sort;
-use Fedale\Gridview\Component\SortInterface;
-use Fedale\Gridview\DataProvider\DataProviderInterface;
-use Fedale\Gridview\Form\FilterModelType;
-use Fedale\Gridview\GridviewBuilderInterface;
-use Fedale\Gridview\Service\FilterModel;
+use Fedale\GridviewBundle\Component\PaginationInterface;
+use Fedale\GridviewBundle\Component\Sort;
+use Fedale\GridviewBundle\Component\SortInterface;
+use Fedale\GridviewBundle\DataProvider\DataProviderInterface;
+use Fedale\GridviewBundle\Form\FilterModelType;
+use Fedale\GridviewBundle\Grid\GridviewBuilderInterface;
+use Fedale\GridviewBundle\Service\FilterModel;
 
 #[Route('/new-customer')]
 class NewCustomerController extends AbstractController
@@ -38,7 +38,7 @@ class NewCustomerController extends AbstractController
     private $gridView;
 
     public function __construct(
-        private GridviewBuilderFactory $gridviewBuilderFactory,
+    //    private GridviewBuilderFactory $gridviewBuilderFactory,
     ) {
     }
 

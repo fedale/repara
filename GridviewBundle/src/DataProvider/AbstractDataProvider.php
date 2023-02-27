@@ -1,11 +1,11 @@
 <?php
 
-namespace Fedale\Gridview\DataProvider;
+namespace Fedale\GridviewBundle\DataProvider;
 
-use Fedale\Gridview\Component\Sort;
-use Fedale\Gridview\Component\Pagination;
-use Fedale\Gridview\Component\Row;
-use Fedale\Gridview\Exception\DataProviderException;
+use Fedale\GridviewBundle\Component\Sort;
+use Fedale\GridviewBundle\Component\Pagination;
+use Fedale\GridviewBundle\Component\Row;
+use Fedale\GridviewBundle\Exception\DataProviderException;
 use Doctrine\Common\Collections\Collection;
 
 abstract class AbstractDataProvider implements DataProviderInterface

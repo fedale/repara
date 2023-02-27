@@ -1,8 +1,8 @@
 <?php
-namespace Fedale\Gridview;
+namespace Fedale\GridviewBundle\Grid;
 
-use Fedale\Gridview\DataProvider\DataProviderInterface;
-use Fedale\Gridview\Service\FilterModelInterface;
+use Fedale\GridviewBundle\DataProvider\DataProviderInterface;
+use Fedale\GridviewBundle\Service\FilterModelInterface;
 // use Doctrine\Common\Collections\ArrayCollection;
 // use Doctrine\ORM\EntityManager;
 // use Doctrine\ORM\EntityManagerInterface;

@@ -1,6 +1,6 @@
 <?php
 // src/Form/EventListener/AddEmailFieldListener.php
-namespace Fedale\Gridview\EventSubscriber;
+namespace Fedale\GridviewBundle\EventSubscriber;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;

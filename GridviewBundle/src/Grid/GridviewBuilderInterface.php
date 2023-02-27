@@ -1,7 +1,7 @@
 <?php
-namespace Fedale\Gridview;
+namespace Fedale\GridviewBundle\Grid;
 
-use Fedale\Gridview\DataProvider\DataProviderInterface;
+use Fedale\GridviewBundle\DataProvider\DataProviderInterface;
 use Iterator;
 use Traversable;
 

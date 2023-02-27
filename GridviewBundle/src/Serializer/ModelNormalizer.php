@@ -1,6 +1,6 @@
 <?php 
 
-namespace Fedale\Gridview\Serializer;
+namespace Fedale\GridviewBundle\Serializer;
 
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;

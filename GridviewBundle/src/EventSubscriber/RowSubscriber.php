@@ -1,8 +1,8 @@
 <?php
 
-namespace Fedale\Gridview\Subscriber;
+namespace Fedale\GridviewBundle\Subscriber;
 
-use Fedale\Gridview\Event\RowEvent;
+use Fedale\GridviewBundle\Event\RowEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 

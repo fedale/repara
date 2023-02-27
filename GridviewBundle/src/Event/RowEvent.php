@@ -1,6 +1,6 @@
 <?php
 
-namespace Fedale\Gridview\Event;
+namespace Fedale\GridviewBundle\Event;
 
 use Symfony\Contracts\EventDispatcher\Event;
 

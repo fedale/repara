@@ -4,11 +4,11 @@
     "type": "symfony-bundle",
     "require": {
         "php": ">=7.4",
-        "symfony/framework-bundle": "^5.2|^6.0"
+        "symfony/framework-bundle": "^6.1"
     },
     "autoload": {
         "psr-4": {
-            "Fedale\\Gridview\\": "src/"
+            "Fedale\\GridviewBundle\\": "src/"
         }
     },  
     "license": "MIT",

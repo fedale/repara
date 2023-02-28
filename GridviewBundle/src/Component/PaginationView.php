@@ -326,7 +326,7 @@ class PaginationView
      *
      * @return $this
      */
-    public function setPagination(Pagination $pagination): static
+    public function setPagination(PaginationInterface $pagination): static
     {
         $this->pagination = $pagination;
 

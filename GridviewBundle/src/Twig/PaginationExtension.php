@@ -3,9 +3,8 @@
 namespace Fedale\GridviewBundle\Twig;
 
 use Exception;
-use App\Grid\Component\Pagination;
-use App\Grid\Component\PaginationView;
-//use Tinustester\Bundle\GridviewBundle\Exception\GridTwigException;
+use Fedale\GridviewBundle\Component\PaginationInterface;
+use Fedale\GridviewBundle\Component\PaginationView;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -42,7 +41,7 @@ class PaginationExtension extends AbstractExtension
      * @return string
      * @throws Exception
      */
-    public function init(Pagination $pagination, array $paginationOptions = []): string
+    public function init(PaginationInterface $pagination, array $paginationOptions = []): string
     {
         $this->paginationView->setPagination($pagination);
 

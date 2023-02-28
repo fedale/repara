@@ -33,4 +33,4 @@ services:
     #     tags: [serializer.normalizer]
 
     # https://twig.symfony.com/doc/3.x/functions/template_from_string.html
-    Twig\Extension\StringLoaderExtension:
+    # Twig\Extension\StringLoaderExtension:

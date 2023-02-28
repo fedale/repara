@@ -46,15 +46,15 @@ class NewCustomerController extends AbstractController
     public function grid(
         EntityManagerInterface $entityManager, 
         DataProviderInterface $dataProvider, 
-        // SortInterface $sort, 
-        // PaginationInterface $pagination,
+        SortInterface $sort, 
+        PaginationInterface $pagination,
         Request $request): Response
     {
 
-        /*
+        
         $pagination->setDefaultPageSize(10);
 
-        $sort->setAttributes([
+        $sortAttributes = [
             'id' => [
                 'asc' => ['c.id' => Sort::ASC],
                 'desc' => ['c.id' => Sort::DESC],
@@ -84,8 +84,8 @@ class NewCustomerController extends AbstractController
                 'label' => 'IDDDD',
             ],
 
-        ]);
-        */
+        ];
+        
 
         /**
          *
@@ -150,7 +150,7 @@ class NewCustomerController extends AbstractController
             ;
 
         $dataProvider->setQueryBuilder($queryBuilder);
-      //  $dataProvider->setSort($sort);
+        $dataProvider->setSort($sort);
       //  $dataProvider->setPagination($pagination);
 
         // Order matters! Try to switch setColumns() / setFilterModel()
@@ -169,8 +169,7 @@ class NewCustomerController extends AbstractController
              // dump($form->getData());
          }
 
-        // return $gridview->renderGrid('new-customer/index.html.twig', ['pagination' => $pagination, 'form' => $form->createView()]);
-        return $gridview->renderGrid('@Gridview/gridview/index.html.twig', ['form' => $form->createView()]);
+        return $gridview->renderGrid('@Gridview/gridview/index.html.twig', ['pagination' => $pagination, 'form' => $form->createView()]);
     }
 
     #[Route('/grid2', name: 'new_app_grid2', methods: ['GET'])]

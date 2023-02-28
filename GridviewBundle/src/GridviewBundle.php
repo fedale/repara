@@ -15,7 +15,13 @@ class GridviewBundle extends AbstractBundle
     {
         // load an XML, PHP or Yaml file
         $containerConfigurator->import('../config/services.xml');
-
+        $containerConfigurator->services()
+            ->set('\Twig\Extension\StringLoaderExtension', Twig\Extension\StringLoaderExtension::class)
+            ;
+        // dd($containerConfigurator->services());
+        // $containerConfigurator->services()
+        //     ->set('\Twig\Extension\StringLoaderExtension', Twig\Extension\StringLoaderExtension::class)
+        // ;
         // you can also add or replace parameters and services
         /*
         $containerConfigurator->parameters()

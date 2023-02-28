@@ -130,6 +130,7 @@ class EntityDataProvider extends AbstractDataProvider
 
         foreach ($this->paginator as $model) {
             $model = $serializer->normalize($model);
+            $this->models->add($model);
         //    $event->model = $model;
           //  $this->eventDispatcher->dispatch($event, RowEvent::NAME);
            // $this->models->add(new Model($event->model));

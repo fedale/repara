@@ -13,6 +13,13 @@ use Fedale\GridviewBundle\Component\SortInterface;
 abstract class AbstractDataProvider implements DataProviderInterface
 {
     /**
+     * Array of arrays that carry data on
+     */
+    private $models;
+
+    private DataProviderInterface $dataProvider;
+    
+    /**
      * @var PaginationInterface
      */
     protected PaginationInterface $pagination;

@@ -192,7 +192,6 @@ class Gridview {
 
     public function renderGrid(string $view, array $parameters = []): Response
     {
-        dump($view);
         $parameters['columns'] = $this->columns;
         $parameters['models'] = $this->dataProvider->getData();
         

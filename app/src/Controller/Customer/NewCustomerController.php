@@ -51,7 +51,7 @@ class NewCustomerController extends AbstractController
         Request $request): Response
     {
 
-        /*        
+        /*
         $pagination->setDefaultPageSize(10);
 
         $sort->setAttributes([

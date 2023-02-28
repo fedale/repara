@@ -37,7 +37,6 @@ class FilterSubscriber implements EventSubscriberInterface
         $user = $event->getData();
         $form = $event->getForm();
 
-        dump($user, $form);
         
         if (!$user) {
             return;

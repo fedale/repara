@@ -38,7 +38,7 @@ class NewCustomerController extends AbstractController
     private $gridView;
 
     public function __construct(
-    //    private GridviewBuilderFactory $gridviewBuilderFactory,
+        private GridviewBuilderFactory $gridviewBuilderFactory,
     ) {
     }
 

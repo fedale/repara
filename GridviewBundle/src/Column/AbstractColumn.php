@@ -2,7 +2,7 @@
 
 namespace Fedale\GridviewBundle\Column;
 
-use Fedale\GridviewBundle\Gridview;
+use Fedale\GridviewBundle\Grid\Gridview;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\Form\FormInterface;

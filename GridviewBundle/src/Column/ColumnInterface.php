@@ -1,7 +1,7 @@
 <?php
 namespace Fedale\GridviewBundle\Column;
 
-use Fedale\GridviewBundle\Gridview;
+use Fedale\GridviewBundle\Grid\Gridview;
 
 interface ColumnInterface 
 {

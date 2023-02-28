@@ -20,13 +20,16 @@
         </service>
         <service id="Fedale\GridviewBundle\DataProvider\DataProviderInterface" alias="Fedale\GridviewBundle\DataProvider\EntityDataProvider"/>
 
-        <service id="gridview.sort" class="Fedale\Gridview\Component\Sort">
+        <service id="gridview.sort" class="Fedale\GridviewBundle\Component\Sort">
             <argument type="service" id="request_stack"/>
             <argument type="service" id="router.default"/>
         </service>
-        <service id="gridview.pagination" class="Fedale\Gridview\Component\Pagination">
+        <service id="Fedale\GridviewBundle\Component\Sort" alias="gridview.sort"/>
+        
+        <service id="gridview.pagination" class="Fedale\GridviewBundle\Component\Pagination">
             <argument type="service" id="request_stack"/>
         </service>
+        <service id="Fedale\GridviewBundle\Component\Pagination" alias="gridview.pagination"/>
     </services>
 </container>
 <!--

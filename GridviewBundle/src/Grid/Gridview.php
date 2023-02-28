@@ -126,7 +126,6 @@ class Gridview {
      */
     private function initColumn(array|string $columnData, string $key): ColumnInterface
     {
-
         // If $columnData is a string create a DataColumn which is the default column data type.
         if (is_string($columnData)) {
             $column = $this->createDataColumnFromString($columnData);
@@ -134,7 +133,7 @@ class Gridview {
             $type = isset($columnData['type']) ? $columnData['type'] : 'data';
             $attribute = isset($columnData['attribute']) ? $columnData['attribute'] : 'column_' . $key;
             $value = isset($columnData['value']) ? $columnData['value'] : null;
-            $class = "Fedale\\Gridview\\Column\\" . ucfirst($type) . 'Column';
+            $class = "Fedale\\GridviewBundle\\Column\\" . ucfirst($type) . 'Column';
 
             if (class_exists($class)) { 
                 switch ($type) {
@@ -152,7 +151,7 @@ class Gridview {
                 unset($columnData['value']);
                 unset($columnData['type']);
             } else {
-                throw new \Exception();
+                throw new \Exception(sprintf('Class %s does not exists', $class));
             }
             
             foreach ($columnData as $key => $value) {

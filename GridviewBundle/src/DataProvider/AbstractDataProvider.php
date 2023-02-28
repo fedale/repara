@@ -7,53 +7,55 @@ use Fedale\GridviewBundle\Component\Pagination;
 use Fedale\GridviewBundle\Component\Row;
 use Fedale\GridviewBundle\Exception\DataProviderException;
 use Doctrine\Common\Collections\Collection;
+use Fedale\GridviewBundle\Component\PaginationInterface;
+use Fedale\GridviewBundle\Component\SortInterface;
 
 abstract class AbstractDataProvider implements DataProviderInterface
 {
     /**
-     * @var Pagination
+     * @var PaginationInterface
      */
-    protected Pagination $pagination;
+    protected PaginationInterface $pagination;
 
     /**
-     * @var Sort
+     * @var SortInterface
      */
-    protected Sort $sort;
+    protected SortInterface $sort;
 
     /**
-     * @param Pagination $pagination
+     * @param PaginationInterface $pagination
      *
      * @return $this
      */
-    public function setPagination(Pagination $pagination): static
+    public function setPagination(PaginationInterface $pagination): static
     {
         $this->pagination = $pagination;
         return $this;
     }
 
     /**
-     * @param Sort $sort
+     * @param SortInterace $sort
      *
      * @return AbstractDataProvider
      */
-    public function setSort(Sort $sort): static
+    public function setSort(SortInterface $sort): static
     {
         $this->sort = $sort;
         return $this;
     }
 
     /**
-     * @return Pagination
+     * @return PaginationInterface
      */
-    public function getPagination(): Pagination
+    public function getPagination(): PaginationInterface
     {
         return $this->pagination;
     }
 
     /**
-     * @return Sort
+     * @return SortInterface
      */
-    public function getSort(): Sort
+    public function getSort(): SortInterface
     {
         return $this->sort;
     }

@@ -1,7 +1,6 @@
 <?php 
 namespace Fedale\GridviewBundle\Column;
 
-use Fedale\GridviewBundle\Gridview;
 
 class SerialColumn extends AbstractColumn {
 

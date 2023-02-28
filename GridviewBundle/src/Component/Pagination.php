@@ -6,7 +6,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 //use Tinustester\Bundle\GridviewBundle\Exception\PaginationException;
 
-class Pagination implements SortInterface
+class Pagination implements PaginationInterface
 {
     /**
      * @var int|null Current page number.

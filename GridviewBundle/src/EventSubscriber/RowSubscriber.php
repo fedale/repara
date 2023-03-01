@@ -1,6 +1,6 @@
 <?php
 
-namespace Fedale\GridviewBundle\Subscriber;
+namespace Fedale\GridviewBundle\EventSubscriber;
 
 use Fedale\GridviewBundle\Event\RowEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -18,6 +18,7 @@ class RowSubscriber implements EventSubscriberInterface
 
     public function onRowCreation(RowEvent $event)
     {
+        dump($event);
         $model = $event->model;
         if ($model['id'] % 2 === 0) {
             $event->model['email'] = 'Email from OnRowCreation';

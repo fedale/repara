@@ -1,7 +1,6 @@
 <?php
 namespace Fedale\GridviewBundle\DataProvider;
 
-use Fedale\GridviewBundle\Component\Model;
 use Fedale\GridviewBundle\Serializer\ModelNormalizer;
 use Fedale\GridviewBundle\Component\Sort;
 use Fedale\GridviewBundle\Component\Pagination;
@@ -20,8 +19,9 @@ use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Doctrine\Common\Collections\ArrayCollection;
+use Fedale\GridviewBundle\Component\Cell;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Fedale\GridviewBundle\Subscriber\RowSubscriber;
+use Fedale\GridviewBundle\EventSubscriber\RowSubscriber;
 use stdClass;
 
 class EntityDataProvider extends AbstractDataProvider
@@ -52,6 +52,7 @@ class EntityDataProvider extends AbstractDataProvider
     */
 
     public function __construct(
+        private EventDispatcherInterface $eventDispatcher
     ) {
         $this->models = new ArrayCollection();
     }
@@ -118,19 +119,18 @@ class EntityDataProvider extends AbstractDataProvider
 
         $this->paginator = new \Doctrine\ORM\Tools\Pagination\Paginator($this->queryBuilder, $fetchJoinCollection = true);
 
-        /*
+        
         $event = new RowEvent();
         
         $this->eventDispatcher->addSubscriber(new RowSubscriber());
-        */
 
 
         foreach ($this->paginator as $model) {
             $model = $serializer->normalize($model);
-            $this->models->add($model);
-        //    $event->model = $model;
-          //  $this->eventDispatcher->dispatch($event, RowEvent::NAME);
-           // $this->models->add(new Model($event->model));
+           // $this->models->add($model);
+            $event->model = $model;
+            $this->eventDispatcher->dispatch($event, RowEvent::NAME);
+            $this->models->add(new Cell($event->model));
         }
     }
 

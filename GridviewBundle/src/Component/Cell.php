@@ -2,7 +2,7 @@
 
 namespace Fedale\GridviewBundle\Component;
 
-class Model
+class Cell
 {
     public array $data = [];
 

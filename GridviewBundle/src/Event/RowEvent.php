@@ -6,5 +6,6 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class RowEvent extends Event
 {
-    public const NAME = 'row.before';
+    public const BEFORE_ROW = 'row.before_row';
+    public const AFTER_ROW = 'row.after_row';
 }

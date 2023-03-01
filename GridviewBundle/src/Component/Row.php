@@ -1,23 +1,21 @@
 <?php 
-
 namespace Fedale\GridviewBundle\Component;
 
-use ArrayIterator;
+use Doctrine\Common\Collections\ArrayCollection;
 
-class Row extends ArrayIterator
+class Row
 {
-    public array $data = [];
+    public ArrayCollection $data; 
 
-    public function __construct(array ...$data)
-    {
-        parent::__construct($data);
+    public ArrayCollection $htmlOptions;
+
+    public function __construct(
+    ) {
+        $this->data = new ArrayCollection();
+        $this->htmlOptions = new ArrayCollection();
     }
-    public function current() : array
-    {
-        return parent::current();
-    }
-    public function offsetGet($offset) : array
-    {
-        return parent::offsetGet($offset);
+
+    public function getKey(string $key) {
+        return $this->data[$key];
     }
 }

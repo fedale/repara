@@ -12,17 +12,21 @@ class RowSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            RowEvent::NAME => 'onRowCreation',
+            RowEvent::BEFORE_ROW => 'onBeforeRow',
+            RowEvent::AFTER_ROW => 'onAfterRow',
         ];
     }
 
-    public function onRowCreation(RowEvent $event)
+    public function onBeforeRow(RowEvent $event)
     {
-        dump($event);
         $model = $event->model;
         if ($model['id'] % 2 === 0) {
-            $event->model['email'] = 'Email from OnRowCreation';
+            $event->model['email'] = 'Email from onBeforeRow';
         }
-        
+    }
+
+    public function onAfterRow(RowEvent $event)
+    {
+        $event->model['email'] = 'Email from onAfterRow';
     }
 }

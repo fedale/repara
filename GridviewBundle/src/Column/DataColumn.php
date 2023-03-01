@@ -46,6 +46,7 @@ class DataColumn extends AbstractColumn
 
     public function render($model, $index)
     {
+        dump($model);
         $data = $model->data;
         if ($this->value !== null) {
             if (is_string($this->value)) {

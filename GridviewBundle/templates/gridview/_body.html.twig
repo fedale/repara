@@ -1,14 +1,13 @@
 <tbody>
-    
-{% for data in models %}
-    <tr>
+{% for row in models %}
+    <tr >
         {% for column in columns %}
-            <td {{ column.options|options }} >
+            <td {{ column.options|options }}>
             {% set index = loop.parent.loop.index0 %}
                 {% if column.twigFilter %}
-                    {{ include(template_from_string('{{ column.render(data, index)|' ~ column.twigFilter ~ ' }}')) }}
+                    {{ include(template_from_string('{{ column.render(row, index)|' ~ column.twigFilter ~ ' }}')) }}
                 {% else %}
-                    {{ column.render(data, index) }}
+                    {{ column.render(row, index) }}
                 {% endif %}
             </td>
         {% endfor %}

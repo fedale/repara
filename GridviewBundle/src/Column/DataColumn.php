@@ -102,4 +102,8 @@ class DataColumn extends AbstractColumn
         $this->filter = $filter;
     }
     
+    public function getOptions()
+    {
+        return ['id' => 'id_1', 'class' => 'my-class', 'attr' => 'my-custom.attribute'];
+    }
 }

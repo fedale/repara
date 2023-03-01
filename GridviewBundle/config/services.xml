@@ -9,6 +9,9 @@
         <service id="twig.extension.stringloader" class="Twig\Extension\StringLoaderExtension">
             <tag name="twig.extension"/>
         </service>
+        <service id="fedale.options_extension" class="Fedale\GridviewBundle\Twig\OptionsExtension">
+            <tag name="twig.extension"/>
+        </service>
 
         <service id="gridview.builder_factory" class="Fedale\GridviewBundle\Grid\GridviewBuilderFactory">
             <argument type="service" id="twig"/>

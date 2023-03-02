@@ -61,6 +61,11 @@ class Gridview {
     public FilterModel $filterModel;
     
 
+    public function setRowOptions(array $array)
+    {
+        $this->rowOptions = $array;
+    }
+    
     public function __construct(private Environment $twig)
     {
         $this->columns = new ArrayCollection();

@@ -44,8 +44,12 @@
         <service id="gridview.gridview" class="Fedale\GridviewBundle\Grid\Gridview">
             <argument type="service" id="twig"/>
         </service>
+        <service id="Fedale\GridviewBundle\Grid\Gridview" alias="gridview.gridview"/>
 
-        
+        <service id="gridview.row_subscriber" class="Fedale\GridviewBundle\EventSubscriber\RowSubscriber">
+            <argument type="service" id="gridview.gridview"/>
+            <tag name="kernel.event_subscriber"/>
+        </service>
         <!-- <service>
         </service -->
     </services>

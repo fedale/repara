@@ -22,6 +22,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Fedale\GridviewBundle\Component\Row;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Fedale\GridviewBundle\EventSubscriber\RowSubscriber;
+use Fedale\GridviewBundle\Grid\Gridview;
 use stdClass;
 
 class EntityDataProvider extends AbstractDataProvider
@@ -53,6 +54,8 @@ class EntityDataProvider extends AbstractDataProvider
 
     public function __construct(
         private EventDispatcherInterface $eventDispatcher,
+        private Gridview $gridview,
+        
     ) {
         $this->models = new ArrayCollection();
     }
@@ -126,15 +129,18 @@ class EntityDataProvider extends AbstractDataProvider
 
 
         foreach ($this->paginator as $model) {
+            
             $model = $serializer->normalize($model);
            // $this->models->add($model);
             $event->model = $model;
+            $event->gridview = $this->gridview;
             $this->eventDispatcher->dispatch($event, RowEvent::BEFORE_ROW);
             $row = new Row();
             $rowData = $row->data->add($event->model);
             dump($row);
             $this->models->add($rowData);
             $this->eventDispatcher->dispatch($event, RowEvent::AFTER_ROW);
+            
         }
         dump($this->models);
     }

@@ -23,6 +23,9 @@ class RowSubscriber implements EventSubscriberInterface
         if ($model['id'] % 2 === 0) {
             $event->model['email'] = 'Email from onBeforeRow';
         }
+
+        $event->gridview->rowOptions = ['id' => 'k1', 'class' => 'c1'];
+
     }
 
     public function onAfterRow(RowEvent $event)

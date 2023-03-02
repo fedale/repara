@@ -20,6 +20,7 @@
                      
         <service id="Fedale\GridviewBundle\DataProvider\EntityDataProvider">
             <argument type="service" id="debug.event_dispatcher"/>
+            <argument type="service" id="gridview.gridview"/>
             <call method="setSort">
                 <argument type="service" id="gridview.sort"/>
             </call>
@@ -39,6 +40,10 @@
             <argument type="service" id="request_stack"/>
         </service>
         <service id="Fedale\GridviewBundle\Component\PaginationInterface" alias="gridview.pagination"/>
+
+        <service id="gridview.gridview" class="Fedale\GridviewBundle\Grid\Gridview">
+            <argument type="service" id="twig"/>
+        </service>
 
         
         <!-- <service>

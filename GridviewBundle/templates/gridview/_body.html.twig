@@ -1,6 +1,7 @@
+
 <tbody>
 {% for row in models %}
-    <tr >
+    <tr {{ grid.rowOptions|options }}>
         {% for column in columns %}
             <td {{ column.options|options }}>
             {% set index = loop.parent.loop.index0 %}

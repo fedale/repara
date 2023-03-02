@@ -28,6 +28,24 @@ class Gridview {
      * Gridview options
      */
     private $options = [];
+
+    /**
+     * @var array|Closure the HTML attributes for the table body rows. This can be either an array
+     * specifying the common HTML attributes for all body rows, or an anonymous function that
+     * returns an array of the HTML attributes. The anonymous function will be called once for every
+     * data model returned by [[dataProvider]]. It should have the following signature:
+     *
+     * ```php
+     * function ($model, $key, $index, $grid)
+     * ```
+     *
+     * - `$model`: the current data model being rendered
+     * - `$key`: the key value associated with the current data model
+     * - `$index`: the zero-based index of the data model in the model array returned by [[dataProvider]]
+     * - `$grid`: the GridView object
+     *
+     */
+    public $rowOptions = [];
     
     /**
      * @ var \Fedale\GridviewBundle\Service\FilterModel|null the model that keeps the user-entered filter data. When this property is set,
@@ -192,8 +210,10 @@ class Gridview {
 
     public function renderGrid(string $view, array $parameters = []): Response
     {
+        $parameters['grid'] = $this;
         $parameters['columns'] = $this->columns;
         $parameters['models'] = $this->dataProvider->getData();
+        
         
         $content = $this->twig->render($view, $parameters);
 

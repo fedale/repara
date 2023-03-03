@@ -121,17 +121,22 @@ class EntityDataProvider extends AbstractDataProvider
         $this->paginator = new \Doctrine\ORM\Tools\Pagination\Paginator($this->queryBuilder, $fetchJoinCollection = true);
         
         $event = new RowEvent();
+        $count = count($this->paginator);
+        $i = 0;
         foreach ($this->paginator as $model) {
-            
-            $model = $serializer->normalize($model);
-           // $this->models->add($model);
-            $event->model = $model;
+            if(++$i === $count) {
+                echo "last index!";
+            }
+
+            $row = new Row();
+            $row->data = $serializer->normalize($model);            
+            $event->row = $row;
             $this->eventDispatcher->dispatch($event, RowEvent::BEFORE_ROW);
-            // $row = new Row();
+            
             // $rowData = $row->data->add($event->model);
             
             // $this->models->add($rowData);
-            $this->models->add($model);
+            $this->models->add($row);
             $this->eventDispatcher->dispatch($event, RowEvent::AFTER_ROW);
             
         }

@@ -46,7 +46,7 @@
         <service id="Fedale\GridviewBundle\Grid\GridviewInterface" alias="gridview.gridview"/>
 
         <service id="gridview.row_subscriber" class="Fedale\GridviewBundle\EventSubscriber\RowSubscriber">
-            <argument type="service" id="gridview.gridview"/>
+            <!-- <argument type="service" id="gridview.gridview"/> -->
             <tag name="kernel.event_subscriber"/>
         </service>
         <!-- <service>

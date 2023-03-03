@@ -3,13 +3,13 @@
 namespace Fedale\GridviewBundle\EventSubscriber;
 
 use Fedale\GridviewBundle\Event\RowEvent;
-use Fedale\GridviewBundle\Grid\Gridview;
+use Fedale\GridviewBundle\Grid\Gridviewinterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
 class RowSubscriber implements EventSubscriberInterface
 {
-    public function __construct(private Gridview $gridview) {}
+    // public function __construct(private Gridviewinterface $gridview) {}
 
     // Returns an array indexed by event name and value by method name to call
     public static function getSubscribedEvents()
@@ -22,8 +22,8 @@ class RowSubscriber implements EventSubscriberInterface
 
     public function onBeforeRow(RowEvent $event)
     {
-        dump($this->gridview);
-        $model = $event->model;
+        $model = $event->row->data;
+        $event->row->htmlOptions = ['id' => 'k1', 'class' => 'c1'];
         if ($model['id'] % 2 === 0) {
             $event->model['email'] = 'Email from onBeforeRow';
         }

@@ -22,11 +22,12 @@ class RowSubscriber implements EventSubscriberInterface
 
     public function onBeforeRow(RowEvent $event)
     {
+        dump($this->gridview);
         $model = $event->model;
         if ($model['id'] % 2 === 0) {
             $event->model['email'] = 'Email from onBeforeRow';
         }
-        $this->gridview->setRowOptions(['id' => 'k1', 'class' => 'c1']);
+        // $this->gridview->setRowOptions(['id' => 'k1', 'class' => 'c1']);
 
     }
 

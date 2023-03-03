@@ -119,13 +119,8 @@ class EntityDataProvider extends AbstractDataProvider
         $serializer = new Serializer($normalizers);
 
         $this->paginator = new \Doctrine\ORM\Tools\Pagination\Paginator($this->queryBuilder, $fetchJoinCollection = true);
-
         
         $event = new RowEvent();
-        
-        $this->eventDispatcher->addSubscriber(new RowSubscriber());
-
-
         foreach ($this->paginator as $model) {
             
             $model = $serializer->normalize($model);

@@ -9,8 +9,8 @@ use Fedale\GridviewBundle\Service\FilterModel;
 use Fedale\GridviewBundle\Column\ColumnInterface;
 use Fedale\GridviewBundle\Service\FilterModelInterface;
 
-class Gridview {
-
+class Gridview implements GridviewInterface
+{
     private ArrayCollection $columns;
     private ArrayCollection $filters;
     private DataProviderInterface $dataProvider;
@@ -215,10 +215,11 @@ class Gridview {
 
     public function renderGrid(string $view, array $parameters = []): Response
     {
-        $parameters['grid'] = $this;
-        $parameters['columns'] = $this->columns;
-        $parameters['models'] = $this->dataProvider->getData();
-        
+        $parameters = [
+            'grid' => $this,
+            'columns' => $this->columns,
+            'models' => $this->dataProvider->getData()
+        ];
         
         $content = $this->twig->render($view, $parameters);
 

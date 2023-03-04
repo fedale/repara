@@ -9,6 +9,7 @@ use Fedale\GridviewBundle\Exception\DataProviderException;
 use Doctrine\Common\Collections\Collection;
 use Fedale\GridviewBundle\Component\PaginationInterface;
 use Fedale\GridviewBundle\Component\SortInterface;
+use Fedale\GridviewBundle\Service\FilterModelInterface;
 
 abstract class AbstractDataProvider implements DataProviderInterface
 {
@@ -65,6 +66,25 @@ abstract class AbstractDataProvider implements DataProviderInterface
     public function getSort(): SortInterface
     {
         return $this->sort;
+    }
+
+     /**
+     * @param FilterModelInterace $filterModel
+     *
+     * @return AbstractDataProvider
+     */
+    public function setFilterModel(FilterModelInterface $filterModel): static
+    {
+        $this->filterModel = $filterModel;
+        return $this;
+    }
+
+    /**
+     * @return FilterModelInterface
+     */
+    public function getFilterModel(): FilterModelInterface
+    {
+        return $this->filterModel;
     }
 
     /**

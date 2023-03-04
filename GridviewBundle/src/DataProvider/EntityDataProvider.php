@@ -22,8 +22,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Fedale\GridviewBundle\Component\Row;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Fedale\GridviewBundle\EventSubscriber\RowSubscriber;
-use Fedale\GridviewBundle\Grid\Gridview;
-use stdClass;
 
 class EntityDataProvider extends AbstractDataProvider
 {
@@ -76,11 +74,10 @@ class EntityDataProvider extends AbstractDataProvider
     public function getData()
     {
         // First apply criteria
-        /*
         $criteria = $this->filterModel->getCriteria();
         if ($criteria) {
             $this->queryBuilder->addCriteria($criteria);    
-        }*/
+        }
 
         // Calculate totalCount with applied criterias
         $this->pagination->setTotalCount($this->getTotalCount());
@@ -129,13 +126,8 @@ class EntityDataProvider extends AbstractDataProvider
             $row->data = $serializer->normalize($model);            
             $event->row = $row;
             $this->eventDispatcher->dispatch($event, RowEvent::BEFORE_ROW);
-            
-            // $rowData = $row->data->add($event->model);
-            
-            // $this->models->add($rowData);
             $this->models->add($row);
             $this->eventDispatcher->dispatch($event, RowEvent::AFTER_ROW);
-            
         }
     }
 

@@ -15,8 +15,6 @@ class Row
     {
         $i = $key + 1;
         $this->setHtmlOption('id', $this->prefixKey . (string) $i);
-        
-        
 
         if ($key == 0) {
             $this->setHtmlOption('class', 'first');
@@ -29,29 +27,10 @@ class Row
         if ($i % 2 == 0) {
             $this->setHtmlOption('class', 'even');
         } else {
-            $this->setHtmlOption('class', 'odd');
+            $this->setHtmlOption('class', 'odd');  
         }
     }
-
-    public function getKey(string $key) {
-        return $this->data[$key];
-    }
-
-    // public function isFirst()
-    // {
-    //     $this->setHtmlOption('class', 'first');
-    // }
-
-    // public function isMiddle()
-    // {
-    //     $this->setHtmlOption('class', 'middle');
-    // }
-
-    // public function isLast()
-    // {
-    //     $this->setHtmlOption('class', 'last');
-    // }
-
+    
     public function setHtmlOption(string $key, string $value, $replace = false)
     {
         if (!isset($this->htmlOptions[$key])) {
@@ -63,9 +42,5 @@ class Row
                 $this->htmlOptions[$key] .= ' ' . $value;
             }
         }
-
-        
-
-        
     }
 }

@@ -5,7 +5,18 @@
         https://symfony.com/schema/dic/services/services-1.0.xsd"
 >
     <services>
-    
+        <service id="gridview.filter_model" class="Fedale\GridviewBundle\Service\FilterModel">
+        </service>
+        <service id="Fedale\GridviewBundle\Service\FilterModelInterface" alias="gridview.filter_model"/>
+
+        <service id="gridview.gridview" class="Fedale\GridviewBundle\Grid\Gridview">
+            <argument type="service" id="twig"/>
+             <argument type="service" id="gridview.filter_model"/>
+            <call method="setFilterModel">
+                <argument type="service" id="gridview.filter_model"/>
+            </call>
+        </service>
+
         <service id="twig.extension.stringloader" class="Twig\Extension\StringLoaderExtension">
             <tag name="twig.extension"/>
         </service>
@@ -26,6 +37,9 @@
             <call method="setPagination">
                 <argument type="service" id="gridview.pagination"/>
             </call>
+            <call method="setFilterModel">
+                <argument type="service" id="gridview.filter_model"/>
+            </call>
         </service>
         <service id="Fedale\GridviewBundle\DataProvider\DataProviderInterface" alias="Fedale\GridviewBundle\DataProvider\EntityDataProvider"/>
 
@@ -40,15 +54,15 @@
         </service>
         <service id="Fedale\GridviewBundle\Component\PaginationInterface" alias="gridview.pagination"/>
 
-        <service id="gridview.gridview" class="Fedale\GridviewBundle\Grid\Gridview">
-            <argument type="service" id="twig"/>
-        </service>
+        
         <service id="Fedale\GridviewBundle\Grid\GridviewInterface" alias="gridview.gridview"/>
 
         <service id="gridview.row_subscriber" class="Fedale\GridviewBundle\EventSubscriber\RowSubscriber">
             <!-- <argument type="service" id="gridview.gridview"/> -->
             <tag name="kernel.event_subscriber"/>
         </service>
+
+       
         <!-- <service>
         </service -->
     </services>

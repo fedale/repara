@@ -69,6 +69,7 @@ class Gridview implements GridviewInterface
     public function __construct(private Environment $twig)
     {
         $this->columns = new ArrayCollection();
+        $this->filterModel = new FilterModel();
     }
 
     public function getTwig()
@@ -128,13 +129,11 @@ class Gridview implements GridviewInterface
             
             $column = $this->initColumn($column, $key);
 
-            
             if ($column->isVisible()) {
 
                 $column->setGridview($this);
                 if ($column->filter) {
-                    continue;
-                    $this->filterModel->addFilter('email', TextType::class, []);
+                    $this->getFilterModel()->addFilter('email', TextType::class, []);
                 }
                 $this->addColumn($column);
             }

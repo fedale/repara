@@ -41,6 +41,8 @@ class EntityDataProvider extends AbstractDataProvider
 
     private $paginator;
 
+    private int $totalRows;
+
     /*
     public function __construct(
         protected Pagination $pagination, 
@@ -121,14 +123,9 @@ class EntityDataProvider extends AbstractDataProvider
         $this->paginator = new \Doctrine\ORM\Tools\Pagination\Paginator($this->queryBuilder, $fetchJoinCollection = true);
         
         $event = new RowEvent();
-        $count = count($this->paginator);
-        $i = 0;
-        foreach ($this->paginator as $model) {
-            if(++$i === $count) {
-                echo "last index!";
-            }
-
-            $row = new Row();
+        foreach ($this->paginator as $key => $model) {
+            $row = new Row($key, $this->pagination->getPageSize());
+             
             $row->data = $serializer->normalize($model);            
             $event->row = $row;
             $this->eventDispatcher->dispatch($event, RowEvent::BEFORE_ROW);
@@ -149,8 +146,8 @@ class EntityDataProvider extends AbstractDataProvider
     {
         // This Paginator serves total rows
         $this->paginator = new \Doctrine\ORM\Tools\Pagination\Paginator($this->queryBuilder, $fetchJoinCollection = true);
-        $totalRows = count($this->paginator);
+        $this->totalRows = count($this->paginator);
         
-        return $totalRows;
+        return $this->totalRows;
     }
 }

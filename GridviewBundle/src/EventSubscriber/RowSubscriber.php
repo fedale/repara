@@ -23,7 +23,7 @@ class RowSubscriber implements EventSubscriberInterface
     public function onBeforeRow(RowEvent $event)
     {
         $model = $event->row->data;
-        $event->row->htmlOptions = ['id' => 'k1', 'class' => 'c1'];
+        $event->row->setHtmlOption('id', 'k1');//, 'class' => 'c1'];
         if ($model['id'] % 2 === 0) {
             $event->model['email'] = 'Email from onBeforeRow';
         }

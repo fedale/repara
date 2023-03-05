@@ -2,7 +2,7 @@
 
 namespace Fedale\GridviewBundle\Form;
 
-use Fedale\GridviewBundle\Gridview;
+use Fedale\GridviewBundle\Grid\Gridview;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -16,14 +16,16 @@ use Fedale\GridviewBundle\Service\FilterModel;
 
 class FilterModelType extends AbstractType
 {
-    /*
-    public function __construct(private FilterModel $filterModel, private Gridview $gridview) {
-    }*/
+    
+    public function __construct(
+        // private FilterModel $filterModel, 
+        private Gridview $gridview
+    ) {}
 
-    /*
+    
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        foreach ($this->filterModel->getFilters() as $filter) {
+        foreach ($this->gridview->getFilterModel()->getFilters() as $filter) {
             dump($filter);
         }
         
@@ -32,9 +34,9 @@ class FilterModelType extends AbstractType
         $builder->add('email', TextType::class, ['required' => false]);
         $builder->add('profile_fullname', TextType::class, ['required' => false]);
         $builder->add('locations', TextType::class, ['required' => false]);
-        $builder->add('column_2', TextType::class, ['required' => false]);
-        $builder->add('column_3', TextType::class, ['required' => false]);
-        $builder->add('column_4', TextType::class, ['required' => false]);
+        // $builder->add('column_2', TextType::class, ['required' => false]);
+        // $builder->add('column_3', TextType::class, ['required' => false]);
+        // $builder->add('column_4', TextType::class, ['required' => false]);
         $builder->add('save', SubmitType::class, [
             'attr' => ['class' => 'save'],
         ]);
@@ -68,12 +70,11 @@ class FilterModelType extends AbstractType
                     }
                 }
             }
-            $this->filterModel->setCriteria($criteria);
+            $this->gridview->getFilterModel()->setCriteria($criteria);
                 
         });
         
-    }
-    */
+    }    
 
 }
 

@@ -9,9 +9,15 @@
         </service>
         <service id="Fedale\GridviewBundle\Service\FilterModelInterface" alias="gridview.filter_model"/>
 
+        <service id="gridview.filter_model_type" class="Fedale\GridviewBundle\Form\FilterModelType">
+            <argument type="service" id="gridview.gridview"/>
+            <tag name="form.type"/>
+        </service>
+        <service id="Fedale\GridviewBundle\Form\FilterModelType" alias="gridview.filter_model_type"/>
+
         <service id="gridview.gridview" class="Fedale\GridviewBundle\Grid\Gridview">
             <argument type="service" id="twig"/>
-             <argument type="service" id="gridview.filter_model"/>
+            <argument type="service" id="gridview.filter_model"/>
             <call method="setFilterModel">
                 <argument type="service" id="gridview.filter_model"/>
             </call>
@@ -62,6 +68,7 @@
             <tag name="kernel.event_subscriber"/>
         </service>
 
+        
        
         <!-- <service>
         </service -->

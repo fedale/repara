@@ -17,7 +17,7 @@ body {
 {% block title %}Customer index{% endblock %}
 
 {% block body %}
-
+{{ dump(form) }}
 
 <h1>Entity index</h1>
 
@@ -25,7 +25,7 @@ body {
     {% include '@Gridview/gridview/_header.html.twig' with {'columns': columns} %}
 
     {# {% if something %} #}
-        {% include '@Gridview/gridview/_filter.html.twig' with {'columns': columns} %}
+        {% include '@Gridview/gridview/_filter.html.twig' with {'columns': columns, 'form': form} %}
     {# {% endif %} #}
 
     {% include '@Gridview/gridview/_body.html.twig' with {'columns': columns, 'models': models} %}

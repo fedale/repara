@@ -85,15 +85,12 @@ class NewCustomerController extends AbstractController
             ],
 
         ];
-        
 
         /**
          *
          */
         $columns = [
-            // [
-            //     'type' => 'serial'
-            // ],
+            // [//     'type' => 'serial'// ],
             'id',
             'code:raw:code',
             [
@@ -105,10 +102,11 @@ class NewCustomerController extends AbstractController
                 },
                 'twigFilter' => 'raw',
                 'visible' => true,
-                'label' => 'Label 2'
+                'label' => 'Label 2',
+                'attribute' => 'profile_fullname',
             ],
             [
-            //    'attribute' => 'email',
+               'attribute' => 'email',
                'label' => 'email',
                'value' => function (array $data, string $key, ColumnInterface $column) {
                     return '<strong>' . $data['email'] . '</strong>';
@@ -121,6 +119,7 @@ class NewCustomerController extends AbstractController
             ],
         //    'profile.fullname:raw:fullname',
             [
+                'attribute' => 'locations',
                 'label' => 'locations',
                 'value' => function (array $data, string $key, ColumnInterface $column) {
                     $arr = [];
@@ -133,7 +132,8 @@ class NewCustomerController extends AbstractController
                 'twigFilter' => "join(', ', ' and ')|raw",
                 'filter' => [
                     'type' => 'text',
-                ]
+                ],
+
             ],
             // [
             //     'attribute' => 'createdAt'

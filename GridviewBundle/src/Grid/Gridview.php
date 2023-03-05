@@ -217,8 +217,11 @@ class Gridview implements GridviewInterface
         $parameters = [
             'grid' => $this,
             'columns' => $this->columns,
-            'models' => $this->dataProvider->getData()
+            'models' => $this->dataProvider->getData(),
+            'form' => $parameters['form']
         ];
+
+        // \array_merge($parameters, $par)
         
         $content = $this->twig->render($view, $parameters);
 

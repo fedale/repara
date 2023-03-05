@@ -1,7 +1,8 @@
+
 <thead id="" class="filter" data="">
     <tr class="">
         
-        {# {{ form_start(form) }}
+        {{ form_start(form) }}
         {{ form_start(form) }}
         {% for column in columns %}
         
@@ -10,7 +11,7 @@
         </th>
         {% endfor %}
         {{ form_widget(form.save) }}
-        {{ form_end(form) }} #}
+        {{ form_end(form) }}
     </form>
     </tr>
 </thead>

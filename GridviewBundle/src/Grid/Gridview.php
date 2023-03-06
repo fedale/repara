@@ -218,7 +218,8 @@ class Gridview implements GridviewInterface
             'grid' => $this,
             'columns' => $this->columns,
             'models' => $this->dataProvider->getData(),
-            'form' => $parameters['form']
+            'form' => $parameters['form'],
+            'pagination' => $parameters['pagination']
         ];
 
         // \array_merge($parameters, $par)

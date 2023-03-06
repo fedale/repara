@@ -68,6 +68,15 @@
             <tag name="kernel.event_subscriber"/>
         </service>
 
+        <service id="gridview.pagination_view" class="Fedale\GridviewBundle\Component\PaginationView">
+            <argument type="service" id="request_stack"/>
+            <argument type="service" id="router"/>
+        </service>
+
+        <service id="gridview.pagination_extension" class="Fedale\GridviewBundle\Twig\PaginationExtension">
+            <argument type="service" id="gridview.pagination_view"/>
+            <tag name="twig.extension"/>
+        </service>
         
        
         <!-- <service>

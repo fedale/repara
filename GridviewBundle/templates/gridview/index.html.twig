@@ -17,7 +17,6 @@ body {
 {% block title %}Customer index{% endblock %}
 
 {% block body %}
-{{ dump(form) }}
 
 <h1>Entity index</h1>
 
@@ -36,5 +35,6 @@ body {
 
 INIZIO PAGINATION
 {# {{ gridPagination(pagination) }} #}
+{% include '@Gridview/gridview/paginator.html.twig' with { 'paginator': pagination } %}
 
 {% endblock %}

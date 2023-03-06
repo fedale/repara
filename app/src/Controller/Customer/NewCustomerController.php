@@ -169,6 +169,7 @@ class NewCustomerController extends AbstractController
              // dump($form->getData());
          }
 
+
         return $gridview->renderGrid('@Gridview/gridview/index.html.twig', ['pagination' => $pagination, 'form' => $form->createView()]);
     }
 

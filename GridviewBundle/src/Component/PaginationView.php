@@ -7,6 +7,9 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\RequestStack;
 //use Tinustester\Bundle\GridviewBundle\Exception\PaginationException;
 
+// Prefer this solution!
+// https://gist.github.com/Naskalin/6306172b8081813ea213099a4d16019a
+
 class PaginationView
 {
     /**

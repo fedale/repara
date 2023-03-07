@@ -24,7 +24,7 @@ class RowSubscriber implements EventSubscriberInterface
     {
         $model = $event->row->data;
         if ($model['id'] % 2 === 0) {
-            $event->row->setHtmlOption('class', 'randomClass');
+            $event->row->setAttr('class', 'randomClass');
             $event->model['email'] = 'Email from onBeforeRow';
         }
     }

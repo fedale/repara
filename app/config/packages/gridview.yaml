@@ -1,0 +1,4 @@
+gridview:
+  attr:
+    - id: myGrid2
+      class: myClass2

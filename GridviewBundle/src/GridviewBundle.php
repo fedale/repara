@@ -2,6 +2,7 @@
 
 namespace Fedale\GridviewBundle;
 
+use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -15,14 +16,12 @@ class GridviewBundle extends AbstractBundle
     {
         // load an XML, PHP or Yaml file
         $containerConfigurator->import('../config/services.xml');
+ dd($config);
         $containerConfigurator->services()
-            ->set('\Twig\Extension\StringLoaderExtension', Twig\Extension\StringLoaderExtension::class)
-            ;
-        // dd($containerConfigurator->services());
-        // $containerConfigurator->services()
-        //     ->set('\Twig\Extension\StringLoaderExtension', Twig\Extension\StringLoaderExtension::class)
-        // ;
-        // you can also add or replace parameters and services
+            ->set('gridview.template', $config['template'])
+            ->set('gridview.attr', $config['attr'][0])
+            // ->set('gridview.r')
+        ;
         /*
         $containerConfigurator->parameters()
             ->set('acme_hello.phrase', $config['phrase'])
@@ -34,5 +33,19 @@ class GridviewBundle extends AbstractBundle
                     ->class(ScreamingPrinter::class)
             ;
         }*/
+    }
+
+    public function configure(DefinitionConfigurator $definition): void
+    {
+        $definition->rootNode()
+            ->children()
+                ->scalarNode('template')
+                    ->defaultValue('fedale')
+                ->end()
+                ->arrayNode('attr')
+                    ->variablePrototype()->end()
+                ->end()
+            ->end()
+        ;
     }
 }

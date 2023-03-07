@@ -24,10 +24,11 @@ class Gridview implements GridviewInterface
      * be used to indicate an empty data value.
      */
     public $emptyCell = '&nbsp;';
+
     /**
-     * Gridview options
+     * Gridview attributes
      */
-    private $options = [];
+    public array $attr = [];
 
     /**
      * @var array|Closure the HTML attributes for the table body rows. This can be either an array
@@ -61,16 +62,19 @@ class Gridview implements GridviewInterface
     public FilterModel $filterModel;
     
 
+    public function __construct(private Environment $twig)
+    {
+        $this->columns = new ArrayCollection();
+        $this->filterModel = new FilterModel();
+     //   $this->attr = array();
+    }
+
     public function setRowOptions(array $array)
     {
         $this->rowOptions = $array;
     }
     
-    public function __construct(private Environment $twig)
-    {
-        $this->columns = new ArrayCollection();
-        $this->filterModel = new FilterModel();
-    }
+    
 
     public function getTwig()
     {
@@ -215,7 +219,7 @@ class Gridview implements GridviewInterface
     public function renderGrid(string $view, array $parameters = []): Response
     {
         $parameters = [
-            'grid' => $this,
+            'gridview' => $this,
             'columns' => $this->columns,
             'models' => $this->dataProvider->getData(),
             'form' => $parameters['form'],

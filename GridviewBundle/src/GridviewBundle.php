@@ -16,17 +16,18 @@ class GridviewBundle extends AbstractBundle
     {
         // load an XML, PHP or Yaml file
         $containerConfigurator->import('../config/services.xml');
- dd($config);
+//  dd($config);
         $containerConfigurator->services()
             ->set('gridview.template', $config['template'])
-            ->set('gridview.attr', $config['attr'][0])
+        
             // ->set('gridview.r')
         ;
-        /*
+        
         $containerConfigurator->parameters()
-            ->set('acme_hello.phrase', $config['phrase'])
+            ->set('gridview.attr', $config['attr'])
         ;
 
+        /*
         if ($config['scream']) {
             $containerConfigurator->services()
                 ->get('acme_hello.printer')
@@ -43,7 +44,11 @@ class GridviewBundle extends AbstractBundle
                     ->defaultValue('fedale')
                 ->end()
                 ->arrayNode('attr')
-                    ->variablePrototype()->end()
+                    ->children()
+                        ->scalarNode('class')->end()
+                        ->scalarNode('id')->end()
+                        ->scalarNode('data-custom')->end()
+                    ->end()
                 ->end()
             ->end()
         ;

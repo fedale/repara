@@ -57,6 +57,13 @@ class GridviewBuilder implements GridviewBuilderInterface
         return $this;
     }
 
+    public function setAttributes(array $attributes) 
+    {
+        $this->gridview->setAttributes($attributes);
+        
+        return $this;
+    }
+
     public function renderGridview(): Gridview
     {
         return $this->gridview;

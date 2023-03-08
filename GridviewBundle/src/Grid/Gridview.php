@@ -14,6 +14,22 @@ class Gridview implements GridviewInterface
     private ArrayCollection $columns;
     private ArrayCollection $filters;
     private DataProviderInterface $dataProvider;
+    
+    /**
+     * @var string Current unique grid id.
+     */
+    protected $key;
+    
+    /**
+     * @var string
+     */
+    protected $prefix = 'grid_';
+
+    /**
+     * @var int Unique grid id
+     */
+    protected static $counter = 0;
+
     /**
      * @var string the HTML display when the content of a cell is empty.
      * This property is used to render cells that have no defined content,
@@ -68,6 +84,22 @@ class Gridview implements GridviewInterface
         $this->filterModel = new FilterModel();
      //   $this->attr = array();
     }
+
+    /**
+     * Get grid key. If value was not set yet method generates new id based on
+     * static counter so id will be unique for each new grid instance.
+     *
+     * @return string
+     */
+    public function getKey()
+    {
+        if ($this->key === null) {
+            $this->key = $this->prefix . static::$counter++;
+        }
+
+        return $this->key;
+    }
+
 
     public function setRowOptions(array $array)
     {
@@ -214,6 +246,14 @@ class Gridview implements GridviewInterface
             isset($matches[5]) ? $matches[5] : $matches[1]
         );
         return $column;
+    }
+
+    public function setAttributes(array $attributes): void
+    {
+        // Work with row
+        unset($attributes['row']);
+        
+        $this->attr = $attributes; //['id'] = 'my-grid-view'; //$options['key'];
     }
 
     public function renderGrid(string $view, array $parameters = []): Response

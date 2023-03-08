@@ -1,4 +1,5 @@
 gridview:
   attr:
-    - id: myGrid2
-      class: myClass2
+    # - id: myGrid2
+    #   class: myClass2
+    #   data-custom: myCustomData

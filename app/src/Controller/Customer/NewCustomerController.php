@@ -158,6 +158,11 @@ class NewCustomerController extends AbstractController
             ->setDataProvider($dataProvider)
             //->setFilterModel(new FilterModel()) // bypass for the moment
             ->setColumns($columns)
+            ->setAttributes([
+                //'id' => 'myGridId',
+                'class' => 'table table-dark',
+                'row' => []
+            ])
             ->renderGridview();
         ;
 

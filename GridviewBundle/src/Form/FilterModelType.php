@@ -10,8 +10,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Doctrine\Common\Collections\Criteria;
-use Doctrine\ORM\Query\Expr;
-use Fedale\GridviewBundle\Service\FilterModel;
 
 
 class FilterModelType extends AbstractType
@@ -25,6 +23,7 @@ class FilterModelType extends AbstractType
     
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        dump($this->gridview);
         foreach ($this->gridview->getFilterModel()->getFilters() as $filter) {
             dump($filter);
         }

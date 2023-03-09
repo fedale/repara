@@ -18,13 +18,16 @@ body {
 
 {% block body %}
 
+{{ dump(gridview.filterModel) }}
+
 <h1>Entity index</h1>
-{{ dump(gridview.attr) }}
+
+<div {{ gridview.containerAttr|options}}>
 <table {{ gridview.attr|options }}>
-    {% include '@Gridview/gridview/_header.html.twig' with {'columns': columns} %}
+    {% include '@Gridview/gridview/_header.html.twig' with {'gridview': gridview, 'columns': columns} %}
 
     {# {% if something %} #}
-        {% include '@Gridview/gridview/_filter.html.twig' with {'columns': columns, 'form': form} %}
+        {% include '@Gridview/gridview/_filter.html.twig' with {'gridview': gridview, 'columns': columns, 'form': form} %}
     {# {% endif %} #}
 
     {% include '@Gridview/gridview/_body.html.twig' with {'columns': columns, 'models': models} %}
@@ -37,4 +40,5 @@ INIZIO PAGINATION
 {# {{ gridPagination(pagination) }} #}
 {% include '@Gridview/gridview/paginator.html.twig' with { 'paginator': pagination } %}
 
+</div>
 {% endblock %}

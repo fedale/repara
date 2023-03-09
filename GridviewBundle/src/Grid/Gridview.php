@@ -30,6 +30,7 @@ class Gridview implements GridviewInterface
      */
     protected static $counter = 0;
 
+
     /**
      * @var string the HTML display when the content of a cell is empty.
      * This property is used to render cells that have no defined content,
@@ -39,12 +40,16 @@ class Gridview implements GridviewInterface
      * the [[\yii\i18n\Formatter::nullDisplay|nullDisplay]] property of the [[formatter]] will
      * be used to indicate an empty data value.
      */
-    public $emptyCell = '&nbsp;';
+    public string $emptyCell = '&nbsp;';
 
     /**
      * Gridview attributes
      */
     public array $attr = [];
+    public array $containerAttr = [];
+    public array $headerAttr = [];
+    public array $filterAttr = [];
+    public array $rowAttr = [];
 
     /**
      * @var array|Closure the HTML attributes for the table body rows. This can be either an array
@@ -63,6 +68,8 @@ class Gridview implements GridviewInterface
      *
      */
     public $rowOptions = [];
+
+    
     
     /**
      * @ var \Fedale\GridviewBundle\Service\FilterModel|null the model that keeps the user-entered filter data. When this property is set,
@@ -81,7 +88,7 @@ class Gridview implements GridviewInterface
     public function __construct(private Environment $twig)
     {
         $this->columns = new ArrayCollection();
-        $this->filterModel = new FilterModel();
+        // $this->filterModel = new FilterModel();
      //   $this->attr = array();
     }
 
@@ -100,13 +107,10 @@ class Gridview implements GridviewInterface
         return $this->key;
     }
 
-
     public function setRowOptions(array $array)
     {
         $this->rowOptions = $array;
     }
-    
-    
 
     public function getTwig()
     {
@@ -131,16 +135,22 @@ class Gridview implements GridviewInterface
 
     public function getFilterModel()
     {
+        dump('GET Filtermodel');
+        dump($this);
+        dump($this->filterModel);
         return $this->filterModel;
     }
 
     public function setFilterModel(FilterModelInterface $filterModel) 
     {    
+        dump('setFiltermodel');
+        dump($filterModel);
         $this->filterModel = $filterModel;
     }
 
     public function getDataProvider()
     {
+        
         return $this->dataProvider;
     }
 
@@ -250,8 +260,16 @@ class Gridview implements GridviewInterface
 
     public function setAttributes(array $attributes): void
     {
-        // Work with row
+        // Do some implementation with row
+        $this->rowAttr = $attributes['row'] ?? [];
+        $this->containerAttr = $attributes['container'] ?? [];
+        $this->headerAttr = $attributes['header'] ?? [];
+        $this->filterAttr = $attributes['filter'] ?? [];
+
         unset($attributes['row']);
+        unset($attributes['container']);
+        unset($attributes['header']);
+        unset($attributes['filter']);
         
         $this->attr = $attributes; //['id'] = 'my-grid-view'; //$options['key'];
     }

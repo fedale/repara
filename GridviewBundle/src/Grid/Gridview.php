@@ -90,7 +90,7 @@ class Gridview implements GridviewInterface
     public function __construct(private Environment $twig)
     {
         $this->columns = new ArrayCollection();
-        // $this->filterModel = new FilterModel();
+        $this->filterModel = new FilterModel();
      //   $this->attr = array();
     }
 
@@ -143,32 +143,17 @@ class Gridview implements GridviewInterface
     public function setFilterModel(FilterModel $filterModel)
     {
         $this->filterModel = $filterModel;
-        /*
-        $new = clone $this;
-        $new->filterModel = $filterModel;
-        dump('SetFilterModel');
-        dump($new);
-        return $new;
-
-        dump('SetFilterModel');
-        $this->filterModel = $filterModel;
-        */
     }
 
     public function getFilterModelType()
     {
-        dump('GET Filtermodel Type');
-        dump($this);
-        dump($this->filterModelType);
         return $this->filterModelType;
     }
 
     public function setFilterModelType( $filterModelType) 
     {    
-
-        dump('setFiltermodelType');
-        dump($filterModelType);
         $this->filterModelType = new $filterModelType($this);
+        $this->filterModelType->setGridView($this);
     }
 
     public function getDataProvider()
@@ -202,7 +187,7 @@ class Gridview implements GridviewInterface
 
                 $column->setGridview($this);
                 if ($column->filter) {
-                    $this->getFilterModel()->addFilter('email', TextType::class, []);
+                    $this->getFilterModel()->addFilter($column->getAttribute(), TextType::class, []);
                 }
                 $this->addColumn($column);
             }

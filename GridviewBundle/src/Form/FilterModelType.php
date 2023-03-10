@@ -14,28 +14,34 @@ use Doctrine\Common\Collections\Criteria;
 
 class FilterModelType extends AbstractType
 {
-    
+    private Gridview $gridview;
+    /*
     public function __construct(
-        // private FilterModel $filterModel, 
         private Gridview $gridview
     ) {}
-
+    */
     
+    public function setGridview(Gridview $gridview)
+    {
+        $this->gridview = $gridview;
+        dump($gridview, $this->gridview);
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         dump($this->gridview);
         foreach ($this->gridview->getFilterModel()->getFilters() as $filter) {
             dump($filter);
+            $builder->add($filter, TextType::class, ['required' => false]);
         }
+        
         
         $builder->add('id', TextType::class, ['required' => false]);
         $builder->add('code', TextType::class, ['required' => false]);
         $builder->add('email', TextType::class, ['required' => false]);
         $builder->add('profile_fullname', TextType::class, ['required' => false]);
         $builder->add('locations', TextType::class, ['required' => false]);
-        // $builder->add('column_2', TextType::class, ['required' => false]);
-        // $builder->add('column_3', TextType::class, ['required' => false]);
-        // $builder->add('column_4', TextType::class, ['required' => false]);
+       
         $builder->add('save', SubmitType::class, [
             'attr' => ['class' => 'save'],
         ]);

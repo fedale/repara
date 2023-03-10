@@ -30,7 +30,6 @@ class FilterModel implements FilterModelInterface
 
     public function addFilter($filter)
     {
-        dump('i am adding a filter');
         $this->filters->add($filter);
     }
 

@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Twig\Environment;
 use Fedale\GridviewBundle\Service\FilterModel;
 use Fedale\GridviewBundle\Column\ColumnInterface;
+use Fedale\GridviewBundle\Form\FilterModelType;
 use Fedale\GridviewBundle\Service\FilterModelInterface;
 
 class Gridview implements GridviewInterface
@@ -82,8 +83,9 @@ class Gridview implements GridviewInterface
      *
      * When this property is not set (null) the filtering feature is disabled.
      */
-    public FilterModel $filterModel;
+    public FilterModelType $filterModelType;
     
+    private FilterModel $filterModel;
 
     public function __construct(private Environment $twig)
     {
@@ -133,19 +135,40 @@ class Gridview implements GridviewInterface
         $this->columns->add($column);
     }
 
-    public function getFilterModel()
+    public function getFilterModel(): FilterModel
     {
-        dump('GET Filtermodel');
-        dump($this);
-        dump($this->filterModel);
         return $this->filterModel;
     }
-
-    public function setFilterModel(FilterModelInterface $filterModel) 
-    {    
-        dump('setFiltermodel');
-        dump($filterModel);
+    
+    public function setFilterModel(FilterModel $filterModel)
+    {
         $this->filterModel = $filterModel;
+        /*
+        $new = clone $this;
+        $new->filterModel = $filterModel;
+        dump('SetFilterModel');
+        dump($new);
+        return $new;
+
+        dump('SetFilterModel');
+        $this->filterModel = $filterModel;
+        */
+    }
+
+    public function getFilterModelType()
+    {
+        dump('GET Filtermodel Type');
+        dump($this);
+        dump($this->filterModelType);
+        return $this->filterModelType;
+    }
+
+    public function setFilterModelType( $filterModelType) 
+    {    
+
+        dump('setFiltermodelType');
+        dump($filterModelType);
+        $this->filterModelType = new $filterModelType($this);
     }
 
     public function getDataProvider()

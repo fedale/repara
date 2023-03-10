@@ -156,7 +156,7 @@ class NewCustomerController extends AbstractController
         // Order matters! Try to switch setColumns() / setFilterModel()
         $gridview = $this->createGridviewBuilder()
             ->setDataProvider($dataProvider)
-            ->setFilterModel(new FilterModel()) 
+            ->setFilterModelType(FilterModelType::class) 
             ->setColumns($columns)
             ->setAttributes([
                 'class' => 'table table-dark',

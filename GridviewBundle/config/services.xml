@@ -11,12 +11,9 @@
 
         <service id="gridview.gridview" class="Fedale\GridviewBundle\Grid\Gridview">
             <argument type="service" id="twig"/>
-            <!-- <argument type="service" id="gridview.filter_model"/> -->
-            <!-- <argument></argument> -->
-            <!--
-            <call method="setFilterModel">
+            <call method="setFilterModel"  returns-clone="true">
                 <argument type="service" id="gridview.filter_model"/>
-            </call> -->
+            </call>
         </service>
 
         <service id="gridview.filter_model_type" class="Fedale\GridviewBundle\Form\FilterModelType">

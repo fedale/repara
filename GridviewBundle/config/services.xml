@@ -6,6 +6,10 @@
 >
     <services>
         <service id="gridview.filter_model" class="Fedale\GridviewBundle\Service\FilterModel">
+            <argument type="service" id="form.factory"/>
+            <!-- <call method="setFormFactory">
+                <argument type="service" id="form.factory"/>
+            </call> -->
         </service>
         <service id="Fedale\GridviewBundle\Service\FilterModelInterface" alias="gridview.filter_model"/>
 
@@ -14,12 +18,18 @@
             <call method="setFilterModel">
                 <argument type="service" id="gridview.filter_model"/>
             </call>
+            <!-- <call method="setFormFactory">
+                <argument type="service" id="form.factory"/>
+            </call> -->
         </service>
 
         <service id="gridview.filter_model_type" class="Fedale\GridviewBundle\Form\FilterModelType">
-            <!-- <argument type="service" id="gridview.gridview" /> -->
+            <argument type="service" id="gridview.gridview" />
             <!-- <call method="setGridview">
                 <argument type="service" id="gridview.gridview"/>
+            </call> -->
+            <!-- <call method="setFilterModel">
+                <argument type="service" id="gridview.filter_model"/>
             </call> -->
             <tag name="form.type"/>
         </service>

@@ -10,31 +10,33 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Doctrine\Common\Collections\Criteria;
+use Fedale\GridviewBundle\Service\FilterModel;
 
 
 class FilterModelType extends AbstractType
 {
-    private Gridview $gridview;
-    /*
-    public function __construct(
-        private Gridview $gridview
-    ) {}
-    */
+    // private Gridview $gridview;
     
-    public function setGridview(Gridview $gridview)
-    {
-        $this->gridview = $gridview;
-        dump($gridview, $this->gridview);
-    }
+    // public function __construct(
+    //     private Gridview $gridview
+    //     // private FilterModel $filterModel
+    // ) {}
+    
+    
+    // public function setGridview(Gridview $gridview)
+    // {
+    //     $this->gridview = $gridview;
+    //     dump($gridview, $this->gridview);
+    // }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        dump($this->gridview);
+        // dump($this->gridview);
+        /*
         foreach ($this->gridview->getFilterModel()->getFilters() as $filter) {
             dump($filter);
             $builder->add($filter, TextType::class, ['required' => false]);
-        }
-        
+        }*/
         
         $builder->add('id', TextType::class, ['required' => false]);
         $builder->add('code', TextType::class, ['required' => false]);

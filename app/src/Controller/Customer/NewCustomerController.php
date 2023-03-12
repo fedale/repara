@@ -153,6 +153,7 @@ class NewCustomerController extends AbstractController
         $dataProvider->setSort($sort);
       //  $dataProvider->setPagination($pagination);
 
+        //$form = $this->createForm(FilterModelType::class, [], ['method' => 'GET']);
         // Order matters! Try to switch setColumns() / setFilterModel()
         $gridview = $this->createGridviewBuilder()
             ->setDataProvider($dataProvider)
@@ -175,15 +176,17 @@ class NewCustomerController extends AbstractController
         ;
 
          // $form = $this->createFormBuilder([], ['method' => 'GET']);
-         $form = $this->createForm(FilterModelType::class, [], ['method' => 'GET']);
+        
+         /*
          $form->handleRequest($request);
          
          if ($form->isSubmitted() ) {
              // dump($form->getData());
          }
+         */
 
 
-        return $gridview->renderGrid('@Gridview/gridview/index.html.twig', ['pagination' => $pagination, 'form' => $form->createView()]);
+        return $gridview->renderGrid('@Gridview/gridview/index.html.twig', ['pagination' => $pagination]); //, 'form' => $form->createView()]);
     }
 
     #[Route('/grid2', name: 'new_app_grid2', methods: ['GET'])]

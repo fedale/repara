@@ -51,13 +51,14 @@ class GridviewBuilder implements GridviewBuilderInterface
         return $this;
     }
 
-    public function setFilterModelType( $filterModelType)
+    
+    public function setFilterModelType($filterModelType)
     {
         $this->gridview->setFilterModelType($filterModelType);
         
         return $this;
     }
-
+    
     public function setAttributes(array $attributes) 
     {
         $this->gridview->setAttributes($attributes);

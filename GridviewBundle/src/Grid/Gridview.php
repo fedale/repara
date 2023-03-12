@@ -9,6 +9,8 @@ use Fedale\GridviewBundle\Service\FilterModel;
 use Fedale\GridviewBundle\Column\ColumnInterface;
 use Fedale\GridviewBundle\Form\FilterModelType;
 use Fedale\GridviewBundle\Service\FilterModelInterface;
+use Symfony\Component\Form\FormFactory;
+use Symfony\Contracts\Service\Attribute\Required;
 
 class Gridview implements GridviewInterface
 {
@@ -85,12 +87,14 @@ class Gridview implements GridviewInterface
      */
     public FilterModelType $filterModelType;
     
-    private FilterModel $filterModel;
+    public FilterModel $filterModel;
+
+    private FormFactory $formFactory;
 
     public function __construct(private Environment $twig)
     {
         $this->columns = new ArrayCollection();
-        $this->filterModel = new FilterModel();
+        
      //   $this->attr = array();
     }
 
@@ -112,6 +116,16 @@ class Gridview implements GridviewInterface
     public function setRowOptions(array $array)
     {
         $this->rowOptions = $array;
+    }
+
+    public function getFormFactory()
+    {
+        return $this->formFactory;
+    }
+
+    public function setFormFactory(FormFactory $formFactory)
+    {
+        $this->formFactory = $formFactory;
     }
 
     public function getTwig()
@@ -140,21 +154,27 @@ class Gridview implements GridviewInterface
         return $this->filterModel;
     }
     
-    public function setFilterModel(FilterModel $filterModel)
+    public function setFilterModel(FilterModel $filterModel): void
     {
         $this->filterModel = $filterModel;
     }
 
+    
     public function getFilterModelType()
     {
         return $this->filterModelType;
     }
 
-    public function setFilterModelType( $filterModelType) 
-    {    
-        $this->filterModelType = new $filterModelType($this);
-        $this->filterModelType->setGridView($this);
+    public function setFilterModelType($type, $data = null, $options = []) 
+    {   
+        $formFactory = \Symfony\Component\Form\Forms::createFormFactory();
+        $this->setFilterModel(new FilterModel($formFactory));
+        $this->filterModel->setModelType($type, $data, $options);
+        // return $this->getFormFactory()->create($type, $data, $options);
+    //    $this->filterModelType = new $filterModelType($this->filterModel);
+        //$this->filterModelType = $filterModelType; //->setGridView($this);
     }
+    
 
     public function getDataProvider()
     {
@@ -288,7 +308,7 @@ class Gridview implements GridviewInterface
             'gridview' => $this,
             'columns' => $this->columns,
             'models' => $this->dataProvider->getData(),
-            'form' => $parameters['form'],
+            'form' => $this->filterModel->getBuilder(), //$parameters['form'],
             'pagination' => $parameters['pagination']
         ];
 

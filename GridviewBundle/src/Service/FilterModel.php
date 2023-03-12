@@ -9,19 +9,23 @@ use Symfony\Component\Form\Extension\Core\Type\FormType;
 
 class FilterModel implements FilterModelInterface
 {
+    
     private FormBuilderInterface $builder;
     private Criteria $criteria;
 
     private ArrayCollection $filters;
-    /*
+    
     public function __construct(private FormFactoryInterface $formFactory) {
         $this->builder = $formFactory->createBuilder(FormType::class, [], ['method' => 'GET']);
-    }*/
+        $this->filters = new ArrayCollection();
 
+    }
+
+    /*
     public function __construct()
     {
         $this->filters = new ArrayCollection();
-    }
+    }*/
 
     public function getFilters()
     {
@@ -53,4 +57,19 @@ class FilterModel implements FilterModelInterface
     // {
     //     $this->filter = $filter;
     // }
+
+    public function setFormFactory(FormFactoryInterface $formFactory)
+    {
+        $this->formFactory = $formFactory;
+    }
+
+    public function getBuilder()
+    {
+        return $this->builder;
+    }
+
+    public function setModelType($type, $data, $options)
+    {
+        $this->builder = $this->formFactory->createBuilder($type, $data, $options);
+    }
 } 

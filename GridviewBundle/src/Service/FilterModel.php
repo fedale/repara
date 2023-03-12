@@ -16,9 +16,7 @@ class FilterModel implements FilterModelInterface
     private ArrayCollection $filters;
     
     public function __construct(private FormFactoryInterface $formFactory) {
-        $this->builder = $formFactory->createBuilder(FormType::class, [], ['method' => 'GET']);
         $this->filters = new ArrayCollection();
-
     }
 
     /*

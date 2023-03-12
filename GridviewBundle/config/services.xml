@@ -24,7 +24,8 @@
         </service>
 
         <service id="gridview.filter_model_type" class="Fedale\GridviewBundle\Form\FilterModelType">
-            <argument type="service" id="gridview.gridview" />
+            <!-- <argument type="service" id="gridview.gridview" /> -->
+            <argument type="service" id="gridview.filter_model" />
             <!-- <call method="setGridview">
                 <argument type="service" id="gridview.gridview"/>
             </call> -->

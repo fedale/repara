@@ -170,9 +170,6 @@ class Gridview implements GridviewInterface
         $formFactory = \Symfony\Component\Form\Forms::createFormFactory();
         $this->setFilterModel(new FilterModel($formFactory));
         $this->filterModel->setModelType($type, $data, $options);
-        // return $this->getFormFactory()->create($type, $data, $options);
-    //    $this->filterModelType = new $filterModelType($this->filterModel);
-        //$this->filterModelType = $filterModelType; //->setGridView($this);
     }
     
 
@@ -308,7 +305,7 @@ class Gridview implements GridviewInterface
             'gridview' => $this,
             'columns' => $this->columns,
             'models' => $this->dataProvider->getData(),
-            'form' => $this->filterModel->getBuilder(), //$parameters['form'],
+            'form' => $this->filterModel->getBuilder()->getForm()->createView(), //$parameters['form'],
             'pagination' => $parameters['pagination']
         ];
 

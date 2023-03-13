@@ -19,7 +19,7 @@ class FilterModelType extends AbstractType
     
     
     public function __construct(
-    //    private Gridview $gridview
+    // //    private Gridview $gridview
         private FilterModel $filterModel
     ) {}
     
@@ -28,6 +28,11 @@ class FilterModelType extends AbstractType
     public function setGridview(Gridview $gridview)
     {        
         dump($gridview, $this->gridview);
+    }
+
+    public function setFilterModel(FilterModel $filterModel)
+    {        
+        dump($filterModel);
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void

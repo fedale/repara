@@ -10,7 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\FormType;
 class FilterModel implements FilterModelInterface
 {
     
-    private FormBuilderInterface $builder;
+    private $builder;
     private Criteria $criteria;
 
     private ArrayCollection $filters;
@@ -68,7 +68,8 @@ class FilterModel implements FilterModelInterface
 
     public function setModelType($type, $data, $options)
     {
-        $this->builder = $this->formFactory->createBuilder($type, $data, $options);
-        dump($this->builder);
+        $this->builder = $this->formFactory->create($type, $data, $options);
+        // $this->builder = $this->formFactory->createBuilder($type, $data, $options);
+        // $this->builder->getForm()->setFilterModel($this);
     }
 } 

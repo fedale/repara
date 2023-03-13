@@ -5,27 +5,29 @@
         https://symfony.com/schema/dic/services/services-1.0.xsd"
 >
     <services>
-        <service id="gridview.filter_model" class="Fedale\GridviewBundle\Service\FilterModel">
+        <service id="gridview.filterModel" class="Fedale\GridviewBundle\Service\FilterModel">
             <argument type="service" id="form.factory"/>
             <!-- <call method="setFormFactory">
                 <argument type="service" id="form.factory"/>
             </call> -->
+            <!-- <tag name="form.type"/> -->
         </service>
-        <service id="Fedale\GridviewBundle\Service\FilterModelInterface" alias="gridview.filter_model"/>
+        <service id="Fedale\GridviewBundle\Service\FilterModelInterface" alias="gridview.filterModel"/>
 
         <service id="gridview.gridview" class="Fedale\GridviewBundle\Grid\Gridview">
             <argument type="service" id="twig"/>
             <call method="setFilterModel">
-                <argument type="service" id="gridview.filter_model"/>
+                <argument type="service" id="gridview.filterModel"/>
             </call>
             <!-- <call method="setFormFactory">
                 <argument type="service" id="form.factory"/>
             </call> -->
+            
         </service>
 
-        <service id="gridview.filter_model_type" class="Fedale\GridviewBundle\Form\FilterModelType">
+        <service id="gridview.filterModelType" class="Fedale\GridviewBundle\Form\FilterModelType">
             <!-- <argument type="service" id="gridview.gridview" /> -->
-            <argument type="service" id="gridview.filter_model"/>
+            <argument type="service" id="gridview.filterModel"/>
             <!-- <call method="setGridview">
                 <argument type="service" id="gridview.gridview"/>
             </call> -->
@@ -34,7 +36,7 @@
             </call> -->
             <tag name="form.type"/>
         </service>
-        <service id="Fedale\GridviewBundle\Form\FilterModelType" alias="gridview.filter_model_type"/>
+        <service id="Fedale\GridviewBundle\Form\FilterModelType" alias="gridview.filterModelType"/>
 
         <service id="twig.extension.stringloader" class="Twig\Extension\StringLoaderExtension">
             <tag name="twig.extension"/>
@@ -57,7 +59,7 @@
                 <argument type="service" id="gridview.pagination"/>
             </call>
             <call method="setFilterModel">
-                <argument type="service" id="gridview.filter_model"/>
+                <argument type="service" id="gridview.filterModel"/>
             </call>
         </service>
         <service id="Fedale\GridviewBundle\DataProvider\DataProviderInterface" alias="Fedale\GridviewBundle\DataProvider\EntityDataProvider"/>

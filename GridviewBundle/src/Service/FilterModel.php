@@ -69,5 +69,6 @@ class FilterModel implements FilterModelInterface
     public function setModelType($type, $data, $options)
     {
         $this->builder = $this->formFactory->createBuilder($type, $data, $options);
+        dump($this->builder);
     }
 } 

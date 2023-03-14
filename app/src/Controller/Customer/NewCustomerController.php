@@ -175,7 +175,6 @@ class NewCustomerController extends AbstractController
             ->renderGridview();
         ;
 
-         // $form = $this->createFormBuilder([], ['method' => 'GET']);
         
          /*
          $form->handleRequest($request);

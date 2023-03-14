@@ -11,7 +11,9 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Doctrine\Common\Collections\Criteria;
 use Fedale\GridviewBundle\Service\FilterModel;
-
+use Fedale\GridviewBundle\Service\FilterModelInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class FilterModelType extends AbstractType
 {
@@ -19,8 +21,8 @@ class FilterModelType extends AbstractType
     
     
     public function __construct(
-    // //    private Gridview $gridview
-        private FilterModel $filterModel
+    // // //    private Gridview $gridview
+        private FilterModelInterface $filterModel
     ) {}
     
     
@@ -90,6 +92,19 @@ class FilterModelType extends AbstractType
         });
         
     }    
+
+    /**
+     * @return void
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+       // dd($resolver);
+    }
+
+    public function setModel()
+    {
+        dd('setmodel)');
+    }
 
 }
 

@@ -7,10 +7,6 @@
     <services>
         <service id="gridview.filter_model" class="Fedale\GridviewBundle\Form\FilterModel">
             <argument type="service" id="form.factory"/>
-            <!-- <call method="setFormFactory">
-                <argument type="service" id="form.factory"/>
-            </call> -->
-            <!-- <tag name="form.type"/> -->
         </service>
         <service id="Fedale\GridviewBundle\Form\FilterModel" alias="gridview.filter_model"/>
 
@@ -18,25 +14,11 @@
             <argument type="service" id="twig"/>
             <call method="setFilterModel">
                 <argument type="service" id="gridview.filter_model"/>
-            </call>
-            <!-- <call method="setFormFactory">
-                <argument type="service" id="form.factory"/>
-            </call> -->
-            
+            </call>           
         </service>
 
         <service id="gridview.filter_model_type" class="Fedale\GridviewBundle\Form\FilterModelType">
-            <!-- <argument type="service" id="gridview.gridview" /> -->
             <argument type="service" id="gridview.filter_model"/>
-            <!-- <argument key="$filterodel">\Fedale\GridviewBundle\Form\FilterModel</argument> -->
-            <!-- <argument id="gridview.filter_model">\Fedale\GridviewBundle\Form\FilterModel</argument> -->
-            <!-- <argument key="$adminEmail">manager@example.com</argument> -->
-            <!-- <call method="setGridview">
-                <argument type="service" id="gridview.gridview"/>
-            </call> -->
-            <!-- <call method="setFilterModel">
-                <argument type="service" id="gridview.filter_model"/>
-            </call> -->
         </service>
         <service id="Fedale\GridviewBundle\Form\FilterModelType" alias="gridview.filter_model_type"/>
 

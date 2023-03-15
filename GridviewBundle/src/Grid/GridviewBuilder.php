@@ -3,7 +3,7 @@ namespace Fedale\GridviewBundle\Grid;
 
 use Fedale\GridviewBundle\DataProvider\DataProviderInterface;
 use Fedale\GridviewBundle\Form\FilterModelType;
-use Fedale\GridviewBundle\Service\FilterModelInterface;
+use Fedale\GridviewBundle\Form\Service\FilterModelInterface;
 // use Doctrine\Common\Collections\ArrayCollection;
 // use Doctrine\ORM\EntityManager;
 // use Doctrine\ORM\EntityManagerInterface;

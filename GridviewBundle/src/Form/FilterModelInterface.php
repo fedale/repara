@@ -1,5 +1,5 @@
 <?php
-namespace Fedale\GridviewBundle\Service;
+namespace Fedale\GridviewBundle\Form;
 
 interface FilterModelInterface
 {

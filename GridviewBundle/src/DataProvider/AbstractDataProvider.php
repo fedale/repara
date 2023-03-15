@@ -9,7 +9,7 @@ use Fedale\GridviewBundle\Exception\DataProviderException;
 use Doctrine\Common\Collections\Collection;
 use Fedale\GridviewBundle\Component\PaginationInterface;
 use Fedale\GridviewBundle\Component\SortInterface;
-use Fedale\GridviewBundle\Service\FilterModelInterface;
+use Fedale\GridviewBundle\Form\FilterModelInterface;
 
 abstract class AbstractDataProvider implements DataProviderInterface
 {

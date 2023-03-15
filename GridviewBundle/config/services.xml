@@ -5,14 +5,14 @@
         https://symfony.com/schema/dic/services/services-1.0.xsd"
 >
     <services>
-        <service id="gridview.filter_model" class="Fedale\GridviewBundle\Service\FilterModel">
+        <service id="gridview.filter_model" class="Fedale\GridviewBundle\Form\FilterModel" autowire="true" autoconfigure="true">
             <argument type="service" id="form.factory"/>
             <!-- <call method="setFormFactory">
                 <argument type="service" id="form.factory"/>
             </call> -->
             <!-- <tag name="form.type"/> -->
         </service>
-        <service id="Fedale\GridviewBundle\Service\FilterModelInterface" alias="gridview.filter_model"/>
+        <service id="Fedale\GridviewBundle\Form\FilterModelInterface" alias="gridview.filter_model"/>
 
         <service id="gridview.gridview" class="Fedale\GridviewBundle\Grid\Gridview">
             <argument type="service" id="twig"/>
@@ -25,16 +25,16 @@
             
         </service>
 
-        <service id="gridview.filter_model_type" class="Fedale\GridviewBundle\Form\FilterModelType">
+        <service id="gridview.filter_model_type" class="Fedale\GridviewBundle\Form\FilterModelType" autowire="true" autoconfigure="true">
             <!-- <argument type="service" id="gridview.gridview" /> -->
-            <argument type="service" id="gridview.filter_model"/>
+            <!-- <argument type="service" id="gridview.filter_model"/> -->
+            <argument id="gridview.filter_model">\Fedale\GridviewBundle\Form\FilterModel</argument>
             <!-- <call method="setGridview">
                 <argument type="service" id="gridview.gridview"/>
             </call> -->
             <!-- <call method="setFilterModel">
                 <argument type="service" id="gridview.filter_model"/>
             </call> -->
-            <tag name="form.type"/>
         </service>
         <service id="Fedale\GridviewBundle\Form\FilterModelType" alias="gridview.filter_model_type"/>
 

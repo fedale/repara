@@ -1,5 +1,5 @@
 <?php
-namespace Fedale\GridviewBundle\Service;
+namespace Fedale\GridviewBundle\Form;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -68,6 +68,7 @@ class FilterModel implements FilterModelInterface
 
     public function setModelType($type, $data, $options)
     {
+        // $formType = new $type($this);
         $this->builder = $this->formFactory->create($type, $data, $options);
         
         //$this->builder = $this->formFactory->create($type, $data, $options);

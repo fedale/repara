@@ -5,10 +5,10 @@ use Fedale\GridviewBundle\DataProvider\DataProviderInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\Environment;
-use Fedale\GridviewBundle\Service\FilterModel;
+use Fedale\GridviewBundle\Form\FilterModel;
 use Fedale\GridviewBundle\Column\ColumnInterface;
 use Fedale\GridviewBundle\Form\FilterModelType;
-use Fedale\GridviewBundle\Service\FilterModelInterface;
+use Fedale\GridviewBundle\Form\FilterModelInterface;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Contracts\Service\Attribute\Required;
 

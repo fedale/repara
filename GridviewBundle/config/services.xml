@@ -5,14 +5,14 @@
         https://symfony.com/schema/dic/services/services-1.0.xsd"
 >
     <services>
-        <service id="gridview.filter_model" class="Fedale\GridviewBundle\Form\FilterModel" autowire="true" autoconfigure="true"  public="true">
+        <service id="gridview.filter_model" class="Fedale\GridviewBundle\Form\FilterModel">
             <argument type="service" id="form.factory"/>
             <!-- <call method="setFormFactory">
                 <argument type="service" id="form.factory"/>
             </call> -->
             <!-- <tag name="form.type"/> -->
         </service>
-        <service id="Fedale\GridviewBundle\Form\FilterModelInterface" alias="gridview.filter_model"/>
+        <service id="Fedale\GridviewBundle\Form\FilterModel" alias="gridview.filter_model"/>
 
         <service id="gridview.gridview" class="Fedale\GridviewBundle\Grid\Gridview">
             <argument type="service" id="twig"/>
@@ -25,7 +25,7 @@
             
         </service>
 
-        <service id="gridview.filter_model_type" class="Fedale\GridviewBundle\Form\FilterModelType" autowire="true" autoconfigure="true"  public="true">
+        <service id="gridview.filter_model_type" class="Fedale\GridviewBundle\Form\FilterModelType">
             <!-- <argument type="service" id="gridview.gridview" /> -->
             <argument type="service" id="gridview.filter_model"/>
             <!-- <argument key="$filterodel">\Fedale\GridviewBundle\Form\FilterModel</argument> -->
@@ -81,7 +81,6 @@
         <service id="Fedale\GridviewBundle\Grid\GridviewInterface" alias="gridview.gridview"/>
 
         <service id="gridview.row_subscriber" class="Fedale\GridviewBundle\EventSubscriber\RowSubscriber">
-            <!-- <argument type="service" id="gridview.gridview"/> -->
             <tag name="kernel.event_subscriber"/>
         </service>
 
@@ -90,10 +89,10 @@
             <argument type="service" id="router"/>
         </service>
 
-        <service id="gridview.pagination_extension" class="Fedale\GridviewBundle\Twig\PaginationExtension">
+        <!-- <service id="gridview.pagination_extension" class="Fedale\GridviewBundle\Twig\PaginationExtension">
             <argument type="service" id="gridview.pagination_view"/>
             <tag name="twig.extension"/>
-        </service>
+        </service> -->
         
        
         <!-- <service>
@@ -123,8 +122,6 @@
   <service id="App\Util\Rot13Transformer"/>
 
         <service id="App\Util\TransformerInterface" alias="App\Util\Rot13Transformer"/>
-
-
 
 Too few arguments to function Fedale\Gridview\GridviewBuilderFactory::__construct(), 
 0 passed in /home/danilo/sp/repara/app/var/cache/dev/ContainerG30zlqb/getNewCustomerControllerService.php on line 24 and exactly 1 expected

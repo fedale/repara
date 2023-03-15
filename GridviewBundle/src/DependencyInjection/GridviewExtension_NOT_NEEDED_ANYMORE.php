@@ -10,6 +10,7 @@ class GridviewExtension extends Extension
 {
     public function load(array $configs, ContainerBuilder $containerBuilder)
     {
+        return;
         $loader = new XmlFileLoader($containerBuilder, new FileLocator(dirname(__DIR__).'/../config'));
         $loader->load('services.xml');
 

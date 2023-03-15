@@ -5,7 +5,7 @@
         https://symfony.com/schema/dic/services/services-1.0.xsd"
 >
     <services>
-        <service id="gridview.filter_model" class="Fedale\GridviewBundle\Form\FilterModel" autowire="true" autoconfigure="true">
+        <service id="gridview.filter_model" class="Fedale\GridviewBundle\Form\FilterModel" autowire="true" autoconfigure="true"  public="true">
             <argument type="service" id="form.factory"/>
             <!-- <call method="setFormFactory">
                 <argument type="service" id="form.factory"/>
@@ -25,10 +25,12 @@
             
         </service>
 
-        <service id="gridview.filter_model_type" class="Fedale\GridviewBundle\Form\FilterModelType" autowire="true" autoconfigure="true">
+        <service id="gridview.filter_model_type" class="Fedale\GridviewBundle\Form\FilterModelType" autowire="true" autoconfigure="true"  public="true">
             <!-- <argument type="service" id="gridview.gridview" /> -->
-            <!-- <argument type="service" id="gridview.filter_model"/> -->
-            <argument id="gridview.filter_model">\Fedale\GridviewBundle\Form\FilterModel</argument>
+            <argument type="service" id="gridview.filter_model"/>
+            <!-- <argument key="$filterodel">\Fedale\GridviewBundle\Form\FilterModel</argument> -->
+            <!-- <argument id="gridview.filter_model">\Fedale\GridviewBundle\Form\FilterModel</argument> -->
+            <!-- <argument key="$adminEmail">manager@example.com</argument> -->
             <!-- <call method="setGridview">
                 <argument type="service" id="gridview.gridview"/>
             </call> -->

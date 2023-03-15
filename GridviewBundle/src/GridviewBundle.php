@@ -16,7 +16,8 @@ class GridviewBundle extends AbstractBundle
     {
         // load an XML, PHP or Yaml file
         $containerConfigurator->import('../config/services.xml');
-//  dd($config);
+
+        
         $containerConfigurator->services()
             ->set('gridview.template', $config['template'])
         
@@ -34,6 +35,7 @@ class GridviewBundle extends AbstractBundle
                     ->class(ScreamingPrinter::class)
             ;
         }*/
+        // dd($containerConfigurator->services());
     }
 
     public function configure(DefinitionConfigurator $definition): void

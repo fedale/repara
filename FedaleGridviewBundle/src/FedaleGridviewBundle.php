@@ -10,7 +10,7 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 /**
  * Gridview Bundle
  */
-class GridviewBundle extends AbstractBundle
+class FedaleGridviewBundle extends AbstractBundle
 {
     public function loadExtension(array $config, ContainerConfigurator $containerConfigurator, ContainerBuilder $containerBuilder): void
     {
@@ -19,23 +19,12 @@ class GridviewBundle extends AbstractBundle
 
         
         $containerConfigurator->services()
-            ->set('gridview.template', $config['template'])
-        
-            // ->set('gridview.r')
+            ->set('gridview.template', $config['template'])        
         ;
         
-        $containerConfigurator->parameters()
-            ->set('gridview.attr', $config['attr'])
-        ;
-
-        /*
-        if ($config['scream']) {
-            $containerConfigurator->services()
-                ->get('acme_hello.printer')
-                    ->class(ScreamingPrinter::class)
-            ;
-        }*/
-        // dd($containerConfigurator->services());
+        // $containerConfigurator->parameters()
+        //     ->set('gridview.attr', $config['attr'])
+        // ;
     }
 
     public function configure(DefinitionConfigurator $definition): void
@@ -54,5 +43,10 @@ class GridviewBundle extends AbstractBundle
                 ->end()
             ->end()
         ;
+    }
+
+    public function getPath(): string
+    {
+        return \dirname(__DIR__);
     }
 }

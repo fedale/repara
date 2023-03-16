@@ -10,7 +10,7 @@
         },
         {
             "type": "path", 
-            "url":  "../GridviewBundle"
+            "url":  "../FedaleGridviewBundle"
         }
     ],
     "require": {

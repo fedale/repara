@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fb372b6b4839dc2c25c5d1fefb3a5a4a",
+    "content-hash": "6631b457101265dfef79bf7e9a6fb120",
     "packages": [
         {
             "name": "behat/transliterator",
@@ -1871,7 +1871,7 @@
             "version": "dev-main",
             "dist": {
                 "type": "path",
-                "url": "../GridviewBundle",
+                "url": "../FedaleGridviewBundle",
                 "reference": "1b29b0c53ff3987b3efa97ed8d90a0d4d440d90d"
             },
             "require": {

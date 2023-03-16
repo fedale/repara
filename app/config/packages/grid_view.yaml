@@ -1,9 +1,9 @@
-services:
-  App\Grid\Source\Entity:
-    public: true
-    arguments: 
-      - '@doctrine.orm.default_entity_manager'
-  # App\Grid\Gridview:
-  #   arguments:
-  #     - '@twig'
-  # #     - '@doctrine.orm.default_entity_manager'
+# services:
+#   App\Grid\Source\Entity:
+#     public: true
+#     arguments: 
+#       - '@doctrine.orm.default_entity_manager'
+#   # App\Grid\Gridview:
+#   #   arguments:
+#   #     - '@twig'
+#   # #     - '@doctrine.orm.default_entity_manager'

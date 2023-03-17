@@ -47,8 +47,8 @@ class FedaleGridviewBundle extends AbstractBundle
         ;
     }
 
-    // public function getPath(): string
-    // {
-    //     return \dirname(__DIR__);
-    // }
+    public function getPath(): string
+    {
+        return \dirname(__DIR__);
+    }
 }

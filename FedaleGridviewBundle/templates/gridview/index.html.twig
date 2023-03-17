@@ -24,21 +24,21 @@ body {
 
 <div {{ gridview.containerAttr|options}}>
 <table {{ gridview.attr|options }}>
-    {% include '@Gridview/gridview/_header.html.twig' with {'gridview': gridview, 'columns': columns} %}
+    {% include '@FedaleGridview/gridview/_header.html.twig' with {'gridview': gridview, 'columns': columns} %}
 
     {# {% if something %} #}
-        {% include '@Gridview/gridview/_filter.html.twig' with {'gridview': gridview, 'columns': columns, 'form': form} %}
+        {% include '@FedaleGridview/gridview/_filter.html.twig' with {'gridview': gridview, 'columns': columns, 'form': form} %}
     {# {% endif %} #}
 
-    {% include '@Gridview/gridview/_body.html.twig' with {'columns': columns, 'models': models} %}
+    {% include '@FedaleGridview/gridview/_body.html.twig' with {'columns': columns, 'models': models} %}
 
-    {% include '@Gridview/gridview/_footer.html.twig' with {'columns': columns} %}
+    {% include '@FedaleGridview/gridview/_footer.html.twig' with {'columns': columns} %}
 
 </table>
 
 INIZIO PAGINATION
 {# {{ gridPagination(pagination) }} #}
-{% include '@Gridview/gridview/paginator.html.twig' with { 'paginator': pagination } %}
+{% include '@FedaleGridview/gridview/paginator.html.twig' with { 'paginator': pagination } %}
 
 </div>
 {% endblock %}

@@ -18,31 +18,26 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class FilterModelType extends AbstractType
 {
+    //private FilterModel $filterModel;
     // private Gridview $gridview;
     
     
     public function __construct(
-    // // //    private Gridview $gridview
-        //private FilterModelInterface $filterModel
-        private FilterModelInterface $filterModel
-    ) {}
+    // // // //    private Gridview $gridview
+         //private FilterModelInterface $filterModel
+         private FilterModelInterface $filterModel
+     ) {}
     
-    
-    
-    public function setGridview(Gridview $gridview)
-    {        
-        dump($gridview, $this->gridview);
-    }
 
     public function setFilterModel(FilterModel $filterModel)
     {        
-        dump($filterModel);
+        $this->filterModel = $filterModel;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
 
-        // dump($this->filterModel);
+        dump($this->filterModel);
         // dump($this->gridview);
         /*
         foreach ($this->gridview->getFilterModel()->getFilters() as $filter) {

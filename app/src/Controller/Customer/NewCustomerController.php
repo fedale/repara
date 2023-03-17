@@ -11,7 +11,7 @@ use App\Form\Model\CustomerCreateModel;
 use Fedale\GridviewBundle\Column\ColumnInterface;
 use Fedale\GridviewBundle\Component\Pagination;
 use Fedale\GridviewBundle\DataProvider\EntityDataProvider;
-use Fedale\GridviewBundle\Grid\GridView;
+use Fedale\GridviewBundle\Grid\Gridview;
 use Fedale\GridviewBundle\Grid\GridviewBuilder;
 use Fedale\GridviewBundle\Grid\GridviewBuilderFactory;
 use Fedale\GridviewBundle\Source\Entity as SourceEntity;
@@ -175,7 +175,6 @@ class NewCustomerController extends AbstractController
             ->renderGridview();
         ;
 
-        
          /*
          $form->handleRequest($request);
          
@@ -185,7 +184,7 @@ class NewCustomerController extends AbstractController
          */
 
 
-        return $gridview->renderGrid('@Gridview/gridview/index.html.twig', ['pagination' => $pagination]); //, 'form' => $form->createView()]);
+        return $gridview->renderGrid('@FedaleGridview/gridview/index.html.twig', ['pagination' => $pagination]); //, 'form' => $form->createView()]);
     }
 
     #[Route('/grid2', name: 'new_app_grid2', methods: ['GET'])]

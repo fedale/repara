@@ -169,7 +169,6 @@ class Gridview implements GridviewInterface
     {   
         $formFactory = \Symfony\Component\Form\Forms::createFormFactory();
         $this->setFilterModel(new FilterModel($formFactory));
-        dump($this->getFilterModel());
 
         // $obj = new $type($this->getFilterModel());
         // dump($obj);
@@ -312,9 +311,8 @@ class Gridview implements GridviewInterface
             'form' => $this->filterModel->getBuilder()->createView(), //$parameters['form'],
             'pagination' => $parameters['pagination']
         ];
-
-        // \array_merge($parameters, $par)
         
+        // \array_merge($parameters, $par)
         $content = $this->twig->render($view, $parameters);
 
         $response = new Response();

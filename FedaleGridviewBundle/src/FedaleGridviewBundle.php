@@ -12,19 +12,21 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
  */
 class FedaleGridviewBundle extends AbstractBundle
 {
+    protected string $extensionAlias = 'gridview'; 
+
     public function loadExtension(array $config, ContainerConfigurator $containerConfigurator, ContainerBuilder $containerBuilder): void
     {
         // load an XML, PHP or Yaml file
         $containerConfigurator->import('../config/services.xml');
 
-        
         $containerConfigurator->services()
             ->set('gridview.template', $config['template'])        
         ;
-        
+        // dd($containerConfigurator->getContainer());
         // $containerConfigurator->parameters()
         //     ->set('gridview.attr', $config['attr'])
         // ;
+       
     }
 
     public function configure(DefinitionConfigurator $definition): void
@@ -45,8 +47,8 @@ class FedaleGridviewBundle extends AbstractBundle
         ;
     }
 
-    public function getPath(): string
-    {
-        return \dirname(__DIR__);
-    }
+    // public function getPath(): string
+    // {
+    //     return \dirname(__DIR__);
+    // }
 }

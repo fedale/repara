@@ -14,11 +14,12 @@
             <argument type="service" id="twig"/>
             <call method="setFilterModel">
                 <argument type="service" id="gridview.filter_model"/>
-            </call>           
+            </call>
         </service>
 
         <service id="gridview.filter_model_type" class="Fedale\GridviewBundle\Form\FilterModelType">
             <argument type="service" id="gridview.filter_model"/>
+            <tag name="form.type"/>
         </service>
         <service id="Fedale\GridviewBundle\Form\FilterModelType" alias="gridview.filter_model_type"/>
 

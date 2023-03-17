@@ -169,6 +169,7 @@ class Gridview implements GridviewInterface
     {   
         $formFactory = \Symfony\Component\Form\Forms::createFormFactory();
         $this->setFilterModel(new FilterModel($formFactory));
+        dump($this->getFilterModel());
 
         // $obj = new $type($this->getFilterModel());
         // dump($obj);

@@ -10,11 +10,13 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Doctrine\Common\Collections\Criteria;
+use Doctrine\ORM\EntityManagerInterface;
 use Fedale\GridviewBundle\Form\FilterModel;
 use Fedale\GridviewBundle\Form\FilterModelInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class FilterModelType extends AbstractType
 {
@@ -25,7 +27,8 @@ class FilterModelType extends AbstractType
     public function __construct(
     // // // //    private Gridview $gridview
          //private FilterModelInterface $filterModel
-         private FilterModelInterface $filterModel
+         //private FilterModelInterface $filterModel
+         private RequestStack $requestStack
      ) {}
     
 

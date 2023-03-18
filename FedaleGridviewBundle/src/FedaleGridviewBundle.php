@@ -22,7 +22,7 @@ class FedaleGridviewBundle extends AbstractBundle
         $containerConfigurator->services()
             ->set('gridview.template', $config['template'])        
         ;
-        // dd($containerConfigurator->getContainer());
+        $containerConfigurator->services();
         // $containerConfigurator->parameters()
         //     ->set('gridview.attr', $config['attr'])
         // ;

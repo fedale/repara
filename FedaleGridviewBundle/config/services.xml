@@ -5,23 +5,25 @@
         https://symfony.com/schema/dic/services/services-1.0.xsd"
 >
     <services>
-        <service id="gridview.filter_model" class="Fedale\GridviewBundle\Form\FilterModel">
+        <defaults autowire="true" autoconfigure="true"/>
+        <service id="fedale_gridview.filter_model" class="Fedale\GridviewBundle\Form\FilterModel">
             <argument type="service" id="form.factory"/>
         </service>
-        <service id="Fedale\GridviewBundle\Form\FilterModel" alias="gridview.filter_model"/>
+        <service id="Fedale\GridviewBundle\Form\FilterModel" alias="fedale_gridview.filter_model"/>
 
-        <service id="gridview.gridview" class="Fedale\GridviewBundle\Grid\Gridview">
+        <service id="fedale_gridview.gridview" class="Fedale\GridviewBundle\Grid\Gridview">
             <argument type="service" id="twig"/>
             <call method="setFilterModel">
-                <argument type="service" id="gridview.filter_model"/>
+                <argument type="service" id="fedale_gridview.filter_model"/>
             </call>
         </service>
 
-        <service id="gridview.filter_model_type" class="Fedale\GridviewBundle\Form\FilterModelType">
-            <argument type="service" id="gridview.filter_model"/>
+        <service id="fedale_gridview.filter_model_type" class="Fedale\GridviewBundle\Form\FilterModelType">
+            <!-- <argument type="service" id="fedale_gridview.filter_model"/> -->
+            <argument type="service" id="request_stack"/>
             <tag name="form.type"/>
         </service>
-        <service id="Fedale\GridviewBundle\Form\FilterModelType" alias="gridview.filter_model_type"/>
+        <service id="Fedale\GridviewBundle\Form\FilterModelType" alias="fedale_gridview.filter_model_type"/>
 
         <service id="twig.extension.stringloader" class="Twig\Extension\StringLoaderExtension">
             <tag name="twig.extension"/>
@@ -30,50 +32,50 @@
             <tag name="twig.extension"/>
         </service>
 
-        <service id="gridview.builder_factory" class="Fedale\GridviewBundle\Grid\GridviewBuilderFactory">
+        <service id="fedale_gridview.builder_factory" class="Fedale\GridviewBundle\Grid\GridviewBuilderFactory">
             <argument type="service" id="twig"/>
         </service>
-        <service id="Fedale\GridviewBundle\Grid\GridviewBuilderFactory" alias="gridview.builder_factory"/>
+        <service id="Fedale\GridviewBundle\Grid\GridviewBuilderFactory" alias="fedale_gridview.builder_factory"/>
                      
         <service id="Fedale\GridviewBundle\DataProvider\EntityDataProvider">
             <argument type="service" id="debug.event_dispatcher"/>
             <call method="setSort">
-                <argument type="service" id="gridview.sort"/>
+                <argument type="service" id="fedale_gridview.sort"/>
             </call>
             <call method="setPagination">
-                <argument type="service" id="gridview.pagination"/>
+                <argument type="service" id="fedale_gridview.pagination"/>
             </call>
             <call method="setFilterModel">
-                <argument type="service" id="gridview.filter_model"/>
+                <argument type="service" id="fedale_gridview.filter_model"/>
             </call>
         </service>
         <service id="Fedale\GridviewBundle\DataProvider\DataProviderInterface" alias="Fedale\GridviewBundle\DataProvider\EntityDataProvider"/>
 
-        <service id="gridview.sort" class="Fedale\GridviewBundle\Component\Sort">     
+        <service id="fedale_gridview.sort" class="Fedale\GridviewBundle\Component\Sort">     
             <argument type="service" id="request_stack"/>
             <argument type="service" id="router.default"/>
         </service>
-        <service id="Fedale\GridviewBundle\Component\SortInterface" alias="gridview.sort"/>
+        <service id="Fedale\GridviewBundle\Component\SortInterface" alias="fedale_gridview.sort"/>
                      
-        <service id="gridview.pagination" class="Fedale\GridviewBundle\Component\Pagination">
+        <service id="fedale_gridview.pagination" class="Fedale\GridviewBundle\Component\Pagination">
             <argument type="service" id="request_stack"/>
         </service>
-        <service id="Fedale\GridviewBundle\Component\PaginationInterface" alias="gridview.pagination"/>
+        <service id="Fedale\GridviewBundle\Component\PaginationInterface" alias="fedale_gridview.pagination"/>
 
         
-        <service id="Fedale\GridviewBundle\Grid\GridviewInterface" alias="gridview.gridview"/>
+        <service id="Fedale\GridviewBundle\Grid\GridviewInterface" alias="fedale_gridview.gridview"/>
 
-        <service id="gridview.row_subscriber" class="Fedale\GridviewBundle\EventSubscriber\RowSubscriber">
+        <service id="fedale_gridview.row_subscriber" class="Fedale\GridviewBundle\EventSubscriber\RowSubscriber">
             <tag name="kernel.event_subscriber"/>
         </service>
 
-        <service id="gridview.pagination_view" class="Fedale\GridviewBundle\Component\PaginationView">
+        <service id="fedale_gridview.pagination_view" class="Fedale\GridviewBundle\Component\PaginationView">
             <argument type="service" id="request_stack"/>
             <argument type="service" id="router"/>
         </service>
 
-        <!-- <service id="gridview.pagination_extension" class="Fedale\GridviewBundle\Twig\PaginationExtension">
-            <argument type="service" id="gridview.pagination_view"/>
+        <!-- <service id="fedale_gridview.pagination_extension" class="Fedale\GridviewBundle\Twig\PaginationExtension">
+            <argument type="service" id="fedale_gridview.pagination_view"/>
             <tag name="twig.extension"/>
         </service> -->
         

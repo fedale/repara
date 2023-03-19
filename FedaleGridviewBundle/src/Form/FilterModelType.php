@@ -25,10 +25,7 @@ class FilterModelType extends AbstractType
     
     
     public function __construct(
-    // // // //    private Gridview $gridview
-         //private FilterModelInterface $filterModel
-         //private FilterModelInterface $filterModel
-         private RequestStack $requestStack
+        private FilterModel $filterModel
      ) {}
     
 
@@ -40,7 +37,6 @@ class FilterModelType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
 
-        dump($this->filterModel);
         // dump($this->gridview);
         /*
         foreach ($this->gridview->getFilterModel()->getFilters() as $filter) {

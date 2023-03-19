@@ -5,7 +5,7 @@
         'type' => 'symfony-bundle',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => '8c682e94b9405f50854140c0a59c9186c0e5b695',
+        'reference' => 'c570006447dda59864b13b28a8c84d6da4c2274f',
         'name' => 'fedale/gridview-bundle',
         'dev' => true,
     ),
@@ -16,7 +16,7 @@
             'type' => 'symfony-bundle',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => '8c682e94b9405f50854140c0a59c9186c0e5b695',
+            'reference' => 'c570006447dda59864b13b28a8c84d6da4c2274f',
             'dev_requirement' => false,
         ),
         'psr/cache' => array(

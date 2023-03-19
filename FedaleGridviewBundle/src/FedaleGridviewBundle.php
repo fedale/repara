@@ -19,10 +19,9 @@ class FedaleGridviewBundle extends AbstractBundle
         // load an XML, PHP or Yaml file
         $containerConfigurator->import('../config/services.xml');
 
-        $containerConfigurator->services()
-            ->set('gridview.template', $config['template'])        
-        ;
-        $containerConfigurator->services();
+        // $containerConfigurator->services()
+        //     ->set('gridview.template', $config['template'])        
+        // ;
         // $containerConfigurator->parameters()
         //     ->set('gridview.attr', $config['attr'])
         // ;
@@ -46,6 +45,12 @@ class FedaleGridviewBundle extends AbstractBundle
             ->end()
         ;
     }
+
+//     public function build(ContainerBuilder $container): void
+//   {
+//       $container->addCompilerPass($this);
+//       //$container->addCompilerPass(new RegisterServiceSubscribersPass());
+//   }
 
     public function getPath(): string
     {

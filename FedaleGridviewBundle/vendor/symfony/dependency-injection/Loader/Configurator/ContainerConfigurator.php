@@ -71,7 +71,6 @@ class ContainerConfigurator extends AbstractConfigurator
 
     final public function services(): ServicesConfigurator
     {
-        dd($this->container);
         return new ServicesConfigurator($this->container, $this->loader, $this->instanceof, $this->path, $this->anonymousCount);
     }
 

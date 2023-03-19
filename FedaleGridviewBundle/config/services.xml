@@ -5,9 +5,10 @@
         https://symfony.com/schema/dic/services/services-1.0.xsd"
 >
     <services>
-        <defaults autowire="true" autoconfigure="true"/>
+        <!-- <defaults autowire="true" autoconfigure="true"/> -->
         <service id="fedale_gridview.filter_model" class="Fedale\GridviewBundle\Form\FilterModel">
             <argument type="service" id="form.factory"/>
+            <tag name="kernel"/>
         </service>
         <service id="Fedale\GridviewBundle\Form\FilterModel" alias="fedale_gridview.filter_model"/>
 
@@ -18,9 +19,9 @@
             </call>
         </service>
 
-        <service id="fedale_gridview.filter_model_type" class="Fedale\GridviewBundle\Form\FilterModelType">
+        <service id="fedale_gridview.filter_model_type" class="Fedale\GridviewBundle\Form\FilterModelType" autowire="true" autoconfigure="true" public="true">
             <!-- <argument type="service" id="fedale_gridview.filter_model"/> -->
-            <argument type="service" id="request_stack"/>
+            <!-- <argument type="service" id="request_stack"/> -->
             <tag name="form.type"/>
         </service>
         <service id="Fedale\GridviewBundle\Form\FilterModelType" alias="fedale_gridview.filter_model_type"/>

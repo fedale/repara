@@ -153,7 +153,13 @@ class NewCustomerController extends AbstractController
         $dataProvider->setSort($sort);
       //  $dataProvider->setPagination($pagination);
 
-//        $form = $this->createForm(FilterModelType::class, [], ['method' => 'GET']);
+    //    $formFactory = \Symfony\Component\Form\Forms::createFormFactory();
+    //     dump($formFactory);
+        //  $form = $formFactory->create(FilterModelType::class, [], ['method' => 'GET']);// dd($formFactory);
+        
+   //     $form = $this->createForm(FilterModelType::class, [], ['method' => 'GET']);
+
+        // dd($form);
         // Order matters! Try to switch setColumns() / setFilterModel()
         $gridview = $this->createGridviewBuilder()
             ->setDataProvider($dataProvider)

@@ -12,16 +12,15 @@
         </service>
         <service id="Fedale\GridviewBundle\Form\FilterModel" alias="fedale_gridview.filter_model"/>
 
-        <service id="fedale_gridview.gridview" class="Fedale\GridviewBundle\Grid\Gridview">
+        <service id="fedale_gridview.gridview" class="Fedale\GridviewBundle\Grid\Gridview" autowire="true" autoconfigure="true">
             <argument type="service" id="twig"/>
-            <call method="setFilterModel">
+            <!-- <call method="setFilterModel">
                 <argument type="service" id="fedale_gridview.filter_model"/>
-            </call>
+            </call> -->
         </service>
 
-        <service id="fedale_gridview.filter_model_type" class="Fedale\GridviewBundle\Form\FilterModelType" autowire="true" autoconfigure="true" public="true">
-            <!-- <argument type="service" id="fedale_gridview.filter_model"/> -->
-            <!-- <argument type="service" id="request_stack"/> -->
+        <service id="fedale_gridview.filter_model_type" class="Fedale\GridviewBundle\Form\FilterModelType">
+            <argument type="service" id="fedale_gridview.filter_model"/>
             <tag name="form.type"/>
         </service>
         <service id="Fedale\GridviewBundle\Form\FilterModelType" alias="fedale_gridview.filter_model_type"/>

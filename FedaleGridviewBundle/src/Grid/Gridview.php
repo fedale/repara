@@ -10,6 +10,7 @@ use Fedale\GridviewBundle\Column\ColumnInterface;
 use Fedale\GridviewBundle\Form\FilterModelType;
 use Fedale\GridviewBundle\Form\FilterModelInterface;
 use Symfony\Component\Form\FormFactory;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Contracts\Service\Attribute\Required;
 
 class Gridview implements GridviewInterface
@@ -87,11 +88,11 @@ class Gridview implements GridviewInterface
      */
     public FilterModelType $filterModelType;
     
-    public FilterModel $filterModel;
+    public ?FilterModel $filterModel = null;
 
-    private FormFactory $formFactory;
+    private FormFactoryInterface $formFactory;
 
-    public function __construct(private Environment $twig)
+    public function __construct(private Environment $twig, )
     {
         $this->columns = new ArrayCollection();
         
@@ -149,12 +150,13 @@ class Gridview implements GridviewInterface
         $this->columns->add($column);
     }
 
-    public function getFilterModel(): FilterModel
+    public function getFilterModel(): ?FilterModel
     {
         return $this->filterModel;
     }
     
-    public function setFilterModel(FilterModel $filterModel): void
+    #[Required]
+    public function setFilterModel(?FilterModel $filterModel): void
     {
         $this->filterModel = $filterModel;
     }
@@ -167,13 +169,16 @@ class Gridview implements GridviewInterface
 
     public function setFilterModelType($type, $data = null, $options = []) 
     {   
-        $formFactory = \Symfony\Component\Form\Forms::createFormFactory();
-        $this->setFilterModel(new FilterModel($formFactory));
+        // $formFactory = \Symfony\Component\Form\Forms::createFormFactory();
+        // $form = $formFactory->create($type, $data, $options);;// 
+        // $this->setFilterModel(new FilterModel($formFactory));
 
-        // $obj = new $type($this->getFilterModel());
-        // dump($obj);
-        // dd($type);
-        $this->filterModel->setModelType($type, $data, $options);
+        // // $obj = new $type($this->getFilterModel());
+        // // dump($obj);
+        // // dd($type);
+        
+            $this->filterModel->setModelType($type, $data, $options);
+        
     }
     
     public function getDataProvider()

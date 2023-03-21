@@ -16,6 +16,7 @@ class FilterModel implements FilterModelInterface
     private ArrayCollection $filters;
     
     public function __construct(private FormFactoryInterface $formFactory) {
+        dump('FormModel contructor');
         $this->filters = new ArrayCollection();
     }
 

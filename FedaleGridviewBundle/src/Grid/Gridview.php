@@ -94,6 +94,7 @@ class Gridview implements GridviewInterface
 
     public function __construct(private Environment $twig, )
     {
+        dump('Gridview contructor');
         $this->columns = new ArrayCollection();
         
      //   $this->attr = array();
@@ -150,17 +151,17 @@ class Gridview implements GridviewInterface
         $this->columns->add($column);
     }
 
-    public function getFilterModel(): ?FilterModel
+    public function getFilterModel(): FilterModel
     {
         return $this->filterModel;
     }
     
-    #[Required]
-    public function setFilterModel(?FilterModel $filterModel): void
+    public function setFilterModel(FilterModelInterface $filterModel): self
     {
+        dump('setFilterModel method');
         $this->filterModel = $filterModel;
+        return $this;
     }
-
     
     public function getFilterModelType()
     {
@@ -177,7 +178,9 @@ class Gridview implements GridviewInterface
         // // dump($obj);
         // // dd($type);
         
+        if (isset($this->filterModel) ) {
             $this->filterModel->setModelType($type, $data, $options);
+        }
         
     }
     
@@ -212,7 +215,10 @@ class Gridview implements GridviewInterface
 
                 $column->setGridview($this);
                 if ($column->filter) {
-                    $this->getFilterModel()->addFilter($column->getAttribute(), TextType::class, []);
+                    dump('columns has a filter');
+                    if (isset($this->filterModel)) {
+                        $this->getFilterModel()->addFilter($column->getAttribute(), TextType::class, []);
+                    }
                 }
                 $this->addColumn($column);
             }
@@ -313,9 +319,13 @@ class Gridview implements GridviewInterface
             'gridview' => $this,
             'columns' => $this->columns,
             'models' => $this->dataProvider->getData(),
-            'form' => $this->filterModel->getBuilder()->createView(), //$parameters['form'],
+            
             'pagination' => $parameters['pagination']
         ];
+
+        if (isset($this->filterModel)) {
+            $parameters['form'] = $this->filterModel ?? $this->filterModel->getBuilder()->createView(); //$parameters['form'],
+        }
         
         // \array_merge($parameters, $par)
         $content = $this->twig->render($view, $parameters);

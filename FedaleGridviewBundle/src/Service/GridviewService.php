@@ -1,9 +1,19 @@
 <?php
 namespace Fedale\GridviewBundle\Service;
 
-class GridService
+use Fedale\GridviewBundle\Form\FilterModel;
+
+class GridviewService
 {
     public array $attr = [];
+
+    public function __construct(private FilterModel $filterModel)
+    {}
+
+    public function getFilterModel()
+    {
+        return $this->filterModel;
+    }
 
     public function setAttr(string $key, string $value, $replace = false)
     {

@@ -9,6 +9,7 @@ use Fedale\GridviewBundle\Form\FilterModel;
 use Fedale\GridviewBundle\Column\ColumnInterface;
 use Fedale\GridviewBundle\Form\FilterModelType;
 use Fedale\GridviewBundle\Form\FilterModelInterface;
+use Fedale\GridviewBundle\Service\GridviewService;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Contracts\Service\Attribute\Required;
@@ -92,12 +93,9 @@ class Gridview implements GridviewInterface
 
     private FormFactoryInterface $formFactory;
 
-    public function __construct(private Environment $twig, )
+    public function __construct(private Environment $twig, private GridviewService $gridviewService)
     {
-        dump('Gridview contructor');
         $this->columns = new ArrayCollection();
-        
-     //   $this->attr = array();
     }
 
     /**
@@ -156,11 +154,9 @@ class Gridview implements GridviewInterface
         return $this->filterModel;
     }
     
-    public function setFilterModel(FilterModelInterface $filterModel): self
+    public function setFilterModel(FilterModelInterface $filterModel): void
     {
-        dump('setFilterModel method');
         $this->filterModel = $filterModel;
-        return $this;
     }
     
     public function getFilterModelType()
@@ -170,17 +166,11 @@ class Gridview implements GridviewInterface
 
     public function setFilterModelType($type, $data = null, $options = []) 
     {   
-        // $formFactory = \Symfony\Component\Form\Forms::createFormFactory();
-        // $form = $formFactory->create($type, $data, $options);;// 
-        // $this->setFilterModel(new FilterModel($formFactory));
-
-        // // $obj = new $type($this->getFilterModel());
-        // // dump($obj);
-        // // dd($type);
-        
+        $this->gridviewService->getFilterModel()->setModelType($type, $data, $options);
+        /*
         if (isset($this->filterModel) ) {
             $this->filterModel->setModelType($type, $data, $options);
-        }
+        }*/
         
     }
     

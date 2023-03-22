@@ -13,22 +13,18 @@
 
         <service id="fedale_gridview.gridview" class="Fedale\GridviewBundle\Grid\Gridview">
             <argument type="service" id="twig"/>
-            <!-- <call method="setFilterModel">
-                <argument type="service" id="fedale_gridview.filter_model"/>
-            </call> -->
+            <argument type="service" id="fedale_gridview.gridview_service"/>
         </service>
         <service id="Fedale\GridviewBundle\Grid\GridviewInterface" alias="fedale_gridview.gridview"/>
 
         <service id="fedale_gridview.gridview_builder" class="Fedale\GridviewBundle\Grid\GridviewBuilder">
             <argument type="service" id="twig"/>
-            <call method="setFilterModel">
-                <argument type="service" id="fedale_gridview.filter_model"/>
-            </call>
+            <argument type="service" id="fedale_gridview.gridview_service"/>
         </service>
         <service id="Fedale\GridviewBundle\Grid\GridviewBuilder" alias="fedale_gridview.gridview_builder"/>
 
         <service id="fedale_gridview.filter_model_type" class="Fedale\GridviewBundle\Form\FilterModelType">
-            <argument type="service" id="fedale_gridview.filter_model"/>
+            <argument type="service" id="fedale_gridview.gridview_service"/>
             <tag name="form.type"/>
         </service>
         <service id="Fedale\GridviewBundle\Form\FilterModelType" alias="fedale_gridview.filter_model_type"/>
@@ -42,7 +38,7 @@
 
         <service id="fedale_gridview.builder_factory" class="Fedale\GridviewBundle\Grid\GridviewBuilderFactory">
             <argument type="service" id="twig"/>
-            <!-- <argument type="service" id="fedale_gridview.filter_model"/> -->
+            <argument type="service" id="fedale_gridview.gridview_service"/>
         </service>
         <service id="Fedale\GridviewBundle\Grid\GridviewBuilderFactory" alias="fedale_gridview.builder_factory"/>
                      
@@ -79,6 +75,11 @@
             <argument type="service" id="request_stack"/>
             <argument type="service" id="router"/>
         </service>
+
+        <service id="fedale_gridview.gridview_service" class="Fedale\GridviewBundle\Service\GridviewService">
+            <argument type="service" id="fedale_gridview.filter_model"/>
+        </service>
+        <service id="Fedale\GridviewBundle\Service\GridviewService" alias="fedale_gridview.gridview_service"/>
 
         <!-- <service id="fedale_gridview.pagination_extension" class="Fedale\GridviewBundle\Twig\PaginationExtension">
             <argument type="service" id="fedale_gridview.pagination_view"/>

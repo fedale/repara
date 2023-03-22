@@ -13,6 +13,7 @@ use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManagerInterface;
 use Fedale\GridviewBundle\Form\FilterModel;
 use Fedale\GridviewBundle\Form\FilterModelInterface;
+use Fedale\GridviewBundle\Service\GridviewService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -25,19 +26,14 @@ class FilterModelType extends AbstractType
     
     
     public function __construct(
-        private FilterModel $filterModel
+        private GridviewService $gridviewService
      ) {}
     
-
-    public function setFilterModel(FilterModel $filterModel)
-    {        
-        $this->filterModel = $filterModel;
-    }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
 
-        dump($this->filterModel);
+        dump($this->gridviewService);
         /*
         foreach ($this->gridview->getFilterModel()->getFilters() as $filter) {
             dump($filter);
@@ -94,7 +90,6 @@ class FilterModelType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-       // dd($resolver);
     }
 
     public function setModel()

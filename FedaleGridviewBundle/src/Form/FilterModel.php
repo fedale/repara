@@ -6,11 +6,12 @@ use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormBuilderInterface;
 use Doctrine\Common\Collections\Criteria;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\Form;
 
 class FilterModel implements FilterModelInterface
 {
     
-    private $builder;
+    private Form $modelType;
     private Criteria $criteria;
 
     private ArrayCollection $filters;
@@ -61,13 +62,13 @@ class FilterModel implements FilterModelInterface
         $this->formFactory = $formFactory;
     }
 
-    public function getBuilder()
+    public function getModelType()
     {
-        return $this->builder;
+        return $this->modelType;
     }
 
     public function setModelType($type, $data, $options)
     {
-        $form = $this->formFactory->create($type, $data, $options);
+        $this->modelType = $this->formFactory->create($type, $data, $options);
     }
 } 

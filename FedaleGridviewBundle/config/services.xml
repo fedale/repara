@@ -37,7 +37,6 @@
         </service>
 
         <service id="fedale_gridview.builder_factory" class="Fedale\GridviewBundle\Grid\GridviewBuilderFactory">
-            <argument type="service" id="twig"/>
             <argument type="service" id="fedale_gridview.gridview_service"/>
         </service>
         <service id="Fedale\GridviewBundle\Grid\GridviewBuilderFactory" alias="fedale_gridview.builder_factory"/>
@@ -77,7 +76,10 @@
         </service>
 
         <service id="fedale_gridview.gridview_service" class="Fedale\GridviewBundle\Service\GridviewService">
-            <argument type="service" id="fedale_gridview.filter_model"/>
+            <argument type="service" id="twig"/>
+            <call method="setFilterModel">
+                <argument type="service" id="fedale_gridview.filter_model"/>
+            </call>
         </service>
         <service id="Fedale\GridviewBundle\Service\GridviewService" alias="fedale_gridview.gridview_service"/>
 

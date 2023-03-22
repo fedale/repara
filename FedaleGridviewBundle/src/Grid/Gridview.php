@@ -93,9 +93,12 @@ class Gridview implements GridviewInterface
 
     private FormFactoryInterface $formFactory;
 
-    public function __construct(private Environment $twig, private GridviewService $gridviewService)
+    private Environment $twig;
+
+    public function __construct(private GridviewService $gridviewService)
     {
         $this->columns = new ArrayCollection();
+        $this->twig = $this->gridviewService->getEnvironment();
     }
 
     /**
@@ -154,10 +157,10 @@ class Gridview implements GridviewInterface
         return $this->filterModel;
     }
     
-    public function setFilterModel(FilterModelInterface $filterModel): void
-    {
-        $this->filterModel = $filterModel;
-    }
+    // public function setFilterModel(FilterModelInterface $filterModel): void
+    // {
+    //     $this->filterModel = $filterModel;
+    // }
     
     public function getFilterModelType()
     {
@@ -309,12 +312,12 @@ class Gridview implements GridviewInterface
             'gridview' => $this,
             'columns' => $this->columns,
             'models' => $this->dataProvider->getData(),
-            
+            'form' => $this->gridviewService->getFilterModel()->getModelType()->createView(),
             'pagination' => $parameters['pagination']
         ];
 
         if (isset($this->filterModel)) {
-            $parameters['form'] = $this->filterModel ?? $this->filterModel->getBuilder()->createView(); //$parameters['form'],
+            $parameters['form'] = $this->filterModel; // ?? $this->filterModel->getBuilder()->createView(); //$parameters['form'],
         }
         
         // \array_merge($parameters, $par)

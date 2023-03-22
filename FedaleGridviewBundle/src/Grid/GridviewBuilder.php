@@ -22,17 +22,14 @@ class GridviewBuilder implements GridviewBuilderInterface
     private Gridview $gridview;
     // private $request;
 
-    public function __construct(
-        private Environment $twig,
-        private GridviewService $gridviewService
-    )
+    public function __construct(private GridviewService $gridviewService)
     {
         $this->reset();
     }
 
     public function reset()
     {
-        $this->gridview = new Gridview($this->twig, $this->gridviewService);
+        $this->gridview = new Gridview($this->gridviewService);
     }
 
     public function setColumns(array $columns)
@@ -48,7 +45,6 @@ class GridviewBuilder implements GridviewBuilderInterface
 
         return $this;
     }
-
     
     public function setFilterModelType($filterModelType, $data = null, $options = [])
     {

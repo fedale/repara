@@ -1,11 +1,14 @@
 <?php
 namespace Fedale\GridviewBundle\Grid;
+
+use Fedale\GridviewBundle\Form\FilterModelInterface;
 use Twig\Environment;
 
 class GridviewBuilderFactory 
 {
     public function __construct(
         private Environment $twig,
+        // private FilterModelInterface $filterModel
     ) {}
 
     public function createGridviewBuilder(): GridviewBuilderInterface

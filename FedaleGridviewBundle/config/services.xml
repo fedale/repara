@@ -13,10 +13,19 @@
 
         <service id="fedale_gridview.gridview" class="Fedale\GridviewBundle\Grid\Gridview">
             <argument type="service" id="twig"/>
+            <!-- <call method="setFilterModel">
+                <argument type="service" id="fedale_gridview.filter_model"/>
+            </call> -->
+        </service>
+        <service id="Fedale\GridviewBundle\Grid\GridviewInterface" alias="fedale_gridview.gridview"/>
+
+        <service id="fedale_gridview.gridview_builder" class="Fedale\GridviewBundle\Grid\GridviewBuilder">
+            <argument type="service" id="twig"/>
             <call method="setFilterModel">
                 <argument type="service" id="fedale_gridview.filter_model"/>
             </call>
         </service>
+        <service id="Fedale\GridviewBundle\Grid\GridviewBuilder" alias="fedale_gridview.gridview_builder"/>
 
         <service id="fedale_gridview.filter_model_type" class="Fedale\GridviewBundle\Form\FilterModelType">
             <argument type="service" id="fedale_gridview.filter_model"/>
@@ -33,10 +42,11 @@
 
         <service id="fedale_gridview.builder_factory" class="Fedale\GridviewBundle\Grid\GridviewBuilderFactory">
             <argument type="service" id="twig"/>
+            <!-- <argument type="service" id="fedale_gridview.filter_model"/> -->
         </service>
         <service id="Fedale\GridviewBundle\Grid\GridviewBuilderFactory" alias="fedale_gridview.builder_factory"/>
                      
-        <service id="Fedale\GridviewBundle\DataProvider\EntityDataProvider">
+        <service id="fedale_gridview.entity_data_provider" class="Fedale\GridviewBundle\DataProvider\EntityDataProvider">
             <argument type="service" id="debug.event_dispatcher"/>
             <call method="setSort">
                 <argument type="service" id="fedale_gridview.sort"/>
@@ -48,7 +58,7 @@
                 <argument type="service" id="fedale_gridview.filter_model"/>
             </call>
         </service>
-        <service id="Fedale\GridviewBundle\DataProvider\DataProviderInterface" alias="Fedale\GridviewBundle\DataProvider\EntityDataProvider"/>
+        <service id="Fedale\GridviewBundle\DataProvider\DataProviderInterface" alias="fedale_gridview.entity_data_provider"/>
 
         <service id="fedale_gridview.sort" class="Fedale\GridviewBundle\Component\Sort">     
             <argument type="service" id="request_stack"/>
@@ -60,9 +70,6 @@
             <argument type="service" id="request_stack"/>
         </service>
         <service id="Fedale\GridviewBundle\Component\PaginationInterface" alias="fedale_gridview.pagination"/>
-
-        
-        <service id="Fedale\GridviewBundle\Grid\GridviewInterface" alias="fedale_gridview.gridview"/>
 
         <service id="fedale_gridview.row_subscriber" class="Fedale\GridviewBundle\EventSubscriber\RowSubscriber">
             <tag name="kernel.event_subscriber"/>

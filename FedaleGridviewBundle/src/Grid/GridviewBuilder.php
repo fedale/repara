@@ -2,8 +2,8 @@
 namespace Fedale\GridviewBundle\Grid;
 
 use Fedale\GridviewBundle\DataProvider\DataProviderInterface;
+use Fedale\GridviewBundle\Form\FilterModelInterface;
 use Fedale\GridviewBundle\Form\FilterModelType;
-use Fedale\GridviewBundle\Form\Service\FilterModelInterface;
 // use Doctrine\Common\Collections\ArrayCollection;
 // use Doctrine\ORM\EntityManager;
 // use Doctrine\ORM\EntityManagerInterface;
@@ -17,6 +17,7 @@ use Twig\Environment;
 
 class GridviewBuilder implements GridviewBuilderInterface 
 {
+    private FilterModelInterface $filterModel;
     private Gridview $gridview;
     // private $request;
 
@@ -51,9 +52,16 @@ class GridviewBuilder implements GridviewBuilderInterface
         return $this;
     }
 
+    public function setFilterModel(FilterModelInterface $filterModel): self
+    {
+        dump('setFilterModel method');
+        $this->filterModel = $filterModel;
+        return $this;
+    }
     
     public function setFilterModelType($filterModelType, $data = null, $options = [])
     {
+        $this->gridview->setFilterModel($this->filterModel);
         $this->gridview->setFilterModelType($filterModelType, $data, $options);
         
         return $this;

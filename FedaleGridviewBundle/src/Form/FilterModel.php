@@ -33,14 +33,9 @@ class FilterModel implements FilterModelInterface
 
     public function addFilter($filter)
     {
+        $this->modelType->add($filter);
         $this->filters->add($filter);
     }
-
-    /*
-    public function add(string $name, $class, array $options) {
-        
-        $this->builder->add($name, $class, $options);
-    }*/
 
     public function getCriteria(): Criteria|null
     {
@@ -51,11 +46,6 @@ class FilterModel implements FilterModelInterface
     {
         $this->criteria = $criteria;
     }
-
-    // public function setFilter(string $filter) 
-    // {
-    //     $this->filter = $filter;
-    // }
 
     public function setFormFactory(FormFactoryInterface $formFactory)
     {

@@ -32,26 +32,13 @@ class FilterModelType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-
-        dump($this->gridviewService);
-        /*
-        foreach ($this->gridview->getFilterModel()->getFilters() as $filter) {
-            dump($filter);
-            $builder->add($filter, TextType::class, ['required' => false]);
-        }*/
-        
-        $builder->add('id', TextType::class, ['required' => false]);
-        $builder->add('code', TextType::class, ['required' => false]);
-        $builder->add('email', TextType::class, ['required' => false]);
-        $builder->add('profile_fullname', TextType::class, ['required' => false]);
-        $builder->add('locations', TextType::class, ['required' => false]);
-       
         $builder->add('save', SubmitType::class, [
             'attr' => ['class' => 'save'],
         ]);
 
         
         $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
+            dump('POST_SUBMIT');
             $data = $event->getData();
             $criteria = Criteria::create();
             $expr = Criteria::expr();
@@ -82,6 +69,7 @@ class FilterModelType extends AbstractType
             $this->gridview->getFilterModel()->setCriteria($criteria);
                 
         });
+
         
     }    
 
@@ -92,10 +80,6 @@ class FilterModelType extends AbstractType
     {
     }
 
-    public function setModel()
-    {
-        dd('setmodel)');
-    }
 
 }
 

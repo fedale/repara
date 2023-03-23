@@ -1,9 +1,12 @@
+
 <thead id="" class="filter" data="">
     <tr class="">
         {{ form_start(form) }}
         {% for column in columns %}
         <th class="">
-            {{ form_widget(form[column.attribute], {'attr': {'class': 'foo'}}) }}
+        {% if form[column.attribute] is defined %}
+                {{ form_widget(form[column.attribute], {'attr': {'class': 'foo'}}) }}
+        {% endif %}
         </th>
         {% endfor %}
         {{ form_widget(form.save) }}

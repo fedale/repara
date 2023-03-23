@@ -17,7 +17,7 @@ use Symfony\Contracts\Service\Attribute\Required;
 class Gridview implements GridviewInterface
 {
     private ArrayCollection $columns;
-    private ArrayCollection $filters;
+    
     private DataProviderInterface $dataProvider;
     
     /**
@@ -99,6 +99,7 @@ class Gridview implements GridviewInterface
     {
         $this->columns = new ArrayCollection();
         $this->twig = $this->gridviewService->getEnvironment();
+        $this->filterModel = $this->gridviewService->getFilterModel();
     }
 
     /**
@@ -169,17 +170,11 @@ class Gridview implements GridviewInterface
 
     public function setFilterModelType($type, $data = null, $options = []) 
     {   
-        $this->gridviewService->getFilterModel()->setModelType($type, $data, $options);
-        /*
-        if (isset($this->filterModel) ) {
-            $this->filterModel->setModelType($type, $data, $options);
-        }*/
-        
+        $this->gridviewService->getFilterModel()->setModelType($type, $data, $options);   
     }
     
     public function getDataProvider()
     {
-        
         return $this->dataProvider;
     }
 
@@ -208,9 +203,9 @@ class Gridview implements GridviewInterface
 
                 $column->setGridview($this);
                 if ($column->filter) {
-                    dump('columns has a filter');
+                    dump('Columns has a filter');
                     if (isset($this->filterModel)) {
-                        $this->getFilterModel()->addFilter($column->getAttribute(), TextType::class, []);
+                        $this->filterModel->addFilter($column->getAttribute(), TextType::class, []);
                     }
                 }
                 $this->addColumn($column);
@@ -312,15 +307,14 @@ class Gridview implements GridviewInterface
             'gridview' => $this,
             'columns' => $this->columns,
             'models' => $this->dataProvider->getData(),
-            'form' => $this->gridviewService->getFilterModel()->getModelType()->createView(),
             'pagination' => $parameters['pagination']
         ];
 
         if (isset($this->filterModel)) {
-            $parameters['form'] = $this->filterModel; // ?? $this->filterModel->getBuilder()->createView(); //$parameters['form'],
+            $parameters['form'] = $this->filterModel->getModelType()->createView(); // ?? $this->filterModel->getBuilder()->createView(); //$parameters['form'],
         }
-        
-        // \array_merge($parameters, $par)
+        dump($this->filterModel->getModelType(), $parameters['form']);
+
         $content = $this->twig->render($view, $parameters);
 
         $response = new Response();

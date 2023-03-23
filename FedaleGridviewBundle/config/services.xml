@@ -5,7 +5,14 @@
         https://symfony.com/schema/dic/services/services-1.0.xsd"
 >
     <services>
-        <!-- <defaults autowire="true" autoconfigure="true"/> -->
+        <service id="fedale_gridview.gridview_service" class="Fedale\GridviewBundle\Service\GridviewService">
+            <argument type="service" id="twig"/>
+            <call method="setFilterModel">
+                <argument type="service" id="fedale_gridview.filter_model"/>
+            </call>
+        </service>
+        <service id="Fedale\GridviewBundle\Service\GridviewService" alias="fedale_gridview.gridview_service"/>
+
         <service id="fedale_gridview.filter_model" class="Fedale\GridviewBundle\Form\FilterModel">
             <argument type="service" id="form.factory"/>
         </service>
@@ -75,13 +82,7 @@
             <argument type="service" id="router"/>
         </service>
 
-        <service id="fedale_gridview.gridview_service" class="Fedale\GridviewBundle\Service\GridviewService">
-            <argument type="service" id="twig"/>
-            <call method="setFilterModel">
-                <argument type="service" id="fedale_gridview.filter_model"/>
-            </call>
-        </service>
-        <service id="Fedale\GridviewBundle\Service\GridviewService" alias="fedale_gridview.gridview_service"/>
+       
 
         <!-- <service id="fedale_gridview.pagination_extension" class="Fedale\GridviewBundle\Twig\PaginationExtension">
             <argument type="service" id="fedale_gridview.pagination_view"/>

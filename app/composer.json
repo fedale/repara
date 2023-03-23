@@ -11,6 +11,10 @@
         {
             "type": "path", 
             "url":  "../FedaleGridviewBundle"
+        },
+        {
+            "type": "path", 
+            "url":  "../FedaleCalendarBundle"
         }
     ],
     "require": {
@@ -24,7 +28,7 @@
         "doctrine/orm": "^2.12",
         "easycorp/easyadmin-bundle": "4.x-dev",
         "fakerphp/faker": "^1.19",
-        "fedale/gridview-bundle": "dev-main",
+        "fedale/calendar-bundle": "dev-main",
         "fresh/doctrine-enum-bundle": "^9.0",
         "lexik/jwt-authentication-bundle": "^2.16",
         "phpdocumentor/reflection-docblock": "^5.3",

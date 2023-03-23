@@ -1,0 +1,21 @@
+{
+    "name": "fedale/calendar-bundle",
+    "description": "Plain HTML Calendar table",
+    "type": "symfony-bundle",
+    "require": {
+        "php": ">=7.4",
+        "symfony/framework-bundle": "^6.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Fedale\\CalendarBundle\\": "src/"
+        }
+    },  
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Danilo Di Moia",
+            "email": "zitter@gmail.com"
+        }
+    ]
+}

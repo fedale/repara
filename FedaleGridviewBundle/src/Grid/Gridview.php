@@ -168,7 +168,7 @@ class Gridview implements GridviewInterface
 
     public function setFilterModelType($type, $data = null, $options = []) 
     {   
-        $this->gridviewService->getFilterModel()->setModelType($type, $data, $options);   
+        $this->gridviewService->getFilterModel()->setModelType($type, $data, $options);
     }
     
     public function getDataProvider()

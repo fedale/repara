@@ -73,8 +73,6 @@ class Gridview implements GridviewInterface
      *
      */
     public $rowOptions = [];
-
-    
     
     /**
      * @ var \Fedale\GridviewBundle\Service\FilterModel|null the model that keeps the user-entered filter data. When this property is set,

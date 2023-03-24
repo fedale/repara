@@ -1,29 +1,16 @@
 <?php
 
-namespace App\Controller\Customer;
+namespace App\Controller;
 
-use App\Entity\Customer\Customer;
-use App\Entity\Customer\CustomerProfile;
-use App\Entity\Customer\CustomerType as CustomerCustomerType;
-use App\Form\Customer\CustomerRegistrationType;
-use App\Form\Customer\CustomerType;
-use App\Form\Model\CustomerCreateModel;
 use Fedale\GridviewBundle\Column\ColumnInterface;
 use Fedale\GridviewBundle\Component\Pagination;
 use Fedale\GridviewBundle\DataProvider\EntityDataProvider;
-use Fedale\GridviewBundle\Grid\Gridview;
-use Fedale\GridviewBundle\Grid\GridviewBuilder;
 use Fedale\GridviewBundle\Grid\GridviewBuilderFactory;
-use Fedale\GridviewBundle\Source\Entity as SourceEntity;
-use App\Service\ProxyFilter;
-use App\Type\CustomerGridType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Doctrine\Persistence\ManagerRegistry;
-use Doctrine\ORM\EntityManager;
 use Fedale\CalendarBundle\Calendar\CalendarBuilderFactory;
 use Fedale\CalendarBundle\Calendar\CalendarBuilderInterface;
 use Fedale\GridviewBundle\Component\PaginationInterface;
@@ -32,7 +19,6 @@ use Fedale\GridviewBundle\Component\SortInterface;
 use Fedale\GridviewBundle\DataProvider\DataProviderInterface;
 use Fedale\GridviewBundle\Form\FilterModelType;
 use Fedale\GridviewBundle\Grid\GridviewBuilderInterface;
-use Fedale\GridviewBundle\Service\FilterModel;
 
 #[Route('/bundle')]
 class BundleController extends AbstractController

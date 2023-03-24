@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6631b457101265dfef79bf7e9a6fb120",
+    "content-hash": "d5ed8669ca9d723280d782df6080ee92",
     "packages": [
         {
             "name": "behat/transliterator",
@@ -1865,6 +1865,38 @@
                 "source": "https://github.com/FakerPHP/Faker/tree/v1.21.0"
             },
             "time": "2022-12-13T13:54:32+00:00"
+        },
+        {
+            "name": "fedale/calendar-bundle",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "../FedaleCalendarBundle",
+                "reference": "9347657f58af61a04e63855663736836053c8832"
+            },
+            "require": {
+                "php": ">=7.4",
+                "symfony/framework-bundle": "^6.1"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-4": {
+                    "Fedale\\CalendarBundle\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Danilo Di Moia",
+                    "email": "zitter@gmail.com"
+                }
+            ],
+            "description": "Plain HTML Calendar table",
+            "transport-options": {
+                "relative": true
+            }
         },
         {
             "name": "fedale/gridview-bundle",
@@ -11886,6 +11918,7 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "easycorp/easyadmin-bundle": 20,
+        "fedale/calendar-bundle": 20,
         "fedale/gridview-bundle": 20
     },
     "prefer-stable": true,
@@ -11896,5 +11929,5 @@
         "ext-iconv": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.1.0"
+    "plugin-api-version": "2.3.0"
 }

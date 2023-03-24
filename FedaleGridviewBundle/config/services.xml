@@ -81,56 +81,5 @@
             <argument type="service" id="request_stack"/>
             <argument type="service" id="router"/>
         </service>
-
-       
-
-        <!-- <service id="fedale_gridview.pagination_extension" class="Fedale\GridviewBundle\Twig\PaginationExtension">
-            <argument type="service" id="fedale_gridview.pagination_view"/>
-            <tag name="twig.extension"/>
-        </service> -->
-        
-       
-        <!-- <service>
-        </service -->
     </services>
 </container>
-<!--
-    tt_grid.pagination_view:
-    class: Tinustester\Bundle\GridviewBundle\Component\PaginationView
-    shared: false
-    arguments:
-      - '@request_stack'
-      - '@router'
-      - '@tt_grid.html'
-
-
-
-     tt_grid.pagination_extension:
-    class: Tinustester\Bundle\GridviewBundle\Twig\PaginationExtension
-    arguments:
-      - '@tt_grid.pagination_view'
-    tags:
-      - 'twig.extension'
--->
-<!--
-
-  <service id="App\Util\Rot13Transformer"/>
-
-        <service id="App\Util\TransformerInterface" alias="App\Util\Rot13Transformer"/>
-
-Too few arguments to function Fedale\Gridview\GridviewBuilderFactory::__construct(), 
-0 passed in /home/danilo/sp/repara/app/var/cache/dev/ContainerG30zlqb/getNewCustomerControllerService.php on line 24 and exactly 1 expected
-
-Too few arguments to function Twig\Environment::__construct(), 
-0 passed in /home/danilo/sp/repara/app/var/cache/dev/ContainerD9p3tbZ/getNewCustomerControllerService.php on line 24 and at least 1 expected
--->
-<!--
-  tt_grid.query_data_provider:
-    class: Tinustester\Bundle\GridviewBundle\DataProvider\QueryDataProvider
-    shared: false
-    arguments:
-      - '@tt_grid.pagination'
-      - '@tt_grid.sort'
-
-
-  -->

@@ -37,8 +37,8 @@ class FilterModelType extends AbstractType
         ]);
 
         
+        
         $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
-            dump('POST_SUBMIT');
             $data = $event->getData();
             $criteria = Criteria::create();
             $expr = Criteria::expr();
@@ -69,26 +69,13 @@ class FilterModelType extends AbstractType
             $this->gridview->getFilterModel()->setCriteria($criteria);
                 
         });
-
-        
     }    
 
-    /**
-     * @return void
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
+        $resolver->setDefault('method', 'GET');
+        $resolver->setDefault('required', false);
     }
 
 
 }
-
-            /*  In Yii 2
-            $query->andFilterWhere(['OR',
-                ['like', 'customer_location.name', $this->locations],
-                ['like', 'customer_location.address', $this->locations],
-                ['like', 'customer_location.zipcode', $this->locations],
-                ['like', 'customer_location.city', $this->locations],
-                ['like', 'customer_location_place.name', $this->locations],
-            ]);
-            **/

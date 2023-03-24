@@ -5,6 +5,27 @@
         https://symfony.com/schema/dic/services/services-1.0.xsd"
 >
     <services>
+        <service id="fedale_calendar.calendar_service" class="Fedale\CalendarBundle\Service\CalendarService">
+            <argument type="service" id="twig"/>
+        </service>
+        <service id="Fedale\CalendarBundle\Service\CalendarService" alias="fedale_calendar.calendar_service"/>
+
+        <service id="fedale_calendar.calendar" class="Fedale\CalendarBundle\Calendar\Calendar">
+            <argument type="service" id="twig"/>
+            <argument type="service" id="fedale_calendar.calendar_service"/>
+        </service>
+        <service id="Fedale\CalendarBundle\Calendar\CalendarInterface" alias="fedale_calendar.calendar"/>
+
+        <service id="fedale_calendar.calendar_builder" class="Fedale\CalendarBundle\Calendar\CalendarBuilder">
+            <argument type="service" id="twig"/>
+            <argument type="service" id="fedale_calendar.calendar_service"/>
+        </service>
+        <service id="Fedale\CalendarBundle\Calendar\CalendarBuilder" alias="fedale_calendar.calendar_builder"/>
+
+        <service id="fedale_calendar.builder_factory" class="Fedale\CalendarBundle\Calendar\CalendarBuilderFactory">
+            <argument type="service" id="fedale_calendar.calendar_service"/>
+        </service>
+        <service id="Fedale\CalendarBundle\Calendar\CalendarBuilderFactory" alias="fedale_calendar.builder_factory"/>
     
-    <services>
+    </services>
 </container>

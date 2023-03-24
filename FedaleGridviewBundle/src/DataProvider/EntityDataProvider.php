@@ -74,11 +74,10 @@ class EntityDataProvider extends AbstractDataProvider
     public function getData()
     {
         // First apply criteria
-        /*
         $criteria = $this->filterModel->getCriteria();
         if ($criteria) {
             $this->queryBuilder->addCriteria($criteria);    
-        } */
+        }
 
         // Calculate totalCount with applied criterias
         $this->pagination->setTotalCount($this->getTotalCount());

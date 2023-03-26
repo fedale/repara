@@ -12,6 +12,8 @@ use Fedale\GridviewBundle\Form\FilterModelInterface;
 use Fedale\GridviewBundle\Service\GridviewService;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Service\Attribute\Required;
 
 class Gridview implements GridviewInterface
@@ -93,6 +95,8 @@ class Gridview implements GridviewInterface
 
     private Environment $twig;
 
+    
+
     public function __construct(private GridviewService $gridviewService)
     {
         $this->columns = new ArrayCollection();
@@ -168,7 +172,8 @@ class Gridview implements GridviewInterface
 
     public function setFilterModelType($type, $data = null, $options = []) 
     {   
-        $this->gridviewService->getFilterModel()->setModelType($type, $data, $options);
+        dd('Set filtermodeltyope');
+        $this->filterModel->setModelType($type, $data, $options);
     }
     
     public function getDataProvider()
@@ -309,9 +314,10 @@ class Gridview implements GridviewInterface
         ];
 
         if (isset($this->filterModel)) {
+            $this->filterModel->prepareFilters();
+            $this->filterModel->getModelType()->handleRequest($this->gridviewService->getRequest());
             $parameters['form'] = $this->filterModel->getModelType()->createView(); // ?? $this->filterModel->getBuilder()->createView(); //$parameters['form'],
         }
-        dump($this->filterModel->getModelType(), $parameters['form']);
 
         $content = $this->twig->render($view, $parameters);
 
@@ -320,4 +326,6 @@ class Gridview implements GridviewInterface
 
         return $response;
     }
+
+   
 }

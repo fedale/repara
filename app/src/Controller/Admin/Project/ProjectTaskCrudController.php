@@ -53,13 +53,7 @@ class ProjectTaskCrudController extends AbstractCrudController
             ,
             AssociationField::new('customerLocationPlaceAsset')
                 ->renderAsNativeWidget()
-                // ->setQueryBuilder(
-                //     fn (QueryBuilder $queryBuilder) => $queryBuilder->getEntityManager()->getRepository(CustomerLocationPlaceAsset::class)->findByCustomer()
-                // )
             ,
-            // yield AssociationField::new('...')->setQueryBuilder(
-            //     fn (QueryBuilder $queryBuilder) => $queryBuilder->getEntityManager()->getRepository(Foo::class)->findBySomeCriteria();
-            // );
         
             AssociationField::new('type')
                 ->renderAsNativeWidget()

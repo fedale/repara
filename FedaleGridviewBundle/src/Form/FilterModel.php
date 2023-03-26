@@ -16,19 +16,18 @@ class FilterModel implements FilterModelInterface
     
     private Form $modelType;
     private Criteria $criteria;
-    private Request $request;
 
     private ArrayCollection $filters;
     
     public function __construct(private FormFactoryInterface $formFactory) {
         $this->filters = new ArrayCollection();
-    }
 
-    /*
-    public function __construct()
-    {
-        $this->filters = new ArrayCollection();
-    }*/
+        $this->setModelType();
+
+        $formBuilder = $this->formFactory->createNamedBuilder('myform', FormType::class, null, ['method' => 'get', 'action' => '', 'required' => false]);
+        $this->modelType = $formBuilder->getForm();
+        $this->modelType->add('save', SubmitType::class, ['attr' => ['class' => 'save']]);
+    }
 
     public function getFilters()
     {
@@ -37,8 +36,7 @@ class FilterModel implements FilterModelInterface
 
     public function addFilter($filter)
     {
-        $this->modelType->add($filter);
-        //$this->filters->add($filter);
+        $this->filters->add($filter);
     }
 
     public function getCriteria(): Criteria|null
@@ -61,19 +59,25 @@ class FilterModel implements FilterModelInterface
         return $this->modelType;
     }
 
-    public function setModelType($type, $data, $options)
+    public function prepareFilters()
     {
+        foreach ($this->filters as $filter) {
+            $this->modelType->add($filter);
+        }
+    }
+
+    private function setModelType()
+    {
+        /*
         $formBuilder = $this->formFactory->createNamedBuilder('myform', FormType::class, null, ['method' => 'get', 'action' => '', 'required' => false]);
         $this->modelType = $formBuilder->getForm();
         $this->modelType->add('save', SubmitType::class, ['attr' => ['class' => 'save']]);
-        if ($this->modelType->isSubmitted() && $this->modelType->isValid()) {
-            $this->modelType->handleRequest($this->request);
-        }
+        */
+        // if ($this->modelType->isSubmitted() && $this->modelType->isValid()) {
+           // $this->modelType->handleRequest($this->request);
+        // }
         // $this->modelType = $this->formFactory->create($type, $data, $options);
     }
 
-    public function setRequest(RequestStack $requestStack)
-    {
-        $this->request = $requestStack->getCurrentRequest();
-    }
+
 } 

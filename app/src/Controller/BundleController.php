@@ -38,8 +38,6 @@ class BundleController extends AbstractController
         PaginationInterface $pagination,
         Request $request): Response
     {
-
-        
         $pagination->setDefaultPageSize(10);
 
         $sortAttributes = [
@@ -139,7 +137,6 @@ class BundleController extends AbstractController
 
         $dataProvider->setQueryBuilder($queryBuilder);
         $dataProvider->setSort($sort);
-      //  $dataProvider->setPagination($pagination);
 
     //    $formFactory = \Symfony\Component\Form\Forms::createFormFactory();
     //     dump($formFactory);
@@ -151,7 +148,7 @@ class BundleController extends AbstractController
         // Order matters! Try to switch setColumns() / setFilterModel()
         $gridview = $this->createGridviewBuilder()
             ->setDataProvider($dataProvider)
-            ->setFilterModelType(FilterModelType::class, [], ['method' => 'GET']) 
+            //->setFilterModelType(FilterModelType::class, [], ['method' => 'GET']) 
             ->setColumns($columns)
             ->setAttributes([
                 'class' => 'table table-dark',
@@ -168,15 +165,6 @@ class BundleController extends AbstractController
             ])
             ->renderGridview();
         ;
-
-         /*
-         $form->handleRequest($request);
-         
-         if ($form->isSubmitted() ) {
-             // dump($form->getData());
-         }
-         */
-
 
         return $gridview->renderGrid('@FedaleGridview/gridview/index.html.twig', ['pagination' => $pagination]); //, 'form' => $form->createView()]);
     }

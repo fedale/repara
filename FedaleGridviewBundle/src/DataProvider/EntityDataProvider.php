@@ -75,6 +75,7 @@ class EntityDataProvider extends AbstractDataProvider
     {
         // First apply criteria
         $criteria = $this->filterModel->getCriteria();
+        
         if ($criteria) {
             $this->queryBuilder->addCriteria($criteria);    
         }

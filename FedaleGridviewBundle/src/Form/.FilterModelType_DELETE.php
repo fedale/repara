@@ -21,10 +21,6 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class FilterModelType extends AbstractType
 {
-    //private FilterModel $filterModel;
-    // private Gridview $gridview;
-    
-    
     public function __construct(
         private GridviewService $gridviewService
      ) {}
@@ -35,8 +31,6 @@ class FilterModelType extends AbstractType
         $builder->add('save', SubmitType::class, [
             'attr' => ['class' => 'save'],
         ]);
-
-        
         
         $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
             $data = $event->getData();

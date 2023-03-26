@@ -10,20 +10,24 @@
             <call method="setFilterModel">
                 <argument type="service" id="fedale_gridview.filter_model"/>
             </call>
+            <call method="setRequest">
+                <argument type="service" id="request_stack"/>
+            </call>
         </service>
         <service id="Fedale\GridviewBundle\Service\GridviewService" alias="fedale_gridview.gridview_service"/>
 
         <service id="fedale_gridview.filter_model" class="Fedale\GridviewBundle\Form\FilterModel">
             <argument type="service" id="form.factory"/>
-            <call method="setRequest">
+            <!-- <call method="setRequest">
                 <argument type="service" id="request_stack"/>
-            </call>
+            </call> -->
         </service>
         <service id="Fedale\GridviewBundle\Form\FilterModel" alias="fedale_gridview.filter_model"/>
 
         <service id="fedale_gridview.gridview" class="Fedale\GridviewBundle\Grid\Gridview">
             <argument type="service" id="twig"/>
             <argument type="service" id="fedale_gridview.gridview_service"/>
+            
         </service>
         <service id="Fedale\GridviewBundle\Grid\GridviewInterface" alias="fedale_gridview.gridview"/>
 

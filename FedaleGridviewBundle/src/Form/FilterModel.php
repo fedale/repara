@@ -34,9 +34,11 @@ class FilterModel implements FilterModelInterface
         return $this->filters;
     }
 
-    public function addFilter($filter)
+    public function addFilter($name, $type, $options)
     {
-        $this->filters->add($filter);
+        $class = "Fedale\\GridviewBundle\\FilterType\\Gridview" . ucfirst($type) . 'Type';
+        $this->modelType->add($name, $class, $options);
+        //$this->filters->add($filter => );
     }
 
     public function getCriteria(): Criteria|null
@@ -77,6 +79,21 @@ class FilterModel implements FilterModelInterface
            // $this->modelType->handleRequest($this->request);
         // }
         // $this->modelType = $this->formFactory->create($type, $data, $options);
+    }
+
+    public function createfilterFromString($text) 
+    {
+        if (!preg_match('/^([^:]+)(:(\w*))?(:(.*))?$/', $text, $matches)) {
+            throw new \Exception('The filter must be specified in the format of "attirbute", "attribute:filter" or "attribute:filter:label"');
+        }
+        
+        $column =  new \Fedale\GridviewBundle\Column\DataColumn(
+            $this, 
+            $matches[1],
+            isset($matches[3]) ? $matches[3] : null, 
+            isset($matches[5]) ? $matches[5] : $matches[1]
+        );
+        return $column;
     }
 
 

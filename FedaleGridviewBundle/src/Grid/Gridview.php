@@ -16,6 +16,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Service\Attribute\Required;
 
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;  
+
 class Gridview implements GridviewInterface
 {
     private ArrayCollection $columns;
@@ -205,10 +207,10 @@ class Gridview implements GridviewInterface
             if ($column->isVisible()) {
 
                 $column->setGridview($this);
+                dump($column->filter);
                 if ($column->filter) {
-                    dump('Columns has a filter');
                     if (isset($this->filterModel)) {
-                        $this->filterModel->addFilter($column->getAttribute(), TextType::class, []);
+                        $this->filterModel->addFilter($column->getAttribute(), $column->filter['type'], $column->filter['options']);
                     }
                 }
                 $this->addColumn($column);

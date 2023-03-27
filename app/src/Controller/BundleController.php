@@ -19,6 +19,8 @@ use Fedale\GridviewBundle\Component\SortInterface;
 use Fedale\GridviewBundle\DataProvider\DataProviderInterface;
 use Fedale\GridviewBundle\Form\FilterModelType;
 use Fedale\GridviewBundle\Grid\GridviewBuilderInterface;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 #[Route('/bundle')]
 class BundleController extends AbstractController
@@ -90,6 +92,10 @@ class BundleController extends AbstractController
                 'visible' => true,
                 'label' => 'Label 2',
                 'attribute' => 'profile_fullname',
+                /*'filter' => [
+                    'type' => 'text',
+                    'options' => []
+                ],*/
             ],
             [
                'attribute' => 'email',
@@ -99,7 +105,14 @@ class BundleController extends AbstractController
                 },
                 'twigFilter' => 'raw',
                 'filter' => [
-                    'type' => 'text',
+                    'type' => 'choice', 
+                    'options' => [
+                            'choices'  => [
+                            'Maybe' => null,
+                            'Yes' => true,
+                            'No' => false,
+                        ],
+                    ],
                     'visibile' => true
                 ]
             ],
@@ -118,8 +131,8 @@ class BundleController extends AbstractController
                 'twigFilter' => "join(', ', ' and ')|raw",
                 'filter' => [
                     'type' => 'text',
-                ],
-
+                    'options' => []
+                ]
             ],
             // [
             //     'attribute' => 'createdAt'

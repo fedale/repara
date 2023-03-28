@@ -2,10 +2,10 @@
 namespace Fedale\GridviewBundle\FilterType;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
-class GridviewTextType extends AbstractType
+class FilterTextType extends AbstractType
 {
     public function configureOptions(OptionsResolver $resolver): void
     {

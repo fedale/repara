@@ -162,21 +162,6 @@ class Gridview implements GridviewInterface
         return $this->filterModel;
     }
     
-    // public function setFilterModel(FilterModelInterface $filterModel): void
-    // {
-    //     $this->filterModel = $filterModel;
-    // }
-    
-    public function getFilterModelType()
-    {
-        return $this->filterModelType;
-    }
-
-    public function setFilterModelType($type, $data = null, $options = []) 
-    {   
-        dd('Set filtermodeltyope');
-        $this->filterModel->setModelType($type, $data, $options);
-    }
     
     public function getDataProvider()
     {
@@ -207,10 +192,10 @@ class Gridview implements GridviewInterface
             if ($column->isVisible()) {
 
                 $column->setGridview($this);
-                dump($column->filter);
                 if ($column->filter) {
                     if (isset($this->filterModel)) {
-                        $this->filterModel->addFilter($column->getAttribute(), $column->filter['type'], $column->filter['options']);
+                        $options = $column->filter['options'] ?? [];
+                        $this->filterModel->addFilter($column->getAttribute(), $column->filter['type'], $options);
                     }
                 }
                 $this->addColumn($column);
@@ -315,7 +300,8 @@ class Gridview implements GridviewInterface
             'pagination' => $parameters['pagination']
         ];
 
-        if (isset($this->filterModel)) {
+        if ($this->filterModel) {
+            dump('isset filterModel');
             $this->filterModel->prepareFilters();
             $this->filterModel->getModelType()->handleRequest($this->gridviewService->getRequest());
             $parameters['form'] = $this->filterModel->getModelType()->createView(); // ?? $this->filterModel->getBuilder()->createView(); //$parameters['form'],

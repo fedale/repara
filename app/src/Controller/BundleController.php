@@ -92,6 +92,9 @@ class BundleController extends AbstractController
                 'visible' => true,
                 'label' => 'Label 2',
                 'attribute' => 'profile_fullname',
+                'filter' => [
+                    'type' => 'boolean',
+                ]
                 /*'filter' => [
                     'type' => 'text',
                     'options' => []
@@ -131,7 +134,6 @@ class BundleController extends AbstractController
                 'twigFilter' => "join(', ', ' and ')|raw",
                 'filter' => [
                     'type' => 'text',
-                    'options' => []
                 ]
             ],
             // [

@@ -56,7 +56,7 @@
         <service id="Fedale\GridviewBundle\Grid\GridviewBuilderFactory" alias="fedale_gridview.builder_factory"/>
                      
         <service id="fedale_gridview.entity_data_provider" class="Fedale\GridviewBundle\DataProvider\EntityDataProvider">
-            <argument type="service" id="debug.event_dispatcher"/>
+            <argument type="service" id="event_dispatcher"/>
             <call method="setSort">
                 <argument type="service" id="fedale_gridview.sort"/>
             </call>

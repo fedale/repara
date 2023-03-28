@@ -22,8 +22,7 @@ class FilterModel implements FilterModelInterface
     public function __construct(private FormFactoryInterface $formFactory) {
         $this->filters = new ArrayCollection();
 
-        $this->setModelType();
-
+        // name, method, action and so on must be passed as argument!
         $formBuilder = $this->formFactory->createNamedBuilder('myform', FormType::class, null, ['method' => 'get', 'action' => '', 'required' => false]);
         $this->modelType = $formBuilder->getForm();
         $this->modelType->add('save', SubmitType::class, ['attr' => ['class' => 'save']]);
@@ -36,7 +35,7 @@ class FilterModel implements FilterModelInterface
 
     public function addFilter($name, $type, $options)
     {
-        $class = "Fedale\\GridviewBundle\\FilterType\\Gridview" . ucfirst($type) . 'Type';
+        $class = "Fedale\\GridviewBundle\\FilterType\\Filter" . ucfirst($type) . 'Type';
         $this->modelType->add($name, $class, $options);
         //$this->filters->add($filter => );
     }
@@ -61,40 +60,12 @@ class FilterModel implements FilterModelInterface
         return $this->modelType;
     }
 
+    /*
     public function prepareFilters()
     {
         foreach ($this->filters as $filter) {
             $this->modelType->add($filter);
         }
-    }
-
-    private function setModelType()
-    {
-        /*
-        $formBuilder = $this->formFactory->createNamedBuilder('myform', FormType::class, null, ['method' => 'get', 'action' => '', 'required' => false]);
-        $this->modelType = $formBuilder->getForm();
-        $this->modelType->add('save', SubmitType::class, ['attr' => ['class' => 'save']]);
-        */
-        // if ($this->modelType->isSubmitted() && $this->modelType->isValid()) {
-           // $this->modelType->handleRequest($this->request);
-        // }
-        // $this->modelType = $this->formFactory->create($type, $data, $options);
-    }
-
-    public function createfilterFromString($text) 
-    {
-        if (!preg_match('/^([^:]+)(:(\w*))?(:(.*))?$/', $text, $matches)) {
-            throw new \Exception('The filter must be specified in the format of "attirbute", "attribute:filter" or "attribute:filter:label"');
-        }
-        
-        $column =  new \Fedale\GridviewBundle\Column\DataColumn(
-            $this, 
-            $matches[1],
-            isset($matches[3]) ? $matches[3] : null, 
-            isset($matches[5]) ? $matches[5] : $matches[1]
-        );
-        return $column;
-    }
-
+    }*/
 
 } 

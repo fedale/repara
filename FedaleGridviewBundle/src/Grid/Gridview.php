@@ -291,6 +291,11 @@ class Gridview implements GridviewInterface
         $this->attr = $attributes; //['id'] = 'my-grid-view'; //$options['key'];
     }
 
+    public function setModel()
+    {
+        
+    }
+
     public function renderGrid(string $view, array $parameters = []): Response
     {
         $parameters = [
@@ -301,8 +306,6 @@ class Gridview implements GridviewInterface
         ];
 
         if ($this->filterModel) {
-            dump('isset filterModel');
-            $this->filterModel->prepareFilters();
             $this->filterModel->getModelType()->handleRequest($this->gridviewService->getRequest());
             $parameters['form'] = $this->filterModel->getModelType()->createView(); // ?? $this->filterModel->getBuilder()->createView(); //$parameters['form'],
         }

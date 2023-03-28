@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Service\GridviewModel;
 use Fedale\GridviewBundle\Column\ColumnInterface;
 use Fedale\GridviewBundle\Component\Pagination;
 use Fedale\GridviewBundle\DataProvider\EntityDataProvider;
@@ -18,7 +19,9 @@ use Fedale\GridviewBundle\Component\Sort;
 use Fedale\GridviewBundle\Component\SortInterface;
 use Fedale\GridviewBundle\DataProvider\DataProviderInterface;
 use Fedale\GridviewBundle\Form\FilterModelType;
+use Fedale\GridviewBundle\Grid\Gridview;
 use Fedale\GridviewBundle\Grid\GridviewBuilderInterface;
+use Fedale\GridviewBundle\Service\GridviewService;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
@@ -153,17 +156,13 @@ class BundleController extends AbstractController
         $dataProvider->setQueryBuilder($queryBuilder);
         $dataProvider->setSort($sort);
 
-    //    $formFactory = \Symfony\Component\Form\Forms::createFormFactory();
-    //     dump($formFactory);
-        //  $form = $formFactory->create(FilterModelType::class, [], ['method' => 'GET']);// dd($formFactory);
-        
-   //     $form = $this->createForm(FilterModelType::class, [], ['method' => 'GET']);
+        $gridviewModel = new GridviewModel();
+        dd($gridviewModel);
 
-        // dd($form);
         // Order matters! Try to switch setColumns() / setFilterModel()
         $gridview = $this->createGridviewBuilder()
+            ->setModel($gridviewModel)
             ->setDataProvider($dataProvider)
-            //->setFilterModelType(FilterModelType::class, [], ['method' => 'GET']) 
             ->setColumns($columns)
             ->setAttributes([
                 'class' => 'table table-dark',

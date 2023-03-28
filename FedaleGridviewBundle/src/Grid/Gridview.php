@@ -9,6 +9,7 @@ use Fedale\GridviewBundle\Form\FilterModel;
 use Fedale\GridviewBundle\Column\ColumnInterface;
 use Fedale\GridviewBundle\Form\FilterModelType;
 use Fedale\GridviewBundle\Form\FilterModelInterface;
+use Fedale\GridviewBundle\Service\GridviewModelInterface;
 use Fedale\GridviewBundle\Service\GridviewService;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -93,6 +94,8 @@ class Gridview implements GridviewInterface
     
     public ?FilterModel $filterModel = null;
 
+    public GridviewModelInterface $model;
+
     private FormFactoryInterface $formFactory;
 
     private Environment $twig;
@@ -171,6 +174,11 @@ class Gridview implements GridviewInterface
     public function setDataProvider($dataProvider) 
     {    
         $this->dataProvider = $dataProvider;
+    }
+
+    public function setModel($model) 
+    {    
+        $this->model = $model;
     }
 
     public function guessColumns()
@@ -289,11 +297,6 @@ class Gridview implements GridviewInterface
         unset($attributes['filter']);
         
         $this->attr = $attributes; //['id'] = 'my-grid-view'; //$options['key'];
-    }
-
-    public function setModel()
-    {
-        
     }
 
     public function renderGrid(string $view, array $parameters = []): Response

@@ -16,6 +16,10 @@
         </service>
         <service id="Fedale\GridviewBundle\Service\GridviewService" alias="fedale_gridview.gridview_service"/>
 
+        <service id="fedale_gridview.gridview_model" class="Fedale\GridviewBundle\Service\AbstractModel">
+        </service>
+        <service id="Fedale\GridviewBundle\Service\AbstractModel" alias="fedale_gridview.gridview_model"/>
+
         <service id="fedale_gridview.filter_model" class="Fedale\GridviewBundle\Form\FilterModel">
             <argument type="service" id="form.factory"/>
             <!-- <call method="setRequest">

@@ -157,7 +157,7 @@ class BundleController extends AbstractController
         $dataProvider->setSort($sort);
 
         $gridviewModel = new GridviewModel();
-        dd($gridviewModel);
+        dump($gridviewModel);
 
         // Order matters! Try to switch setColumns() / setFilterModel()
         $gridview = $this->createGridviewBuilder()

@@ -41,18 +41,7 @@ class EntityDataProvider extends AbstractDataProvider
 
     private int $totalRows;
 
-    /*
-    public function __construct(
-        protected Pagination $pagination, 
-        protected Sort $sort, 
-        private FilterModel $filterModel,
-        private EventDispatcherInterface $eventDispatcher
-    ) {
-        $this->models = new ArrayCollection();
-    }
-    */
-
-    public function __construct(
+      public function __construct(
         private EventDispatcherInterface $eventDispatcher,
     ) {
         $this->models = new ArrayCollection();
@@ -74,11 +63,12 @@ class EntityDataProvider extends AbstractDataProvider
     public function getData()
     {
         // First apply criteria
-        $criteria = $this->filterModel->getCriteria();
+      //  $criteria = $this->searchModel->getCriteria();
         
+      /*
         if ($criteria) {
             $this->queryBuilder->addCriteria($criteria);    
-        }
+        }*/
 
         // Calculate totalCount with applied criterias
         $this->pagination->setTotalCount($this->getTotalCount());

@@ -1,5 +1,5 @@
 <?php
-namespace Fedale\GridviewBundle\Form;
+namespace Fedale\GridviewBundle\Service;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -12,7 +12,7 @@ use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-class SearchModel implements SearchModelInterface
+class FilterForm implements FilterFormInterface
 {
     
     private Form $modelType;
@@ -31,7 +31,16 @@ class SearchModel implements SearchModelInterface
         $this->filters = new ArrayCollection();
 
         // name, method, action and so on must be passed as argument!
-        $formBuilder = $this->formFactory->createNamedBuilder('myform', FormType::class, null, ['method' => 'get', 'action' => '', 'required' => false]);
+        $formBuilder = $this->formFactory->createNamedBuilder(
+            'myform', 
+            FormType::class, 
+            null, 
+            [
+                'method' => 'get', 
+                'action' => '', 
+                'required' => false
+            ]
+        );
         $this->modelType = $formBuilder->getForm();
         $this->modelType->add('save', SubmitType::class, ['attr' => ['class' => 'save']]);
     }

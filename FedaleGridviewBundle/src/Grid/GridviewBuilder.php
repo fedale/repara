@@ -2,25 +2,15 @@
 namespace Fedale\GridviewBundle\Grid;
 
 use Fedale\GridviewBundle\DataProvider\DataProviderInterface;
-use Fedale\GridviewBundle\Form\FilterModelInterface;
-use Fedale\GridviewBundle\Form\FilterModelType;
+use Fedale\GridviewBundle\Service\SearchModelInterface;
 use Fedale\GridviewBundle\Service\GridviewService;
-// use Doctrine\Common\Collections\ArrayCollection;
-// use Doctrine\ORM\EntityManager;
-// use Doctrine\ORM\EntityManagerInterface;
-// use Exception;
-// use Iterator;
-// use Symfony\Component\HttpFoundation\Response;
-// use Symfony\Component\HttpFoundation\Request;
-// use Symfony\Component\HttpFoundation\RequestStack;
-// use Traversable;
 use Twig\Environment;
 
 class GridviewBuilder implements GridviewBuilderInterface 
 {
-    private FilterModelInterface $filterModel;
+    private SearchModelInterface $searchModel;
+
     private Gridview $gridview;
-    // private $request;
 
     public function __construct(private GridviewService $gridviewService)
     {
@@ -39,9 +29,9 @@ class GridviewBuilder implements GridviewBuilderInterface
         return $this;
     }
 
-    public function setSearchModel($model)
+    public function setSearchModel(SearchModelInterface $searchModel)
     {
-        $this->gridview->setSearchModel($model);
+        $this->gridview->setSearchModel($searchModel);
 
         return $this;
     }

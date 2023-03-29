@@ -1,7 +1,7 @@
 <?php 
 namespace App\Service;
 
-use Fedale\GridviewBundle\Form\SearchModelInterface;
+use Fedale\GridviewBundle\Service\SearchModelInterface;
 
 class SearchModel implements SearchModelInterface
 {

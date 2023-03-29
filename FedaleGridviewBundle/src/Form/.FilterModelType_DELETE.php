@@ -2,22 +2,14 @@
 
 namespace Fedale\GridviewBundle\Form;
 
-use Fedale\GridviewBundle\Grid\Gridview;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Doctrine\Common\Collections\Criteria;
-use Doctrine\ORM\EntityManagerInterface;
-use Fedale\GridviewBundle\Form\SearchModel;
-use Fedale\GridviewBundle\Form\FilterModelInterface;
 use Fedale\GridviewBundle\Service\GridviewService;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\HttpFoundation\RequestStack;
 
 class FilterModelType extends AbstractType
 {

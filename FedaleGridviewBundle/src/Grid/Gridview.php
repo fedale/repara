@@ -5,18 +5,12 @@ use Fedale\GridviewBundle\DataProvider\DataProviderInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\Environment;
-use Fedale\GridviewBundle\Form\SearchModel;
 use Fedale\GridviewBundle\Column\ColumnInterface;
-use Fedale\GridviewBundle\Form\FilterModelType;
-use Fedale\GridviewBundle\Form\SearchModelInterface;
+use Fedale\GridviewBundle\Service\SearchModelInterface;
+use Fedale\GridviewBundle\Service\FilterFormInterface;
 use Fedale\GridviewBundle\Service\GridviewService;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormFactoryInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Contracts\Service\Attribute\Required;
-
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;  
 
 class Gridview implements GridviewInterface
 {
@@ -79,12 +73,12 @@ class Gridview implements GridviewInterface
     public $rowOptions = [];
     
     /**
-     * @ var \Fedale\GridviewBundle\Service\FilterModel|null the model that keeps the user-entered filter data. When this property is set,
+     * @ var \Fedale\GridviewBundle\Form\SearchModel|null the model that keeps the user-entered filter data. When this property is set,
      * the grid view will enable column-based filtering. Each data column by default will display a text field
      * at the top that users can fill in to filter the data.
      *
      * Note that in order to show an input field for filtering, a column must have its [[DataColumn::attribute]]
-     * property set and the attribute should be active in the current scenario of $filterModel or have
+     * property set and the attribute should be active in the current scenario of $searchModel or have
      * [[DataColumn::filter]] set as the HTML code for the input field.
      *
      * When this property is not set (null) the filtering feature is disabled.
@@ -95,13 +89,16 @@ class Gridview implements GridviewInterface
 
     private Environment $twig;
 
+    private FilterFormInterface $filterForm;
+
     
 
     public function __construct(private GridviewService $gridviewService)
     {
         $this->columns = new ArrayCollection();
         $this->twig = $this->gridviewService->getEnvironment();
-        $this->searchModel = $this->gridviewService->getSearchModel();
+        // $this->searchModel = $this->gridviewService->getSearchModel();
+        $this->filterForm = $this->gridviewService->getFilterForm();
     }
 
     /**
@@ -155,12 +152,6 @@ class Gridview implements GridviewInterface
         $this->columns->add($column);
     }
 
-    public function getFilterModel(): FilterModel
-    {
-        return $this->filterModel;
-    }
-    
-    
     public function getDataProvider()
     {
         return $this->dataProvider;
@@ -200,11 +191,16 @@ class Gridview implements GridviewInterface
             if ($column->isVisible()) {
 
                 $column->setGridview($this);
+                
                 if ($column->filter) {
-                    if (isset($this->filterModel)) {
+                    $options = $column->filter['options'] ?? [];
+                        $this->filterForm->addFilter($column->getAttribute(), $column->filter['type'], $options);
+                        /*
+                    dump($this->searchModel);
+                    if (isset($this->searchModel)) {
                         $options = $column->filter['options'] ?? [];
-                        $this->filterModel->addFilter($column->getAttribute(), $column->filter['type'], $options);
-                    }
+                        $this->filterForm->addFilter($column->getAttribute(), $column->filter['type'], $options);
+                    }*/
                 }
                 $this->addColumn($column);
             }
@@ -308,9 +304,10 @@ class Gridview implements GridviewInterface
             'pagination' => $parameters['pagination']
         ];
 
-        if ($this->filterModel) {
-            $this->filterModel->getModelType()->handleRequest($this->gridviewService->getRequest());
-            $parameters['form'] = $this->filterModel->getModelType()->createView(); // ?? $this->filterModel->getBuilder()->createView(); //$parameters['form'],
+        // if ($this->searchModel) {
+        if (true) {
+            $this->filterForm->getModelType()->handleRequest($this->gridviewService->getRequest());
+            $parameters['form'] = $this->filterForm->getModelType()->createView(); // ?? $this->searchModel->getBuilder()->createView(); //$parameters['form'],
         }
 
         $content = $this->twig->render($view, $parameters);

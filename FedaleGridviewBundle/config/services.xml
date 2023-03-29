@@ -7,8 +7,8 @@
     <services>
         <service id="fedale_gridview.gridview_service" class="Fedale\GridviewBundle\Service\GridviewService">
             <argument type="service" id="twig"/>
-            <call method="setSearchModel">
-                <argument type="service" id="fedale_gridview.search_model"/>
+            <call method="setFilterForm">
+                <argument type="service" id="fedale_gridview.filter_form"/>
             </call>
             <call method="setRequest">
                 <argument type="service" id="request_stack"/>
@@ -16,20 +16,17 @@
         </service>
         <service id="Fedale\GridviewBundle\Service\GridviewService" alias="fedale_gridview.gridview_service"/>
 
-<!--
+        
         <service id="fedale_gridview.search_model" class="Fedale\GridviewBundle\Service\SearchModel">
-            <argument type="service" id="request_stack"/>
-            <argument type="service" id="fedale_gridview.entity_data_provider"/>
         </service>
         <service id="Fedale\GridviewBundle\Service\SearchModelInterface" alias="fedale_gridview.search_model"/>
-        -->
 
-        <service id="fedale_gridview.search_model" class="Fedale\GridviewBundle\Form\SearchModel">
+        <service id="fedale_gridview.filter_form" class="Fedale\GridviewBundle\Service\FilterForm">
             <argument type="service" id="form.factory"/>
             <argument type="service" id="request_stack"/>
             <argument type="service" id="fedale_gridview.entity_data_provider"/>
         </service>
-        <service id="Fedale\GridviewBundle\Form\SearchModel" alias="fedale_gridview.search_model"/>
+        <service id="Fedale\GridviewBundle\Service\FilterForm" alias="fedale_gridview.filter_form"/>
 
         <service id="fedale_gridview.gridview" class="Fedale\GridviewBundle\Grid\Gridview">
             <argument type="service" id="twig"/>
@@ -72,9 +69,10 @@
             <call method="setPagination">
                 <argument type="service" id="fedale_gridview.pagination"/>
             </call>
+            <!--
             <call method="setSearchModel">
                 <argument type="service" id="fedale_gridview.search_model"/>
-            </call>
+            </call>-->
             
         </service>
         <service id="Fedale\GridviewBundle\DataProvider\DataProviderInterface" alias="fedale_gridview.entity_data_provider"/>

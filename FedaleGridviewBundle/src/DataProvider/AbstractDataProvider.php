@@ -2,14 +2,9 @@
 
 namespace Fedale\GridviewBundle\DataProvider;
 
-use Fedale\GridviewBundle\Component\Sort;
-use Fedale\GridviewBundle\Component\Pagination;
-use Fedale\GridviewBundle\Component\Row;
-use Fedale\GridviewBundle\Exception\DataProviderException;
-use Doctrine\Common\Collections\Collection;
 use Fedale\GridviewBundle\Component\PaginationInterface;
 use Fedale\GridviewBundle\Component\SortInterface;
-use Fedale\GridviewBundle\Form\SearchModelInterface;
+use Fedale\GridviewBundle\Service\SearchModelInterface;
 
 abstract class AbstractDataProvider implements DataProviderInterface
 {
@@ -71,7 +66,7 @@ abstract class AbstractDataProvider implements DataProviderInterface
     }
 
      /**
-     * @param SearchModelInterace $saerchModel
+     * @param SearchModelInterace $searchModel
      *
      * @return AbstractDataProvider
      */

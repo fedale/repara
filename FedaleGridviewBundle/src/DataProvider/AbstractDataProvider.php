@@ -9,10 +9,12 @@ use Fedale\GridviewBundle\Exception\DataProviderException;
 use Doctrine\Common\Collections\Collection;
 use Fedale\GridviewBundle\Component\PaginationInterface;
 use Fedale\GridviewBundle\Component\SortInterface;
-use Fedale\GridviewBundle\Form\FilterModelInterface;
+use Fedale\GridviewBundle\Form\SearchModelInterface;
 
 abstract class AbstractDataProvider implements DataProviderInterface
 {
+    private SearchModelInterface $searchModel;
+
     /**
      * Array of arrays that carry data on
      */
@@ -69,22 +71,22 @@ abstract class AbstractDataProvider implements DataProviderInterface
     }
 
      /**
-     * @param FilterModelInterace $filterModel
+     * @param SearchModelInterace $saerchModel
      *
      * @return AbstractDataProvider
      */
-    public function setFilterModel(FilterModelInterface $filterModel): static
+    public function setSearchModel(SearchModelInterface $searchModel): static
     {
-        $this->filterModel = $filterModel;
+        $this->searchModel = $searchModel;
         return $this;
     }
 
     /**
-     * @return FilterModelInterface
+     * @return SearchModelInterface
      */
-    public function getFilterModel(): FilterModelInterface
+    public function getSearchModel(): SearchModelInterface
     {
-        return $this->filterModel;
+        return $this->searchModel;
     }
 
     /**

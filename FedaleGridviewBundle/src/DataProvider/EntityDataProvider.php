@@ -5,7 +5,7 @@ use Fedale\GridviewBundle\Serializer\ModelNormalizer;
 use Fedale\GridviewBundle\Component\Sort;
 use Fedale\GridviewBundle\Component\Pagination;
 use Fedale\GridviewBundle\Event\RowEvent;
-use Fedale\GridviewBundle\Form\FilterModel;
+use Fedale\GridviewBundle\Form\SearchModel;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Collections\Criteria;

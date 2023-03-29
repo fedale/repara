@@ -5,11 +5,10 @@ use Fedale\GridviewBundle\DataProvider\DataProviderInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\Environment;
-use Fedale\GridviewBundle\Form\FilterModel;
+use Fedale\GridviewBundle\Form\SearchModel;
 use Fedale\GridviewBundle\Column\ColumnInterface;
 use Fedale\GridviewBundle\Form\FilterModelType;
-use Fedale\GridviewBundle\Form\FilterModelInterface;
-use Fedale\GridviewBundle\Service\GridviewModelInterface;
+use Fedale\GridviewBundle\Form\SearchModelInterface;
 use Fedale\GridviewBundle\Service\GridviewService;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -89,12 +88,8 @@ class Gridview implements GridviewInterface
      * [[DataColumn::filter]] set as the HTML code for the input field.
      *
      * When this property is not set (null) the filtering feature is disabled.
-     */
-    public FilterModelType $filterModelType;
-    
-    public ?FilterModel $filterModel = null;
-
-    public GridviewModelInterface $model;
+     */    
+    public SearchModelInterface $searchModel;
 
     private FormFactoryInterface $formFactory;
 
@@ -106,7 +101,7 @@ class Gridview implements GridviewInterface
     {
         $this->columns = new ArrayCollection();
         $this->twig = $this->gridviewService->getEnvironment();
-        $this->filterModel = $this->gridviewService->getFilterModel();
+        $this->searchModel = $this->gridviewService->getSearchModel();
     }
 
     /**
@@ -176,9 +171,14 @@ class Gridview implements GridviewInterface
         $this->dataProvider = $dataProvider;
     }
 
-    public function setModel($model) 
+    public function getSearchModel(): SearchModelInterface
+    {
+        return $this->searchModel;
+    }
+
+    public function setSearchModel(SearchModelInterface $searchModel) 
     {    
-        $this->model = $model;
+        $this->searchModel = $searchModel;
     }
 
     public function guessColumns()

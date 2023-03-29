@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Service\GridviewModel;
+use App\Service\SearchModel;
 use Fedale\GridviewBundle\Column\ColumnInterface;
 use Fedale\GridviewBundle\Component\Pagination;
 use Fedale\GridviewBundle\DataProvider\EntityDataProvider;
@@ -18,12 +19,7 @@ use Fedale\GridviewBundle\Component\PaginationInterface;
 use Fedale\GridviewBundle\Component\Sort;
 use Fedale\GridviewBundle\Component\SortInterface;
 use Fedale\GridviewBundle\DataProvider\DataProviderInterface;
-use Fedale\GridviewBundle\Form\FilterModelType;
-use Fedale\GridviewBundle\Grid\Gridview;
 use Fedale\GridviewBundle\Grid\GridviewBuilderInterface;
-use Fedale\GridviewBundle\Service\GridviewService;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 #[Route('/bundle')]
 class BundleController extends AbstractController
@@ -156,12 +152,11 @@ class BundleController extends AbstractController
         $dataProvider->setQueryBuilder($queryBuilder);
         $dataProvider->setSort($sort);
 
-        $gridviewModel = new GridviewModel();
-        dump($gridviewModel);
+        $searchModel = new SearchModel();
 
         // Order matters! Try to switch setColumns() / setFilterModel()
         $gridview = $this->createGridviewBuilder()
-            ->setModel($gridviewModel)
+            ->setSearchModel($searchModel)
             ->setDataProvider($dataProvider)
             ->setColumns($columns)
             ->setAttributes([

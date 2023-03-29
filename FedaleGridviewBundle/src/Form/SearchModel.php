@@ -5,21 +5,29 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormBuilderInterface;
 use Doctrine\Common\Collections\Criteria;
+use Fedale\GridviewBundle\DataProvider\EntityDataProvider;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-class FilterModel implements FilterModelInterface
+class SearchModel implements SearchModelInterface
 {
     
     private Form $modelType;
+
     private Criteria $criteria;
 
     private ArrayCollection $filters;
-    
-    public function __construct(private FormFactoryInterface $formFactory) {
+
+    private Request $request;
+
+    public function __construct(
+        private FormFactoryInterface $formFactory,
+        private RequestStack $requestStack, 
+        private EntityDataProvider $entityDataProvider
+    ) {
         $this->filters = new ArrayCollection();
 
         // name, method, action and so on must be passed as argument!

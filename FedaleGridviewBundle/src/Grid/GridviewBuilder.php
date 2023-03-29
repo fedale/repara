@@ -39,9 +39,9 @@ class GridviewBuilder implements GridviewBuilderInterface
         return $this;
     }
 
-    public function setModel($model)
+    public function setSearchModel($model)
     {
-        $this->gridview->setModel($model);
+        $this->gridview->setSearchModel($model);
 
         return $this;
     }
@@ -54,9 +54,9 @@ class GridviewBuilder implements GridviewBuilderInterface
         return $this;
     }
     
-    public function setFilterModelType($filterModelType, $data = null, $options = [])
+    public function setSearchModelType($searchModelType, $data = null, $options = [])
     {
-        $this->gridview->setFilterModelType($filterModelType, $data, $options);
+        $this->gridview->setSearchModelType($searchModelType, $data, $options);
         
         return $this;
     }

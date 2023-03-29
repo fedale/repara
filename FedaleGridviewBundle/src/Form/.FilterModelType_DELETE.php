@@ -11,7 +11,7 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManagerInterface;
-use Fedale\GridviewBundle\Form\FilterModel;
+use Fedale\GridviewBundle\Form\SearchModel;
 use Fedale\GridviewBundle\Form\FilterModelInterface;
 use Fedale\GridviewBundle\Service\GridviewService;
 use Psr\Log\LoggerInterface;

@@ -2,8 +2,7 @@
 
 namespace App\Controller;
 
-use App\Service\GridviewModel;
-use App\Service\SearchModel;
+use App\Service\CustomerSearchModel;
 use Fedale\GridviewBundle\Column\ColumnInterface;
 use Fedale\GridviewBundle\Component\Pagination;
 use Fedale\GridviewBundle\DataProvider\EntityDataProvider;
@@ -152,7 +151,7 @@ class BundleController extends AbstractController
         $dataProvider->setQueryBuilder($queryBuilder);
         $dataProvider->setSort($sort);
 
-        $searchModel = new SearchModel();
+        $searchModel = new CustomerSearchModel();
 
         // Order matters! Try to switch setColumns() / setFilterModel()
         $gridview = $this->createGridviewBuilder()

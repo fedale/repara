@@ -19,14 +19,14 @@ body {
 {% block body %}
 
 <h1>Entity index</h1>
-
+{{ dump(gridview.searchModel) }}
 <div {{ gridview.containerAttr|options}}>
 <table {{ gridview.attr|options }}>
     {% include '@FedaleGridview/gridview/_header.html.twig' with {'gridview': gridview, 'columns': columns} %}
 
-    {# {% if something %} #}
+    {% if form is defined %}
         {% include '@FedaleGridview/gridview/_filter.html.twig' with {'gridview': gridview, 'columns': columns, 'form': form} %}
-    {# {% endif %} #}
+    {% endif %}
 
     {% include '@FedaleGridview/gridview/_body.html.twig' with {'columns': columns, 'models': models} %}
 

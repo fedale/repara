@@ -2,4 +2,5 @@
 namespace Fedale\GridviewBundle\Service;
 
 interface SearchModelInterface
-{}
+{
+}

@@ -304,8 +304,7 @@ class Gridview implements GridviewInterface
             'pagination' => $parameters['pagination']
         ];
 
-        // if ($this->searchModel) {
-        if (true) {
+        if (isset($this->searchModel)) {
             $this->searchForm->getModelType()->handleRequest($this->gridviewService->getRequest());
             $parameters['form'] = $this->searchForm->getModelType()->createView(); // ?? $this->searchModel->getBuilder()->createView(); //$parameters['form'],
         }

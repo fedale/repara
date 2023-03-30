@@ -18,6 +18,12 @@
 
         
         <service id="fedale_gridview.search_model" class="Fedale\GridviewBundle\Service\SearchModel">
+            <call method="setRequest">
+                <argument type="service" id="request_stack"/>
+            </call>
+            <call method="setDataProvider">
+                <argument type="service" id="fedale_gridview.entity_data_provider"/>
+            </call>
         </service>
         <service id="Fedale\GridviewBundle\Service\SearchModelInterface" alias="fedale_gridview.search_model"/>
 

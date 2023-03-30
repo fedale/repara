@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Twig\Environment;
 use Fedale\GridviewBundle\Column\ColumnInterface;
 use Fedale\GridviewBundle\Service\SearchModelInterface;
-use Fedale\GridviewBundle\Service\FilterFormInterface;
+use Fedale\GridviewBundle\Service\SearchFormInterface;
 use Fedale\GridviewBundle\Service\GridviewService;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -89,7 +89,7 @@ class Gridview implements GridviewInterface
 
     private Environment $twig;
 
-    private FilterFormInterface $filterForm;
+    private SearchFormInterface $searchForm;
 
     
 
@@ -98,7 +98,7 @@ class Gridview implements GridviewInterface
         $this->columns = new ArrayCollection();
         $this->twig = $this->gridviewService->getEnvironment();
         // $this->searchModel = $this->gridviewService->getSearchModel();
-        $this->filterForm = $this->gridviewService->getFilterForm();
+        $this->searchForm = $this->gridviewService->getSearchForm();
     }
 
     /**
@@ -194,12 +194,12 @@ class Gridview implements GridviewInterface
                 
                 if ($column->filter) {
                     $options = $column->filter['options'] ?? [];
-                        $this->filterForm->addFilter($column->getAttribute(), $column->filter['type'], $options);
+                        $this->searchForm->addFilter($column->getAttribute(), $column->filter['type'], $options);
                         /*
                     dump($this->searchModel);
                     if (isset($this->searchModel)) {
                         $options = $column->filter['options'] ?? [];
-                        $this->filterForm->addFilter($column->getAttribute(), $column->filter['type'], $options);
+                        $this->searchForm->addFilter($column->getAttribute(), $column->filter['type'], $options);
                     }*/
                 }
                 $this->addColumn($column);
@@ -306,8 +306,8 @@ class Gridview implements GridviewInterface
 
         // if ($this->searchModel) {
         if (true) {
-            $this->filterForm->getModelType()->handleRequest($this->gridviewService->getRequest());
-            $parameters['form'] = $this->filterForm->getModelType()->createView(); // ?? $this->searchModel->getBuilder()->createView(); //$parameters['form'],
+            $this->searchForm->getModelType()->handleRequest($this->gridviewService->getRequest());
+            $parameters['form'] = $this->searchForm->getModelType()->createView(); // ?? $this->searchModel->getBuilder()->createView(); //$parameters['form'],
         }
 
         $content = $this->twig->render($view, $parameters);

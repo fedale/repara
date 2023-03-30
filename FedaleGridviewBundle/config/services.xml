@@ -7,8 +7,8 @@
     <services>
         <service id="fedale_gridview.gridview_service" class="Fedale\GridviewBundle\Service\GridviewService">
             <argument type="service" id="twig"/>
-            <call method="setFilterForm">
-                <argument type="service" id="fedale_gridview.filter_form"/>
+            <call method="setSearchForm">
+                <argument type="service" id="fedale_gridview.search_form"/>
             </call>
             <call method="setRequest">
                 <argument type="service" id="request_stack"/>
@@ -21,12 +21,12 @@
         </service>
         <service id="Fedale\GridviewBundle\Service\SearchModelInterface" alias="fedale_gridview.search_model"/>
 
-        <service id="fedale_gridview.filter_form" class="Fedale\GridviewBundle\Service\FilterForm">
+        <service id="fedale_gridview.search_form" class="Fedale\GridviewBundle\Service\SearchForm">
             <argument type="service" id="form.factory"/>
             <argument type="service" id="request_stack"/>
             <argument type="service" id="fedale_gridview.entity_data_provider"/>
         </service>
-        <service id="Fedale\GridviewBundle\Service\FilterForm" alias="fedale_gridview.filter_form"/>
+        <service id="Fedale\GridviewBundle\Service\SearchForm" alias="fedale_gridview.search_form"/>
 
         <service id="fedale_gridview.gridview" class="Fedale\GridviewBundle\Grid\Gridview">
             <argument type="service" id="twig"/>

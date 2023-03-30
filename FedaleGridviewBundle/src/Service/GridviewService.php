@@ -1,8 +1,8 @@
 <?php
 namespace Fedale\GridviewBundle\Service;
 
-use Fedale\GridviewBundle\Service\FilterForm;
-use Fedale\GridviewBundle\Service\FilterFormInterface;
+use Fedale\GridviewBundle\Service\SearchForm;
+use Fedale\GridviewBundle\Service\SearchFormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\Environment;
@@ -11,16 +11,16 @@ class GridviewService
 {
     public array $attr = [];
 
-    private FilterForm $filterForm;
+    private SearchForm $searchForm;
 
     private Request $request;
 
     public function __construct(private Environment $twig)
     {}
 
-    public function setFilterForm(FilterForm $filterForm)
+    public function setSearchForm(SearchForm $searchForm)
     {
-        $this->filterForm = $filterForm;
+        $this->searchForm = $searchForm;
     }
 
     public function setRequest(RequestStack $requestStack)
@@ -33,17 +33,15 @@ class GridviewService
         return $this->request;
     }
 
-    public function getFilterForm()
+    public function getSearchForm()
     {
-        return $this->filterForm;
+        return $this->searchForm;
     }
 
     public function getEnvironment()
     {
         return $this->twig;
     }
-
-
 
     public function setAttr(string $key, string $value, $replace = false)
     {
@@ -57,4 +55,4 @@ class GridviewService
             }
         }
     }
-} 
+}

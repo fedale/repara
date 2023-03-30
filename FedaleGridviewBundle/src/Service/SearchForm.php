@@ -12,7 +12,7 @@ use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-class FilterForm implements FilterFormInterface
+class SearchForm implements SearchFormInterface
 {
     
     private Form $modelType;

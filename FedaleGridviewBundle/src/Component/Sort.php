@@ -3,14 +3,10 @@
 namespace Fedale\GridviewBundle\Component;
 
 use Exception;
-use Fedale\GridviewBundle\Gridview;
-// use Tinustester\Bundle\GridviewBundle\Helper\Html;
+use Fedale\GridviewBundle\Grid\Gridview;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
-// use Tinustester\Bundle\GridviewBundle\Helper\TextFormat;
-// use Tinustester\Bundle\GridviewBundle\Exception\SortException;
-
 
 class Sort implements SortInterface
 {

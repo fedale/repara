@@ -1,6 +1,7 @@
 <?php
 namespace Fedale\GridviewBundle\Service;
 
+use Fedale\GridviewBundle\DataProvider\DataProviderInterface;
 use Fedale\GridviewBundle\Service\SearchForm;
 use Fedale\GridviewBundle\Service\SearchFormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,6 +15,8 @@ class GridviewService
     private SearchForm $searchForm;
 
     private Request $request;
+
+    private DataProviderInterface $dataProvider;
 
     public function __construct(private Environment $twig)
     {}
@@ -41,6 +44,16 @@ class GridviewService
     public function getEnvironment()
     {
         return $this->twig;
+    }
+
+    public function setDataProvider(DataProviderInterface $dataProvider)
+    {
+        $this->dataProvider = $dataProvider;
+    }
+
+    public function getDataProvider(): DataProviderInterface
+    {
+        return $this->dataProvider;
     }
 
     public function setAttr(string $key, string $value, $replace = false)

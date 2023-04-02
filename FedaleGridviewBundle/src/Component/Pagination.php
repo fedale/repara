@@ -51,6 +51,17 @@ class Pagination implements PaginationInterface
     protected ?int $pageSize;
 
     /**
+     * array to overwrite Pagination attributes
+     * 'attributes' => [
+     *      'pageParam' => 'page',
+     *      'pageSizeParam' => 'per-page',
+     *      'defaultPageSize' => 20,
+     *      'maxPageSize' => 50
+     * ]
+     */
+    protected array $attributes = [];
+
+    /**
      * @var Request
      */
     protected Request $request;
@@ -63,6 +74,24 @@ class Pagination implements PaginationInterface
     public function __construct(RequestStack $requestStack)
     {
         $this->request = $requestStack->getCurrentRequest();
+    }
+
+    public function setAttributes(array $attributes): static
+    {
+        $this->attributes = $attributes;
+        $this->prepareAttributes();
+
+        return $this;
+    }
+
+    public function prepareAttributes(): void
+    {
+        $attributes = $this->attributes;
+        
+        $this->pageParam  = $attributes['pageParam'] ?? $this->pageParam;
+        $this->pageSizeParam  = $attributes['pageSizeParam'] ?? $this->pageSizeParam;
+        $this->defaultPageSize  = $attributes['defaultPageSize'] ?? $this->defaultPageSize;
+        $this->maxPageSize  = $attributes['maxPageSize'] ?? $this->maxPageSize;
     }
 
     /**

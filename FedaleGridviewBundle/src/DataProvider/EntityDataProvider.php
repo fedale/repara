@@ -72,7 +72,7 @@ class EntityDataProvider extends AbstractDataProvider
 
         // Calculate totalCount with applied criterias
         $this->pagination->setTotalCount($this->getTotalCount());
-
+        
         // Set offset and page size
         $this->queryBuilder
             ->setMaxResults($this->pagination->getPageSize())

@@ -6,7 +6,7 @@ use Fedale\GridviewBundle\Service\SearchModelInterface;
 
 class CustomerSearchModel extends SearchModel
 {
-    public function search($params) 
+    public function search() 
     {
         dd($this);
     }

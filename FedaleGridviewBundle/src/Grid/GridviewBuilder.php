@@ -36,13 +36,21 @@ class GridviewBuilder implements GridviewBuilderInterface
         return $this;
     }
 
-
+    /*
     public function setDataProvider(DataProviderInterface $dataProvider)
     {
         $this->gridview->setDataProvider($dataProvider);
 
         return $this;
+    }*/
+
+    public function setDataProvider(array $dataProviderOptions)
+    {
+        $this->gridview->setDataProviderOptions($dataProviderOptions);
+
+        return $this;
     }
+    
     
     public function setSearchModelType($searchModelType, $data = null, $options = [])
     {

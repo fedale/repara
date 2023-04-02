@@ -3,4 +3,5 @@ namespace Fedale\GridviewBundle\Service;
 
 interface SearchFormInterface
 {
+   
 } 

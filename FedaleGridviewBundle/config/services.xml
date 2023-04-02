@@ -13,6 +13,9 @@
             <call method="setRequest">
                 <argument type="service" id="request_stack"/>
             </call>
+            <call method="setDataProvider">
+                <argument type="service" id="fedale_gridview.entity_data_provider"/>
+            </call>
         </service>
         <service id="Fedale\GridviewBundle\Service\GridviewService" alias="fedale_gridview.gridview_service"/>
 
@@ -75,11 +78,9 @@
             <call method="setPagination">
                 <argument type="service" id="fedale_gridview.pagination"/>
             </call>
-            <!--
             <call method="setSearchModel">
                 <argument type="service" id="fedale_gridview.search_model"/>
-            </call>-->
-            
+            </call>    
         </service>
         <service id="Fedale\GridviewBundle\DataProvider\DataProviderInterface" alias="fedale_gridview.entity_data_provider"/>
 

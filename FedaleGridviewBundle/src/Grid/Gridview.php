@@ -83,7 +83,7 @@ class Gridview implements GridviewInterface
      *
      * When this property is not set (null) the filtering feature is disabled.
      */    
-    public SearchModelInterface $searchModel;
+    public ?SearchModelInterface $searchModel = null;
 
     private FormFactoryInterface $formFactory;
 
@@ -91,14 +91,12 @@ class Gridview implements GridviewInterface
 
     private SearchFormInterface $searchForm;
 
-    
-
     public function __construct(private GridviewService $gridviewService)
     {
         $this->columns = new ArrayCollection();
         $this->twig = $this->gridviewService->getEnvironment();
-        // $this->searchModel = $this->gridviewService->getSearchModel();
         $this->searchForm = $this->gridviewService->getSearchForm();
+        $this->dataProvider = $this->gridviewService->getDataProvider();
     }
 
     /**
@@ -157,17 +155,26 @@ class Gridview implements GridviewInterface
         return $this->dataProvider;
     }
 
+    
+    public function setDataProviderOptions(array $dataProviderOptions) 
+    {   
+        
+        $this->dataProvider->setQueryBuilder($dataProviderOptions['queryBuilder']);
+        $this->dataProvider->getSort()->setAttributes($dataProviderOptions['sort']);
+        $this->dataProvider->getPagination()->setAttributes($dataProviderOptions['pagination']);
+    }
+
     public function setDataProvider($dataProvider) 
     {    
         $this->dataProvider = $dataProvider;
     }
 
-    public function getSearchModel(): SearchModelInterface
+    public function getSearchModel(): ?SearchModelInterface
     {
         return $this->searchModel;
     }
 
-    public function setSearchModel(SearchModelInterface $searchModel) 
+    public function setSearchModel(?SearchModelInterface $searchModel) 
     {    
         $this->searchModel = $searchModel;
     }
@@ -192,15 +199,11 @@ class Gridview implements GridviewInterface
 
                 $column->setGridview($this);
                 
-                if ($column->filter) {
-                    $options = $column->filter['options'] ?? [];
-                        $this->searchForm->addFilter($column->getAttribute(), $column->filter['type'], $options);
-                        /*
-                    dump($this->searchModel);
-                    if (isset($this->searchModel)) {
+                if (isset($this->searchModel)) {
+                    if ($column->filter) {
                         $options = $column->filter['options'] ?? [];
                         $this->searchForm->addFilter($column->getAttribute(), $column->filter['type'], $options);
-                    }*/
+                    }
                 }
                 $this->addColumn($column);
             }
@@ -301,7 +304,7 @@ class Gridview implements GridviewInterface
             'gridview' => $this,
             'columns' => $this->columns,
             'models' => $this->dataProvider->getData(),
-            'pagination' => $parameters['pagination']
+            'pagination' => $this->dataProvider->getPagination() //$parameters['pagination']
         ];
 
         if (isset($this->searchModel)) {

@@ -23,22 +23,27 @@ use Fedale\GridviewBundle\Grid\GridviewBuilderInterface;
 #[Route('/bundle')]
 class BundleController extends AbstractController
 {
-
     public function __construct(
         private GridviewBuilderFactory $gridviewBuilderFactory,
         private CalendarBuilderFactory $calendarBuilderFactory,
+        private CustomerSearchModel $customerSearchModel
     ) {
     }
 
     #[Route('/gridview', name: 'app_gridview', methods: ['GET'])]
     public function grid(
         EntityManagerInterface $entityManager, 
-        DataProviderInterface $dataProvider, 
-        SortInterface $sort, 
-        PaginationInterface $pagination,
-        Request $request): Response
+      //  DataProviderInterface $dataProvider, 
+        // SortInterface $sort, 
+        // PaginationInterface $pagination,
+        Request $request
+    ): Response
     {
-        $pagination->setDefaultPageSize(10);
+  //      $pagination->setDefaultPageSize(10);
+
+        $paginationAttributes = [
+            'defaultPageSize' => 10
+        ];
 
         $sortAttributes = [
             'id' => [
@@ -148,14 +153,20 @@ class BundleController extends AbstractController
             ->join('c.locations', 'l')
             ;
 
-        $dataProvider->setQueryBuilder($queryBuilder);
-        $dataProvider->setSort($sort);
+        $dataProvider = [
+            'queryBuilder' => $queryBuilder,
+            'pagination' => $paginationAttributes,
+            'sort' => $sortAttributes
+        ];
 
-        $searchModel = new CustomerSearchModel();
+        //$dataProvider->setQueryBuilder($queryBuilder);
+        //$dataProvider->setPaginationAttributes($paginationAttributes);
+     //   $dataProvider->setSort($sort);
+
 
         // Order matters! Try to switch setColumns() / setFilterModel()
         $gridview = $this->createGridviewBuilder()
-            ->setSearchModel($searchModel)
+            ->setSearchModel($this->customerSearchModel)
             ->setDataProvider($dataProvider)
             ->setColumns($columns)
             ->setAttributes([
@@ -174,7 +185,7 @@ class BundleController extends AbstractController
             ->renderGridview();
         ;
 
-        return $gridview->renderGrid('@FedaleGridview/gridview/index.html.twig', ['pagination' => $pagination]); //, 'form' => $form->createView()]);
+        return $gridview->renderGrid('@FedaleGridview/gridview/index.html.twig', []);//, ['pagination' => $pagination]); //, 'form' => $form->createView()]);
     }
 
     #[Route('/calendar', name: 'app_calendar', methods: ['GET'])]

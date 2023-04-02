@@ -35,6 +35,7 @@ abstract class AbstractDataProvider implements DataProviderInterface
     public function setPagination(PaginationInterface $pagination): static
     {
         $this->pagination = $pagination;
+
         return $this;
     }
 
@@ -46,6 +47,7 @@ abstract class AbstractDataProvider implements DataProviderInterface
     public function setSort(SortInterface $sort): static
     {
         $this->sort = $sort;
+        
         return $this;
     }
 
@@ -65,20 +67,13 @@ abstract class AbstractDataProvider implements DataProviderInterface
         return $this->sort;
     }
 
-     /**
-     * @param SearchModelInterace $searchModel
-     *
-     * @return AbstractDataProvider
-     */
     public function setSearchModel(SearchModelInterface $searchModel): static
     {
         $this->searchModel = $searchModel;
+
         return $this;
     }
 
-    /**
-     * @return SearchModelInterface
-     */
     public function getSearchModel(): SearchModelInterface
     {
         return $this->searchModel;

@@ -32,7 +32,7 @@ class BundleController extends AbstractController
 
     #[Route('/gridview', name: 'app_gridview', methods: ['GET'])]
     public function grid(
-        EntityManagerInterface $entityManager, 
+        // EntityManagerInterface $entityManager, 
       //  DataProviderInterface $dataProvider, 
         // SortInterface $sort, 
         // PaginationInterface $pagination,
@@ -145,6 +145,7 @@ class BundleController extends AbstractController
                 
         ];
 
+        /*
         $queryBuilder = $entityManager
             ->getRepository(\App\Entity\Customer\Customer::class)
             ->createQueryBuilder('c')
@@ -152,9 +153,10 @@ class BundleController extends AbstractController
             ->join('c.profile', 'p')
             ->join('c.locations', 'l')
             ;
-
+        */
         $dataProvider = [
-            'queryBuilder' => $queryBuilder,
+            // 'queryBuilder' => $queryBuilder,
+            'models' => \App\Entity\Customer\Customer::class,
             'pagination' => $paginationAttributes,
             'sort' => $sortAttributes
         ];

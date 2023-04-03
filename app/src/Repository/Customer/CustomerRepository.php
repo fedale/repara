@@ -38,4 +38,15 @@ class CustomerRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+
+    public function findAllModels()
+    {
+        return $this
+            ->createQueryBuilder('c')
+            ->select('c ', 'p', 'l')
+            ->join('c.profile', 'p')
+            ->join('c.locations', 'l')
+        ;
+    } 
+
 }

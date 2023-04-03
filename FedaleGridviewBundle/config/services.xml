@@ -72,6 +72,7 @@
                      
         <service id="fedale_gridview.entity_data_provider" class="Fedale\GridviewBundle\DataProvider\EntityDataProvider">
             <argument type="service" id="event_dispatcher"/>
+            <argument type="service" id="doctrine.orm.default_entity_manager"/>
             <call method="setSort">
                 <argument type="service" id="fedale_gridview.sort"/>
             </call>

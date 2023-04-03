@@ -14,7 +14,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Ignore;
 use Symfony\Component\Serializer\Annotation\MaxDepth;
 
-#[ORM\Entity()]
+#[ORM\Entity(repositoryClass:'App\Repository\Customer\CustomerRepository')]
 #[UniqueEntity('email')]
 #[UniqueEntity('code')]
 #[UniqueEntity('username')]

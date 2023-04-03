@@ -25,7 +25,7 @@ use Fedale\GridviewBundle\EventSubscriber\RowSubscriber;
 
 class EntityDataProvider extends AbstractDataProvider
 {
-    private EntityManagerInterface $entityManager;
+    
 
     /**
      * @var \Doctrine\ORM\QueryBuilder
@@ -43,6 +43,7 @@ class EntityDataProvider extends AbstractDataProvider
 
       public function __construct(
         private EventDispatcherInterface $eventDispatcher,
+        private EntityManagerInterface $entityManager
     ) {
         $this->models = new ArrayCollection();
     }
@@ -58,6 +59,12 @@ class EntityDataProvider extends AbstractDataProvider
     public function setQueryBuilder(QueryBuilder $queryBuilder)
     {
         $this->queryBuilder = $queryBuilder;
+    }
+
+
+    public function prepareModels(string|array $models)
+    {
+        $this->queryBuilder = $this->entityManager->getRepository(\App\Entity\Customer\Customer::class)->findAllModels(); //createQueryBuilder('c');        
     }
 
     public function getData()

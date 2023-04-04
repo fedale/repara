@@ -1,6 +1,7 @@
 <?php
 namespace Fedale\GridviewBundle\DataProvider;
 
+use App\Entity\Customer\Customer;
 use Fedale\GridviewBundle\Serializer\ModelNormalizer;
 use Fedale\GridviewBundle\Component\Sort;
 use Fedale\GridviewBundle\Component\Pagination;
@@ -25,8 +26,6 @@ use Fedale\GridviewBundle\EventSubscriber\RowSubscriber;
 
 class EntityDataProvider extends AbstractDataProvider
 {
-    
-
     /**
      * @var \Doctrine\ORM\QueryBuilder
      */
@@ -64,11 +63,12 @@ class EntityDataProvider extends AbstractDataProvider
 
     public function prepareModels(string|array $models)
     {
-        $this->queryBuilder = $this->entityManager->getRepository(\App\Entity\Customer\Customer::class)->findAllModels(); //createQueryBuilder('c');        
+        $this->queryBuilder = $this->entityManager->getRepository($models)->findAllModels();
     }
 
     public function getData()
     {
+        $this->entityManager->getRepository(Customer::class)->search($this->queryBuilder);
         // First apply criteria
       //  $criteria = $this->searchModel->getCriteria();
         

@@ -57,8 +57,9 @@ class CustomerRepository extends ServiceEntityRepository
          * ++++++++++ What I want to achieve ++++++++++++
          * // We have to do some search... Lets do some magic
          *   $query->andFilterWhere([
-         * //... other searched attributes here
+         *      //... other searched attributes here
          *   ])
+         * 
          *   // Here we search the attributes of our relations using our previously configured
          *   // ones in "TourSearch"
          *   ->andFilterWhere(['like', 'tbl_city.name', $this->city])

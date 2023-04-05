@@ -54,7 +54,7 @@ class CustomerRepository extends ServiceEntityRepository
 
     public function search(array $params = [])
     {
-        $queryBuilder = $this
+        $qb = $this
             ->createQueryBuilder('c')
             ->select('c ', 'p', 'l')
             ->join('c.profile', 'p')
@@ -62,15 +62,29 @@ class CustomerRepository extends ServiceEntityRepository
         ;
 
         if (count($params) === 0 ){
-            return $queryBuilder;
+            return $qb;
         }
 
-        if ($params['locations']) {
-            $queryBuilder->andWhere('l.zipcode LIKE \'%Quos.%\'');
-                // ->setParameter(':locations', '%' . $params['locations'] .'%');
-        }
 
-        return $queryBuilder;
+        $qb->andWhere('LOWER(l.zipcode) LIKE :locations')
+                ->setParameter(':locations', '%' . strtolower($params['locations'] . '%')
+        );
+
+        $fullname = strtolower($params['profile_fullname']);
+        $qb->andWhere(
+            $qb->expr()->orX(
+                $qb->expr()->like('LOWER(p.firstname)', ':fullname'),
+                $qb->expr()->like('LOWER(p.lastname)', ':fullname'),
+                $qb->expr()->like(
+                    $qb->expr()->concat('LOWER(p.firstname)', $qb->expr()->literal(' '), 'p.lastname'),
+                    ':fullname'
+                ),
+            )
+        )
+            ->setParameter(':fullname', '%' . $fullname . '%')
+        ;
+
+        return $qb;
         /**
          * ++++++++++ What I want to achieve ++++++++++++
          * // We have to do some search... Lets do some magic

@@ -96,7 +96,7 @@ class BundleController extends AbstractController
                 'label' => 'Label 2',
                 'attribute' => 'profile_fullname',
                 'filter' => [
-                    'type' => 'boolean',
+                    'type' => 'text',
                 ]
                 /*'filter' => [
                     'type' => 'text',

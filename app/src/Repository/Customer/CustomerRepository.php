@@ -41,6 +41,7 @@ class CustomerRepository extends ServiceEntityRepository
         }
     }
 
+    /*
     public function findAllModels()
     {
         return $this
@@ -49,10 +50,27 @@ class CustomerRepository extends ServiceEntityRepository
             ->join('c.profile', 'p')
             ->join('c.locations', 'l')
         ;
-    } 
+    }*/
 
-    public function search(QueryBuilder $qb)
+    public function search(array $params = [])
     {
+        $queryBuilder = $this
+            ->createQueryBuilder('c')
+            ->select('c ', 'p', 'l')
+            ->join('c.profile', 'p')
+            ->join('c.locations', 'l')
+        ;
+
+        if (count($params) === 0 ){
+            return $queryBuilder;
+        }
+
+        if ($params['locations']) {
+            $queryBuilder->andWhere('l.zipcode LIKE \'%Quos.%\'');
+                // ->setParameter(':locations', '%' . $params['locations'] .'%');
+        }
+
+        return $queryBuilder;
         /**
          * ++++++++++ What I want to achieve ++++++++++++
          * // We have to do some search... Lets do some magic
@@ -65,7 +83,7 @@ class CustomerRepository extends ServiceEntityRepository
          *   ->andFilterWhere(['like', 'tbl_city.name', $this->city])
          *   ->andFilterWhere(['like', 'tbl_country.name', $this->country]);
          */
-        dd($qb);
+        
         return $qb
             ->andWhere($qb->expr()->like('p.firstname',  $qb->expr()->literal('Gui%')));
     }

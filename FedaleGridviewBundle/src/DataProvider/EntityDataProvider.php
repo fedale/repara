@@ -23,6 +23,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Fedale\GridviewBundle\Component\Row;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Fedale\GridviewBundle\EventSubscriber\RowSubscriber;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class EntityDataProvider extends AbstractDataProvider
 {
@@ -40,11 +42,22 @@ class EntityDataProvider extends AbstractDataProvider
 
     private int $totalRows;
 
+    private array $params;
+
       public function __construct(
         private EventDispatcherInterface $eventDispatcher,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private RequestStack $requestStack
     ) {
         $this->models = new ArrayCollection();
+
+        $this->populateParams();
+        
+    }
+
+    private function populateParams()
+    {
+        $this->params = $this->requestStack->getCurrentRequest()->get('myform') ?? [];
     }
 
     /**
@@ -63,12 +76,12 @@ class EntityDataProvider extends AbstractDataProvider
 
     public function prepareModels(string|array $models)
     {
-        $this->queryBuilder = $this->entityManager->getRepository($models)->findAllModels();
+        $this->queryBuilder = $this->entityManager->getRepository($models)->search($this->params);
     }
 
     public function getData()
     {
-        $this->entityManager->getRepository(Customer::class)->search($this->queryBuilder);
+        //$this->entityManager->getRepository(Customer::class)->search($this->queryBuilder);
         // First apply criteria
       //  $criteria = $this->searchModel->getCriteria();
         

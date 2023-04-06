@@ -12,7 +12,7 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
  */
 class FedaleGridviewBundle extends AbstractBundle
 {
-    protected string $extensionAlias = 'gridview'; 
+    //protected string $extensionAlias = 'gridview'; 
 
     public function loadExtension(array $config, ContainerConfigurator $containerConfigurator, ContainerBuilder $containerBuilder): void
     {

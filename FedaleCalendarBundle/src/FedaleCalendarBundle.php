@@ -12,7 +12,7 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
  */
 class FedaleCalendarBundle extends AbstractBundle
 {
-    protected string $extensionAlias = 'calendar'; 
+    // protected string $extensionAlias = 'calendar'; 
 
     public function loadExtension(array $config, ContainerConfigurator $containerConfigurator, ContainerBuilder $containerBuilder): void
     {

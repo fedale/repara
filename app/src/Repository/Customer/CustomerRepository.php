@@ -18,8 +18,6 @@ use Doctrine\ORM\QueryBuilder;
  */
 class CustomerRepository extends ServiceEntityRepository
 {
-    protected QueryBuilder $qb;
-
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Customer::class);
@@ -56,7 +54,7 @@ class CustomerRepository extends ServiceEntityRepository
 
     public function search(array $params = [])
     {
-        $this->qb = $this
+        $qb = $this
             ->createQueryBuilder('c')
             ->select('c ', 'p', 'l')
             ->join('c.profile', 'p')
@@ -64,31 +62,47 @@ class CustomerRepository extends ServiceEntityRepository
         ;
 
         if (count($params) === 0 ){
-            return $this->qb;
+            return $qb;
         }
 
-    
+        $criteria = Criteria::create();
+        $expr = Criteria::expr();
 
-        $this->qb->andWhere('LOWER(l.zipcode) LIKE :locations')
+        /*
+        $qb->andWhere('LOWER(l.zipcode) LIKE :locations')
             ->setParameter(':locations', '%' . strtolower($params['locations'] . '%')
         );
+        */
+        dump($params);
 
-    
-        $fullname = strtolower($params['profile_fullname']);
-        $this->qb->andWhere(
-            $this->qb->expr()->orX(
-                $this->like('LOWER(p.firstname)', ':fullname'),
-                $this->qb->expr()->like('LOWER(p.lastname)', ':fullname'),
-                $this->qb->expr()->like(
-                    $this->qb->expr()->concat('LOWER(p.firstname)', $this->qb->expr()->literal(' '), 'p.lastname'),
+        // $fullname = strtolower($params['profile_fullname']);
+        $fullname = $params['profile_fullname'];
+        dump($fullname);
+        $criteria->andWhere(
+            $expr->orX(
+                $expr->contains('p.firstname', $fullname),
+                $expr->contains('p.lastname', $fullname),
+            )
+        );
+        
+        $qb->addCriteria($criteria);
+        //$qb->setParameter(':fullname', '%' . $fullname . '%');
+
+        /*
+        $qb->andWhere(
+            $qb->expr()->orX(
+                $qb->expr->like('LOWER(p.firstname)', ':fullname'),
+                $qb->expr()->like('LOWER(p.lastname)', ':fullname'),
+                $qb->expr()->like(
+                    $qb->expr()->concat('LOWER(p.firstname)', $qb->expr()->literal(' '), 'p.lastname'),
                     ':fullname'
                 ),
             )
         )
             ->setParameter(':fullname', '%' . $fullname . '%')
         ;
-
-        return $this->qb;
+        */
+        return $qb;
         /**
          * ++++++++++ What I want to achieve ++++++++++++
          * // We have to do some search... Lets do some magic
@@ -101,9 +115,6 @@ class CustomerRepository extends ServiceEntityRepository
          *   ->andFilterWhere(['like', 'tbl_city.name', $this->city])
          *   ->andFilterWhere(['like', 'tbl_country.name', $this->country]);
          */
-        
-        return $this->qb
-            ->andWhere($this->qb->expr()->like('p.firstname',  $this->qb->expr()->literal('Gui%')));
     }
 
 }

@@ -1,13 +1,14 @@
 <?php
 namespace Fedale\GridviewBundle\Service;
 
+use Fedale\GridviewBundle\Service\QueryBuilder;
+
 class ServiceEntityRepository extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository
 {
-    public function like(string $field, string $placeholder)
+    public function createQueryBuilder($alias, $indexBy = null)
     {
-        dd('dd');
-        // return $this->qb->expr()->like('LOWER(p.firstname)', ':fullname');
-        return $this->qb->expr()->like($field, $placeholder);
-        
+        return (new QueryBuilder($this->_em))
+            ->select($alias)
+            ->from($this->_entityName, $alias, $indexBy);
     }
 }

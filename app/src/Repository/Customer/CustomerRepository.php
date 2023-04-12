@@ -56,6 +56,9 @@ class CustomerRepository extends ServiceEntityRepository
 
     public function search(array $params = [])
     {
+        $criteria = Criteria::create();
+        $expr = Criteria::expr();
+        
         $this->qb = $this
             ->createQueryBuilder('c')
             ->select('c ', 'p', 'l')
@@ -66,8 +69,6 @@ class CustomerRepository extends ServiceEntityRepository
         if (count($params) === 0 ){
             return $this->qb;
         }
-
-    
 
         $this->qb->andWhere('LOWER(l.zipcode) LIKE :locations')
             ->setParameter(':locations', '%' . strtolower($params['locations'] . '%')

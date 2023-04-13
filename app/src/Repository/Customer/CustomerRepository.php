@@ -57,7 +57,7 @@ class CustomerRepository extends ServiceEntityRepository
         $criteria = Criteria::create();
         $expr = Criteria::expr();
         
-        $this->qb = $this
+        $qb = $this
             ->createQueryBuilder('c')
             ->select('c ', 'p', 'l')
             ->join('c.profile', 'p')
@@ -69,7 +69,7 @@ class CustomerRepository extends ServiceEntityRepository
         }
 
 
-        $this->qb->andWhere('LOWER(l.zipcode) LIKE :locations')
+        $qb->andWhere('LOWER(l.zipcode) LIKE :locations')
             ->setParameter(':locations', '%' . strtolower($params['locations'] . '%')
         );
         
@@ -114,6 +114,13 @@ class CustomerRepository extends ServiceEntityRepository
          *   ->andFilterWhere(['like', 'tbl_city.name', $this->city])
          *   ->andFilterWhere(['like', 'tbl_country.name', $this->country]);
          */
+
+         /**
+          * maybe something like:
+          * $filterService->andFilterWhere([$qb, 'like', $value, $attribute])
+          * or
+          * $this->andFilterWhere([$qb, 'like', $value, $attribute])
+          */
     }
 
 }

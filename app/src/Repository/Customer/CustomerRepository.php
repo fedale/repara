@@ -122,5 +122,4 @@ class CustomerRepository extends ServiceEntityRepository
           * $this->andFilterWhere([$qb, 'like', $value, $attribute])
           */
     }
-
 }

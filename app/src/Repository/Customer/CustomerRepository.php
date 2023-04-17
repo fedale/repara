@@ -5,7 +5,7 @@ namespace App\Repository\Customer;
 use App\Entity\Customer\Customer;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Doctrine\Common\Collections\Criteria;
+use Fedale\GridviewBundle\Service\SearchForm;
 
 /**
  * @extends ServiceEntityRepository<Customer>
@@ -17,7 +17,7 @@ use Doctrine\Common\Collections\Criteria;
  */
 class CustomerRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, private SearchForm $searchForm)
     {
         parent::__construct($registry, Customer::class);
     }
@@ -67,10 +67,7 @@ class CustomerRepository extends ServiceEntityRepository
             return $qb;
         }
 
-
-        $qb->andWhere('LOWER(l.zipcode) LIKE :locations')
-            ->setParameter(':locations', '%' . strtolower($params['locations'] . '%')
-        );  
+        $this->searchForm->andFilterWhere($qb, 'l.zipcode', $params['locations']);
 
         $fullname = strtolower($params['profile_fullname']);
         // $fullname = $params['profile_fullname'];
@@ -86,20 +83,32 @@ class CustomerRepository extends ServiceEntityRepository
         // $qb->addCriteria($criteria);
         // //$qb->setParameter(':fullname', '%' . $fullname . '%');
 
-        
+        /*
         $qb->andWhere(
             $qb->expr()->orX(
                 $qb->expr()->like('LOWER(p.firstname)', ':fullname'),
                 $qb->expr()->like('LOWER(p.lastname)', ':fullname'),
                 $qb->expr()->like(
-                    $qb->expr()->concat('LOWER(p.firstname)', $qb->expr()->literal(' '), 'p.lastname'),
+                    $qb->expr()->concat(
+                        $qb->expr()->lower('p.firstname'), 
+                        $qb->expr()->literal(' '), 
+                        $qb->expr()->lower('p.lastname'), 
+                    ),
+                    ':fullname'
+                ),
+                $qb->expr()->like(
+                    $qb->expr()->concat(
+                        $qb->expr()->lower('p.lastname'), 
+                        $qb->expr()->literal(' '), 
+                        $qb->expr()->lower('p.firstname'), 
+                    ),
                     ':fullname'
                 ),
             )
         )
             ->setParameter(':fullname', '%' . $fullname . '%')
         ;
-         
+         */
         return $qb;
         /**
          * ++++++++++ What I want to achieve ++++++++++++

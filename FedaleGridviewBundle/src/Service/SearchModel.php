@@ -22,4 +22,8 @@ class SearchModel implements SearchModelInterface
     }
 
     public function search(){}
+
+    public function ilike(QueryBuilder $qb) {
+
+    }
 }

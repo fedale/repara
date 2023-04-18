@@ -80,66 +80,208 @@ class SearchForm implements SearchFormInterface
 
     public function andFilterWhere(QueryBuilder $qb, string $attribute, string $param)
     {
-        $operator = strtok(strtolower($param), " ");
-        if ( !$this->isOperator($operator) ) {
-            $operator = 'ilike'; // Default operator
+        $token = strtok(strtolower($param), " ");
+
+        if ( $this->isOperator($token) ) {
+            $operator = $token;
+            $searchTerm = trim(str_ireplace($token, '', $param));
+
         } else {
-            $param = trim(str_ireplace($operator, '', $param));
+            $operator = 'ilike'; // Default operator
+            $searchTerm = $param;
         }
 
-        dump($operator, $param);
+        dump($operator, $param, $searchTerm);
         
         $search = match($operator) {
-            'eq', '==' => [
-                $qb->andWhere($qb->expr()->eq($attribute, ':param')),
-                $qb->setParameter(':param', $param)
-            ],
-            'ieq', '=' => [
-                $qb->andWhere($qb->expr()->eq(
-                    $qb->expr()->lower($attribute), ':param')),
-                $qb->setParameter(':param', strtolower($param))
-            ],
-            'neq', '!==', '<>' => [
-                $qb->andWhere($qb->expr()->neq($attribute, ':param')),
-                $qb->setParameter(':param', $param)
-            ],
-            'ineq', '!=' => [
-                $qb->andWhere($qb->expr()->neq(
-                    $qb->expr()->lower($attribute), ':param')),
-                $qb->setParameter(':param', strtolower($param))
-            ],
-            default => [
-                $qb->andWhere(
-                    $qb->expr()->like($qb->expr()->lower($attribute), ':param')
-                ),
-                $qb->setParameter(':param', '%' . strtolower($param) . '%')
-            ]
+            'eq', '==' => $this->eq($qb, $attribute, $searchTerm),
+            'ieq', '=' => $this->ieq($qb, $attribute, $searchTerm),
+            'neq', 'not', '!==', '<>' => $this->neq($qb, $attribute, $searchTerm),
+            'ineq', '!=' => $this->ineq($qb, $attribute, $searchTerm),
+            'gt', '>' => $this->gt($qb, $attribute, $searchTerm),
+            'gte', '>=' => $this->gte($qb, $attribute, $searchTerm),
+            'lt', '>' => $this->lt($qb, $attribute, $searchTerm),
+            'lte', '>=' => $this->lte($qb, $attribute, $searchTerm),
+            'btw', 'between' => $this->between($qb, $attribute, $searchTerm),
+            'like', '%' => $this->like($qb, $attribute, $searchTerm),
+            'ilike' => $this->ilike($qb, $attribute, $searchTerm),
+            'notLike', 'nlike', '!%' => $this->notLike($qb, $attribute, $searchTerm),
+            'notIlike', 'nilike' => $this->notIlike($qb, $attribute, $searchTerm),
+            'startwith', '-%' => $this->startWith($qb, $attribute, $searchTerm),
+            'istartwith', '-%' => $this->iStartWith($qb, $attribute, $searchTerm),
+            'endWith', '%-' => $this->endWith($qb, $attribute, $searchTerm),
+            default => $this->default($qb, $attribute, $searchTerm),
         };
     }
 
-    private function isOperator($operator) {
+    private function isOperator($token) {
         $operators = [
             'eq', '==',
             'ieq', '=',
-            'neq', '!==', '<>',
+            'neq', 'not', '!==', '<>',
             'ineq', '!=',
+            'gt', '>',
+            'gte', '>=',
+            'lt', '<',
+            'lte', '<=',
+            'btw', 'between',
+            'btwe',
+            'like', '%',
+            'notlike', 'nlike', '!%',
+            'ilike',
+            'notilike', 'nilike', '!ilike',
+            'startwith', '-%',
+            'notstartwith', '!-%',
+            'istartwith',
+            'notistartwith',
+            'endwith', '%-', 
+            'slike', '',
+            'nslike', '',
+            'rslike', '',
+            'lslike', '',
+            'isnull',
+            'isnotnull',
+            'in',
+            'notin'
         ];     
 
-        if (in_array($operator, $operators)) {
+        if (in_array(strtolower($token), $operators)) {
             return true;
         }
 
         return false;
     }
 
+    private function eq(QueryBuilder $qb, string $attribute, string $searchTerm)
+    {
+        $qb->andWhere($qb->expr()->eq($attribute, ':param'));
+        $qb->setParameter(':param', $searchTerm);
+    }
+
+    private function ieq(QueryBuilder $qb, string $attribute, string $searchTerm)
+    {
+        $qb->andWhere($qb->expr()->eq(
+            $qb->expr()->lower($attribute), ':param')
+        );
+        $qb->setParameter(':param', strtolower($searchTerm));
+    }
+
+    private function neq(QueryBuilder $qb, string $attribute, string $searchTerm)
+    {
+        $qb->andWhere($qb->expr()->neq($attribute, ':param'));
+        $qb->setParameter(':param', $searchTerm);
+    }
+
+    private function ineq(QueryBuilder $qb, string $attribute, string $searchTerm)
+    {
+        $qb->andWhere($qb->expr()->neq(
+            $qb->expr()->lower($attribute), ':param')
+        );
+        $qb->setParameter(':param', strtolower($searchTerm));
+    }
+
+    private function gt(QueryBuilder $qb, string $attribute, string $searchTerm)
+    {
+        $qb->andWhere($qb->expr()->gt($attribute, ':param'));
+        $qb->setParameter(':param', strtolower($searchTerm));
+    }
+
+    private function gte(QueryBuilder $qb, string $attribute, string $searchTerm)
+    {
+        $qb->andWhere($qb->expr()->gte($attribute, ':param'));
+        $qb->setParameter(':param', strtolower($searchTerm));
+    }
+
+    private function lt(QueryBuilder $qb, string $attribute, string $searchTerm)
+    {
+        $qb->andWhere($qb->expr()->lt($attribute, ':param'));
+        $qb->setParameter(':param', strtolower($searchTerm));
+    }
+
+    private function lte(QueryBuilder $qb, string $attribute, string $searchTerm)
+    {
+        $qb->andWhere($qb->expr()->lte($attribute, ':param'));
+        $qb->setParameter(':param', strtolower($searchTerm));
+    }
+
+    private function between(QueryBuilder $qb, string $attribute, string $searchTerm)
+    {
+        $terms = \explode(' AND ', $searchTerm);
+        dump($attribute, $terms);
+        $qb->andWhere($qb->expr()->between($attribute, '\'' . $terms[0] . '\'', '\'' . $terms[1] . '\''));
+    }
+
+    private function like(QueryBuilder $qb, string $attribute, string $searchTerm)
+    {
+        $qb->andWhere($qb->expr()->like($attribute, ':param'));
+        $qb->setParameter(':param', '%' . $searchTerm . '%');
+    }
+    
+    private function ilike(QueryBuilder $qb, string $attribute, string $searchTerm)
+    {
+        $qb->andWhere(
+            $qb->expr()->like(
+                $qb->expr()->lower($attribute), 
+                ':param'
+            )
+            );
+        $qb->setParameter(':param', '%' . strtolower($searchTerm) . '%');
+    }
+
+    private function notLike(QueryBuilder $qb, string $attribute, string $searchTerm)
+    {
+        $qb->andWhere($qb->expr()->notLike($attribute, ':param'));
+        $qb->setParameter(':param', '%' . $searchTerm . '%');
+    }
+    
+    private function notIlike(QueryBuilder $qb, string $attribute, string $searchTerm)
+    {
+        $qb->andWhere(
+            $qb->expr()->notLike(
+                $qb->expr()->lower($attribute), 
+                ':param'
+            )
+            );
+        $qb->setParameter(':param', '%' . strtolower($searchTerm) . '%');
+    }
+
+    private function startWith(QueryBuilder $qb, string $attribute, string $searchTerm)
+    {
+        $qb->andWhere($qb->expr()->like($attribute, ':param'));
+        $qb->setParameter(':param', $searchTerm . '%');
+    }
+
+    private function iStartWith(QueryBuilder $qb, string $attribute, string $searchTerm)
+    {
+        $qb->andWhere($qb->expr()->like(
+                $qb->expr()->lower($attribute), 
+                ':param'
+            )
+        );
+        $qb->setParameter(':param', strtolower($searchTerm) . '%');
+    }
+
+    private function endWith(QueryBuilder $qb, string $attribute, string $searchTerm)
+    {
+        $qb->andWhere($qb->expr()->notLike($attribute, ':param'));
+        $qb->setParameter(':param', '%' . $searchTerm);
+    }
+
+
+    private function default(QueryBuilder $qb, string $attribute, string $searchTerm)
+    {
+        $this->ilike($qb, $attribute, $searchTerm);
+    }
+    
+
 } 
 /**
  *  const OPERATOR_EQ = 'eq'; OK
  *  const OPERATOR_NEQ = 'neq'; OK
- *  const OPERATOR_LT = 'lt';
- *  const OPERATOR_LTE = 'lte';
- *  const OPERATOR_GT = 'gt';
- *  const OPERATOR_GTE = 'gte';
+ *  const OPERATOR_LT = 'lt'; OK
+ *  const OPERATOR_LTE = 'lte';OK
+ *  const OPERATOR_GT = 'gt';OK
+ *  const OPERATOR_GTE = 'gte';OK
  *  const OPERATOR_BTW = 'btw';
  *  const OPERATOR_BTWE = 'btwe';
  *  const OPERATOR_LIKE = 'like';

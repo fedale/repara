@@ -80,29 +80,30 @@ class SearchForm implements SearchFormInterface
 
     public function andFilterWhere(QueryBuilder $qb, string $attribute, string $param)
     {
-        $operator = strtolower(strtok($param, ' '));
-        dump($attribute, $operator);
-        if ($operator) {
+        $operator = strtok(strtolower($param), " ");
+        if ( !$this->isOperator($operator) ) {
+            $operator = 'ilike'; // Default operator
+        } else {
             $param = trim(str_ireplace($operator, '', $param));
         }
-        
-        dump($operator, $param);
 
-        $match = match($operator) {
-            'eq', '=' => [
+        dump($operator, $param);
+        
+        $search = match($operator) {
+            'eq', '==' => [
                 $qb->andWhere($qb->expr()->eq($attribute, ':param')),
                 $qb->setParameter(':param', $param)
             ],
-            'ieq' => [
+            'ieq', '=' => [
                 $qb->andWhere($qb->expr()->eq(
                     $qb->expr()->lower($attribute), ':param')),
                 $qb->setParameter(':param', strtolower($param))
             ],
-            'neq', '!=', '<>' => [
+            'neq', '!==', '<>' => [
                 $qb->andWhere($qb->expr()->neq($attribute, ':param')),
                 $qb->setParameter(':param', $param)
             ],
-            'ineq' => [
+            'ineq', '!=' => [
                 $qb->andWhere($qb->expr()->neq(
                     $qb->expr()->lower($attribute), ':param')),
                 $qb->setParameter(':param', strtolower($param))
@@ -114,8 +115,21 @@ class SearchForm implements SearchFormInterface
                 $qb->setParameter(':param', '%' . strtolower($param) . '%')
             ]
         };
-        
-        
+    }
+
+    private function isOperator($operator) {
+        $operators = [
+            'eq', '==',
+            'ieq', '=',
+            'neq', '!==', '<>',
+            'ineq', '!=',
+        ];     
+
+        if (in_array($operator, $operators)) {
+            return true;
+        }
+
+        return false;
     }
 
 } 

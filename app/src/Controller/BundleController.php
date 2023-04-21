@@ -32,10 +32,6 @@ class BundleController extends AbstractController
 
     #[Route('/gridview', name: 'app_gridview', methods: ['GET'])]
     public function grid(
-        // EntityManagerInterface $entityManager, 
-      //  DataProviderInterface $dataProvider, 
-        // SortInterface $sort, 
-        // PaginationInterface $pagination,
         Request $request
     ): Response
     {
@@ -85,6 +81,7 @@ class BundleController extends AbstractController
             'id',
             'code:raw:code',
             [
+                'attribute' => 'profile_fullname',
                 'value' => function(array $data, string $key, ColumnInterface $column) {
                     return rand(0, 10) > 5 ? 
                         '<strong>' . $data['profile']['fullname'] . '</strong>'
@@ -94,14 +91,9 @@ class BundleController extends AbstractController
                 'twigFilter' => 'raw',
                 'visible' => true,
                 'label' => 'Label 2',
-                'attribute' => 'profile_fullname',
                 'filter' => [
                     'type' => 'text',
                 ]
-                /*'filter' => [
-                    'type' => 'text',
-                    'options' => []
-                ],*/
             ],
             [
                'attribute' => 'email',
@@ -110,19 +102,8 @@ class BundleController extends AbstractController
                     return '<strong>' . $data['email'] . '</strong>';
                 },
                 'twigFilter' => 'raw',
-                'filter' => [
-                    'type' => 'choice', 
-                    'options' => [
-                            'choices'  => [
-                            'Maybe' => null,
-                            'Yes' => true,
-                            'No' => false,
-                        ],
-                    ],
-                    'visibile' => true
-                ]
             ],
-        //    'profile.fullname:raw:fullname',
+        
             [
                 'attribute' => 'locations',
                 'label' => 'locations',
@@ -139,6 +120,28 @@ class BundleController extends AbstractController
                     'type' => 'text',
                 ]
             ],
+            [
+                'attribute' => 't.name',
+                'value' => function (array $data, string $key, ColumnInterface $column) {
+                    dump($data);
+                },
+            ],
+            /*
+            [
+                'attribute' => 't_name',
+                'label' => 'Type',
+                'filter' => [
+                    'type' => 'choice', 
+                    'options' => [
+                        'choices'  => [
+                            'xxx' => null,
+                            'Privato' => 1,
+                            'Azienda' => 2,
+                        ],
+                    ],
+                    'visibile' => true
+                ]
+            ]*/
             // [
             //     'attribute' => 'createdAt'
             // ]

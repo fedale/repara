@@ -40,36 +40,56 @@ class CustomerRepository extends ServiceEntityRepository
         }
     }
 
-    /*
-    public function findAllModels()
-    {
-        return $this
-            ->createQueryBuilder('c')
-            ->select('c ', 'p', 'l')
-            ->join('c.profile', 'p')
-            ->join('c.locations', 'l')
-        ;
-    }*/
-
+    
     public function search(array $params = [])
     {
-        // $criteria = Criteria::create();
-        // $expr = Criteria::expr();
-        
         $qb = $this
             ->createQueryBuilder('c')
-            ->select('c ', 'p', 'l')
+            ->select('c ', 'p', 'l', 't')
             ->join('c.profile', 'p')
             ->join('c.locations', 'l')
+            ->join('c.type', 't')
         ;
 
         if (count($params) === 0 ){
             return $qb;
         }
 
-        $this->searchForm->andFilterWhere($qb, 'l.zipcode', $params['locations']);
+        // ->andWhere($qb->expr()->like('o.Product', ':product'))
+        
+        $qb->andWhere(
+            $qb->expr()->like('l.zipcode', ':locations')
+            //$this->searchForm->search($qb, 'l.zipcode', $params['locations'])
+        );
+        $qb->setParameter('locations', '%' . $params['locations'] . '%');
+        
 
+        /*
+        $qb->andWhere(
+            $this->searchForm->search($qb, 'l.zipcode', $params['locations'])
+        );*/
+            
+
+        /*
         $fullname = strtolower($params['profile_fullname']);
+        $qb->andWhere(
+            $qb->expr()->orX(
+                $this->searchForm->search($qb, 'p.firstname', $fullname),
+                $this->searchForm->search($qb, 'p.lastname', $fullname),
+                $this->searchForm->search(
+                    $qb,
+                    $qb->expr()->concat('p.firstname', $qb->expr()->literal(' '), 'p.lastname'),
+                    $fullname
+                ),
+                $this->searchForm->search(
+                    $qb,
+                    $qb->expr()->concat('p.lastname', $qb->expr()->literal(' '), 'p.firstname'),
+                    $fullname
+                ),
+            )
+        );
+        */
+
         // $fullname = $params['profile_fullname'];
         // dump($fullname);
         // $criteria->andWhere(

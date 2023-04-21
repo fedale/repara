@@ -53,6 +53,7 @@ class SearchForm implements SearchFormInterface
 
     public function addFilter($name, $type, $options)
     {
+        $name = str_replace('.', '_', $name);
         $class = "Fedale\\GridviewBundle\\FilterType\\Filter" . ucfirst($type) . 'Type';
         $this->modelType->add($name, $class, $options);
         //$this->filters->add($filter => );
@@ -78,7 +79,7 @@ class SearchForm implements SearchFormInterface
         return $this->modelType;
     }
 
-    public function andFilterWhere(QueryBuilder $qb, string $attribute, string $param)
+    public function search(QueryBuilder $qb, string $attribute, string $param)
     {
         $token = strtok(strtolower($param), " ");
 
@@ -91,8 +92,6 @@ class SearchForm implements SearchFormInterface
             $searchTerm = $param;
         }
 
-        dump($operator, $param, $searchTerm);
-        
         $search = match($operator) {
             'eq', '==' => $this->eq($qb, $attribute, $searchTerm),
             'ieq', '=' => $this->ieq($qb, $attribute, $searchTerm),
@@ -219,13 +218,12 @@ class SearchForm implements SearchFormInterface
     
     private function ilike(QueryBuilder $qb, string $attribute, string $searchTerm)
     {
-        $qb->andWhere(
-            $qb->expr()->like(
-                $qb->expr()->lower($attribute), 
-                ':param'
-            )
-            );
-        $qb->setParameter(':param', '%' . strtolower($searchTerm) . '%');
+        $qb->expr()->like(
+            $qb->expr()->lower($attribute), 
+            ':param'
+        );
+      
+        //$qb->setParameter(':param', '%' . strtolower($searchTerm) . '%');
     }
 
     private function notLike(QueryBuilder $qb, string $attribute, string $searchTerm)

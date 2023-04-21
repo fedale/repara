@@ -54,14 +54,40 @@ class CustomerRepository extends ServiceEntityRepository
         if (count($params) === 0 ){
             return $qb;
         }
-
-        // ->andWhere($qb->expr()->like('o.Product', ':product'))
         
+
+        
+         // Symfony way
+         /*
         $qb->andWhere(
-            $qb->expr()->like('l.zipcode', ':locations')
-            //$this->searchForm->search($qb, 'l.zipcode', $params['locations'])
+            $qb->expr()->like('l.zipcode', ':locations'),
         );
         $qb->setParameter('locations', '%' . $params['locations'] . '%');
+        $qb->setParameter('locations2', '%' . $params['locations'] . '%');
+        */
+        
+        // ->andFilterWhere(['like', 'tbl_city.name', $this->city]) // Yii2 way
+        // My way
+        
+        $this->searchForm->andFilterWhere(
+            $qb, 
+            [
+                'like',
+                'l.zipcode',
+                $params['locations']
+            ],
+            [
+                'like',
+                'l.zipcode',
+                $params['locations']
+            ],
+            [
+                'like',
+                'l.zipcode',
+                $params['locations']
+            ]
+
+        );
         
 
         /*
@@ -69,7 +95,6 @@ class CustomerRepository extends ServiceEntityRepository
             $this->searchForm->search($qb, 'l.zipcode', $params['locations'])
         );*/
             
-
         /*
         $fullname = strtolower($params['profile_fullname']);
         $qb->andWhere(

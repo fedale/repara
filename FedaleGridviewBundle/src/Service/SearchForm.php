@@ -79,6 +79,50 @@ class SearchForm implements SearchFormInterface
         return $this->modelType;
     }
 
+    /*
+    public function andFilterWhere(QueryBuilder $qb, string $operator, string $attribute, string $param)
+    {
+        //$qb->expr()->andX($attribute, 'param');
+        $qb->andWhere(
+            $qb->expr()->like($attribute, ':param')
+        );
+        $qb->setParameter(':param', '%' . $param . '%');
+    } */
+
+    public function andFilterWhere()
+    {
+        $args = func_get_args();
+        $qb = $args[0];
+        unset($args[0]);
+
+        $newArgs = [];
+        
+        foreach ($args as $arg) {
+            $newArgs[] = $qb->expr()->like($arg[1], ':param');
+            $searchTerm = $arg[2];
+        }
+        $qb->setParameter('param', '%' . $searchTerm . '%');
+        \call_user_func_array([$qb, 'andWhere'], $newArgs);
+        
+    } 
+
+    public function orFilterWhere()
+    {
+        $args = func_get_args();
+        $qb = $args[0];
+        unset($args[0]);
+
+        $newArgs = [];
+        
+        foreach ($args as $arg) {
+            $newArgs[] = $qb->expr()->like($arg[1], ':param');
+            $searchTerm = $arg[2];
+        }
+        $qb->setParameter('param', '%' . $searchTerm . '%');
+        \call_user_func_array([$qb, 'orWhere'], $newArgs);
+        
+    } 
+
     public function search(QueryBuilder $qb, string $attribute, string $param)
     {
         $token = strtok(strtolower($param), " ");
@@ -150,6 +194,7 @@ class SearchForm implements SearchFormInterface
 
         return false;
     }
+
 
     private function eq(QueryBuilder $qb, string $attribute, string $searchTerm)
     {

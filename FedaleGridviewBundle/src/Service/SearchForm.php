@@ -98,6 +98,7 @@ class SearchForm implements SearchFormInterface
         $newArgs = [];
         
         foreach ($args as $arg) {
+            dump($arg);
             $newArgs[] = $qb->expr()->like($arg[1], ':param');
             $searchTerm = $arg[2];
         }
@@ -115,6 +116,7 @@ class SearchForm implements SearchFormInterface
         $newArgs = [];
         
         foreach ($args as $arg) {
+            dump($arg);
             $newArgs[] = $qb->expr()->like($arg[1], ':param');
             $searchTerm = $arg[2];
         }

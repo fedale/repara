@@ -56,6 +56,36 @@ class CustomerRepository extends ServiceEntityRepository
         }
         
 
+        /**
+         * 
+         */
+        // First case: search in one field using LIKE
+        /*
+            $this->searchForm->andFilterWhere(
+                $qb,
+                [
+                    'like',
+                    'l.zipcode',
+                    $params['locations']
+                ]
+            );
+        */
+        // Second case: search in more fields using LIKE
+        /*
+            $this->searchForm->andFilterWhere(
+                $qb,
+                [
+                    'like',
+                    'l.zipcode',
+                    $params['locations']
+                ],
+                [
+                    'like',
+                    'secondField',
+                    $params['otherParam']
+                ]
+            );
+        */
         
          // Symfony way
          /*
@@ -65,16 +95,29 @@ class CustomerRepository extends ServiceEntityRepository
         $qb->setParameter('locations', '%' . $params['locations'] . '%');
         $qb->setParameter('locations2', '%' . $params['locations'] . '%');
         */
+        $qb->where('o.foo = 1')
+            ->andWhere($qb->expr()->orX(
+                $qb->expr()->eq('o.bar', 1),
+                $qb->expr()->eq('o.bar', 2)
+        ));
         
         // ->andFilterWhere(['like', 'tbl_city.name', $this->city]) // Yii2 way
         // My way
-        
-        $this->searchForm->orFilterWhere(
-            $qb, 
+        $this->searchForm->andFilterWhere(
+            $qb,
             [
                 'like',
-                'l.zipcode',
-                $params['locations']
+                'c.email',
+                $params['email']
+            ]
+        );
+
+        $this->searchForm->andFilterWhere(
+            $qb,
+            [
+                'like', // operator
+                'l.zipcode', // attribute
+                $params['locations'] // param
             ],
             [
                 'like',
@@ -86,9 +129,9 @@ class CustomerRepository extends ServiceEntityRepository
                 'l.zipcode',
                 $params['locations']
             ]
-
         );
         
+       
 
         /* 
         // Yii2 way with nested or/and

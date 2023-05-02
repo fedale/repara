@@ -95,16 +95,20 @@ class SearchForm implements SearchFormInterface
         $qb = $args[0];
         unset($args[0]);
 
+        dump($args);
         $newArgs = [];
-        
+        $baseParam = 'param_';
+        $c = 0;
         foreach ($args as $arg) {
-            dump($arg);
-            $newArgs[] = $qb->expr()->like($arg[1], ':param');
+            $attribute = str_replace('.', '_', $arg[1]);
+            $param = $attribute . '_' . $c;
+            $newArgs[] = $qb->expr()->like($arg[1], ':' . $param);
             $searchTerm = $arg[2];
+            $qb->setParameter($param, '%' . $searchTerm . '%');
+            \call_user_func_array([$qb, 'andWhere'], $newArgs);
+            $c++;
+            $newArgs = [];
         }
-        $qb->setParameter('param', '%' . $searchTerm . '%');
-        \call_user_func_array([$qb, 'andWhere'], $newArgs);
-        
     } 
 
     public function orFilterWhere()
@@ -113,16 +117,19 @@ class SearchForm implements SearchFormInterface
         $qb = $args[0];
         unset($args[0]);
 
+        dump($args);
         $newArgs = [];
-        
+        $baseParam = 'param_';
+        $c = 0;
         foreach ($args as $arg) {
-            dump($arg);
-            $newArgs[] = $qb->expr()->like($arg[1], ':param');
+            $param = $baseParam . $c;
+            $newArgs[] = $qb->expr()->like($arg[1], ':' . $param);
             $searchTerm = $arg[2];
+            $qb->setParameter($param, '%' . $searchTerm . '%');
+            \call_user_func_array([$qb, 'orWhere'], $newArgs);
+            $c++;
+            $newArgs = [];
         }
-        $qb->setParameter('param', '%' . $searchTerm . '%');
-        \call_user_func_array([$qb, 'orWhere'], $newArgs);
-        
     } 
 
     public function search(QueryBuilder $qb, string $attribute, string $param)

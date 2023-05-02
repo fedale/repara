@@ -102,6 +102,9 @@ class BundleController extends AbstractController
                     return '<strong>' . $data['email'] . '</strong>';
                 },
                 'twigFilter' => 'raw',
+                'filter' => [
+                    'type' => 'text',
+                ]
             ],
         
             [
@@ -123,7 +126,7 @@ class BundleController extends AbstractController
             [
                 'attribute' => 't.name',
                 'value' => function (array $data, string $key, ColumnInterface $column) {
-                    dump($data);
+                    return $data['username'];
                 },
             ],
             /*

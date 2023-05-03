@@ -12,6 +12,8 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Uid\Uuid;
+
 
 class SearchForm implements SearchFormInterface
 {
@@ -94,14 +96,16 @@ class SearchForm implements SearchFormInterface
         $args = func_get_args();
         $qb = $args[0];
         unset($args[0]);
+        $baseParam = 'uuid'; //\uniqid(); //'uuid';//Uuid::v4();
 
-        dump($args);
+        dd($args);
         $newArgs = [];
-        $baseParam = 'param_';
+        
         $c = 0;
         foreach ($args as $arg) {
-            $attribute = str_replace('.', '_', $arg[1]);
-            $param = $attribute . '_' . $c;
+            //$attribute = str_replace('.', '_', $arg[1]);
+            $param = $baseParam . '_' . $c;
+            
             $newArgs[] = $qb->expr()->like($arg[1], ':' . $param);
             $searchTerm = $arg[2];
             $qb->setParameter($param, '%' . $searchTerm . '%');
@@ -117,6 +121,7 @@ class SearchForm implements SearchFormInterface
         $qb = $args[0];
         unset($args[0]);
 
+        dd($args);
         dump($args);
         $newArgs = [];
         $baseParam = 'param_';

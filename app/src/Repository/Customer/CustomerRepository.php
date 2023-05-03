@@ -95,14 +95,42 @@ class CustomerRepository extends ServiceEntityRepository
         $qb->setParameter('locations', '%' . $params['locations'] . '%');
         $qb->setParameter('locations2', '%' . $params['locations'] . '%');
         */
+        /*
         $qb->where('o.foo = 1')
             ->andWhere($qb->expr()->orX(
                 $qb->expr()->eq('o.bar', 1),
                 $qb->expr()->eq('o.bar', 2)
         ));
+        */
         
         // ->andFilterWhere(['like', 'tbl_city.name', $this->city]) // Yii2 way
         // My way
+        $this->searchForm->andFilterWhere(
+            $qb,
+            'or',
+            [
+                'like',
+                'p.firstname',
+                $params['profile_fullname']
+            ],
+            [
+                'like',
+                'p.lastname',
+                $params['profile_fullname']
+            ],
+            [
+                'like',
+                'CONCAT(p.firstname, \' \', p.lastname)',
+                $params['profile_fullname']
+            ],
+            [
+                'like',
+                'CONCAT(p.lastname, \' \', p.firstname)',
+                $params['profile_fullname']
+            ],
+        );
+
+/*
         $this->searchForm->andFilterWhere(
             $qb,
             [
@@ -130,7 +158,7 @@ class CustomerRepository extends ServiceEntityRepository
                 $params['locations']
             ]
         );
-        
+  */      
        
 
         /* 

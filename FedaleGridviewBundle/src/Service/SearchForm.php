@@ -98,7 +98,10 @@ class SearchForm implements SearchFormInterface
         unset($args[0]);
         $baseParam = 'uuid'; //\uniqid(); //'uuid';//Uuid::v4();
 
-        dd($args);
+        if ( in_array($args[0], ['or', 'and']) ) {
+
+        }
+        
         $newArgs = [];
         
         $c = 0;

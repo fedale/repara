@@ -174,7 +174,8 @@ class SearchForm implements SearchFormInterface
         };
     }
 
-    private function isOperator($token) {
+    private function getOperators()
+    {
         $operators = [
             'eq', '==',
             'ieq', '=',
@@ -203,12 +204,16 @@ class SearchForm implements SearchFormInterface
             'isnotnull',
             'in',
             'notin'
-        ];     
+        ];
 
-        if (in_array(strtolower($token), $operators)) {
+        return $operators;
+    }
+
+    private function isOperator($token) {
+        if (in_array(strtolower($token), $this->getOperators())) {
             return true;
         }
-
+        
         return false;
     }
 

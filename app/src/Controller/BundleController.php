@@ -78,8 +78,23 @@ class BundleController extends AbstractController
          */
         $columns = [
             // [//     'type' => 'serial'// ],
+                /*
+            [
+                'attribute' => 'id',
+                'filter' => [
+                    'type' => 'text',
+                ]
+            ],*/
             'id',
+            /*
             'code:raw:code',
+            */
+            [
+                'attribute' => 'code',
+                'filter' => [
+                    'type' => 'text'
+                ]
+            ],
             [
                 'attribute' => 'profile_fullname',
                 'value' => function(array $data, string $key, ColumnInterface $column) {

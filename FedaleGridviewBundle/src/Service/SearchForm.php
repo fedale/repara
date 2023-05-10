@@ -93,10 +93,11 @@ class SearchForm implements SearchFormInterface
 
     public function andFilterWhere()
     {
+        $condition = false;
         $args = func_get_args();
         $qb = $args[0];
         unset($args[0]);
-        $baseParam = 'uuid'; //\uniqid(); //'uuid';//Uuid::v4();
+        $baseParam = \uniqid(); //'uuid';//Uuid::v4();
 
         if ( in_array($args[1], ['or', 'and']) ) {
             $condition = $args[1];
@@ -112,43 +113,54 @@ class SearchForm implements SearchFormInterface
             $param = trim($arg[2]);
             $newArgs[] = $this->searchWithOperator($qb, $operator, $attribute, $param); //$qb->expr()->like($arg[1], ':' . $param);
             
-            // $newArgs[] = $qb->expr()->like($arg[1], ':' . $param);
-            // $searchTerm = $arg[2];
-            // $qb->setParameter($param, '%' . $searchTerm . '%');
-            
             $c++;
-            //$newArgs = [];
         }
         
-        if ($condition) {
-            dump('condition', $condition);
-            \call_user_func_array([$qb, $condition . 'Where'], $newArgs);    
+        if ($condition == 'or') {
+            $qb->andWhere(
+                \call_user_func_array([$qb->expr(), 'orX'], $newArgs)
+            );
+            
         } else {
-            \call_user_func_array([$qb, 'orWhere'], $newArgs);
+            \call_user_func_array([$qb, 'andWhere'], $newArgs);
         }
+        $newArgs = [];
     } 
 
     public function orFilterWhere()
     {
+        $condition = false;
         $args = func_get_args();
         $qb = $args[0];
         unset($args[0]);
+        $baseParam = \uniqid(); //'uuid';//Uuid::v4();
 
+        if ( in_array($args[1], ['or', 'and']) ) {
+            $condition = $args[1];
+            unset($args[1]);
+        }        
+        
         $newArgs = [];
-        $baseParam = 'param_';
         $c = 0;
         foreach ($args as $arg) {
-            $param = $baseParam . $c;
+            $param = $baseParam . '_' . $c;
             $operator = $arg[0];
             $attribute = $arg[1];
-            $param = $arg[2];
+            $param = trim($arg[2]);
             $newArgs[] = $this->searchWithOperator($qb, $operator, $attribute, $param); //$qb->expr()->like($arg[1], ':' . $param);
             
-            //$qb->setParameter($param, '%' . $searchTerm . '%');
-            \call_user_func_array([$qb, 'orWhere'], $newArgs);
             $c++;
-            $newArgs = [];
         }
+        
+        if ($condition == 'and') {
+            $qb->andWhere(
+                \call_user_func_array([$qb->expr(), 'andX'], $newArgs)
+            );
+            
+        } else {
+            \call_user_func_array([$qb, 'orWhere'], $newArgs);
+        }
+        $newArgs = [];
     } 
 
     public function searchWithOperator(QueryBuilder $qb, string $operator, string $attribute, string $param) {

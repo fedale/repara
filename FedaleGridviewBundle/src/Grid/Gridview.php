@@ -200,7 +200,7 @@ class Gridview implements GridviewInterface
                 $column->setGridview($this);
                 
                 if (isset($this->searchModel)) {
-                    if ($column->filter) {
+                    if ($column->isFilterable() && isset($column->filter)) {
                         $options = $column->filter['options'] ?? [];
                         $this->searchForm->addFilter($column->getAttribute(), $column->filter['type'], $options);
                     }

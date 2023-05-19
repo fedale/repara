@@ -144,6 +144,9 @@ class BundleController extends AbstractController
                     return $data['username'];
                 },
             ],
+            [
+                'type' => 'action'
+            ]
             /*
             [
                 'attribute' => 't_name',

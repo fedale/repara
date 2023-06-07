@@ -70,7 +70,6 @@ class BundleController extends AbstractController
                 'default' => Sort::DESC,
                 'label' => 'IDDDD',
             ],
-
         ];
 
         /**

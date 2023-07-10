@@ -146,25 +146,6 @@ class BundleController extends AbstractController
             [
                 'type' => 'action'
             ]
-            /*
-            [
-                'attribute' => 't_name',
-                'label' => 'Type',
-                'filter' => [
-                    'type' => 'choice', 
-                    'options' => [
-                        'choices'  => [
-                            'xxx' => null,
-                            'Privato' => 1,
-                            'Azienda' => 2,
-                        ],
-                    ],
-                    'visibile' => true
-                ]
-            ]*/
-            // [
-            //     'attribute' => 'createdAt'
-            // ]
                 
         ];
 

@@ -51,7 +51,6 @@ class DataColumn extends AbstractColumn
             if (is_string($this->value)) {
                 return $this->value;
             }
-            
             $value =  call_user_func($this->value, $data, $index, $this);
 
             return $value;

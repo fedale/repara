@@ -19,8 +19,11 @@ class OptionsExtension extends AbstractExtension
     public function renderOptions(array $options = []): string
     {
         $str = '';
+        if ( count($options) == 0) {
+            return $str;
+        }
+        
         foreach ($options as $key => $value) {
-
             $str .= $key . '="' . $value . '" ';
         }
 

@@ -5,20 +5,21 @@ use Fedale\GridviewBundle\Grid\Gridview;
 
 class ActionColumn extends AbstractColumn {
     
+    public $buttons = [];
+
     public function __construct (
         private Gridview $gridview,
         private string $attribute,
         protected ?string $twigFilter = null,
         protected ?string $label = null,
         protected ?array $options = [],
-        
-        
     ) { 
         if (null === $this->label) {
             $this->setLabel($attribute);
         }
         // Columns 'action' type is raw by default
         $this->setTwigfilter('raw');
+        $this->initDefaultButtons();
     }
 
     public function getAttribute(): string
@@ -28,25 +29,28 @@ class ActionColumn extends AbstractColumn {
 
     public function initColumn()
     {
-        $this->label = 'Action';
+        $this->label = 'Action';      
+    }
+
+    private function initDefaultButtons() {
+        $this->initDefaultButton('view');
+        $this->initDefaultButton('update');
+        $this->initDefaultButton('delete');
+    }
+
+    private function initDefaultButton(string $name,  array $options = null) {
+        $this->buttons[$name] = '<a href="' . $name . '">' . $name . '</a>';
     }
 
     public function render($model, $index)
     {
-        dump($this->getGridview());
-        dump($model->data['id']);
-        $b1 = '<a href="/view/' . $model->data['id'] . '" aria-label="View">View</a>';
-        $b2 = '<a href="/edit/' . $model->data['id'] . '" aria-label="Edit">Edit</a>';
-        $b3 = '<a href="/delete/' . $model->data['id'] . '" aria-label="Delete">Delete</a>';
-        
-        $b4 = '<a href="{{ path(\'app_user_user_crud_show\', {\'id\': user.id}) }}">show</a>';
-        $b5 = '<a href="{{ path(\'app_user_user_crud_edit\', {\'id\': user.id}) }}">edit</a>';
-        
-        return $b4 . $b5;
+        $content = '';
+        foreach ($this->buttons as $button) {
+            // $content .=  '<span class="button"><a href="/view/' . $model->data['id'] . '">' . $button . '</a></span>';
+            $content .=  $button;
+        }
+
+        return $content;
     }
 
-    public function getOptions()
-    {
-        return ['id' => 'id_1', 'class' => 'my-class', 'attr' => 'my-custom.attribute'];
-    }
 }

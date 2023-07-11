@@ -229,4 +229,9 @@ abstract class AbstractColumn implements ColumnInterface
     {
         return 'label';
     }
+
+    public function getOptions(): array
+    {
+        return [];
+    }
 }

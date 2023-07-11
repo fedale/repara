@@ -200,7 +200,7 @@ class Gridview implements GridviewInterface
                 $column->setGridview($this);
                 
                 if (isset($this->searchModel)) {
-                    if ($column->filter) {
+                    if ($column->isFilterable() && isset($column->filter)) {
                         $options = $column->filter['options'] ?? [];
                         $this->searchForm->addFilter($column->getAttribute(), $column->filter['type'], $options);
                     }
@@ -229,9 +229,13 @@ class Gridview implements GridviewInterface
 
             if (class_exists($class)) { 
                 switch ($type) {
+                    
                     case 'data':
                         $column = new $class($this, $attribute, null, $columnData['label'] ?? $attribute, []);
                         $column->value = $value;
+                    break;
+                    case 'action':
+                        $column = new $class($this, $attribute, null, $columnData['label'] ?? $attribute, []);
                     break;
                     default:
                         $column = new $class($this, null, $columnData['label'] ?? $attribute, []);

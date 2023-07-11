@@ -70,7 +70,6 @@ class BundleController extends AbstractController
                 'default' => Sort::DESC,
                 'label' => 'IDDDD',
             ],
-
         ];
 
         /**
@@ -78,8 +77,23 @@ class BundleController extends AbstractController
          */
         $columns = [
             // [//     'type' => 'serial'// ],
+                /*
+            [
+                'attribute' => 'id',
+                'filter' => [
+                    'type' => 'text',
+                ]
+            ],*/
             'id',
+            /*
             'code:raw:code',
+            */
+            [
+                'attribute' => 'code',
+                'filter' => [
+                    'type' => 'text'
+                ]
+            ],
             [
                 'attribute' => 'profile_fullname',
                 'value' => function(array $data, string $key, ColumnInterface $column) {
@@ -102,6 +116,9 @@ class BundleController extends AbstractController
                     return '<strong>' . $data['email'] . '</strong>';
                 },
                 'twigFilter' => 'raw',
+                'filter' => [
+                    'type' => 'text',
+                ]
             ],
         
             [
@@ -123,28 +140,12 @@ class BundleController extends AbstractController
             [
                 'attribute' => 't.name',
                 'value' => function (array $data, string $key, ColumnInterface $column) {
-                    dump($data);
+                    return $data['username'];
                 },
             ],
-            /*
             [
-                'attribute' => 't_name',
-                'label' => 'Type',
-                'filter' => [
-                    'type' => 'choice', 
-                    'options' => [
-                        'choices'  => [
-                            'xxx' => null,
-                            'Privato' => 1,
-                            'Azienda' => 2,
-                        ],
-                    ],
-                    'visibile' => true
-                ]
-            ]*/
-            // [
-            //     'attribute' => 'createdAt'
-            // ]
+                'type' => 'action'
+            ]
                 
         ];
 

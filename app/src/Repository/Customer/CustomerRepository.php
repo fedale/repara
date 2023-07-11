@@ -56,6 +56,36 @@ class CustomerRepository extends ServiceEntityRepository
         }
         
 
+        /**
+         * 
+         */
+        // First case: search in one field using LIKE
+        /*
+            $this->searchForm->andFilterWhere(
+                $qb,
+                [
+                    'like',
+                    'l.zipcode',
+                    $params['locations']
+                ]
+            );
+        */
+        // Second case: search in more fields using LIKE
+        /*
+            $this->searchForm->andFilterWhere(
+                $qb,
+                [
+                    'like',
+                    'l.zipcode',
+                    $params['locations']
+                ],
+                [
+                    'like',
+                    'secondField',
+                    $params['otherParam']
+                ]
+            );
+        */
         
          // Symfony way
          /*
@@ -65,16 +95,81 @@ class CustomerRepository extends ServiceEntityRepository
         $qb->setParameter('locations', '%' . $params['locations'] . '%');
         $qb->setParameter('locations2', '%' . $params['locations'] . '%');
         */
-        
-        // ->andFilterWhere(['like', 'tbl_city.name', $this->city]) // Yii2 way
-        // My way
+        /*
+        $qb->where('o.foo = 1')
+            ->andWhere($qb->expr()->orX(
+                $qb->expr()->eq('o.bar', 1),
+                $qb->expr()->eq('o.bar', 2)
+        ));
+        */
         
         $this->searchForm->andFilterWhere(
-            $qb, 
+            $qb,
             [
                 'like',
+                'c.code',
+                $params['code']
+            ]
+        );
+        // ->andFilterWhere(['like', 'tbl_city.name', $this->city]) // Yii2 way
+        // My way: I want that this statement produces a condition like this:
+        // AND (p.firstname LIKE %s OR p.lastname LIKE %s OR CONCAT(p.firstname, ' ', p.lastname) LIKE %s OR CONCAT (p.lastname, ' ', p.firstname) LIKE %s)
+        $this->searchForm->andFilterWhere(
+            $qb,
+            'or', // conditional object to use (optional) could be 'and' or 'or'. By default it is the same as function
+            [
+                'ilike',
+                'p.firstname',
+                $params['profile_fullname']
+            ],
+            [
+                'ilike',
+                'p.lastname',
+                $params['profile_fullname']
+            ],
+            [
+                'ilike',
+                'CONCAT(p.firstname, \' \', p.lastname)',
+                $params['profile_fullname']
+            ],
+            [
+                'ilike',
+                'CONCAT(p.lastname, \' \', p.firstname)',
+                $params['profile_fullname']
+            ],
+            [
+                'ilike',
+                'c.email',
+                $params['profile_fullname']
+            ],
+        );
+
+        
+        $this->searchForm->andFilterWhere(
+            $qb,
+            [
+                'ilike',
                 'l.zipcode',
                 $params['locations']
+            ],
+        );
+
+/*
+        $this->searchForm->andFilterWhere(
+            $qb,
+            [
+                'like',
+                'c.email',
+                $params['email']
+            ]
+        );
+
+        $this->searchForm->andFilterWhere(
+            $qb,
+            [
+                'like', // operator
+                'l.zipcode', // attribute
+                $params['locations'] // param
             ],
             [
                 'like',
@@ -86,9 +181,9 @@ class CustomerRepository extends ServiceEntityRepository
                 'l.zipcode',
                 $params['locations']
             ]
-
         );
-        
+  */      
+       
 
         /* 
         // Yii2 way with nested or/and

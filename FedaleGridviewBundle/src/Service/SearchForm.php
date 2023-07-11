@@ -12,6 +12,8 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Uid\Uuid;
+
 
 class SearchForm implements SearchFormInterface
 {
@@ -91,39 +93,98 @@ class SearchForm implements SearchFormInterface
 
     public function andFilterWhere()
     {
+        $condition = false;
         $args = func_get_args();
         $qb = $args[0];
         unset($args[0]);
+        $baseParam = \uniqid(); //'uuid';//Uuid::v4();
 
+        if ( in_array($args[1], ['or', 'and']) ) {
+            $condition = $args[1];
+            unset($args[1]);
+        }        
+        
         $newArgs = [];
-        
+        $c = 0;
         foreach ($args as $arg) {
-            dump($arg);
-            $newArgs[] = $qb->expr()->like($arg[1], ':param');
-            $searchTerm = $arg[2];
+            $param = $baseParam . '_' . $c;
+            $operator = $arg[0];
+            $attribute = $arg[1];
+            $param = trim($arg[2]);
+            $newArgs[] = $this->searchWithOperator($qb, $operator, $attribute, $param); //$qb->expr()->like($arg[1], ':' . $param);
+            
+            $c++;
         }
-        $qb->setParameter('param', '%' . $searchTerm . '%');
-        \call_user_func_array([$qb, 'andWhere'], $newArgs);
         
+        if ($condition == 'or') {
+            $qb->andWhere(
+                \call_user_func_array([$qb->expr(), 'orX'], $newArgs)
+            );
+            
+        } else {
+            \call_user_func_array([$qb, 'andWhere'], $newArgs);
+        }
+        $newArgs = [];
     } 
 
     public function orFilterWhere()
     {
+        $condition = false;
         $args = func_get_args();
         $qb = $args[0];
         unset($args[0]);
+        $baseParam = \uniqid(); //'uuid';//Uuid::v4();
 
+        if ( in_array($args[1], ['or', 'and']) ) {
+            $condition = $args[1];
+            unset($args[1]);
+        }        
+        
         $newArgs = [];
-        
+        $c = 0;
         foreach ($args as $arg) {
-            dump($arg);
-            $newArgs[] = $qb->expr()->like($arg[1], ':param');
-            $searchTerm = $arg[2];
+            $param = $baseParam . '_' . $c;
+            $operator = $arg[0];
+            $attribute = $arg[1];
+            $param = trim($arg[2]);
+            $newArgs[] = $this->searchWithOperator($qb, $operator, $attribute, $param); //$qb->expr()->like($arg[1], ':' . $param);
+            
+            $c++;
         }
-        $qb->setParameter('param', '%' . $searchTerm . '%');
-        \call_user_func_array([$qb, 'orWhere'], $newArgs);
         
+        if ($condition == 'and') {
+            $qb->andWhere(
+                \call_user_func_array([$qb->expr(), 'andX'], $newArgs)
+            );
+            
+        } else {
+            \call_user_func_array([$qb, 'orWhere'], $newArgs);
+        }
+        $newArgs = [];
     } 
+
+    public function searchWithOperator(QueryBuilder $qb, string $operator, string $attribute, string $param) {
+        $search = match($operator) {
+            'eq', '==' => $this->eq($qb, $attribute, $param),
+            'ieq', '=' => $this->ieq($qb, $attribute, $param),
+            'neq', 'not', '!==', '<>' => $this->neq($qb, $attribute, $param),
+            'ineq', '!=' => $this->ineq($qb, $attribute, $param),
+            'gt', '>' => $this->gt($qb, $attribute, $param),
+            'gte', '>=' => $this->gte($qb, $attribute, $param),
+            'lt', '>' => $this->lt($qb, $attribute, $param),
+            'lte', '>=' => $this->lte($qb, $attribute, $param),
+            'btw', 'between' => $this->between($qb, $attribute, $param),
+            'like', '%' => $this->like($qb, $attribute, $param),
+            'ilike' => $this->ilike($qb, $attribute, $param),
+            'notLike', 'nlike', '!%' => $this->notLike($qb, $attribute, $param),
+            'notIlike', 'nilike' => $this->notIlike($qb, $attribute, $param),
+            'startwith', '-%' => $this->startWith($qb, $attribute, $param),
+            'istartwith', '-%' => $this->iStartWith($qb, $attribute, $param),
+            'endWith', '%-' => $this->endWith($qb, $attribute, $param),
+            default => $this->default($qb, $attribute, $param),
+        };
+        return $search;
+    }
 
     public function search(QueryBuilder $qb, string $attribute, string $param)
     {
@@ -159,7 +220,8 @@ class SearchForm implements SearchFormInterface
         };
     }
 
-    private function isOperator($token) {
+    private function getOperators()
+    {
         $operators = [
             'eq', '==',
             'ieq', '=',
@@ -188,12 +250,16 @@ class SearchForm implements SearchFormInterface
             'isnotnull',
             'in',
             'notin'
-        ];     
+        ];
 
-        if (in_array(strtolower($token), $operators)) {
+        return $operators;
+    }
+
+    private function isOperator($token) {
+        if (in_array(strtolower($token), $this->getOperators())) {
             return true;
         }
-
+        
         return false;
     }
 
@@ -259,24 +325,24 @@ class SearchForm implements SearchFormInterface
 
     private function like(QueryBuilder $qb, string $attribute, string $searchTerm)
     {
-        $qb->andWhere($qb->expr()->like($attribute, ':param'));
-        $qb->setParameter(':param', '%' . $searchTerm . '%');
+        return $qb->expr()->like($attribute, $qb->expr()->literal('%' . $searchTerm . '%'));
     }
     
     private function ilike(QueryBuilder $qb, string $attribute, string $searchTerm)
     {
-        $qb->expr()->like(
+        return $qb->expr()->like(
             $qb->expr()->lower($attribute), 
-            ':param'
-        );
-      
-        //$qb->setParameter(':param', '%' . strtolower($searchTerm) . '%');
+            $qb->expr()->literal('%' . strtolower($searchTerm) . '%')
+        );      
     }
 
     private function notLike(QueryBuilder $qb, string $attribute, string $searchTerm)
     {
-        $qb->andWhere($qb->expr()->notLike($attribute, ':param'));
-        $qb->setParameter(':param', '%' . $searchTerm . '%');
+        return $qb->andWhere($qb->expr()->notLike(
+            $attribute, 
+            $qb->expr()->literal('%' . $searchTerm . '%')
+        ));
+        //$qb->setParameter(':param', '%' . $searchTerm . '%');
     }
     
     private function notIlike(QueryBuilder $qb, string $attribute, string $searchTerm)

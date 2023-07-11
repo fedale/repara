@@ -69,7 +69,7 @@ class CustomerRepository extends ServiceEntityRepository
         // ->andFilterWhere(['like', 'tbl_city.name', $this->city]) // Yii2 way
         // My way
         
-        $this->searchForm->orFilterWhere(
+        $this->searchForm->andFilterWhere(
             $qb, 
             [
                 'like',
@@ -106,6 +106,9 @@ class CustomerRepository extends ServiceEntityRepository
                 ['<=', 't2.price', $this->end_price]
             ]
         ]);
+
+        "AND WHERE 
+
         */
 
         /*

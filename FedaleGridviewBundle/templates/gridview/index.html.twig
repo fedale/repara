@@ -19,7 +19,6 @@ body {
 {% block body %}
 
 <h1>Entity index</h1>
-{{ dump(gridview.searchModel) }}
 <div {{ gridview.containerAttr|options}}>
 <table {{ gridview.attr|options }}>
     {% include '@FedaleGridview/gridview/_header.html.twig' with {'gridview': gridview, 'columns': columns} %}

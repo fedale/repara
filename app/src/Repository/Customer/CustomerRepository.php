@@ -232,7 +232,6 @@ class CustomerRepository extends ServiceEntityRepository
         */
 
         // $fullname = $params['profile_fullname'];
-        // dump($fullname);
         // $criteria->andWhere(
         //     $expr->orX(
         //         $expr->contains('p.firstname', $fullname),

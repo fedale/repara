@@ -319,7 +319,6 @@ class SearchForm implements SearchFormInterface
     private function between(QueryBuilder $qb, string $attribute, string $searchTerm)
     {
         $terms = \explode(' AND ', $searchTerm);
-        dump($attribute, $terms);
         $qb->andWhere($qb->expr()->between($attribute, '\'' . $terms[0] . '\'', '\'' . $terms[1] . '\''));
     }
 

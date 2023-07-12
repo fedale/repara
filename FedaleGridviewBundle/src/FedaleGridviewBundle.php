@@ -18,7 +18,9 @@ class FedaleGridviewBundle extends AbstractBundle
     {
         // load an XML, PHP or Yaml file
         $containerConfigurator->import('../config/services.xml');
+        $containerConfigurator->import('../config/columns.xml');
 
+        dump($containerConfigurator->parameters());
         // $containerConfigurator->services()
         //     ->set('gridview.template', $config['template'])        
         // ;

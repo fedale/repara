@@ -196,8 +196,6 @@ class CustomerController extends AbstractController
 
             // $propertyAccessor = PropertyAccess::createPropertyAccessor();
             // foreach ($customers as $customer) {
-            //     dump($customer);
-            //     dump($entityManager->getClassMetadata(Customer::class));
             // }
             // die();
         return $this->render('customer/index.html.twig', [

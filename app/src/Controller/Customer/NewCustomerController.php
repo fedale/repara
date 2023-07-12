@@ -154,7 +154,6 @@ class NewCustomerController extends AbstractController
       //  $dataProvider->setPagination($pagination);
 
     //    $formFactory = \Symfony\Component\Form\Forms::createFormFactory();
-    //     dump($formFactory);
         //  $form = $formFactory->create(FilterModelType::class, [], ['method' => 'GET']);// dd($formFactory);
         
    //     $form = $this->createForm(FilterModelType::class, [], ['method' => 'GET']);
@@ -180,14 +179,6 @@ class NewCustomerController extends AbstractController
             ])
             ->renderGridview();
         ;
-
-         /*
-         $form->handleRequest($request);
-         
-         if ($form->isSubmitted() ) {
-             // dump($form->getData());
-         }
-         */
 
 
         return $gridview->renderGrid('@FedaleGridview/gridview/index.html.twig', ['pagination' => $pagination]); //, 'form' => $form->createView()]);

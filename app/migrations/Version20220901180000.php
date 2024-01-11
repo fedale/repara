@@ -20,10 +20,7 @@ final class Version20220901180000 extends AbstractMigration
     public function up(Schema $schema): void
     {
       $items = [
-        ['Root path', '^/', 'IS_AUTHENTICATED_FULLY',  100],
-        ['Authentication', '^/api/authentication', 'PUBLIC ACCESS', 5],
-        ['Token refresh', '^/api/token/refresh', 'PUBLIC ACCESS',10],
-        ['Docs', '^/api/docs', 'PUBLIC_ACCESS', 15]
+        ['Root path', '^/', 'PUBLIC_ACCESS',  100],
       ];
         
       foreach($items as $k => $item) {

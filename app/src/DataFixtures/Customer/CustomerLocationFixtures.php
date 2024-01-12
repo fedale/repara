@@ -13,7 +13,6 @@ class CustomerLocationFixtures extends Fixture implements DependentFixtureInterf
 {
     public function load(ObjectManager $manager): void
     {
-        return;
         $customers = $manager->getRepository(Customer::class)->findAll();
 
         foreach ($customers as $customer) {

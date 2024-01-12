@@ -64,7 +64,7 @@ class Pagination implements PaginationInterface
     /**
      * @var Request
      */
-    protected Request $request;
+    protected Request|null $request;
 
     /**
      * Pagination constructor.

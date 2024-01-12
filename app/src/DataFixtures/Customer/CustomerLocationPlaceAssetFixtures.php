@@ -15,7 +15,6 @@ class CustomerLocationPlaceAssetFixtures extends Fixture  implements DependentFi
 {
     public function load(ObjectManager $manager): void
     {
-        return;
         $customerLocationPlaces = $manager->getRepository(CustomerLocationPlace::class)->findAll();
         $assets = $manager->getRepository(Asset::class)->findAll();
 

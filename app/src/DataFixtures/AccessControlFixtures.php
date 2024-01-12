@@ -28,27 +28,9 @@ class AccessControlFixtures extends Fixture
     {
         return [
             [
-                'name' => 'Login',
-                'path' => '^/admin/login',
-                'roles' => 'PUBLIC_ACCESS',
-                'sort' => 1
-            ],
-            [
-                'name' => 'New customer test',
-                'path' => '^/new-customer/grid',
-                'roles' => 'PUBLIC_ACCESS',
-                'sort' => 100
-            ],
-            [
-                'name' => 'Logout',
-                'path' => '^/admin/logout',
-                'roles' => 'IS_AUTHENTICATED_FULLY',
-                'sort' => 2
-            ],
-            [
                 'name' => 'Admin area',
                 'path' => '^/',
-                'roles' => 'IS_AUTHENTICATED_FULLY',
+                'roles' => 'PUBLIC_ACCESS',
                 'sort' => 1000
             ],
         ];

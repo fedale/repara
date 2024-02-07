@@ -158,10 +158,17 @@ class Gridview implements GridviewInterface
     
     public function setDataProviderOptions(array $dataProviderOptions) 
     {   
+        $sort = $dataProviderOptions['sort'] ?? null;
+        $pagination = $dataProviderOptions['pagination'] ?? null;
+
         // $this->dataProvider->setQueryBuilder($dataProviderOptions['models']);
         $this->dataProvider->prepareModels($dataProviderOptions['models']);
-        $this->dataProvider->getSort()->setAttributes($dataProviderOptions['sort']);
-        $this->dataProvider->getPagination()->setAttributes($dataProviderOptions['pagination']);
+        if (!is_null($sort)) {
+            $this->dataProvider->getSort()->setAttributes($dataProviderOptions['sort']);
+        }
+        if (!is_null($pagination)) {
+            $this->dataProvider->getPagination()->setAttributes($dataProviderOptions['pagination']);
+        }
     }
 
     public function setDataProvider($dataProvider) 

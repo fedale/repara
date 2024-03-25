@@ -34,22 +34,22 @@ security:
                 secret:   '%kernel.secret%' # required
                 lifetime: 604800 # 1 week in seconds
         
-        api:
-            pattern: ^/authentication
-            stateless: true
-            provider: app_user_provider
-            json_login:
-                check_path: /authentication
-                success_handler: lexik_jwt_authentication.handler.authentication_success
-                failure_handler: lexik_jwt_authentication.handler.authentication_failure       
+        # api:
+        #     pattern: ^/authentication
+        #     stateless: true
+        #     provider: app_user_provider
+        #     json_login:
+        #         check_path: /authentication
+        #         success_handler: lexik_jwt_authentication.handler.authentication_success
+        #         failure_handler: lexik_jwt_authentication.handler.authentication_failure       
 
-        refresh:
-            pattern: ^/token/refresh
-            stateless: true
+        # refresh:
+        #     pattern: ^/token/refresh
+        #     stateless: true
 
         main:
             # pattern: ^/
-            stateless: true
+            #stateless: true
             provider: app_user_provider
             json_login:
                 check_path: /authentication

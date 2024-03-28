@@ -19,7 +19,6 @@ class GridviewBuilder implements GridviewBuilderInterface
 
     public function reset()
     {
-        dump($this->gridviewService);
         $this->gridview = new Gridview($this->gridviewService);
     }
 

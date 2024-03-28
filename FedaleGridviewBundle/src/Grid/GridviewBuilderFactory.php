@@ -12,6 +12,9 @@ class GridviewBuilderFactory
     {
         // With an IF you can instantiate different type of GridviewBuilder
         // For example if ($this->config) {return new GridviewImplementation } else return new GridviewImplementation2
+        // Add:
+        // - Listview
+        // - Graph view
         return new GridviewBuilder($this->gridviewService);
     }
 }

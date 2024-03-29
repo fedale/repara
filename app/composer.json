@@ -20,6 +20,7 @@
         "doctrine/annotations": "^1.13",
         "doctrine/doctrine-bundle": "^2.7",
         "doctrine/doctrine-migrations-bundle": "^3.2",
+        "doctrine/mongodb-odm": "^2.7",
         "doctrine/mongodb-odm-bundle": "^4.5",
         "doctrine/orm": "^2.12",
         "easycorp/easyadmin-bundle": "4.x-dev",

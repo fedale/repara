@@ -19,6 +19,7 @@ use Fedale\GridviewBundle\Component\Sort;
 use Fedale\GridviewBundle\Component\SortInterface;
 use Fedale\GridviewBundle\DataProvider\DataProviderInterface;
 use Fedale\GridviewBundle\Grid\GridviewBuilderInterface;
+use Fedale\GridviewBundle\Grid\Gridview;
 
 #[Route('/bundle')]
 class BundleController extends AbstractController
@@ -171,6 +172,7 @@ class BundleController extends AbstractController
 
 
         // Order matters! Try to switch setColumns() / setFilterModel()
+        /** @var Gridview $gridview */
         $gridview = $this->createGridviewBuilder()
             ->setSearchModel($this->customerSearchModel)
             ->setDataProvider($dataProvider)

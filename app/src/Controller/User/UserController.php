@@ -5,6 +5,7 @@ namespace App\Controller\User;
 use App\Entity\User\User;
 use App\Form\User\UserType;
 use App\Repository\User\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -53,6 +54,7 @@ class UserController extends AbstractController
     public function edit(Request $request, User $user, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(UserType::class, $user);
+        
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

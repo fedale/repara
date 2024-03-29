@@ -12,7 +12,7 @@ class CustomerGroupAssignedFixtures extends Fixture implements DependentFixtureI
 {
     public function load(ObjectManager $manager): void
     {
-        $customers = $manager->getRepository(Customer::class)->findAll();
+        $customers = $manager->getRepository(Customer::class);//->findAll();
         $repository = $manager->getRepository(CustomerGroup::class);
         
         // $repository = $customerGroups = $manager->getRepository(CustomerGroup::class)->findBy([], [], \rand(1, 10) );

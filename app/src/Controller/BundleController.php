@@ -196,6 +196,61 @@ class BundleController extends AbstractController
         return $gridview->renderGrid('@FedaleGridview/gridview/index.html.twig', []);//, ['pagination' => $pagination]); //, 'form' => $form->createView()]);
     }
 
+    #[Route('/gridview-1', name: 'app_gridview_1', methods: ['GET'])]
+    public function grid1(
+        Request $request
+    ): Response
+    {
+        $columns = [
+            'id',
+            [
+                'attribute' => 'code',
+                'value' => function (array $data, string $key, ColumnInterface $column) {
+                    return '<strong>' . $data['code'] . '</strong>';
+                },
+                'twigFilter' => 'raw'
+            ],
+            [
+                'attribute' =>'username',
+                'twigFilter' => 'reverse'
+            ]
+            
+        ];
+
+        $sortAttributes = [
+            'id' => [
+                'asc' => ['c.id' => Sort::ASC],
+                'desc' => ['c.id' => Sort::DESC],
+                'default' => Sort::DESC,
+            ],
+            'code' => [
+                'asc' => ['c.code' => Sort::ASC],
+                'desc' => ['c.code' => Sort::DESC],
+                'default' => Sort::DESC,
+            ],
+        ];
+
+
+        $paginationAttributes = [
+            'defaultPageSize' => 45
+        ];
+
+
+        $dataProvider = [
+            // 'queryBuilder' => $queryBuilder,
+            'models' => \App\Entity\Customer\Customer::class,
+            'sort' => $sortAttributes,
+            'pagination' => $paginationAttributes
+        ];
+
+        $gridview = $this->createGridviewBuilder()
+        ->setDataProvider($dataProvider)
+        ->setColumns($columns)
+        ->renderGridview();
+
+        return $gridview->renderGrid('@FedaleGridview/gridview/index.html.twig', []);
+    }
+
     #[Route('/calendar', name: 'app_calendar', methods: ['GET'])]
     public function calendar(EntityManagerInterface $entityManager, EntityDataProvider $dataProvider, Sort $sort, Pagination $pagination): Response
     {

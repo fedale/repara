@@ -27,9 +27,7 @@ class MyController extends AbstractDashboardController
         $container = new ContainerBuilder();
         // $superAdmin = $this->getParameter('superAdmin');
         $anonymousAccess = $this->getParameter('anonymousAccess');
-        // dump($anonymousAccess, $this->anonymousAccess);
         $myParam  = $this->getParameter('myParam');
-        // dump($myParam, $this->myParam); 
         $defaultPath = $this->getParameter('twig.default_path');
         // $var = $container->setParameter('superAdmin', 'myVa');
         

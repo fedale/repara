@@ -76,7 +76,7 @@ class Sort implements SortInterface
     /**
      * @var Request
      */
-    protected Request $request;
+    protected Request|null $request;
 
     /**
      * @var RouterInterface

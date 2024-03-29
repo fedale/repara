@@ -57,7 +57,7 @@ class EntityDataProvider extends AbstractDataProvider
 
     private function populateParams()
     {
-        $this->params = $this->requestStack->getCurrentRequest()->get('myform') ?? [];
+        $this->params = $this->requestStack->getCurrentRequest()?->get('myform') ?? [];
     }
 
     /**

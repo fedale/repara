@@ -31,8 +31,6 @@ class DataColumn extends AbstractColumn
         protected ?string $twigFilter = null,
         protected ?string $label = null,
         protected ?array $options = [],
-        
-        
     ) { 
         if (null === $this->label) {
             $this->setLabel($attribute);

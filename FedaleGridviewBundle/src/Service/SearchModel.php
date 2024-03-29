@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class SearchModel implements SearchModelInterface
 {
-    private Request $request;
+    private Request|null $request;
 
     private DataProviderInterface $dataProvider;
 
@@ -23,7 +23,4 @@ class SearchModel implements SearchModelInterface
 
     public function search(){}
 
-    public function ilike(QueryBuilder $qb) {
-
-    }
 }

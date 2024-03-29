@@ -32,3 +32,7 @@ yarn-error.log
 
 /templates-tablerio/
 /templates-BAK/
+
+###> phpstan/phpstan ###
+phpstan.neon
+###< phpstan/phpstan ###

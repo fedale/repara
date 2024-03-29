@@ -172,7 +172,8 @@ class BundleController extends AbstractController
 
 
         // Order matters! Try to switch setColumns() / setFilterModel()
-        /** @var Gridview $gridview */
+        
+        /** @param Gridview $gridview */
         $gridview = $this->createGridviewBuilder()
             ->setSearchModel($this->customerSearchModel)
             ->setDataProvider($dataProvider)

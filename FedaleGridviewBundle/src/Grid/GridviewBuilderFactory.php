@@ -15,6 +15,7 @@ class GridviewBuilderFactory
         // Add:
         // - Listview
         // - Graph view
+        // - Map view
         return new GridviewBuilder($this->gridviewService);
     }
 }

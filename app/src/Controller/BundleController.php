@@ -21,12 +21,18 @@ use Fedale\GridviewBundle\DataProvider\DataProviderInterface;
 use Fedale\GridviewBundle\Grid\GridviewBuilderInterface;
 use Fedale\GridviewBundle\Grid\Gridview;
 use \Fedale\GridviewBundle\Grid\Gridviewbuilder;
+use Symfony\Component\DependencyInjection\Attribute\Target;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+
+
 
 #[Route('/bundle')]
 class BundleController extends AbstractController
 {
     public function __construct(
         private GridviewBuilderFactory $gridviewBuilderFactory,
+        #[Target(service: 'fedale_gridview.gridview_builder')]
+        private GridviewBuilderInterface $gridviewBuilder,
         //private CalendarBuilderFactory $calendarBuilderFactory,
         private CustomerSearchModel $customerSearchModel
     ) {
@@ -174,7 +180,7 @@ class BundleController extends AbstractController
 
         // Order matters! Try to switch setColumns() / setFilterModel()
         
-        /** @var Gridview $gridview */
+        /* * @var Gridview $gridview */
         $gridview = $this->createGridviewBuilder()
         ->setAttributes([
             'class' => 'table table-dark',
@@ -191,15 +197,15 @@ class BundleController extends AbstractController
             ])
         ->setSearchModel($this->customerSearchModel)
         ->setDataProvider($dataProvider)
-            ->setColumns($columns)
+            ->setColumns($columns);
             
-            ->renderGridview();
+            //->renderGridview();
         ;
 
         return $gridview->renderGrid('@FedaleGridview/gridview/index.html.twig', []);//, ['pagination' => $pagination]); //, 'form' => $form->createView()]);
     }
 
-    /** @return GridviewBuilder */
+    /* * @return GridviewBuilder */
     public function createGridviewBuilder(): GridviewBuilderInterface
     {
         return $this->gridviewBuilderFactory->createGridviewBuilder();

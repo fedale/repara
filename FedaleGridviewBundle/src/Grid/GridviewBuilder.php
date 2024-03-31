@@ -67,7 +67,7 @@ class GridviewBuilder implements GridviewBuilderInterface
         return $this;
     }
 
-    public function renderGridview(): GridviewInterface
+    public function renderGridview(): Gridview
     {
         return $this->gridview;
     }

@@ -31,7 +31,7 @@ class BundleController extends AbstractController
 {
     public function __construct(
         private GridviewBuilderFactory $gridviewBuilderFactory,
-        #[Target(service: 'fedale_gridview.gridview_builder')]
+        #[Autowire(service: 'fedale_gridview.gridview_builder')]
         private GridviewBuilderInterface $gridviewBuilder,
         //private CalendarBuilderFactory $calendarBuilderFactory,
         private CustomerSearchModel $customerSearchModel
@@ -182,6 +182,7 @@ class BundleController extends AbstractController
         
         /* * @var Gridview $gridview */
         $gridview = $this->createGridviewBuilder()
+        ->setSearchModel($this->customerSearchModel)
         ->setAttributes([
             'class' => 'table table-dark',
             'row' => [
@@ -195,18 +196,16 @@ class BundleController extends AbstractController
                 'data-type' => 'my-custom-type'
             ]
             ])
-        ->setSearchModel($this->customerSearchModel)
         ->setDataProvider($dataProvider)
-            ->setColumns($columns);
-            
-            //->renderGridview();
-        ;
+            ->setColumns($columns)
+            ->renderGridview();
+        
 
         return $gridview->renderGrid('@FedaleGridview/gridview/index.html.twig', []);//, ['pagination' => $pagination]); //, 'form' => $form->createView()]);
     }
 
     /* * @return GridviewBuilder */
-    public function createGridviewBuilder(): GridviewBuilderInterface
+    public function createGridviewBuilder(): GridviewBuilder
     {
         return $this->gridviewBuilderFactory->createGridviewBuilder();
     }

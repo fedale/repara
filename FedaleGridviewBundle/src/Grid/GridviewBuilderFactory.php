@@ -5,8 +5,9 @@ use Fedale\GridviewBundle\Service\GridviewService;
 
 class GridviewBuilderFactory 
 {
-    public function __construct(private GridviewService $gridviewService) 
-    {}
+    public function __construct(
+        private GridviewService $gridviewService
+    ) {}
 
     public function createGridviewBuilder(): GridviewBuilderInterface
     {
@@ -16,6 +17,7 @@ class GridviewBuilderFactory
         // - Listview
         // - Graph view
         // - Map view
+        /* * @return GridviewBuilder */
         return new GridviewBuilder($this->gridviewService);
     }
 }

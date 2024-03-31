@@ -7,7 +7,7 @@ use Traversable;
 
 interface GridviewBuilderInterface
 {
-    public function setColumns(array $columns);
+   // public function setColumns(array $columns);
     
     // public function setDataProvider(DataProviderInterface $dataProvider);
     public function setDataProvider(array $dataProviderOptions);

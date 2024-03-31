@@ -20,13 +20,14 @@ use Fedale\GridviewBundle\Component\SortInterface;
 use Fedale\GridviewBundle\DataProvider\DataProviderInterface;
 use Fedale\GridviewBundle\Grid\GridviewBuilderInterface;
 use Fedale\GridviewBundle\Grid\Gridview;
+use \Fedale\GridviewBundle\Grid\Gridviewbuilder;
 
 #[Route('/bundle')]
 class BundleController extends AbstractController
 {
     public function __construct(
         private GridviewBuilderFactory $gridviewBuilderFactory,
-        private CalendarBuilderFactory $calendarBuilderFactory,
+        //private CalendarBuilderFactory $calendarBuilderFactory,
         private CustomerSearchModel $customerSearchModel
     ) {
     }
@@ -173,30 +174,38 @@ class BundleController extends AbstractController
 
         // Order matters! Try to switch setColumns() / setFilterModel()
         
-        /** @param Gridview $gridview */
+        /** @var Gridview $gridview */
         $gridview = $this->createGridviewBuilder()
-            ->setSearchModel($this->customerSearchModel)
-            ->setDataProvider($dataProvider)
-            ->setColumns($columns)
-            ->setAttributes([
-                'class' => 'table table-dark',
-                'row' => [
-                    'class' => 'row-class'
-                ],
-                'header' => [
-                    'class' => 'row-header'
-                ],
-                'container' => [
-                    'class' => 'row-container',
-                    'data-type' => 'my-custom-type'
-                ]
+        ->setAttributes([
+            'class' => 'table table-dark',
+            'row' => [
+                'class' => 'row-class'
+            ],
+            'header' => [
+                'class' => 'row-header'
+            ],
+            'container' => [
+                'class' => 'row-container',
+                'data-type' => 'my-custom-type'
+            ]
             ])
+        ->setSearchModel($this->customerSearchModel)
+        ->setDataProvider($dataProvider)
+            ->setColumns($columns)
+            
             ->renderGridview();
         ;
 
         return $gridview->renderGrid('@FedaleGridview/gridview/index.html.twig', []);//, ['pagination' => $pagination]); //, 'form' => $form->createView()]);
     }
 
+    /** @return GridviewBuilder */
+    public function createGridviewBuilder(): GridviewBuilderInterface
+    {
+        return $this->gridviewBuilderFactory->createGridviewBuilder();
+    }
+
+/*
     #[Route('/gridview-1', name: 'app_gridview_1', methods: ['GET'])]
     public function grid1(
         Request $request
@@ -251,24 +260,5 @@ class BundleController extends AbstractController
 
         return $gridview->renderGrid('@FedaleGridview/gridview/index.html.twig', []);
     }
-
-    #[Route('/calendar', name: 'app_calendar', methods: ['GET'])]
-    public function calendar(EntityManagerInterface $entityManager, EntityDataProvider $dataProvider, Sort $sort, Pagination $pagination): Response
-    {
-        $calendar = $this->createCalendarBuilder()
-            ->renderCalendar();
-        ;
-
-        return $calendar->renderCalendar('@FedaleCalendar/calendar/index.html.twig');
-    }
-    
-    public function createGridviewBuilder(): GridviewBuilderInterface
-    {
-        return $this->gridviewBuilderFactory->createGridviewBuilder();
-    }
-
-    public function createCalendarBuilder(): CalendarBuilderInterface
-    {
-        return $this->calendarBuilderFactory->createCalendarBuilder();
-    }
+*/
 }

@@ -12,4 +12,5 @@ interface GridviewBuilderInterface
     // public function setDataProvider(DataProviderInterface $dataProvider);
     public function setDataProvider(array $dataProviderOptions);
    
+    //public function setSearchModel();
 }

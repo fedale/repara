@@ -51,13 +51,14 @@ class GridviewBuilder implements GridviewBuilderInterface
         return $this;
     }
     
-    
+    /*
     public function setSearchModelType($searchModelType, $data = null, $options = [])
     {
         $this->gridview->setSearchModelType($searchModelType, $data, $options);
         
         return $this;
     }
+    */
     
     public function setAttributes(array $attributes) 
     {

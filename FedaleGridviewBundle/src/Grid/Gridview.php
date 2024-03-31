@@ -174,6 +174,8 @@ class Gridview implements GridviewInterface
     public function setDataProvider($dataProvider) 
     {    
         $this->dataProvider = $dataProvider;
+
+        return $this;
     }
 
     public function getSearchModel(): ?SearchModelInterface
@@ -184,6 +186,8 @@ class Gridview implements GridviewInterface
     public function setSearchModel(?SearchModelInterface $searchModel) 
     {    
         $this->searchModel = $searchModel;
+
+        return $this;
     }
 
     public function guessColumns()

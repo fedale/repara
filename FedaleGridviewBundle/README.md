@@ -1,6 +1,12 @@
 # repara
 The goal of this project is to create a Gridview component for Symfony framework.
-Main inspiration of this project is Yii 2 Gridview.
+Main inspiration of this project is Yii 2 Gridview. Main inspirations:
+- https://www.yiiframework.com/doc/api/2.0/yii-grid-gridview
+- https://github.com/kartik-v/yii2-grid
+- https://github.com/AlexyAV/AVGridBundle
+- https://github.com/APY/APYDataGridBundle
+- https://github.com/tinustester/symfony-gridview-bundle
+
 
 
 First of all, this gridview is not automagic: if you are searching something magical like EasyAdmin gridview this project is not for you. You have, at least, configure a Fedale\GridviewBundle\DataProviderInterface and an array of columns to display.

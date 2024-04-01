@@ -17,6 +17,7 @@ class GridviewBuilderFactory
         // - Listview
         // - Graph view
         // - Map view
+        // - Pivot view
         /* * @return GridviewBuilder */
         return new GridviewBuilder($this->gridviewService);
     }

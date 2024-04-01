@@ -7,5 +7,9 @@ interface ColumnInterface
 {
   public function isVisible();
 
+  public function isFilterable();
+
   public function setGridview(Gridview $gridview);
+
+  public function getAttribute();
 }

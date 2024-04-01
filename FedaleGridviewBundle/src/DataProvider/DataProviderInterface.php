@@ -16,10 +16,9 @@ interface DataProviderInterface
     //  *
     //  * @param bool $forcePrepare whether to force data preparation even if it has been done before.
     //  */
-    // public function prepareData();
+    public function prepareModels();
 
-
-     /**
+    /**
      * Get the data models.
      */
     public function getData();
@@ -54,13 +53,13 @@ interface DataProviderInterface
     //  */
     // public function getKeys();
 
-    // /**
-    //  * @return Sort|false the sorting object. If this is false, it means the sorting is disabled.
-    //  */
-    // public function getSort();
+    /**
+     * @return Sort|false the sorting object. If this is false, it means the sorting is disabled.
+     */
+    public function getSort();
 
-    // /**
-    //  * @return Pagination|false the pagination object. If this is false, it means the pagination is disabled.
-    //  */
-    // public function getPagination();
+    /**
+     * @return Pagination|false the pagination object. If this is false, it means the pagination is disabled.
+     */
+    public function getPagination();
 }

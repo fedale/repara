@@ -45,7 +45,7 @@
         <service id="Fedale\GridviewBundle\Grid\GridviewInterface" alias="fedale_gridview.gridview"/>
 
         <service id="fedale_gridview.gridview_builder" class="Fedale\GridviewBundle\Grid\GridviewBuilder">
-            <argument type="service" id="twig"/>
+            <!-- <argument type="service" id="twig"/> -->
             <argument type="service" id="fedale_gridview.gridview_service"/>
         </service>
         <service id="Fedale\GridviewBundle\Grid\GridviewBuilder" alias="fedale_gridview.gridview_builder"/>

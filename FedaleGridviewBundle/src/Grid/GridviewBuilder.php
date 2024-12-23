@@ -4,7 +4,6 @@ namespace Fedale\GridviewBundle\Grid;
 use Fedale\GridviewBundle\DataProvider\DataProviderInterface;
 use Fedale\GridviewBundle\Service\SearchModelInterface;
 use Fedale\GridviewBundle\Service\GridviewService;
-use Twig\Environment;
 
 class GridviewBuilder implements GridviewBuilderInterface 
 {

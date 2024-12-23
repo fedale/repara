@@ -36,6 +36,7 @@ class BundleController extends AbstractController
         //private CalendarBuilderFactory $calendarBuilderFactory,
         private CustomerSearchModel $customerSearchModel
     ) {
+        
     }
 
     #[Route('/gridview', name: 'app_gridview', methods: ['GET'])]
@@ -44,7 +45,6 @@ class BundleController extends AbstractController
     ): Response
     {
   //      $pagination->setDefaultPageSize(10);
-dd('stop');
         $paginationAttributes = [
             'defaultPageSize' => 10
         ];

@@ -9,7 +9,7 @@ class GridviewBuilderFactory
         private GridviewService $gridviewService
     ) {}
 
-    public function createGridviewBuilder(): GridviewBuilderInterface
+    public function createGridviewBuilder()
     {
         // With an IF you can instantiate different type of GridviewBuilder
         // For example if ($this->config) {return new GridviewImplementation } else return new GridviewImplementation2

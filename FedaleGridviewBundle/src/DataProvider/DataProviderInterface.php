@@ -16,7 +16,7 @@ interface DataProviderInterface
     //  *
     //  * @param bool $forcePrepare whether to force data preparation even if it has been done before.
     //  */
-    public function prepareModels();
+    public function prepareModels(string|array $models);
 
     /**
      * Get the data models.

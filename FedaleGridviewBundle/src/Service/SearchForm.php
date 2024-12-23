@@ -53,7 +53,7 @@ class SearchForm implements SearchFormInterface
         return $this->filters;
     }
 
-    public function addFilter($name, $type, $options)
+    public function addFilter(string $name, string $type, array $options)
     {
         $name = str_replace('.', '_', $name);
         $class = "Fedale\\GridviewBundle\\FilterType\\Filter" . ucfirst($type) . 'Type';

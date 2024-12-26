@@ -4,24 +4,14 @@ namespace App\Controller;
 
 use App\Service\CustomerSearchModel;
 use Fedale\GridviewBundle\Column\ColumnInterface;
-use Fedale\GridviewBundle\Component\Pagination;
-use Fedale\GridviewBundle\DataProvider\EntityDataProvider;
 use Fedale\GridviewBundle\Grid\GridviewBuilderFactory;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Fedale\CalendarBundle\Calendar\CalendarBuilderFactory;
-use Fedale\CalendarBundle\Calendar\CalendarBuilderInterface;
-use Fedale\GridviewBundle\Component\PaginationInterface;
 use Fedale\GridviewBundle\Component\Sort;
-use Fedale\GridviewBundle\Component\SortInterface;
-use Fedale\GridviewBundle\DataProvider\DataProviderInterface;
 use Fedale\GridviewBundle\Grid\GridviewBuilderInterface;
-use Fedale\GridviewBundle\Grid\Gridview;
 use \Fedale\GridviewBundle\Grid\Gridviewbuilder;
-use Symfony\Component\DependencyInjection\Attribute\Target;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 
@@ -46,7 +36,7 @@ class BundleController extends AbstractController
     {
   //      $pagination->setDefaultPageSize(10);
         $paginationAttributes = [
-            'defaultPageSize' => 10
+            'defaultPageSize' => 20
         ];
 
         $sortAttributes = [
@@ -182,21 +172,21 @@ class BundleController extends AbstractController
         
         /* * @var Gridview $gridview */
         $gridview = $this->createGridviewBuilder()
-        ->setSearchModel($this->customerSearchModel)
-        ->setAttributes([
-            'class' => 'table table-dark',
-            'row' => [
-                'class' => 'row-class'
-            ],
-            'header' => [
-                'class' => 'row-header'
-            ],
-            'container' => [
-                'class' => 'row-container',
-                'data-type' => 'my-custom-type'
-            ]
-            ])
-        ->setDataProvider($dataProvider)
+            ->setSearchModel($this->customerSearchModel)
+            ->setAttributes([
+                'class' => 'table table-dark',
+                'row' => [
+                    'class' => 'row-class'
+                ],
+                'header' => [
+                    'class' => 'row-header'
+                ],
+                'container' => [
+                    'class' => 'row-container',
+                    'data-type' => 'my-custom-type'
+                ]
+                ])
+            ->setDataProvider($dataProvider)
             ->setColumns($columns)
             ->renderGridview();
         

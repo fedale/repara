@@ -154,7 +154,7 @@ class CustomerRepository extends ServiceEntityRepository
             ],
         );
 
-/*
+
         $this->searchForm->andFilterWhere(
             $qb,
             [
@@ -163,7 +163,7 @@ class CustomerRepository extends ServiceEntityRepository
                 $params['email']
             ]
         );
-
+/*
         $this->searchForm->andFilterWhere(
             $qb,
             [

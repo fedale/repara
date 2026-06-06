@@ -14,7 +14,7 @@ class CustomerFixtures extends Fixture implements DependentFixtureInterface
     {
         $customerTypes = $manager->getRepository(CustomerType::class)->findAll();
 
-        CustomerFactory::createMany(30, function () use ($customerTypes) {
+        CustomerFactory::createMany(1000, function () use ($customerTypes) {
             return [
                 'type' => $customerTypes[array_rand($customerTypes)],
             ];

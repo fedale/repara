@@ -15,7 +15,7 @@ class AssetAttachmentFixtures extends Fixture
         $manager->flush();
     }
 
-    public function getDependencies()
+    public function getDependencies(): array
     {
         return [
             AssetFixtures::class,

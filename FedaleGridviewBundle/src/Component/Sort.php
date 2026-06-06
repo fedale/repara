@@ -315,9 +315,9 @@ class Sort implements SortInterface
            $label = $this->attributes[$attribute]['label'] ?? $attribute;
         }
 
-        // backup
-        // return '<a '.$this->html->prepareTagAttributes($options) . ' href="'.$this->createUrl($attribute, $gridview).'">'.$label.'</a>';
-        return '<a href="'.$this->createUrl($attribute, $gridview).'">' . $label . '</a>';
+        $url        = $this->createUrl($attribute, $gridview);
+        $turboAttr  = $gridview->getOptions()['useTurbo'] ? ' data-turbo-action="advance"' : '';
+        return '<a href="' . $url . '"' . $turboAttr . '>' . $label . '</a>';
     }
 
     /**
@@ -332,16 +332,7 @@ class Sort implements SortInterface
      */
     public function createUrl(string $attribute, Gridview $gridview, bool $absolute = true): string
     {
-        $parameters = $this->request->query->all();
-
-        // Reset paging param
-        
-        $pageParamName = $gridview->getDataProvider()?->getPagination()?->getPageParamName();
-        if($pageParamName && isset($parameters[$pageParamName])){
-            unset($parameters[$pageParamName]);
-        }
-        
-        $parameters[$this->sortParam] = $this->createSortParam($attribute);
+        $parameters = $gridview->getUrlState()->withSort($this->createSortParam($attribute));
 
         return $this->router->generate(
             $this->request->get('_route'),
@@ -433,6 +424,11 @@ class Sort implements SortInterface
      * @return $this
      * @throws SortException
      */
+    public function getSortParam(): string
+    {
+        return $this->sortParam;
+    }
+
     public function setSortParam(string $sortParam): static
     {
         $this->sortParam = $sortParam;

@@ -1,5 +1,20 @@
-# gridview:
-#   attr:
-#     # - id: myGrid2
-#     #   class: myClass2
-#     #   data-custom: myCustomData
+fedale_gridview:
+  defaults:
+    options:
+      emptyText: "No records found"
+      useTurbo: true
+      showHeader: true
+      showFooter: true
+    attributes: {}
+#     class: "table table-striped"
+#     container:
+#       class: "table-responsive"
+
+  gridviews: {}
+#   customer_list:
+#     options:
+#       globalSearch: ["c.code", "c.email"]
+#     attributes:
+#       class: "table table-dark"
+#       row:
+#         class: "custom-row"

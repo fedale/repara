@@ -44,9 +44,14 @@
         </service>
         <service id="Fedale\GridviewBundle\Grid\GridviewInterface" alias="fedale_gridview.gridview"/>
 
+        <service id="fedale_gridview.config_registry" class="Fedale\GridviewBundle\Grid\GridviewConfigRegistry">
+            <argument>%fedale_gridview.config%</argument>
+        </service>
+        <service id="Fedale\GridviewBundle\Grid\GridviewConfigRegistry" alias="fedale_gridview.config_registry"/>
+
         <service id="fedale_gridview.gridview_builder" class="Fedale\GridviewBundle\Grid\GridviewBuilder">
-            <!-- <argument type="service" id="twig"/> -->
             <argument type="service" id="fedale_gridview.gridview_service"/>
+            <argument type="service" id="fedale_gridview.config_registry"/>
         </service>
         <service id="Fedale\GridviewBundle\Grid\GridviewBuilder" alias="fedale_gridview.gridview_builder"/>
         <service id="Fedale\GridviewBundle\Grid\GridviewBuilderInterface" alias="fedale_gridview.gridview_builder"/>
@@ -68,6 +73,7 @@
 
         <service id="fedale_gridview.builder_factory" class="Fedale\GridviewBundle\Grid\GridviewBuilderFactory">
             <argument type="service" id="fedale_gridview.gridview_service"/>
+            <argument type="service" id="fedale_gridview.config_registry"/>
         </service>
         <service id="Fedale\GridviewBundle\Grid\GridviewBuilderFactory" alias="fedale_gridview.builder_factory"/>
                      

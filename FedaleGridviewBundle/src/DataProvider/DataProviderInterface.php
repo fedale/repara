@@ -62,4 +62,6 @@ interface DataProviderInterface
      * @return Pagination|false the pagination object. If this is false, it means the pagination is disabled.
      */
     public function getPagination();
+
+    public function applyGlobalSearch(array $fields, string $term): void;
 }

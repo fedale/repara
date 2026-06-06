@@ -9,3 +9,9 @@ export const app = startStimulusApp(require.context(
 
 // register any custom, 3rd party controllers here
 // app.register('some_controller_name', SomeImportedController);
+
+import GridviewFilterController from '../../FedaleGridviewBundle/assets/controllers/gridview-filter_controller.js';
+app.register('gridview-filter', GridviewFilterController);
+
+import GridviewSelectionController from '../../FedaleGridviewBundle/assets/controllers/gridview-selection_controller.js';
+app.register('gridview-selection', GridviewSelectionController);

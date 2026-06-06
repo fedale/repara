@@ -2,6 +2,8 @@
 namespace Fedale\GridviewBundle\Grid;
 
 use Fedale\GridviewBundle\DataProvider\DataProviderInterface;
+use Fedale\GridviewBundle\Component\GridviewUrlState;
+use Fedale\GridviewBundle\Column\CheckboxColumn;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\Environment;
@@ -22,6 +24,8 @@ class Gridview implements GridviewInterface
      * @var string Current unique grid id.
      */
     protected $key;
+
+    protected ?string $id = null;
     
     /**
      * @var string
@@ -44,6 +48,20 @@ class Gridview implements GridviewInterface
      * be used to indicate an empty data value.
      */
     public string $emptyCell = '&nbsp;';
+
+    private GridviewUrlState $urlState;
+
+    /**
+     * Behavioural options with their defaults. Merged with values passed via setOptions().
+     */
+    protected array $options = [
+        'caption'      => null,
+        'emptyText'    => 'No records found',
+        'showHeader'   => true,
+        'showFooter'   => true,
+        'useTurbo'     => true,
+        'globalSearch' => [],
+    ];
 
     /**
      * Gridview attributes
@@ -297,6 +315,26 @@ class Gridview implements GridviewInterface
         return $column;
     }
 
+    public function setId(string $id): void
+    {
+        $this->id = $id;
+    }
+
+    public function getId(): ?string
+    {
+        return $this->id;
+    }
+
+    public function setOptions(array $options): void
+    {
+        $this->options = array_merge($this->options, $options);
+    }
+
+    public function getOptions(): array
+    {
+        return $this->options;
+    }
+
     public function setAttributes(array $attributes): void
     {
         // Do some implementation with row
@@ -313,26 +351,56 @@ class Gridview implements GridviewInterface
         $this->attr = $attributes; //['id'] = 'my-grid-view'; //$options['key'];
     }
 
+    public function getUrlState(): GridviewUrlState
+    {
+        return $this->urlState;
+    }
+
+    public function hasCheckboxColumn(): bool
+    {
+        return $this->columns->exists(fn($k, $col) => $col instanceof CheckboxColumn);
+    }
+
     public function renderGrid(string $view, array $parameters = []): Response
     {
-        $parameters = [
-            'gridview' => $this,
-            'columns' => $this->columns,
-            'models' => $this->dataProvider->getData(),
-            'pagination' => $this->dataProvider->getPagination() //$parameters['pagination']
-        ];
+        $request = $this->gridviewService->getRequest();
+
+        $this->urlState = GridviewUrlState::fromRequest(
+            $request,
+            'myform',
+            $this->dataProvider->getSort()->getSortParam(),
+            $this->dataProvider->getPagination()->getPageParamName()
+        );
+
+        $globalFields = $this->options['globalSearch'];
 
         if (isset($this->searchModel)) {
-            $this->searchForm->getModelType()->handleRequest($this->gridviewService->getRequest());
-            $parameters['form'] = $this->searchForm->getModelType()->createView(); // ?? $this->searchModel->getBuilder()->createView(); //$parameters['form'],
+            if (!empty($globalFields)) {
+                $this->searchForm->addGlobalSearch();
+            }
+            $this->searchForm->getModelType()->handleRequest($request);
+            $parameters['form'] = $this->searchForm->getModelType()->createView();
         }
 
-        $content = $this->twig->render($view, $parameters);
+        if (!empty($globalFields)) {
+            $q = trim($request->query->all('myform')['_q'] ?? '');
+            if ($q !== '') {
+                $this->dataProvider->applyGlobalSearch($globalFields, $q);
+            }
+        }
 
-        $response = new Response();
-        $response->setContent($content);
+        $parameters = array_merge($parameters, [
+            'gridview'   => $this,
+            'columns'    => $this->columns,
+            'models'     => $this->dataProvider->getData(),
+            'pagination' => $this->dataProvider->getPagination(),
+        ]);
 
-        return $response;
+        $template = ($this->options['useTurbo'] && $request->headers->has('Turbo-Frame'))
+            ? '@FedaleGridview/gridview/_grid.html.twig'
+            : $view;
+
+        return new Response($this->twig->render($template, $parameters));
     }
 
    

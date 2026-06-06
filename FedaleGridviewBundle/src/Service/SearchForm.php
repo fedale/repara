@@ -53,6 +53,16 @@ class SearchForm implements SearchFormInterface
         return $this->filters;
     }
 
+    public function addGlobalSearch(): void
+    {
+        if (!$this->modelType->has('_q')) {
+            $this->modelType->add('_q', \Symfony\Component\Form\Extension\Core\Type\TextType::class, [
+                'required' => false,
+                'label'    => false,
+            ]);
+        }
+    }
+
     public function addFilter(string $name, string $type, array $options)
     {
         $name = str_replace('.', '_', $name);

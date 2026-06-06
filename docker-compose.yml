@@ -19,13 +19,19 @@ services:
       - 8080:8080
 
   app:
-    environment: 
+    environment:
     - APP_NAME=${APP_NAME}
     - APP_ENV=${APP_ENV}
     - APP_LOCALE=${APP_LOCALE}
     - DEFAULT_TIMEZONE=${DEFAULT_TIMEZONE}
     depends_on:
       - database
+    volumes:
+      - ./app/src:/srv/app/src
+      - ./app/config:/srv/app/config
+      - ./app/templates:/srv/app/templates
+      - ./app/public:/srv/app/public
+      - ./FedaleGridviewBundle:/srv/FedaleGridviewBundle
 
   nginx:
     image: nginx

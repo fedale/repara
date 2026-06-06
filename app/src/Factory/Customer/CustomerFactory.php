@@ -41,9 +41,9 @@ final class CustomerFactory extends ModelFactory
     protected function getDefaults(): array
     {
         return [
-            'code' => self::faker()->ean8(),
-            'username' => self::faker()->userName(),
-            'email' => self::faker()->companyEmail(),
+            'code' => self::faker()->unique()->ean8(),
+            'username' => self::faker()->unique()->userName(),
+            'email' => self::faker()->unique()->companyEmail(),
             'password' => self::faker()->password(),
             'type' => CustomerTypeFactory::new(),
             'active' => self::faker()->boolean(90),

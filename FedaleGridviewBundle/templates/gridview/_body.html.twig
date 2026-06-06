@@ -1,7 +1,7 @@
 
 <tbody>
 {% for row in models %}
-    <tr {{ row.attr|options }}>
+    <tr {{ gridview.rowAttr|merge(row.attr ?? {})|options }}>
         {% for column in columns %}
             <td {{ column.options|options }}>
             {% set index = loop.parent.loop.index0 %}
@@ -15,8 +15,7 @@
     </tr>
 {% else %}
     <tr>
-        {# <td colspan="{{ columns.length }}">no records found</td> #}
-        <td colspan="99">no records found</td>
+        <td colspan="99">{{ gridview.options.emptyText }}</td>
     </tr>
 {% endfor %}
 </tbody>

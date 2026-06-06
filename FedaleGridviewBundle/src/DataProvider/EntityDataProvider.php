@@ -79,6 +79,18 @@ class EntityDataProvider extends AbstractDataProvider
         $this->queryBuilder = $this->entityManager->getRepository($models)->search($this->params);
     }
 
+    public function applyGlobalSearch(array $fields, string $term): void
+    {
+        $exprs = array_map(
+            fn($f) => $this->queryBuilder->expr()->like(
+                $this->queryBuilder->expr()->lower($f),
+                $this->queryBuilder->expr()->literal('%' . strtolower($term) . '%')
+            ),
+            $fields
+        );
+        $this->queryBuilder->andWhere($this->queryBuilder->expr()->orX(...$exprs));
+    }
+
     public function getData()
     {
         //$this->entityManager->getRepository(Customer::class)->search($this->queryBuilder);

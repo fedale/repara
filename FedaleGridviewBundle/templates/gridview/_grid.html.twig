@@ -1,0 +1,46 @@
+{% if gridview.options.useTurbo %}
+<turbo-frame id="gridview-{{ gridview.key }}">
+{% endif %}
+    <div {{ gridview.containerAttr|options }}
+         {% if gridview.hasCheckboxColumn %}
+         data-controller="gridview-selection"
+         data-gridview-selection-grid-id-value="{{ gridview.key }}"
+         {% endif %}>
+        {% if form is defined and form is not null %}
+        {{ form_start(form, {'attr': {'data-controller': 'gridview-filter', 'data-turbo-action': 'replace'}}) }}
+        {% if gridview.options.globalSearch is not empty %}
+        <div class="gridview-global-search">
+            {{ form_widget(form._q, {
+                'attr': {'data-action': 'input->gridview-filter#input', 'placeholder': 'Search…'}
+            }) }}
+        </div>
+        {% endif %}
+        {% endif %}
+        <table {{ gridview.attr|options }}>
+            {% if gridview.options.caption %}
+                <caption>{{ gridview.options.caption }}</caption>
+            {% endif %}
+            {% if gridview.options.showHeader %}
+                {% include '@FedaleGridview/gridview/_header.html.twig'
+                   with {'gridview': gridview, 'columns': columns} %}
+            {% endif %}
+            {% if form is defined and form is not null %}
+                {% include '@FedaleGridview/gridview/_filter.html.twig'
+                   with {'gridview': gridview, 'columns': columns, 'form': form} %}
+            {% endif %}
+            {% include '@FedaleGridview/gridview/_body.html.twig'
+               with {'gridview': gridview, 'columns': columns, 'models': models} %}
+            {% if gridview.options.showFooter %}
+                {% include '@FedaleGridview/gridview/_footer.html.twig'
+                   with {'columns': columns} %}
+            {% endif %}
+        </table>
+        {% include '@FedaleGridview/gridview/paginator.html.twig'
+           with {'paginator': pagination, 'gridview': gridview} %}
+        {% if form is defined and form is not null %}
+        {{ form_end(form) }}
+        {% endif %}
+    </div>
+{% if gridview.options.useTurbo %}
+</turbo-frame>
+{% endif %}

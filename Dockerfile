@@ -1,26 +1,25 @@
 # https://docs.docker.com/engine/reference/builder/#understand-how-arg-and-from-interact
-ARG PHP_VERSION=8.3
+ARG PHP_VERSION=8.4
 ARG CADDY_VERSION=2
 
 FROM php:${PHP_VERSION}-fpm AS app
 
-ARG APCU_VERSION=5.1.21
+ARG APCU_VERSION=5.1.24
 ARG APP_ENV=prod
 
 RUN apt update \
     && apt install -y zlib1g-dev g++ git libpq-dev libicu-dev zip libzip-dev zip acl apt-transport-https gnupg apt-utils \
     && docker-php-ext-install intl opcache pdo pdo_mysql pdo_pgsql \
-    && pecl install apcu-${APCU_VERSION} \
+    && pecl install apcu \
     && pecl install redis mongodb \
-	&& pecl clear-cache \
+    && pecl clear-cache \
     && docker-php-ext-enable pdo_pgsql \
     && docker-php-ext-enable apcu \
     && docker-php-ext-enable opcache \
     && docker-php-ext-enable redis \
     && docker-php-ext-enable mongodb \
-    && docker-php-ext-configure zip \
     && docker-php-ext-install zip \
-    && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
+    && docker-php-ext-configure pgsql --with-pgsql=/usr/local/pgsql \
     && docker-php-ext-install pgsql 
 
 WORKDIR /srv/app
@@ -29,7 +28,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 RUN curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh' | bash
 RUN apt-get install symfony-cli
-RUN git config --global user.email "zitter@gmail.com" \ 
+RUN git config --global user.email "zitter@gmail.com" \
     && git config --global user.name "Fedale"
 
 # RUN ln -s $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
@@ -47,13 +46,16 @@ COPY app/src src/
 COPY app/templates templates/
 COPY app/translations translations/
 
+# local repo for local dev
+COPY FedaleGridviewBundle /srv/FedaleGridviewBundle
+COPY FedaleCalendarBundle /srv/FedaleCalendarBundle
+
 # prevent the reinstallation of vendors at every changes in the source code
 COPY app/composer.json app/composer.lock app/symfony.lock ./
 
 RUN set -eux; \
-	composer update; \
-	composer install --prefer-dist --no-dev --no-scripts --no-progress; \
-	composer clear-cache
+    composer install --prefer-dist --no-dev --no-scripts --no-progress; \
+    composer clear-cache
 
 # RUN set -eux; \
 # 	mkdir -p var/cache var/log; \
@@ -70,6 +72,8 @@ HEALTHCHECK --interval=10s --timeout=3s --retries=3 CMD ["docker-healthcheck"]
 
 COPY nginx/php/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
 RUN chmod +x /usr/local/bin/docker-entrypoint
+
+RUN echo "memory_limit=512M" > /usr/local/etc/php/conf.d/memory-limit.ini
 
 ENV SYMFONY_PHPUNIT_VERSION=9
 
@@ -99,10 +103,10 @@ ENTRYPOINT nginx -g 'daemon off;'
 FROM caddy:${CADDY_VERSION}-builder-alpine AS api_caddy_builder
 RUN xcaddy build \
     --with github.com/dunglas/mercure \
-	--with github.com/dunglas/mercure/caddy \
-	--with github.com/dunglas/vulcain \
-	--with github.com/dunglas/vulcain/caddy
-    
+    --with github.com/dunglas/mercure/caddy \
+    --with github.com/dunglas/vulcain \
+    --with github.com/dunglas/vulcain/caddy
+
 #'caddy' stage
 FROM caddy:${CADDY_VERSION} AS caddy
 WORKDIR /srv/api

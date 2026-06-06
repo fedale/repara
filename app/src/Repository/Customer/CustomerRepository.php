@@ -51,14 +51,6 @@ class CustomerRepository extends ServiceEntityRepository
             ->join('c.type', 't')
         ;
 
-        if (count($params) === 0 ){
-            return $qb;
-        }
-        
-
-        /**
-         * 
-         */
         // First case: search in one field using LIKE
         /*
             $this->searchForm->andFilterWhere(
@@ -108,7 +100,7 @@ class CustomerRepository extends ServiceEntityRepository
             [
                 'like',
                 'c.code',
-                $params['code']
+                $params['code'] ?? null,
             ]
         );
         // ->andFilterWhere(['like', 'tbl_city.name', $this->city]) // Yii2 way
@@ -120,37 +112,37 @@ class CustomerRepository extends ServiceEntityRepository
             [
                 'ilike',
                 'p.firstname',
-                $params['profile_fullname']
+                $params['profile_fullname'] ?? null,
             ],
             [
                 'ilike',
                 'p.lastname',
-                $params['profile_fullname']
+                $params['profile_fullname'] ?? null,
             ],
             [
                 'ilike',
                 'CONCAT(p.firstname, \' \', p.lastname)',
-                $params['profile_fullname']
+                $params['profile_fullname'] ?? null,
             ],
             [
                 'ilike',
                 'CONCAT(p.lastname, \' \', p.firstname)',
-                $params['profile_fullname']
+                $params['profile_fullname'] ?? null,
             ],
             [
                 'ilike',
                 'c.email',
-                $params['profile_fullname']
+                $params['profile_fullname'] ?? null,
             ],
         );
 
-        
+
         $this->searchForm->andFilterWhere(
             $qb,
             [
                 'ilike',
                 'l.zipcode',
-                $params['locations']
+                $params['locations'] ?? null,
             ],
         );
 
@@ -160,7 +152,7 @@ class CustomerRepository extends ServiceEntityRepository
             [
                 'like',
                 'c.email',
-                $params['email']
+                $params['email'] ?? null,
             ]
         );
 /*

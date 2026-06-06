@@ -1,24 +1,37 @@
 <?php
 namespace Fedale\GridviewBundle\Grid;
 
-use Fedale\GridviewBundle\DataProvider\DataProviderInterface;
 use Fedale\GridviewBundle\Service\SearchModelInterface;
 use Fedale\GridviewBundle\Service\GridviewService;
 
-class GridviewBuilder implements GridviewBuilderInterface 
+class GridviewBuilder implements GridviewBuilderInterface
 {
     private SearchModelInterface $searchModel;
 
     private Gridview $gridview;
 
-    public function __construct(private GridviewService $gridviewService)
-    {
+    private array $runtimeOptions = [];
+
+    private array $runtimeAttributes = [];
+
+    public function __construct(
+        private GridviewService $gridviewService,
+        private GridviewConfigRegistry $configRegistry,
+    ) {
         $this->reset();
     }
 
     public function reset()
     {
         $this->gridview = new Gridview($this->gridviewService);
+        $this->runtimeOptions = [];
+        $this->runtimeAttributes = [];
+    }
+
+    public function setId(string $id): static
+    {
+        $this->gridview->setId($id);
+        return $this;
     }
 
     public function setColumns(array $columns)
@@ -35,39 +48,60 @@ class GridviewBuilder implements GridviewBuilderInterface
         return $this;
     }
 
-    /*
-    public function setDataProvider(DataProviderInterface $dataProvider)
-    {
-        $this->gridview->setDataProvider($dataProvider);
-
-        return $this;
-    }*/
-
     public function setDataProvider(array $dataProviderOptions): GridviewBuilderInterface
     {
         $this->gridview->setDataProviderOptions($dataProviderOptions);
 
         return $this;
     }
-    
-    /*
-    public function setSearchModelType($searchModelType, $data = null, $options = [])
+
+    public function setOptions(array $options): static
     {
-        $this->gridview->setSearchModelType($searchModelType, $data, $options);
-        
+        $this->runtimeOptions = array_replace($this->runtimeOptions, $options);
+
         return $this;
     }
-    */
-    
-    public function setAttributes(array $attributes) 
+
+    public function setAttributes(array $attributes)
     {
-        $this->gridview->setAttributes($attributes);
-        
+        $this->runtimeAttributes = array_replace($this->runtimeAttributes, $attributes);
+
         return $this;
     }
 
     public function renderGridview(): Gridview
     {
+        $id = $this->gridview->getId();
+
+        $yamlOptions    = $this->configRegistry->resolveOptions($id);
+        $yamlAttributes = $this->configRegistry->resolveAttributes($id);
+
+        $this->gridview->setOptions(array_replace($yamlOptions, $this->runtimeOptions));
+        $this->gridview->setAttributes($this->mergeAttributes($yamlAttributes, $this->runtimeAttributes));
+
         return $this->gridview;
+    }
+
+    private function mergeAttributes(array $yaml, array $runtime): array
+    {
+        if (isset($runtime['class'])) {
+            $yaml['class'] = $runtime['class'];
+        }
+        foreach (['row', 'container', 'header', 'filter'] as $key) {
+            if (!empty($runtime[$key])) {
+                $yaml[$key] = array_replace($yaml[$key] ?? [], $runtime[$key]);
+            }
+        }
+        $knownKeys = ['class', 'row', 'container', 'header', 'filter'];
+        foreach ($runtime as $k => $v) {
+            if (!in_array($k, $knownKeys, true)) {
+                $yaml[$k] = $v;
+            }
+        }
+        // Don't pass null class to setAttributes
+        if (array_key_exists('class', $yaml) && $yaml['class'] === null) {
+            unset($yaml['class']);
+        }
+        return $yaml;
     }
 }

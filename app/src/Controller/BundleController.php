@@ -26,17 +26,16 @@ class BundleController extends AbstractController
         //private CalendarBuilderFactory $calendarBuilderFactory,
         private CustomerSearchModel $customerSearchModel
     ) {
-        
+
     }
 
     #[Route('/gridview', name: 'app_gridview', methods: ['GET'])]
     public function grid(
         Request $request
-    ): Response
-    {
-  //      $pagination->setDefaultPageSize(10);
+    ): Response {
+        //      $pagination->setDefaultPageSize(10);
         $paginationAttributes = [
-            'defaultPageSize' => 20
+            'defaultPageSize' => 200
         ];
 
         $sortAttributes = [
@@ -74,14 +73,15 @@ class BundleController extends AbstractController
          *
          */
         $columns = [
+            ['type' => 'checkbox'],
             // [//     'type' => 'serial'// ],
-                /*
-            [
-                'attribute' => 'id',
-                'filter' => [
-                    'type' => 'text',
-                ]
-            ],*/
+            /*
+        [
+            'attribute' => 'id',
+            'filter' => [
+                'type' => 'text',
+            ]
+        ],*/
             'id',
             /*
             'code:raw:code',
@@ -94,10 +94,10 @@ class BundleController extends AbstractController
             ],
             [
                 'attribute' => 'profile_fullname',
-                'value' => function(array $data, string $key, ColumnInterface $column) {
-                    return rand(0, 10) > 5 ? 
+                'value' => function (array $data, string $key, ColumnInterface $column) {
+                    return rand(0, 10) > 5 ?
                         '<strong>' . $data['profile']['fullname'] . '</strong>'
-                        : 
+                        :
                         '*****';
                 },
                 'twigFilter' => 'raw',
@@ -108,9 +108,9 @@ class BundleController extends AbstractController
                 ]
             ],
             [
-               'attribute' => 'email',
-               'label' => 'email',
-               'value' => function (array $data, string $key, ColumnInterface $column) {
+                'attribute' => 'email',
+                'label' => 'email',
+                'value' => function (array $data, string $key, ColumnInterface $column) {
                     return '<strong>' . $data['email'] . '</strong>';
                 },
                 'twigFilter' => 'raw',
@@ -118,7 +118,7 @@ class BundleController extends AbstractController
                     'type' => 'text',
                 ]
             ],
-        
+
             [
                 'attribute' => 'locations',
                 'label' => 'locations',
@@ -144,7 +144,7 @@ class BundleController extends AbstractController
             [
                 'type' => 'action'
             ]
-                
+
         ];
 
         /*
@@ -165,14 +165,15 @@ class BundleController extends AbstractController
 
         //$dataProvider->setQueryBuilder($queryBuilder);
         //$dataProvider->setPaginationAttributes($paginationAttributes);
-     //   $dataProvider->setSort($sort);
+        //   $dataProvider->setSort($sort);
 
 
         // Order matters! Try to switch setColumns() / setFilterModel()
-        
+
         /* * @var Gridview $gridview */
         $gridview = $this->createGridviewBuilder()
             ->setSearchModel($this->customerSearchModel)
+            ->setOptions(['globalSearch' => ['c.code', 'c.email']])
             ->setAttributes([
                 'class' => 'table table-dark',
                 'row' => [
@@ -185,11 +186,11 @@ class BundleController extends AbstractController
                     'class' => 'row-container',
                     'data-type' => 'my-custom-type'
                 ]
-                ])
+            ])
             ->setDataProvider($dataProvider)
             ->setColumns($columns)
             ->renderGridview();
-        
+
 
         return $gridview->renderGrid('@FedaleGridview/gridview/index.html.twig', []);//, ['pagination' => $pagination]); //, 'form' => $form->createView()]);
     }
@@ -200,60 +201,60 @@ class BundleController extends AbstractController
         return $this->gridviewBuilderFactory->createGridviewBuilder();
     }
 
-/*
-    #[Route('/gridview-1', name: 'app_gridview_1', methods: ['GET'])]
-    public function grid1(
-        Request $request
-    ): Response
-    {
-        $columns = [
-            'id',
-            [
-                'attribute' => 'code',
-                'value' => function (array $data, string $key, ColumnInterface $column) {
-                    return '<strong>' . $data['code'] . '</strong>';
-                },
-                'twigFilter' => 'raw'
-            ],
-            [
-                'attribute' =>'username',
-                'twigFilter' => 'reverse'
-            ]
-            
-        ];
+    /*
+        #[Route('/gridview-1', name: 'app_gridview_1', methods: ['GET'])]
+        public function grid1(
+            Request $request
+        ): Response
+        {
+            $columns = [
+                'id',
+                [
+                    'attribute' => 'code',
+                    'value' => function (array $data, string $key, ColumnInterface $column) {
+                        return '<strong>' . $data['code'] . '</strong>';
+                    },
+                    'twigFilter' => 'raw'
+                ],
+                [
+                    'attribute' =>'username',
+                    'twigFilter' => 'reverse'
+                ]
 
-        $sortAttributes = [
-            'id' => [
-                'asc' => ['c.id' => Sort::ASC],
-                'desc' => ['c.id' => Sort::DESC],
-                'default' => Sort::DESC,
-            ],
-            'code' => [
-                'asc' => ['c.code' => Sort::ASC],
-                'desc' => ['c.code' => Sort::DESC],
-                'default' => Sort::DESC,
-            ],
-        ];
+            ];
 
-
-        $paginationAttributes = [
-            'defaultPageSize' => 45
-        ];
+            $sortAttributes = [
+                'id' => [
+                    'asc' => ['c.id' => Sort::ASC],
+                    'desc' => ['c.id' => Sort::DESC],
+                    'default' => Sort::DESC,
+                ],
+                'code' => [
+                    'asc' => ['c.code' => Sort::ASC],
+                    'desc' => ['c.code' => Sort::DESC],
+                    'default' => Sort::DESC,
+                ],
+            ];
 
 
-        $dataProvider = [
-            // 'queryBuilder' => $queryBuilder,
-            'models' => \App\Entity\Customer\Customer::class,
-            'sort' => $sortAttributes,
-            'pagination' => $paginationAttributes
-        ];
+            $paginationAttributes = [
+                'defaultPageSize' => 45
+            ];
 
-        $gridview = $this->createGridviewBuilder()
-        ->setDataProvider($dataProvider)
-        ->setColumns($columns)
-        ->renderGridview();
 
-        return $gridview->renderGrid('@FedaleGridview/gridview/index.html.twig', []);
-    }
-*/
+            $dataProvider = [
+                // 'queryBuilder' => $queryBuilder,
+                'models' => \App\Entity\Customer\Customer::class,
+                'sort' => $sortAttributes,
+                'pagination' => $paginationAttributes
+            ];
+
+            $gridview = $this->createGridviewBuilder()
+            ->setDataProvider($dataProvider)
+            ->setColumns($columns)
+            ->renderGridview();
+
+            return $gridview->renderGrid('@FedaleGridview/gridview/index.html.twig', []);
+        }
+    */
 }

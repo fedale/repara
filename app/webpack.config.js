@@ -73,4 +73,11 @@ Encore
     //.autoProvidejQuery()
 ;
 
-module.exports = Encore.getWebpackConfig();
+const config = Encore.getWebpackConfig();
+
+// Allow webpack to resolve node_modules from app/ for files outside the app/ directory
+// (e.g. Stimulus controllers living in FedaleGridviewBundle/assets/)
+const path = require('path');
+config.resolve.modules = [path.resolve(__dirname, 'node_modules'), 'node_modules'];
+
+module.exports = config;

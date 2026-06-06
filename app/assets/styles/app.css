@@ -10,12 +10,17 @@
     grid-row-gap: 0px;
 }
 
-.wrapper > * {
+.wrapper>* {
     padding: var(--rp-padding);
 }
-   
-div.page-header { grid-area: 1 / 1 / 2 / 2; }
-div.main-content { grid-area: 2 / 1 / 3 / 2; }
+
+div.page-header {
+    grid-area: 1 / 1 / 2 / 2;
+}
+
+div.main-content {
+    grid-area: 2 / 1 / 3 / 2;
+}
 
 
 
@@ -37,16 +42,18 @@ div.page-header {
     box-shadow: inset 0 -1px 0 var(--responsive-header-border-color);
 }
 
-div.page-header > div.logo { 
-    grid-area: 1 / 1 / 2 / 3; 
+div.page-header>div.logo {
+    grid-area: 1 / 1 / 2 / 3;
     /* background: yellow;  */
 }
-div.page-header > nav.main-menu { 
-    grid-area: 1 / 4 / 2 / 10; 
+
+div.page-header>nav.main-menu {
+    grid-area: 1 / 4 / 2 / 10;
     /* background: green;  */
-} 
-div.page-header > div.user-menu { 
-    grid-area: 1 / 11 / 2 / 13; 
+}
+
+div.page-header>div.user-menu {
+    grid-area: 1 / 11 / 2 / 13;
     /* background: red;  */
 }
 
@@ -67,35 +74,34 @@ nav ul.menu li {
     padding: 0 .5em;
 }
 
-nav ul.menu > li > a {
+nav ul.menu>li>a {
     font-weight: bold;
     text-transform: uppercase;
 }
 
-nav ul.menu > li.nav-item.active,
-.navbar-expand-md .navbar-light .nav-item.active:after, 
-.navbar-expand-md.navbar-light .nav-item.active:after
-{
+nav ul.menu>li.nav-item.active,
+.navbar-expand-md .navbar-light .nav-item.active:after,
+.navbar-expand-md.navbar-light .nav-item.active:after {
     border: none;
     background: var(--button-primary-bg);
     color: var(--button-primary-color);
     border-radius: var(--border-radius);
 }
 
-#navbar-menu ul.menu > li.nav-item.active > a {
+#navbar-menu ul.menu>li.nav-item.active>a {
     color: var(--tblr-light);
 }
 
 .dropdown.active a.nav-link.active {
-    background: var(--bs-dropdown-link-active-bg); 
+    background: var(--bs-dropdown-link-active-bg);
     /* font-weight: bold; */
     color: var(--bs-dropdown-link-active-color);
 }
 
-.page-color-scheme-selector .dropdown-item.active i, 
-.page-color-scheme-selector .dropdown-item.active  {
+.page-color-scheme-selector .dropdown-item.active i,
+.page-color-scheme-selector .dropdown-item.active {
     background: var(--dropdown-link-hover-bg);
-    color: var(--bs-dropdown-link-active-bg) !important; 
+    color: var(--bs-dropdown-link-active-bg) !important;
     text-decoration: none;
     font-weight: bold;
 }
@@ -115,13 +121,25 @@ button:focus {
 }
 
 /* clears the ‘X’ from Internet Explorer */
-input[type=search]::-ms-clear { display: none; width : 0; height: 0; }
-input[type=search]::-ms-reveal { display: none; width : 0; height: 0; }
+input[type=search]::-ms-clear {
+    display: none;
+    width: 0;
+    height: 0;
+}
+
+input[type=search]::-ms-reveal {
+    display: none;
+    width: 0;
+    height: 0;
+}
+
 /* clears the ‘X’ from Chrome */
 input[type="search"]::-webkit-search-decoration,
 input[type="search"]::-webkit-search-cancel-button,
 input[type="search"]::-webkit-search-results-button,
-input[type="search"]::-webkit-search-results-decoration { display: none; }
+input[type="search"]::-webkit-search-results-decoration {
+    display: none;
+}
 
 
 .form-action-search label.content-search-label {
@@ -130,7 +148,7 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
 
 .form-action-search .form-widget {
     background: var(--content-search-input-bg);
-    border: var(--bs-border-width) var(--bs-border-style) var(--border-tertiary-color)!important;
+    border: var(--bs-border-width) var(--bs-border-style) var(--border-tertiary-color) !important;
     max-width: 50%;
     padding: .5em;
 }
@@ -166,8 +184,8 @@ input#grid-search-input {
 }
 
 /*** FOOTER ***/
-footer.main { 
-    grid-area: 3 / 1 / 4 / 2; 
+footer.main {
+    grid-area: 3 / 1 / 4 / 2;
     background: var(--responsive-header-bg);
     box-shadow: inset 0 1px 0 var(--responsive-header-border-color);
 }
@@ -197,12 +215,12 @@ footer.main {
 
 /* ###### 6.6 Navbar  ###### */
 @media (max-width: 768px) {
-header.navbar.show {
-    position: absolute; 
-    width: 40%; 
-    z-index:9999; 
-    height: 100%;
-}
+    header.navbar.show {
+        position: absolute;
+        width: 40%;
+        z-index: 9999;
+        height: 100%;
+    }
 }
 
 .badge-project_task_priority_low {
@@ -211,7 +229,7 @@ header.navbar.show {
 }
 
 .badge-project_task_priority_normal {
-    background-color: #F5C400; 
+    background-color: #F5C400;
     color: #fff;
 }
 
@@ -223,5 +241,11 @@ header.navbar.show {
 
 /****** GENERAL *****/
 .form-control-lg {
-    border-radius: 0!important;
+    border-radius: 0 !important;
+}
+
+mark.gv-highlight {
+    background: #fff3cd;
+    color: inherit;
+    font-weight: bold;
 }

@@ -1,16 +1,14 @@
-
-<thead id="" class="filter" data="">
-    <tr class="">
-        {{ form_start(form) }}
+<thead {{ gridview.filterAttr|options }}>
+    <tr>
         {% for column in columns %}
-        <th class="">
-        {% if form[column.attribute] is defined %}
-                {{ form_widget(form[column.attribute], {'attr': {'class': 'foo'}}) }}
-        {% endif %}
+        <th>
+            {% if form[column.attribute] is defined %}
+                {{ form_widget(form[column.attribute], {
+                    'attr': {'data-action': 'input->gridview-filter#input'}
+                }) }}
+            {% endif %}
         </th>
         {% endfor %}
-        {{ form_widget(form.save) }}
-        {{ form_end(form) }}
-    </form>
+        <th>{{ form_widget(form.save) }}</th>
     </tr>
 </thead>

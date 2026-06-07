@@ -44,7 +44,7 @@ class SearchForm implements SearchFormInterface
             ]
         );
         $this->modelType = $formBuilder->getForm();
-        $this->modelType->add('save', SubmitType::class, ['attr' => ['class' => 'save']]);
+        $this->modelType->add('save', SubmitType::class, ['label' => 'Filter', 'attr' => ['class' => 'btn btn-primary btn-sm']]);
     }
 
     public function getFilters()

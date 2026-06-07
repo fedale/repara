@@ -1,0 +1,15 @@
+{% if form is defined and form is not null %}
+<thead {{ gridview.filterAttr|options }}>
+    <tr>
+        {% for column in columns %}
+        <th data-col="{{ loop.index0 }}"{% if not column.isVisible() %} style="display:none"{% endif %}>
+            {% if form[column.attribute] is defined %}
+                {{ form_widget(form[column.attribute], {
+                    'attr': {'data-action': 'input->gridview-filter#input'}
+                }) }}
+            {% endif %}
+        </th>
+        {% endfor %}
+    </tr>
+</thead>
+{% endif %}

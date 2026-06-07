@@ -51,7 +51,7 @@ class Gridview implements GridviewInterface
         'formName'     => 'myform',
         'layout'       => [
             'gridview'  => '{header} {table} {footer}',
-            'header'    => '{globalSearch}',
+            'header'    => '{globalSearch} {filterSubmit}',
             'toolbar'   => '',
             'table'     => null,
             'footer'    => '{pagination}',

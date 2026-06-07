@@ -380,6 +380,9 @@ Declare the DQL fields to search and add the `{globalSearch}` token to the heade
 The search field auto-submits with a 300 ms debounce via the `gridview-filter` Stimulus
 controller. Matched text is highlighted in the rendered rows with a `<mark>` element.
 
+When `useTurbo: false`, the auto-submit is disabled and a **Filter** button (`{filterSubmit}`)
+appears in the header so the user can submit the form manually.
+
 ---
 
 ## Layout System
@@ -391,7 +394,7 @@ placeholders that resolve to a Twig template file.
 
 ```
 gridview: "{header} {table} {footer}"
-header:   "{globalSearch}"
+header:   "{globalSearch} {filterSubmit}"
 table:    "{thead} {filter} {tbody} {tfoot}"    ← computed from showThead/showTfoot
 footer:   "{pagination}"
 toolbar:  ""                                    ← opt-in, empty by default
@@ -411,6 +414,7 @@ tfoot:    ""
 | `{tbody}` | `sections/tbody.html.twig` | Data rows |
 | `{tfoot}` | `sections/tfoot.html.twig` | Table footer row |
 | `{globalSearch}` | `sections/globalSearch.html.twig` | Global search input |
+| `{filterSubmit}` | `sections/filterSubmit.html.twig` | Filter submit button — visible only when `useTurbo: false` |
 | `{pagination}` | `sections/pagination.html.twig` | Page navigation |
 | `{addButton}` | `sections/addButton.html.twig` | "Add" link (requires `addRoute`) |
 | `{columnVisibility}` | `sections/columnVisibility.html.twig` | Column show/hide dropdown |
@@ -526,7 +530,7 @@ fedale_gridview:
       showTfoot:  true
       layout:
         gridview: "{header} {table} {footer}"
-        header:   "{globalSearch}"
+        header:   "{globalSearch} {filterSubmit}"
         footer:   "{pagination}"
     attributes:
       class: "table table-striped"

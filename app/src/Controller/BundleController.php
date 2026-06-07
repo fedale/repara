@@ -199,8 +199,7 @@ class BundleController extends AbstractController
         return $gridview->renderGrid('@FedaleGridview/gridview/index.html.twig', []);//, ['pagination' => $pagination]); //, 'form' => $form->createView()]);
     }
 
-    /* * @return GridviewBuilder */
-    public function createGridviewBuilder(): GridviewBuilder
+    public function createGridviewBuilder(): GridviewBuilderInterface
     {
         return $this->gridviewBuilderFactory->createGridviewBuilder();
     }

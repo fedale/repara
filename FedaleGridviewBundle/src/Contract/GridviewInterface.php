@@ -1,11 +1,9 @@
 <?php
 
-namespace Fedale\GridviewBundle\Grid;
+namespace Fedale\GridviewBundle\Contract;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Fedale\GridviewBundle\Column\ColumnInterface;
-use Fedale\GridviewBundle\Component\GridviewUrlState;
-use Fedale\GridviewBundle\DataProvider\DataProviderInterface;
+use Fedale\GridviewBundle\Grid\State\GridviewUrlState;
 use Symfony\Component\HttpFoundation\Response;
 
 interface GridviewInterface

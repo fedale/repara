@@ -1,7 +1,9 @@
-<?php 
-namespace Fedale\GridviewBundle\Service;
+<?php
 
-use Fedale\GridviewBundle\DataProvider\DataProviderInterface;
+namespace Fedale\GridviewBundle\Form;
+
+use Fedale\GridviewBundle\Contract\DataProviderInterface;
+use Fedale\GridviewBundle\Contract\SearchModelInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -22,5 +24,4 @@ class SearchModel implements SearchModelInterface
     }
 
     public function search(){}
-
 }

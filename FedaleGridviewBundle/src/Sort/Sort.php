@@ -1,8 +1,9 @@
 <?php
 
-namespace Fedale\GridviewBundle\Component;
+namespace Fedale\GridviewBundle\Sort;
 
 use Exception;
+use Fedale\GridviewBundle\Contract\SortInterface;
 use Fedale\GridviewBundle\Grid\Gridview;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
@@ -83,7 +84,7 @@ class Sort implements SortInterface
      */
     protected RouterInterface $router;
 
-    
+
     /**
      * Sort constructor.
      *
@@ -124,28 +125,42 @@ class Sort implements SortInterface
         $preparedAttributes = [];
 
         foreach ($this->attributes as $name => $sortData) {
-
             $attributeName = is_array($sortData) ? $name : $sortData;
 
-            $defaultAttributes = [
-                self::ASC => [$attributeName => self::ASC],
-                self::DESC => [$attributeName => self::DESC],
-            ];
-
             if (!is_array($sortData)) {
-
-                $preparedAttributes[$attributeName] = $defaultAttributes;
-            } else {
-                $preparedAttributes[$attributeName] = array_merge(
-                    $defaultAttributes,
-                    $sortData
-                );
+                $preparedAttributes[$attributeName] = [
+                    self::ASC  => [$attributeName => self::ASC],
+                    self::DESC => [$attributeName => self::DESC],
+                ];
+                continue;
             }
+
+            $asc  = isset($sortData[self::ASC])  ? $this->normalizeFields($sortData[self::ASC],  self::ASC)  : null;
+            $desc = isset($sortData[self::DESC]) ? $this->normalizeFields($sortData[self::DESC], self::DESC) : null;
+
+            if ($asc === null && $desc === null) {
+                $asc  = [$attributeName => self::ASC];
+                $desc = [$attributeName => self::DESC];
+            } elseif ($asc === null) {
+                $asc = array_fill_keys(array_keys($desc), self::ASC);
+            } elseif ($desc === null) {
+                $desc = array_fill_keys(array_keys($asc), self::DESC);
+            }
+
+            $preparedAttributes[$attributeName] = array_merge($sortData, [
+                self::ASC  => $asc,
+                self::DESC => $desc,
+            ]);
         }
 
         $this->attributes = $preparedAttributes;
 
         return $this->attributes;
+    }
+
+    private function normalizeFields(array $fields, string $dir): array
+    {
+        return array_is_list($fields) ? array_fill_keys($fields, $dir) : $fields;
     }
 
     /**
@@ -160,7 +175,7 @@ class Sort implements SortInterface
         $orders = [];
 
         foreach ($attributeOrders as $attribute => $sortType) {
-            
+
             $attributeSortData = $this->attributes[$attribute];
             $relatedAttributes = $attributeSortData[$sortType];
 
@@ -351,7 +366,6 @@ class Sort implements SortInterface
     {
         if (!isset($this->attributes[$attribute])) {
             throw new \Exception("Unknown sort attribute name: ".$attribute);
-            // throw new SortException("Unknown sort attribute name: ".$attribute);
         }
 
         $sortData = $this->attributes[$attribute];
@@ -456,5 +470,4 @@ class Sort implements SortInterface
         $this->defaultOrder = $defaultOrder;
         return $this;
     }
-
 }

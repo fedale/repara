@@ -19,8 +19,8 @@
         </service>
         <service id="Fedale\GridviewBundle\Service\GridviewService" alias="fedale_gridview.gridview_service"/>
 
-        
-        <service id="fedale_gridview.search_model" class="Fedale\GridviewBundle\Service\SearchModel">
+
+        <service id="fedale_gridview.search_model" class="Fedale\GridviewBundle\Form\SearchModel">
             <call method="setRequest">
                 <argument type="service" id="request_stack"/>
             </call>
@@ -28,20 +28,21 @@
                 <argument type="service" id="fedale_gridview.entity_data_provider"/>
             </call>
         </service>
-        <service id="Fedale\GridviewBundle\Service\SearchModelInterface" alias="fedale_gridview.search_model"/>
+        <service id="Fedale\GridviewBundle\Contract\SearchModelInterface" alias="fedale_gridview.search_model"/>
 
-        <service id="fedale_gridview.search_form" class="Fedale\GridviewBundle\Service\SearchForm">
+        <service id="fedale_gridview.search_form" class="Fedale\GridviewBundle\Form\SearchForm">
             <argument type="service" id="form.factory"/>
             <argument type="service" id="request_stack"/>
         </service>
-        <service id="Fedale\GridviewBundle\Service\SearchForm" alias="fedale_gridview.search_form"/>
+        <service id="Fedale\GridviewBundle\Form\SearchForm" alias="fedale_gridview.search_form"/>
+        <service id="Fedale\GridviewBundle\Contract\SearchFormInterface" alias="fedale_gridview.search_form"/>
 
         <service id="fedale_gridview.gridview" class="Fedale\GridviewBundle\Grid\Gridview">
             <argument type="service" id="twig"/>
             <argument type="service" id="fedale_gridview.gridview_service"/>
-            
+
         </service>
-        <service id="Fedale\GridviewBundle\Grid\GridviewInterface" alias="fedale_gridview.gridview"/>
+        <service id="Fedale\GridviewBundle\Contract\GridviewInterface" alias="fedale_gridview.gridview"/>
 
         <service id="fedale_gridview.config_registry" class="Fedale\GridviewBundle\Grid\GridviewConfigRegistry">
             <argument>%fedale_gridview.config%</argument>
@@ -57,7 +58,7 @@
             <argument type="service" id="fedale_gridview.column_factory"/>
         </service>
         <service id="Fedale\GridviewBundle\Grid\GridviewBuilder" alias="fedale_gridview.gridview_builder"/>
-        <service id="Fedale\GridviewBundle\Grid\GridviewBuilderInterface" alias="fedale_gridview.gridview_builder"/>
+        <service id="Fedale\GridviewBundle\Contract\GridviewBuilderInterface" alias="fedale_gridview.gridview_builder"/>
 
         <!--
         <service id="fedale_gridview.filter_model_type" class="Fedale\GridviewBundle\Form\FilterModelType">
@@ -80,7 +81,7 @@
             <argument type="service" id="fedale_gridview.column_factory"/>
         </service>
         <service id="Fedale\GridviewBundle\Grid\GridviewBuilderFactory" alias="fedale_gridview.builder_factory"/>
-                     
+
         <service id="fedale_gridview.entity_data_provider" class="Fedale\GridviewBundle\DataProvider\EntityDataProvider">
             <argument type="service" id="event_dispatcher"/>
             <argument type="service" id="doctrine.orm.default_entity_manager"/>
@@ -93,26 +94,26 @@
             </call>
             <call method="setSearchModel">
                 <argument type="service" id="fedale_gridview.search_model"/>
-            </call>    
+            </call>
         </service>
-        <service id="Fedale\GridviewBundle\DataProvider\DataProviderInterface" alias="fedale_gridview.entity_data_provider"/>
+        <service id="Fedale\GridviewBundle\Contract\DataProviderInterface" alias="fedale_gridview.entity_data_provider"/>
 
-        <service id="fedale_gridview.sort" class="Fedale\GridviewBundle\Component\Sort">     
+        <service id="fedale_gridview.sort" class="Fedale\GridviewBundle\Sort\Sort">
             <argument type="service" id="request_stack"/>
             <argument type="service" id="router.default"/>
         </service>
-        <service id="Fedale\GridviewBundle\Component\SortInterface" alias="fedale_gridview.sort"/>
-                     
-        <service id="fedale_gridview.pagination" class="Fedale\GridviewBundle\Component\Pagination">
+        <service id="Fedale\GridviewBundle\Contract\SortInterface" alias="fedale_gridview.sort"/>
+
+        <service id="fedale_gridview.pagination" class="Fedale\GridviewBundle\Pagination\Pagination">
             <argument type="service" id="request_stack"/>
         </service>
-        <service id="Fedale\GridviewBundle\Component\PaginationInterface" alias="fedale_gridview.pagination"/>
+        <service id="Fedale\GridviewBundle\Contract\PaginationInterface" alias="fedale_gridview.pagination"/>
 
         <service id="fedale_gridview.row_subscriber" class="Fedale\GridviewBundle\EventSubscriber\RowSubscriber">
             <tag name="kernel.event_subscriber"/>
         </service>
 
-        <service id="fedale_gridview.pagination_view" class="Fedale\GridviewBundle\Component\PaginationView">
+        <service id="fedale_gridview.pagination_view" class="Fedale\GridviewBundle\Pagination\PaginationView">
             <argument type="service" id="request_stack"/>
             <argument type="service" id="router"/>
         </service>

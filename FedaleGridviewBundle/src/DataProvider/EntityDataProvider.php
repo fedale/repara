@@ -10,7 +10,7 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Fedale\GridviewBundle\Component\Row;
+use Fedale\GridviewBundle\Row\Row;
 use Fedale\GridviewBundle\Event\RowEvent;
 
 class EntityDataProvider extends AbstractDataProvider

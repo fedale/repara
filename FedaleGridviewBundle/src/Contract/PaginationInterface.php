@@ -1,6 +1,6 @@
 <?php
 
-namespace Fedale\GridviewBundle\Component;
+namespace Fedale\GridviewBundle\Contract;
 
 interface PaginationInterface
 {

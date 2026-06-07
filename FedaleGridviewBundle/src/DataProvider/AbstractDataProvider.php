@@ -2,9 +2,10 @@
 
 namespace Fedale\GridviewBundle\DataProvider;
 
-use Fedale\GridviewBundle\Component\PaginationInterface;
-use Fedale\GridviewBundle\Component\SortInterface;
-use Fedale\GridviewBundle\Service\SearchModelInterface;
+use Fedale\GridviewBundle\Contract\DataProviderInterface;
+use Fedale\GridviewBundle\Contract\PaginationInterface;
+use Fedale\GridviewBundle\Contract\SearchModelInterface;
+use Fedale\GridviewBundle\Contract\SortInterface;
 
 abstract class AbstractDataProvider implements DataProviderInterface
 {

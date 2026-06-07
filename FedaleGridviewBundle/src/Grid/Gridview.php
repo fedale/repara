@@ -5,12 +5,13 @@ namespace Fedale\GridviewBundle\Grid;
 use Doctrine\Common\Collections\ArrayCollection;
 use Fedale\GridviewBundle\Column\CheckboxColumn;
 use Fedale\GridviewBundle\Column\ColumnFactory;
-use Fedale\GridviewBundle\Column\ColumnInterface;
-use Fedale\GridviewBundle\Component\GridviewUrlState;
-use Fedale\GridviewBundle\DataProvider\DataProviderInterface;
+use Fedale\GridviewBundle\Contract\ColumnInterface;
+use Fedale\GridviewBundle\Contract\DataProviderInterface;
+use Fedale\GridviewBundle\Contract\GridviewInterface;
+use Fedale\GridviewBundle\Contract\SearchFormInterface;
+use Fedale\GridviewBundle\Contract\SearchModelInterface;
+use Fedale\GridviewBundle\Grid\State\GridviewUrlState;
 use Fedale\GridviewBundle\Service\GridviewService;
-use Fedale\GridviewBundle\Service\SearchFormInterface;
-use Fedale\GridviewBundle\Service\SearchModelInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\Environment;
 

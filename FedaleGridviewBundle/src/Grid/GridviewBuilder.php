@@ -2,7 +2,8 @@
 namespace Fedale\GridviewBundle\Grid;
 
 use Fedale\GridviewBundle\Column\ColumnFactory;
-use Fedale\GridviewBundle\Service\SearchModelInterface;
+use Fedale\GridviewBundle\Contract\GridviewBuilderInterface;
+use Fedale\GridviewBundle\Contract\SearchModelInterface;
 use Fedale\GridviewBundle\Service\GridviewService;
 
 class GridviewBuilder implements GridviewBuilderInterface

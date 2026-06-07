@@ -2,7 +2,7 @@
 
 namespace Fedale\GridviewBundle\Event;
 
-use Fedale\GridviewBundle\Component\Row;
+use Fedale\GridviewBundle\Row\Row;
 use Symfony\Contracts\EventDispatcher\Event;
 
 class RowEvent extends Event

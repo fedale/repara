@@ -8,13 +8,15 @@ use App\Entity\Customer\CustomerType as CustomerCustomerType;
 use App\Form\Customer\CustomerRegistrationType;
 use App\Form\Customer\CustomerType;
 use App\Form\Model\CustomerCreateModel;
-use Fedale\GridviewBundle\Column\ColumnInterface;
-use Fedale\GridviewBundle\Component\Pagination;
+use Fedale\GridviewBundle\Contract\ColumnInterface;
+use Fedale\GridviewBundle\Contract\DataProviderInterface;
+use Fedale\GridviewBundle\Contract\GridviewBuilderInterface;
+use Fedale\GridviewBundle\Contract\PaginationInterface;
+use Fedale\GridviewBundle\Contract\SortInterface;
 use Fedale\GridviewBundle\DataProvider\EntityDataProvider;
-use Fedale\GridviewBundle\Grid\Gridview;
-use Fedale\GridviewBundle\Grid\GridviewBuilder;
 use Fedale\GridviewBundle\Grid\GridviewBuilderFactory;
-use Fedale\GridviewBundle\Source\Entity as SourceEntity;
+use Fedale\GridviewBundle\Pagination\Pagination;
+use Fedale\GridviewBundle\Sort\Sort;
 use App\Service\ProxyFilter;
 use App\Type\CustomerGridType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -24,13 +26,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManager;
-use Fedale\GridviewBundle\Component\PaginationInterface;
-use Fedale\GridviewBundle\Component\Sort;
-use Fedale\GridviewBundle\Component\SortInterface;
-use Fedale\GridviewBundle\DataProvider\DataProviderInterface;
-use Fedale\GridviewBundle\Form\FilterModelType;
-use Fedale\GridviewBundle\Grid\GridviewBuilderInterface;
-use Fedale\GridviewBundle\Service\FilterModel;
 
 #[Route('/new-customer')]
 class NewCustomerController extends AbstractController
@@ -56,34 +51,33 @@ class NewCustomerController extends AbstractController
 
         $sortAttributes = [
             'id' => [
-                'asc' => ['c.id' => Sort::ASC],
-                'desc' => ['c.id' => Sort::DESC],
-                'default' => Sort::DESC,
+                'asc'     => ['c.id'],
+                'desc'    => ['c.id'],
+                'default' => 'desc',
             ],
             'code' => [
-                'asc' => ['c.code' => Sort::ASC],
-                'desc' => ['c.code' => Sort::DESC],
-                'default' => Sort::DESC,
+                'asc'     => ['c.code'],
+                'desc'    => ['c.code'],
+                'default' => 'desc',
             ],
             'E-Mail' => [
-                'asc' => ['c.email' => Sort::ASC],
-                'desc' => ['c.email' => Sort::DESC],
-                'default' => Sort::DESC,
-                'label' => 'IDDDD',
+                'asc'     => ['c.email'],
+                'desc'    => ['c.email'],
+                'default' => 'desc',
+                'label'   => 'IDDDD',
             ],
             'Fullname' => [
-                'asc' => ['p.firstname' => Sort::ASC, 'p.lastname' => Sort::ASC],
-                'desc' => ['p.firstname' => Sort::DESC, 'p.lastname' => Sort::DESC],
-                'default' => ['p.firstname' => Sort::ASC, 'p.lastname' => Sort::ASC],
-                'label' => 'mylabel',
+                'asc'     => ['p.firstname', 'p.lastname'],
+                'desc'    => ['p.firstname', 'p.lastname'],
+                'default' => 'asc',
+                'label'   => 'mylabel',
             ],
             '#' => [
-                'asc' => ['c.email' => Sort::ASC],
-                'desc' => ['c.email' => Sort::DESC],
-                'default' => Sort::DESC,
-                'label' => 'IDDDD',
+                'asc'     => ['c.email'],
+                'desc'    => ['c.email'],
+                'default' => 'desc',
+                'label'   => 'IDDDD',
             ],
-
         ];
 
         /**

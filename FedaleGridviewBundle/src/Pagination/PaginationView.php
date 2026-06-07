@@ -1,11 +1,11 @@
 <?php
 
-namespace Fedale\GridviewBundle\Component;
+namespace Fedale\GridviewBundle\Pagination;
 
+use Fedale\GridviewBundle\Contract\PaginationInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\RequestStack;
-//use Tinustester\Bundle\GridviewBundle\Exception\PaginationException;
 
 // Prefer this solution!
 // https://gist.github.com/Naskalin/6306172b8081813ea213099a4d16019a
@@ -139,7 +139,6 @@ class PaginationView
      * Render pagination block.
      *
      * @return string
-     * @ throws PaginationException
      * @throws \Exception
      */
     public function renderPageButtons(): string
@@ -212,7 +211,6 @@ class PaginationView
             );
         }
 
-        // return '<ul ' . $this->html->prepareTagAttributes($this->options) . '>'
         return '<ul>'
             . implode("\n", $buttons)
             . '</ul>';
@@ -228,7 +226,6 @@ class PaginationView
      * @param bool $active
      *
      * @return string
-     * @throws PaginationException
      */
     protected function createPageButton(string $label, int $page, ?string $class, bool $disabled, bool $active): string
     {
@@ -253,7 +250,6 @@ class PaginationView
             );
         }
 
-        // $link = '<a '.$this->html->prepareTagAttributes($linkOptions).' href="'
         $link = '<a href="'
             .$this->createButtonLink($page, $this->pagination->getPageSize())
             .'">';
@@ -271,7 +267,6 @@ class PaginationView
      * @param bool $absoluteUrl
      *
      * @return string
-     * @throws PaginationException
      */
     public function createButtonLink(int $pageIndex, int $pageSize, bool $absoluteUrl = true): string
     {
@@ -325,7 +320,7 @@ class PaginationView
     }
 
     /**
-     * @param Pagination $pagination
+     * @param PaginationInterface $pagination
      *
      * @return $this
      */

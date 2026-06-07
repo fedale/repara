@@ -1,6 +1,6 @@
-<?php 
+<?php
 
-namespace Fedale\GridviewBundle\Component;
+namespace Fedale\GridviewBundle\Row;
 
 class Cell
 {

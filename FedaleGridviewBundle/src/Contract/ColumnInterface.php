@@ -1,6 +1,6 @@
 <?php
 
-namespace Fedale\GridviewBundle\Column;
+namespace Fedale\GridviewBundle\Contract;
 
 use Fedale\GridviewBundle\Grid\Gridview;
 

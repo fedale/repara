@@ -2,6 +2,7 @@
 
 namespace Fedale\GridviewBundle\Column;
 
+use Fedale\GridviewBundle\Contract\ColumnInterface;
 use Fedale\GridviewBundle\Grid\Gridview;
 
 class ColumnFactory

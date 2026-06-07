@@ -1,12 +1,12 @@
 <?php
-namespace Fedale\GridviewBundle\Service;
 
+namespace Fedale\GridviewBundle\Form;
+
+use Fedale\GridviewBundle\Contract\SearchFormInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormBuilderInterface;
-use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\QueryBuilder;
-use Fedale\GridviewBundle\DataProvider\EntityDataProvider;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Form;
@@ -17,7 +17,7 @@ use Symfony\Component\Uid\Uuid;
 
 class SearchForm implements SearchFormInterface
 {
-    
+
     private Form $modelType;
 
     private Criteria $criteria;
@@ -28,19 +28,18 @@ class SearchForm implements SearchFormInterface
 
     public function __construct(
         private FormFactoryInterface $formFactory,
-        private RequestStack $requestStack, 
-        private EntityDataProvider $entityDataProvider
+        private RequestStack $requestStack
     ) {
         $this->filters = new ArrayCollection();
 
         // name, method, action and so on must be passed as argument!
         $formBuilder = $this->formFactory->createNamedBuilder(
-            'myform', 
-            FormType::class, 
-            null, 
+            'myform',
+            FormType::class,
+            null,
             [
-                'method' => 'get', 
-                'action' => '', 
+                'method' => 'get',
+                'action' => '',
                 'required' => false
             ]
         );
@@ -66,9 +65,8 @@ class SearchForm implements SearchFormInterface
     public function addFilter(string $name, string $type, array $options)
     {
         $name = str_replace('.', '_', $name);
-        $class = "Fedale\\GridviewBundle\\FilterType\\Filter" . ucfirst($type) . 'Type';
+        $class = "Fedale\\GridviewBundle\\Filter\\Filter" . ucfirst($type) . 'Type';
         $this->modelType->add($name, $class, $options);
-        //$this->filters->add($filter => );
     }
 
     public function getCriteria(): Criteria|null
@@ -76,7 +74,7 @@ class SearchForm implements SearchFormInterface
         return $this->criteria ?? null;
     }
 
-    public function setCriteria(Criteria $criteria) 
+    public function setCriteria(Criteria $criteria)
     {
         $this->criteria = $criteria;
     }
@@ -91,29 +89,19 @@ class SearchForm implements SearchFormInterface
         return $this->modelType;
     }
 
-    /*
-    public function andFilterWhere(QueryBuilder $qb, string $operator, string $attribute, string $param)
-    {
-        //$qb->expr()->andX($attribute, 'param');
-        $qb->andWhere(
-            $qb->expr()->like($attribute, ':param')
-        );
-        $qb->setParameter(':param', '%' . $param . '%');
-    } */
-
     public function andFilterWhere()
     {
         $condition = false;
         $args = func_get_args();
         $qb = $args[0];
         unset($args[0]);
-        $baseParam = \uniqid(); //'uuid';//Uuid::v4();
+        $baseParam = \uniqid();
 
         if ( in_array($args[1], ['or', 'and']) ) {
             $condition = $args[1];
             unset($args[1]);
-        }        
-        
+        }
+
         $newArgs = [];
         $c = 0;
         foreach ($args as $arg) {
@@ -121,21 +109,21 @@ class SearchForm implements SearchFormInterface
             $operator = $arg[0];
             $attribute = $arg[1];
             $param = trim($arg[2]);
-            $newArgs[] = $this->searchWithOperator($qb, $operator, $attribute, $param); //$qb->expr()->like($arg[1], ':' . $param);
-            
+            $newArgs[] = $this->searchWithOperator($qb, $operator, $attribute, $param);
+
             $c++;
         }
-        
+
         if ($condition == 'or') {
             $qb->andWhere(
                 \call_user_func_array([$qb->expr(), 'orX'], $newArgs)
             );
-            
+
         } else {
             \call_user_func_array([$qb, 'andWhere'], $newArgs);
         }
         $newArgs = [];
-    } 
+    }
 
     public function orFilterWhere()
     {
@@ -143,13 +131,13 @@ class SearchForm implements SearchFormInterface
         $args = func_get_args();
         $qb = $args[0];
         unset($args[0]);
-        $baseParam = \uniqid(); //'uuid';//Uuid::v4();
+        $baseParam = \uniqid();
 
         if ( in_array($args[1], ['or', 'and']) ) {
             $condition = $args[1];
             unset($args[1]);
-        }        
-        
+        }
+
         $newArgs = [];
         $c = 0;
         foreach ($args as $arg) {
@@ -157,21 +145,21 @@ class SearchForm implements SearchFormInterface
             $operator = $arg[0];
             $attribute = $arg[1];
             $param = trim($arg[2]);
-            $newArgs[] = $this->searchWithOperator($qb, $operator, $attribute, $param); //$qb->expr()->like($arg[1], ':' . $param);
-            
+            $newArgs[] = $this->searchWithOperator($qb, $operator, $attribute, $param);
+
             $c++;
         }
-        
+
         if ($condition == 'and') {
             $qb->andWhere(
                 \call_user_func_array([$qb->expr(), 'andX'], $newArgs)
             );
-            
+
         } else {
             \call_user_func_array([$qb, 'orWhere'], $newArgs);
         }
         $newArgs = [];
-    } 
+    }
 
     public function searchWithOperator(QueryBuilder $qb, string $operator, string $attribute, string $param) {
         $search = match($operator) {
@@ -181,8 +169,8 @@ class SearchForm implements SearchFormInterface
             'ineq', '!=' => $this->ineq($qb, $attribute, $param),
             'gt', '>' => $this->gt($qb, $attribute, $param),
             'gte', '>=' => $this->gte($qb, $attribute, $param),
-            'lt', '>' => $this->lt($qb, $attribute, $param),
-            'lte', '>=' => $this->lte($qb, $attribute, $param),
+            'lt', '<' => $this->lt($qb, $attribute, $param),
+            'lte', '<=' => $this->lte($qb, $attribute, $param),
             'btw', 'between' => $this->between($qb, $attribute, $param),
             'like', '%' => $this->like($qb, $attribute, $param),
             'ilike' => $this->ilike($qb, $attribute, $param),
@@ -216,8 +204,8 @@ class SearchForm implements SearchFormInterface
             'ineq', '!=' => $this->ineq($qb, $attribute, $searchTerm),
             'gt', '>' => $this->gt($qb, $attribute, $searchTerm),
             'gte', '>=' => $this->gte($qb, $attribute, $searchTerm),
-            'lt', '>' => $this->lt($qb, $attribute, $searchTerm),
-            'lte', '>=' => $this->lte($qb, $attribute, $searchTerm),
+            'lt', '<' => $this->lt($qb, $attribute, $searchTerm),
+            'lte', '<=' => $this->lte($qb, $attribute, $searchTerm),
             'btw', 'between' => $this->between($qb, $attribute, $searchTerm),
             'like', '%' => $this->like($qb, $attribute, $searchTerm),
             'ilike' => $this->ilike($qb, $attribute, $searchTerm),
@@ -251,7 +239,7 @@ class SearchForm implements SearchFormInterface
             'notstartwith', '!-%',
             'istartwith',
             'notistartwith',
-            'endwith', '%-', 
+            'endwith', '%-',
             'slike', '',
             'nslike', '',
             'rslike', '',
@@ -269,7 +257,7 @@ class SearchForm implements SearchFormInterface
         if (in_array(strtolower($token), $this->getOperators())) {
             return true;
         }
-        
+
         return false;
     }
 
@@ -336,29 +324,28 @@ class SearchForm implements SearchFormInterface
     {
         return $qb->expr()->like($attribute, $qb->expr()->literal('%' . $searchTerm . '%'));
     }
-    
+
     private function ilike(QueryBuilder $qb, string $attribute, string $searchTerm)
     {
         return $qb->expr()->like(
-            $qb->expr()->lower($attribute), 
+            $qb->expr()->lower($attribute),
             $qb->expr()->literal('%' . strtolower($searchTerm) . '%')
-        );      
+        );
     }
 
     private function notLike(QueryBuilder $qb, string $attribute, string $searchTerm)
     {
         return $qb->andWhere($qb->expr()->notLike(
-            $attribute, 
+            $attribute,
             $qb->expr()->literal('%' . $searchTerm . '%')
         ));
-        //$qb->setParameter(':param', '%' . $searchTerm . '%');
     }
-    
+
     private function notIlike(QueryBuilder $qb, string $attribute, string $searchTerm)
     {
         $qb->andWhere(
             $qb->expr()->notLike(
-                $qb->expr()->lower($attribute), 
+                $qb->expr()->lower($attribute),
                 ':param'
             )
             );
@@ -374,7 +361,7 @@ class SearchForm implements SearchFormInterface
     private function iStartWith(QueryBuilder $qb, string $attribute, string $searchTerm)
     {
         $qb->andWhere($qb->expr()->like(
-                $qb->expr()->lower($attribute), 
+                $qb->expr()->lower($attribute),
                 ':param'
             )
         );
@@ -383,7 +370,7 @@ class SearchForm implements SearchFormInterface
 
     private function endWith(QueryBuilder $qb, string $attribute, string $searchTerm)
     {
-        $qb->andWhere($qb->expr()->notLike($attribute, ':param'));
+        $qb->andWhere($qb->expr()->like($attribute, ':param'));
         $qb->setParameter(':param', '%' . $searchTerm);
     }
 
@@ -392,29 +379,4 @@ class SearchForm implements SearchFormInterface
     {
         $this->ilike($qb, $attribute, $searchTerm);
     }
-    
-
-} 
-/**
- *  const OPERATOR_EQ = 'eq'; OK
- *  const OPERATOR_NEQ = 'neq'; OK
- *  const OPERATOR_LT = 'lt'; OK
- *  const OPERATOR_LTE = 'lte';OK
- *  const OPERATOR_GT = 'gt';OK
- *  const OPERATOR_GTE = 'gte';OK
- *  const OPERATOR_BTW = 'btw';
- *  const OPERATOR_BTWE = 'btwe';
- *  const OPERATOR_LIKE = 'like';
- *  const OPERATOR_NLIKE = 'nlike';
- *  const OPERATOR_RLIKE = 'rlike';
- *  const OPERATOR_LLIKE = 'llike';
- *  const OPERATOR_SLIKE = 'slike'; //simple/strict LIKE
- *  const OPERATOR_NSLIKE = 'nslike';
- *  const OPERATOR_RSLIKE = 'rslike';
- *  const OPERATOR_LSLIKE = 'lslike';
- * 
- * ISNULL
- * ISNOTNULL
- * IN
- * NOTIN
- */
+}

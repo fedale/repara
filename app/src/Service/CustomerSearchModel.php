@@ -1,8 +1,8 @@
 <?php 
 namespace App\Service;
 
-use Fedale\GridviewBundle\Service\SearchModel;
-use Fedale\GridviewBundle\Service\SearchModelInterface;
+use Fedale\GridviewBundle\Form\SearchModel;
+use Fedale\GridviewBundle\Contract\SearchModelInterface;
 
 class CustomerSearchModel extends SearchModel
 {

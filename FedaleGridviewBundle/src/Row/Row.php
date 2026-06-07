@@ -1,9 +1,10 @@
-<?php 
-namespace Fedale\GridviewBundle\Component;
+<?php
+
+namespace Fedale\GridviewBundle\Row;
 
 class Row
 {
-    public array $data = []; 
+    public array $data = [];
 
     public array $attr = [];
 
@@ -25,10 +26,10 @@ class Row
         if ($i % 2 == 0) {
             $this->setAttr('class', 'even');
         } else {
-            $this->setAttr('class', 'odd');  
+            $this->setAttr('class', 'odd');
         }
     }
-    
+
     public function setAttr(string $key, string $value, $replace = false)
     {
         if (!isset($this->attr[$key])) {

@@ -1,10 +1,10 @@
 <?php
 
-namespace Fedale\GridviewBundle\Component;
+namespace Fedale\GridviewBundle\Pagination;
 
+use Fedale\GridviewBundle\Contract\PaginationInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-//use Tinustester\Bundle\GridviewBundle\Exception\PaginationException;
 
 class Pagination implements PaginationInterface
 {
@@ -87,7 +87,7 @@ class Pagination implements PaginationInterface
     public function prepareAttributes(): void
     {
         $attributes = $this->attributes;
-        
+
         $this->pageParam  = $attributes['pageParam'] ?? $this->pageParam;
         $this->pageSizeParam  = $attributes['pageSizeParam'] ?? $this->pageSizeParam;
         $this->defaultPageSize  = $attributes['defaultPageSize'] ?? $this->defaultPageSize;
@@ -117,7 +117,7 @@ class Pagination implements PaginationInterface
      *
      * @return int the zero-based current page number.
      */
-    public function getCurrentPage()
+    public function getCurrentPage(): int
     {
         if (!isset($this->currentPage)) {
             $currentPage = (int)$this->request->get($this->pageParam, 1) - 1;
@@ -151,7 +151,7 @@ class Pagination implements PaginationInterface
         if ($pageNumber >= $totalPageCount) {
             $pageNumber = $totalPageCount - 1;
         }
-        
+
         $this->currentPage = $pageNumber;
 
         return $this;
@@ -163,7 +163,6 @@ class Pagination implements PaginationInterface
      * be used.
      *
      * @return int
-     * @throws PaginationException
      */
     public function getPageSize(): ?int
     {
@@ -204,7 +203,6 @@ class Pagination implements PaginationInterface
      * Fetch current route name.
      *
      * @return string
-     * @ throws PaginationException
      * @throws \Exception
      */
     public function getRoute(): string
@@ -218,12 +216,11 @@ class Pagination implements PaginationInterface
 
     /**
      * @return int Get offset value that can be used in data source query.
-     * @ throws PaginationException
      * @throws \Exception
      */
     public function getOffset(): int
     {
-        $pageSize = $this->getPageSize();   
+        $pageSize = $this->getPageSize();
         $offset = $pageSize < 1 ? 0 : $this->getCurrentPage() * $pageSize;
 
         return $offset;
@@ -231,7 +228,6 @@ class Pagination implements PaginationInterface
 
     /**
      * @return int Get limit value that can be used in data source query.
-     * @ throws PaginationException
      * @throws \Exception
      */
     public function getLimit(): int
@@ -274,13 +270,12 @@ class Pagination implements PaginationInterface
     /**
      * Set total number of items.
      *
-     * @param int $totalCount
+     * @param int|float $totalCount
      *
      * @return $this
-     * @ throws PaginationException
      * @throws \Exception
      */
-    public function setTotalCount($totalCount)
+    public function setTotalCount(int|float $totalCount): static
     {
         if (!is_numeric($totalCount)) {
             throw new \Exception(
@@ -301,7 +296,6 @@ class Pagination implements PaginationInterface
      * @param string $route Route name.
      *
      * @return $this
-     * @ throws PaginationException
      * @throws \Exception
      */
     public function setRoute($route)
@@ -322,7 +316,6 @@ class Pagination implements PaginationInterface
      * @param int $defaultPageSize
      *
      * @return $this
-     * @ throws PaginationException
      * @throws \Exception
      */
     public function setDefaultPageSize($defaultPageSize)
@@ -344,7 +337,6 @@ class Pagination implements PaginationInterface
      * @param string $pageSizeParam
      *
      * @return $this
-     * @ throws PaginationException
      * @throws \Exception
      */
     public function setPageSizeParam($pageSizeParam)
@@ -366,7 +358,6 @@ class Pagination implements PaginationInterface
      * @param string $pageParam
      *
      * @return $this
-     * @ throws PaginationException
      * @throws \Exception
      */
     public function setPageParam($pageParam)
@@ -374,8 +365,7 @@ class Pagination implements PaginationInterface
         if (!is_string($pageParam)) {
             throw new \Exception(
                 'The expected type of the '.Pagination::class
-                .' page param name is a string. '.gettype($pageParam)
-                .' given.'
+                .' page param name is a string. '.gettype($pageParam).' given.'
             );
         }
 

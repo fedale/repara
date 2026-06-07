@@ -3,15 +3,13 @@
 namespace App\Controller;
 
 use App\Service\CustomerSearchModel;
-use Fedale\GridviewBundle\Column\ColumnInterface;
+use Fedale\GridviewBundle\Contract\ColumnInterface;
+use Fedale\GridviewBundle\Contract\GridviewBuilderInterface;
 use Fedale\GridviewBundle\Grid\GridviewBuilderFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Fedale\GridviewBundle\Component\Sort;
-use Fedale\GridviewBundle\Grid\GridviewBuilderInterface;
-use \Fedale\GridviewBundle\Grid\Gridviewbuilder;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 
@@ -40,31 +38,31 @@ class BundleController extends AbstractController
 
         $sortAttributes = [
             'id' => [
-                'asc' => ['c.id' => Sort::ASC],
-                'desc' => ['c.id' => Sort::DESC],
-                'default' => Sort::DESC,
+                'asc' => ['c.id'],
+                'desc' => ['c.id'],
+                'default' => 'desc',
             ],
             'code' => [
-                'asc' => ['c.code' => Sort::ASC],
-                'desc' => ['c.code' => Sort::DESC],
-                'default' => Sort::DESC,
+                'asc' => ['c.code'],
+                'desc' => ['c.code'],
+                'default' => 'desc',
             ],
             'E-Mail' => [
-                'asc' => ['c.email' => Sort::ASC],
-                'desc' => ['c.email' => Sort::DESC],
-                'default' => Sort::DESC,
+                'asc' => ['c.email'],
+                'desc' => ['c.email'],
+                'default' => 'desc',
                 'label' => 'IDDDD',
             ],
             'Fullname' => [
-                'asc' => ['p.firstname' => Sort::ASC, 'p.lastname' => Sort::ASC],
-                'desc' => ['p.firstname' => Sort::DESC, 'p.lastname' => Sort::DESC],
-                'default' => ['p.firstname' => Sort::ASC, 'p.lastname' => Sort::ASC],
+                'asc' => ['p.firstname', 'p.lastname'],
+                'desc' => ['p.firstname', 'p.lastname'],
+                'default' => 'asc',
                 'label' => 'mylabel',
             ],
             '#' => [
-                'asc' => ['c.email' => Sort::ASC],
-                'desc' => ['c.email' => Sort::DESC],
-                'default' => Sort::DESC,
+                'asc' => ['c.email'],
+                'desc' => ['c.email'],
+                'default' => 'desc',
                 'label' => 'IDDDD',
             ],
         ];
@@ -133,7 +131,8 @@ class BundleController extends AbstractController
                 'twigFilter' => "join(', ', ' and ')|raw",
                 'filter' => [
                     'type' => 'text',
-                ]
+                ],
+                'visible' => false
             ],
             [
                 'attribute' => 't.name',
@@ -173,7 +172,12 @@ class BundleController extends AbstractController
         /* * @var Gridview $gridview */
         $gridview = $this->createGridviewBuilder()
             ->setSearchModel($this->customerSearchModel)
-            ->setOptions(['globalSearch' => ['c.code', 'c.email']])
+            ->setOptions([
+                'layout' => [
+                    'gridview' => '{toolbar} {header} {table} {footer}',
+                    'toolbar'  => '{columnVisibility}',
+                ],
+            ])
             ->setAttributes([
                 'class' => 'table table-dark',
                 'row' => [
@@ -195,8 +199,7 @@ class BundleController extends AbstractController
         return $gridview->renderGrid('@FedaleGridview/gridview/index.html.twig', []);//, ['pagination' => $pagination]); //, 'form' => $form->createView()]);
     }
 
-    /* * @return GridviewBuilder */
-    public function createGridviewBuilder(): GridviewBuilder
+    public function createGridviewBuilder(): GridviewBuilderInterface
     {
         return $this->gridviewBuilderFactory->createGridviewBuilder();
     }

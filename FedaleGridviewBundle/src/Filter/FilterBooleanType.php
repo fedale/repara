@@ -1,5 +1,6 @@
-<?php 
-namespace Fedale\GridviewBundle\FilterType;
+<?php
+
+namespace Fedale\GridviewBundle\Filter;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -14,7 +15,6 @@ class FilterBooleanType extends AbstractType
                 'label.true' => true,
                 'label.false' => false,
             ],
-         //   'expanded' => true,
             'translation_domain' => 'GridviewBundle',
             'label_attr' => ['class' => 'radio-inline'],
         ]);

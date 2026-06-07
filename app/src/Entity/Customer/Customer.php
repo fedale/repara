@@ -80,7 +80,7 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
     private $groups;
 
     #[ORM\ManyToMany(targetEntity: CustomerRole::class, inversedBy: 'customers')]
-    #[ORM\JoinTable(name: 'customer_role_assigned', joinColumns: [new ORM\JoinColumn(name: 'customer_id', referencedColumnName: 'id')], inverseJoinColumns: [new ORM\JoinColumn(name: 'role_id', referencedColumnName: 'id')])]
+    #[ORM\JoinTable(name: 'customer_role_assigned', joinColumns: [new ORM\JoinColumn(name: 'customer_id', referencedColumnName: 'id')], inverseJoinColumns: [new ORM\JoinColumn(name: 'customer_role_id', referencedColumnName: 'id')])]
     #[Ignore]
     #[MaxDepth(1)]
     private $roles;

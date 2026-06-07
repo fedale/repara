@@ -3,8 +3,8 @@
 namespace Fedale\GridviewBundle\Twig;
 
 use Exception;
-use Fedale\GridviewBundle\Component\PaginationInterface;
-use Fedale\GridviewBundle\Component\PaginationView;
+use Fedale\GridviewBundle\Contract\PaginationInterface;
+use Fedale\GridviewBundle\Pagination\PaginationView;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 

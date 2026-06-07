@@ -1,37 +1,43 @@
-<?php 
+<?php
+
 namespace Fedale\GridviewBundle\Column;
 
 use Fedale\GridviewBundle\Grid\Gridview;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-class ActionColumn extends AbstractColumn {
-    
-    public $buttons = [];
+class ActionColumn extends AbstractColumn
+{
+    public array $buttons = [];
 
-    /**
-     * Object to generate URLs
-     */
     private UrlGeneratorInterface $urlGenerator;
 
-    public function __construct (
+    public function __construct(
         private Gridview $gridview,
         private string $attribute,
         protected ?string $twigFilter = null,
         protected ?string $label = null,
         protected ?array $options = [],
-        
-    ) { 
+    ) {
         if (null === $this->label) {
             $this->setLabel($attribute);
         }
-        // Columns 'action' type is raw by default
-        $this->setTwigfilter('raw');
+        $this->setTwigFilter('raw');
         $this->initDefaultButtons();
     }
 
-    public function setRouter(UrlGeneratorInterface $urlGenerator)
+    public function initColumn(): void
+    {
+        $this->label = 'Action';
+    }
+
+    public function setRouter(UrlGeneratorInterface $urlGenerator): void
     {
         $this->urlGenerator = $urlGenerator;
+    }
+
+    public function isToggleable(): bool
+    {
+        return false;
     }
 
     public function getAttribute(): string
@@ -39,39 +45,25 @@ class ActionColumn extends AbstractColumn {
         return $this->attribute;
     }
 
-    public function initColumn()
+    private function initDefaultButtons(): void
     {
-        $this->label = 'Action';      
-    }
-
-    private function initDefaultButtons() {
         $this->initDefaultButton('view');
         $this->initDefaultButton('update');
         $this->initDefaultButton('delete');
     }
 
-    private function initDefaultButton(string $name,  array $options = null) {
-
-        // $link = $this->urlGenerator->generate('user_profile', [
-        //     'username' => 'zitter',
-        // ]);
-
+    private function initDefaultButton(string $name, ?array $_options = null): void
+    {
         $this->buttons[$name] = '<a href="' . $name . '">' . $name . '</a>';
     }
 
-    public function render($model, $index)
+    public function render(mixed $_model, int $_index): mixed
     {
-        $content = '';
-        foreach ($this->buttons as $button) {
-            $content .=  $button;
-        }
-
-        return $content;
+        return implode('', $this->buttons);
     }
 
-    public function renderHeader($label): string
+    public function renderHeader(mixed $_label): string
     {
-        return 'renderHeader Label';
+        return $this->label ?? '';
     }
-
 }

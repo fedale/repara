@@ -3,34 +3,28 @@
 namespace Fedale\GridviewBundle\EventSubscriber;
 
 use Fedale\GridviewBundle\Event\RowEvent;
-use Fedale\GridviewBundle\Grid\Gridviewinterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
 class RowSubscriber implements EventSubscriberInterface
 {
-    // public function __construct(private Gridviewinterface $gridview) {}
-
-    // Returns an array indexed by event name and value by method name to call
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             RowEvent::BEFORE_ROW => 'onBeforeRow',
-            RowEvent::AFTER_ROW => 'onAfterRow',
+            RowEvent::AFTER_ROW  => 'onAfterRow',
         ];
     }
 
-    public function onBeforeRow(RowEvent $event)
+    public function onBeforeRow(RowEvent $event): void
     {
-        $model = $event->row->data;
-        if ($model['id'] % 2 === 0) {
+        if (($event->row->data['id'] ?? null) !== null && $event->row->data['id'] % 2 === 0) {
             $event->row->setAttr('class', 'randomClass');
-            $event->model['email'] = 'Email from onBeforeRow';
         }
     }
 
-    public function onAfterRow(RowEvent $event)
+    public function onAfterRow(RowEvent $event): void
     {
-        $event->model['email'] = 'Email from onAfterRow';
+        // Example: override a field after row is added to the collection.
+        // $event->row->data['email'] = 'overridden@example.com';
     }
 }

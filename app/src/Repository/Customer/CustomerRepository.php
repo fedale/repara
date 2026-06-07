@@ -5,7 +5,7 @@ namespace App\Repository\Customer;
 use App\Entity\Customer\Customer;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Fedale\GridviewBundle\Service\SearchForm;
+use Fedale\GridviewBundle\Form\SearchForm;
 
 /**
  * @extends ServiceEntityRepository<Customer>

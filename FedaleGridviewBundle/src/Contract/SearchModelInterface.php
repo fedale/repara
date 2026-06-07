@@ -1,5 +1,6 @@
-<?php 
-namespace Fedale\GridviewBundle\Service;
+<?php
+
+namespace Fedale\GridviewBundle\Contract;
 
 interface SearchModelInterface
 {

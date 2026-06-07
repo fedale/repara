@@ -1,9 +1,8 @@
 <?php
 namespace Fedale\GridviewBundle\Service;
 
-use Fedale\GridviewBundle\DataProvider\DataProviderInterface;
-use Fedale\GridviewBundle\Service\SearchForm;
-use Fedale\GridviewBundle\Service\SearchFormInterface;
+use Fedale\GridviewBundle\Contract\DataProviderInterface;
+use Fedale\GridviewBundle\Form\SearchForm;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\Environment;

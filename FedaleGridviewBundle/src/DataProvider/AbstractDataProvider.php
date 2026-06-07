@@ -2,9 +2,10 @@
 
 namespace Fedale\GridviewBundle\DataProvider;
 
-use Fedale\GridviewBundle\Component\PaginationInterface;
-use Fedale\GridviewBundle\Component\SortInterface;
-use Fedale\GridviewBundle\Service\SearchModelInterface;
+use Fedale\GridviewBundle\Contract\DataProviderInterface;
+use Fedale\GridviewBundle\Contract\PaginationInterface;
+use Fedale\GridviewBundle\Contract\SearchModelInterface;
+use Fedale\GridviewBundle\Contract\SortInterface;
 
 abstract class AbstractDataProvider implements DataProviderInterface
 {
@@ -13,10 +14,8 @@ abstract class AbstractDataProvider implements DataProviderInterface
     /**
      * Array of arrays that carry data on
      */
-    private $models;
+    protected $models;
 
-    private DataProviderInterface $dataProvider;
-    
     /**
      * @var PaginationInterface
      */
@@ -40,7 +39,7 @@ abstract class AbstractDataProvider implements DataProviderInterface
     }
 
     /**
-     * @param SortInterace $sort
+     * @param SortInterface $sort
      *
      * @return AbstractDataProvider
      */
@@ -78,17 +77,6 @@ abstract class AbstractDataProvider implements DataProviderInterface
     {
         return $this->searchModel;
     }
-
-    /**
-     * Get total count of entities.
-     *
-     * @return int
-     */
-    public function getTotalCount(): int
-    {
-        return count($this->dataProvider);
-    }
-
 
     public function getData()
     {

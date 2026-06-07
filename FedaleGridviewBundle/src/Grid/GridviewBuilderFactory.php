@@ -1,6 +1,8 @@
 <?php
+
 namespace Fedale\GridviewBundle\Grid;
 
+use Fedale\GridviewBundle\Column\ColumnFactory;
 use Fedale\GridviewBundle\Service\GridviewService;
 
 class GridviewBuilderFactory
@@ -8,10 +10,11 @@ class GridviewBuilderFactory
     public function __construct(
         private GridviewService $gridviewService,
         private GridviewConfigRegistry $configRegistry,
+        private ColumnFactory $columnFactory,
     ) {}
 
     public function createGridviewBuilder(): GridviewBuilder
     {
-        return new GridviewBuilder($this->gridviewService, $this->configRegistry);
+        return new GridviewBuilder($this->gridviewService, $this->configRegistry, $this->columnFactory);
     }
 }

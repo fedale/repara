@@ -1,19 +1,16 @@
-<?php 
+<?php
 
-namespace Fedale\GridviewBundle\Component;
+namespace Fedale\GridviewBundle\Filter;
 
 class Filter
 {
     const DEFAULT_VALUE = null;
 
-    /**
-     * Filter.
-     */
     // Filters here: https://www.doctrine-project.org/projects/doctrine-collections/en/stable/expression-builder.html
     const DATA_CONJUNCTION      = 0;
     const DATA_DISJUNCTION      = 1;
 
-    const OPERATOR_EQ           = 'eq'; // Default finter
+    const OPERATOR_EQ           = 'eq'; // Default filter
     const OPERATOR_NEQ          = 'neq';
     const OPERATOR_LT           = 'lt';
     const OPERATOR_LTE          = 'lte';

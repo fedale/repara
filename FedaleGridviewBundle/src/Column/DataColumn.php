@@ -42,25 +42,22 @@ class DataColumn extends AbstractColumn
         return $this->attribute;
     }
 
-    public function render($model, $index)
+    public function render(mixed $model, int $index): mixed
     {
         $data = $model->data;
+
         if ($this->value !== null) {
-            if (is_string($this->value)) {
-                return $this->value;
-            }
-            $value =  call_user_func($this->value, $data, $index, $this);
-
-            return $value;
-
-        } elseif (strpos($this->attribute, '.')) {
-            return $this->resolve($data, $this->attribute);
-        } elseif ($this->attribute !== null) {
-            return $data[$this->attribute];
+            return \is_string($this->value)
+                ? $this->value
+                : ($this->value)($data, $index, $this);
         }
-        
-        return null;
-    } 
+
+        if (\str_contains($this->attribute, '.')) {
+            return $this->resolve($data, $this->attribute);
+        }
+
+        return $data[$this->attribute] ?? null;
+    }
 
     public function renderHeader($label): string
     {        
@@ -102,6 +99,6 @@ class DataColumn extends AbstractColumn
     
     public function getOptions(): array
     {
-        return ['id' => 'id_111234', 'class' => 'my-class', 'attr' => 'my-custom.attribute'];
+        return $this->options ?? [];
     }
 }

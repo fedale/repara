@@ -1,11 +1,12 @@
-<?php 
-namespace Fedale\GridviewBundle\FilterType;
+<?php
+
+namespace Fedale\GridviewBundle\Filter;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
-class FilterTextType extends AbstractType
+class FilterChoiceType extends AbstractType
 {
     public function configureOptions(OptionsResolver $resolver): void
     {
@@ -20,6 +21,6 @@ class FilterTextType extends AbstractType
 
     public function getParent(): string
     {
-        return TextType::class;
+        return ChoiceType::class;
     }
 }

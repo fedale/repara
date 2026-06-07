@@ -1,9 +1,10 @@
 <?php
-namespace Fedale\GridviewBundle\Service;
+
+namespace Fedale\GridviewBundle\Contract;
 
 interface SearchFormInterface
 {
     public function addFilter(string $name, string $type, array $options);
     public function addGlobalSearch(): void;
     public function getModelType();
-} 
+}

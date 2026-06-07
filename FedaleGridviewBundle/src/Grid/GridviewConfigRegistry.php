@@ -6,23 +6,61 @@ class GridviewConfigRegistry
     private const OPTION_DEFAULTS = [
         'caption'      => null,
         'emptyText'    => 'No records found',
-        'showHeader'   => true,
-        'showFooter'   => true,
+        'showThead'    => true,
+        'showTfoot'    => true,
         'useTurbo'     => true,
         'globalSearch' => [],
+        'addRoute'     => null,
+        'addLabel'     => 'Add',
+        'formName'     => 'myform',
+        'layout'       => [
+            'gridview'  => '{header} {table} {footer}',
+            'header'    => '{globalSearch}',
+            'toolbar'   => '',
+            'table'     => null,
+            'footer'    => '{pagination}',
+            'tfoot'     => '',
+            'templates' => [],
+            'slots'     => [],
+        ],
     ];
 
     public function __construct(private array $config) {}
 
     public function resolveOptions(?string $id): array
     {
-        $resolved = array_replace(self::OPTION_DEFAULTS, $this->config['defaults']['options'] ?? []);
+        $yamlDefaults = $this->config['defaults']['options'] ?? [];
+
+        $resolved = array_replace(self::OPTION_DEFAULTS, $yamlDefaults);
+        $resolved['layout'] = $this->mergeLayout($yamlDefaults['layout'] ?? []);
 
         if ($id !== null && isset($this->config['gridviews'][$id]['options'])) {
-            $resolved = array_replace($resolved, $this->config['gridviews'][$id]['options']);
+            $gridviewOptions = $this->config['gridviews'][$id]['options'];
+            $resolved = array_replace($resolved, $gridviewOptions);
+            $resolved['layout'] = $this->mergeLayout(
+                $yamlDefaults['layout'] ?? [],
+                $gridviewOptions['layout'] ?? []
+            );
         }
 
         return $resolved;
+    }
+
+    private function mergeLayout(array ...$layers): array
+    {
+        $result = self::OPTION_DEFAULTS['layout'];
+        foreach ($layers as $layer) {
+            foreach ($layer as $key => $value) {
+                if ($key === 'templates' || $key === 'slots') {
+                    if (!empty($value)) {
+                        $result[$key] = array_replace($result[$key], $value);
+                    }
+                } elseif ($value !== null) {
+                    $result[$key] = $value;
+                }
+            }
+        }
+        return $result;
     }
 
     public function resolveAttributes(?string $id): array

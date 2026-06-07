@@ -1,6 +1,7 @@
 <?php
 namespace Fedale\GridviewBundle\Grid;
 
+use Fedale\GridviewBundle\Column\ColumnFactory;
 use Fedale\GridviewBundle\Service\SearchModelInterface;
 use Fedale\GridviewBundle\Service\GridviewService;
 
@@ -17,13 +18,14 @@ class GridviewBuilder implements GridviewBuilderInterface
     public function __construct(
         private GridviewService $gridviewService,
         private GridviewConfigRegistry $configRegistry,
+        private ColumnFactory $columnFactory,
     ) {
         $this->reset();
     }
 
-    public function reset()
+    public function reset(): void
     {
-        $this->gridview = new Gridview($this->gridviewService);
+        $this->gridview = new Gridview($this->gridviewService, $this->columnFactory);
         $this->runtimeOptions = [];
         $this->runtimeAttributes = [];
     }

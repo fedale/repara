@@ -19,7 +19,7 @@ class SerialColumn extends AbstractColumn {
     //     $this->content = '1';
     // }
 
-    public function render($model, $index)
+    public function render(mixed $_model, int $index): mixed
     {
         return $index + 1;
     }

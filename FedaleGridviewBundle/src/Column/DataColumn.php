@@ -42,7 +42,7 @@ class DataColumn extends AbstractColumn
         return $this->attribute;
     }
 
-    public function render($model, $index)
+    public function render(mixed $model, int $index): mixed
     {
         $data = $model->data;
 

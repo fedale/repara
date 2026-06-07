@@ -38,9 +38,14 @@ abstract class AbstractColumn implements ColumnInterface
         $form->add('name', TextType::class);
     }
 
-    public function render($data, $_index)
+    public function getAttribute(): ?string
     {
-        return $data[$this->content];
+        return null;
+    }
+
+    public function render(mixed $data, int $_index): mixed
+    {
+        return $data[$this->content] ?? null;
     }
 
     public function getContent()
@@ -118,7 +123,7 @@ abstract class AbstractColumn implements ColumnInterface
         return $this;
     }
 
-    public function setGridview(Gridview $gridview): void
+    public function setGridview(Gridview $gridview): void  // satisfies ColumnInterface
     {
         $this->gridview = $gridview;
     }

@@ -33,7 +33,6 @@
         <service id="fedale_gridview.search_form" class="Fedale\GridviewBundle\Service\SearchForm">
             <argument type="service" id="form.factory"/>
             <argument type="service" id="request_stack"/>
-            <argument type="service" id="fedale_gridview.entity_data_provider"/>
         </service>
         <service id="Fedale\GridviewBundle\Service\SearchForm" alias="fedale_gridview.search_form"/>
 

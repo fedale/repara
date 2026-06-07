@@ -4,9 +4,7 @@ namespace Fedale\GridviewBundle\Service;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormBuilderInterface;
-use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\QueryBuilder;
-use Fedale\GridviewBundle\DataProvider\EntityDataProvider;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Form;
@@ -28,8 +26,7 @@ class SearchForm implements SearchFormInterface
 
     public function __construct(
         private FormFactoryInterface $formFactory,
-        private RequestStack $requestStack, 
-        private EntityDataProvider $entityDataProvider
+        private RequestStack $requestStack
     ) {
         $this->filters = new ArrayCollection();
 
@@ -181,8 +178,8 @@ class SearchForm implements SearchFormInterface
             'ineq', '!=' => $this->ineq($qb, $attribute, $param),
             'gt', '>' => $this->gt($qb, $attribute, $param),
             'gte', '>=' => $this->gte($qb, $attribute, $param),
-            'lt', '>' => $this->lt($qb, $attribute, $param),
-            'lte', '>=' => $this->lte($qb, $attribute, $param),
+            'lt', '<' => $this->lt($qb, $attribute, $param),
+            'lte', '<=' => $this->lte($qb, $attribute, $param),
             'btw', 'between' => $this->between($qb, $attribute, $param),
             'like', '%' => $this->like($qb, $attribute, $param),
             'ilike' => $this->ilike($qb, $attribute, $param),
@@ -216,8 +213,8 @@ class SearchForm implements SearchFormInterface
             'ineq', '!=' => $this->ineq($qb, $attribute, $searchTerm),
             'gt', '>' => $this->gt($qb, $attribute, $searchTerm),
             'gte', '>=' => $this->gte($qb, $attribute, $searchTerm),
-            'lt', '>' => $this->lt($qb, $attribute, $searchTerm),
-            'lte', '>=' => $this->lte($qb, $attribute, $searchTerm),
+            'lt', '<' => $this->lt($qb, $attribute, $searchTerm),
+            'lte', '<=' => $this->lte($qb, $attribute, $searchTerm),
             'btw', 'between' => $this->between($qb, $attribute, $searchTerm),
             'like', '%' => $this->like($qb, $attribute, $searchTerm),
             'ilike' => $this->ilike($qb, $attribute, $searchTerm),
@@ -383,7 +380,7 @@ class SearchForm implements SearchFormInterface
 
     private function endWith(QueryBuilder $qb, string $attribute, string $searchTerm)
     {
-        $qb->andWhere($qb->expr()->notLike($attribute, ':param'));
+        $qb->andWhere($qb->expr()->like($attribute, ':param'));
         $qb->setParameter(':param', '%' . $searchTerm);
     }
 

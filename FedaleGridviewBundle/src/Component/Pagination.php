@@ -117,7 +117,7 @@ class Pagination implements PaginationInterface
      *
      * @return int the zero-based current page number.
      */
-    public function getCurrentPage()
+    public function getCurrentPage(): int
     {
         if (!isset($this->currentPage)) {
             $currentPage = (int)$this->request->get($this->pageParam, 1) - 1;
@@ -280,7 +280,7 @@ class Pagination implements PaginationInterface
      * @ throws PaginationException
      * @throws \Exception
      */
-    public function setTotalCount($totalCount)
+    public function setTotalCount(int|float $totalCount): static
     {
         if (!is_numeric($totalCount)) {
             throw new \Exception(

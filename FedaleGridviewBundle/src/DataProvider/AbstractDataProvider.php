@@ -13,10 +13,8 @@ abstract class AbstractDataProvider implements DataProviderInterface
     /**
      * Array of arrays that carry data on
      */
-    private $models;
+    protected $models;
 
-    private DataProviderInterface $dataProvider;
-    
     /**
      * @var PaginationInterface
      */
@@ -40,7 +38,7 @@ abstract class AbstractDataProvider implements DataProviderInterface
     }
 
     /**
-     * @param SortInterace $sort
+     * @param SortInterface $sort
      *
      * @return AbstractDataProvider
      */
@@ -78,17 +76,6 @@ abstract class AbstractDataProvider implements DataProviderInterface
     {
         return $this->searchModel;
     }
-
-    /**
-     * Get total count of entities.
-     *
-     * @return int
-     */
-    public function getTotalCount(): int
-    {
-        return count($this->dataProvider);
-    }
-
 
     public function getData()
     {

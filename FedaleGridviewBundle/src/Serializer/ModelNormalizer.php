@@ -19,9 +19,9 @@ class ModelNormalizer implements NormalizerInterface, NormalizerAwareInterface
     {
         $data = $this->normalizer->normalize($object, $format, $context);
     }
-    public function supportsNormalization(mixed $data, ?string $format = null)
+    public function supportsNormalization(mixed $data, ?string $format = null): bool
     {
-        dd($data);
+        return false;
     }
 
     public function setNormalizer(NormalizerInterface $normalizer)

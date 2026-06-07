@@ -34,14 +34,19 @@ class ActionColumn extends AbstractColumn {
         $this->urlGenerator = $urlGenerator;
     }
 
+    public function isToggleable(): bool
+    {
+        return false;
+    }
+
     public function getAttribute(): string
     {
         return $this->attribute;
     }
 
-    public function initColumn()
+    public function initColumn(): void
     {
-        $this->label = 'Action';      
+        $this->label = 'Action';
     }
 
     private function initDefaultButtons() {

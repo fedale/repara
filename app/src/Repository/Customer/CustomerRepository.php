@@ -45,7 +45,8 @@ class CustomerRepository extends ServiceEntityRepository
     {
         $qb = $this
             ->createQueryBuilder('c')
-            ->select('c ', 'p', 'l', 't')
+            ->select('c', 'p', 'l', 't')
+            ->distinct()
             ->join('c.profile', 'p')
             ->join('c.locations', 'l')
             ->join('c.type', 't')
@@ -140,11 +141,28 @@ class CustomerRepository extends ServiceEntityRepository
         $this->searchForm->andFilterWhere(
             $qb,
             [
-                'ilike',
-                'l.zipcode',
-                $params['locations'] ?? null,
+                'in',
+                'l.id',
+                $params['locations'] ?? [],
             ],
         );
+
+        if (isset($params['active']) && $params['active'] !== '') {
+            $qb->andWhere('c.active = :active')
+               ->setParameter('active', $params['active'] === '1', \Doctrine\DBAL\Types\Types::BOOLEAN);
+        }
+
+        $isIsoDate = static fn(string $s): bool => (bool) preg_match('/^\d{4}-\d{2}-\d{2}$/', $s);
+
+        $fromDate = ($params['createdAt']['from'] ?? '') !== '' && $isIsoDate($params['createdAt']['from'])
+            ? new \DateTime($params['createdAt']['from'])
+            : null;
+        $toDate = ($params['createdAt']['to'] ?? '') !== '' && $isIsoDate($params['createdAt']['to'])
+            ? new \DateTime($params['createdAt']['to'] . ' 23:59:59')
+            : null;
+
+        $this->searchForm->andFilterWhere($qb, ['gte', 'c.createdAt', $fromDate]);
+        $this->searchForm->andFilterWhere($qb, ['lte', 'c.createdAt', $toDate]);
 
 
         $this->searchForm->andFilterWhere(

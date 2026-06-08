@@ -16,6 +16,11 @@ class CheckboxColumn extends AbstractColumn
         $this->sortable   = false;
     }
 
+    public function isToggleable(): bool
+    {
+        return false;
+    }
+
     public function getAttribute(): string
     {
         return '_selection';

@@ -11,6 +11,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Fedale\GridviewBundle\Column\ActionButton;
+use App\Repository\Customer\CustomerLocationRepository;
+
 
 
 
@@ -22,7 +25,9 @@ class BundleController extends AbstractController
         #[Autowire(service: 'fedale_gridview.gridview_builder')]
         private GridviewBuilderInterface $gridviewBuilder,
         //private CalendarBuilderFactory $calendarBuilderFactory,
-        private CustomerSearchModel $customerSearchModel
+        private CustomerSearchModel $customerSearchModel,
+        private CustomerLocationRepository $locationRepository,
+
     ) {
 
     }
@@ -67,6 +72,12 @@ class BundleController extends AbstractController
             ],
         ];
 
+        $locationChoices = [];
+        foreach ($this->locationRepository->findAll() as $loc) {
+            // label visibile = "Milano — Sede principale"
+            $locationChoices[$loc->getCity() . ' — ' . $loc->getName()] = $loc->getId();
+        }
+
         /**
          *
          */
@@ -103,7 +114,8 @@ class BundleController extends AbstractController
                 'label' => 'Label 2',
                 'filter' => [
                     'type' => 'text',
-                ]
+                ],
+                'filterBar' => true,
             ],
             [
                 'attribute' => 'email',
@@ -123,16 +135,35 @@ class BundleController extends AbstractController
                 'value' => function (array $data, string $key, ColumnInterface $column) {
                     $arr = [];
                     foreach ($data['locations'] as $location) {
-                        $link = sprintf('<a href="/location/%s">%s</a>', $location['id'], $location['zipcode']);
-                        \array_push($arr, $link);
+                        $link = sprintf('<a href="/location/%s">%s</a>', $location['id'], $location['name']);
+                        array_push($arr, $link);
                     }
                     return $arr;
                 },
                 'twigFilter' => "join(', ', ' and ')|raw",
                 'filter' => [
-                    'type' => 'text',
+                    'type' => 'relation',       // ← era 'text'
+                    'options' => [
+                        'choices' => $locationChoices,
+                        'multiple' => true,      // multi-select
+                        'searchable' => true,      // search input sopra il select
+                    ],
                 ],
-                'visible' => false
+                'filterBar' => true,
+                'visible' => true,                 // mettilo visibile per testare
+            ],
+            [
+                'attribute' => 'active',
+                'label' => 'Attivo',
+                'filter' => ['type' => 'boolean'],
+                'filterBar' => true,
+                'value' => fn(array $data) => $data['active'] ? 'Sì' : 'No',
+            ],
+            [
+                'attribute' => 'createdAt',
+                'label' => 'Creato il',
+                'twigFilter' => "date('d/m/Y')",
+                'filter' => ['type' => 'date'],
             ],
             [
                 'attribute' => 't.name',
@@ -141,7 +172,22 @@ class BundleController extends AbstractController
                 },
             ],
             [
-                'type' => 'action'
+                'type' => 'action',
+                'layout' => '{view} {edit} {clone} {delete}',
+                'buttons' => [
+                    'clone' => new ActionButton(
+                        fn(array $row) => sprintf(
+                            '<a href="/customers/%d/clone" title="Clone">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                    </svg>
+                </a>',
+                            $row['id']
+                        ),
+                    ),
+                ],
             ]
 
         ];
@@ -174,12 +220,13 @@ class BundleController extends AbstractController
             ->setSearchModel($this->customerSearchModel)
             ->setOptions([
                 'layout' => [
-                    'gridview' => '{toolbar} {header} {table} {footer}',
-                    'toolbar'  => '{columnVisibility}',
+                    // 'gridview' => '{toolbar} {header} {table} {footer}',
+                    'gridview' => '{toolbar} {filterBar} {header} {table} {footer}',
+                    'toolbar' => '{columnVisibility}',
                 ],
             ])
             ->setAttributes([
-                'class' => 'table table-dark',
+                'class' => 'table',
                 'row' => [
                     'class' => 'row-class'
                 ],

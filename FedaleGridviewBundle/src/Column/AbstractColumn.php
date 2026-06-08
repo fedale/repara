@@ -143,4 +143,9 @@ abstract class AbstractColumn implements ColumnInterface
     {
         return true;
     }
+
+    public function getFilter(): mixed
+    {
+        return null;
+    }
 }

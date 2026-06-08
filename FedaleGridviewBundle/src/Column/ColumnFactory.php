@@ -4,9 +4,14 @@ namespace Fedale\GridviewBundle\Column;
 
 use Fedale\GridviewBundle\Contract\ColumnInterface;
 use Fedale\GridviewBundle\Grid\Gridview;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class ColumnFactory
 {
+    public function __construct(
+        private ?AuthorizationCheckerInterface $authChecker = null,
+    ) {}
+
     private array $registry = [
         'data'     => DataColumn::class,
         'action'   => ActionColumn::class,
@@ -58,7 +63,7 @@ class ColumnFactory
 
         $column = match ($type) {
             'data'   => new $class($gridview, $attribute, null, $spec['label'] ?? $attribute, []),
-            'action' => new $class($gridview, $attribute, null, $spec['label'] ?? $attribute, []),
+            'action' => new $class($gridview, $attribute, null, $spec['label'] ?? null, [], $this->authChecker),
             default  => new $class($gridview, null, $spec['label'] ?? $attribute, []),
         };
 

@@ -15,3 +15,12 @@ app.register('gridview-filter', GridviewFilterController);
 
 import GridviewSelectionController from '../../FedaleGridviewBundle/assets/controllers/gridview-selection_controller.js';
 app.register('gridview-selection', GridviewSelectionController);
+
+import GridviewVisibilityController from '../../FedaleGridviewBundle/assets/controllers/gridview-visibility_controller.js';
+app.register('gridview-visibility', GridviewVisibilityController);
+
+import GridviewRelationFilterController from '../../FedaleGridviewBundle/assets/controllers/gridview-relation-filter_controller.js';
+app.register('gridview-relation-filter', GridviewRelationFilterController);
+
+import GridviewDateFilterController from '../../FedaleGridviewBundle/assets/controllers/gridview-date-filter_controller.js';
+app.register('gridview-date-filter', GridviewDateFilterController);

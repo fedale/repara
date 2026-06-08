@@ -3,7 +3,7 @@
 {% for row in models %}
     <tr {{ gridview.rowAttr|merge(row.attr ?? {})|options }}>
         {% for column in columns %}
-            <td {{ column.options|options }}>
+            <td data-col="{{ loop.index0 }}"{% if not column.isVisible() %} style="display:none"{% endif %} {{ column.options|options }}>
             {% set index = loop.parent.loop.index0 %}
                 {% if column.twigFilter %}
                     {{ include(template_from_string('{{ column.render(row, index)|' ~ column.twigFilter ~ ' }}')) }}
@@ -14,8 +14,6 @@
         {% endfor %}
     </tr>
 {% else %}
-    <tr>
-        <td colspan="99">{{ gridview.options.emptyText }}</td>
-    </tr>
+    {% include gridview.layoutTemplate('empty') %}
 {% endfor %}
 </tbody>

@@ -33,7 +33,8 @@ class CustomerController extends AbstractController
      */
     protected $ormMetadata;
 
-    public function __construct(EntityManagerInterface $entityManager) {
+    public function __construct(EntityManagerInterface $entityManager)
+    {
         $this->entityManager = $entityManager;
     }
 
@@ -104,22 +105,21 @@ class CustomerController extends AbstractController
 
     #[Route('/', name: 'app_customer_customer_index', methods: ['GET', 'POST'])]
     public function index(
-        EntityManagerInterface $entityManager, 
-        Entity $entity, 
+        EntityManagerInterface $entityManager,
+        Entity $entity,
         Grid $grid,
         GridFactory $gridFactory,
         GridManager $gridManager,
         Request $request
-    ): Response
-    {
+    ): Response {
         $entity->setup(['entity' => 'App\Entity\Customer\Customer']);
 
         // Creates the builder
-        $gridBuilder =  $gridFactory->createBuilder('grid', $entity, [
-            'persistence'  => true,
-            'route'        => 'app_customer_customer_index',
-            'filterable'   => true,
-            'sortable'     => true,
+        $gridBuilder = $gridFactory->createBuilder('grid', $entity, [
+            'persistence' => true,
+            'route' => 'app_customer_customer_index',
+            'filterable' => true,
+            'sortable' => true,
             'max_per_page' => 10,
         ]);
         // dd($entity, $gridBuilder);
@@ -127,7 +127,7 @@ class CustomerController extends AbstractController
         // Creates columns
         $grid = $gridBuilder
             ->add('id', 'number', [
-                'title'   => '#',
+                'title' => '#',
                 'primary' => 'true',
             ])
             ->add('code', 'text')
@@ -150,7 +150,7 @@ class CustomerController extends AbstractController
 
         $source = $entity->setSource(Customer::class);
 
-         // Creates the grid from the type: does not work yet
+        // Creates the grid from the type: does not work yet
         $grid = $this->createGrid($gridFactory, new CustomerGridType($entity));
 
         // Method using GridManager. It works!
@@ -191,22 +191,22 @@ class CustomerController extends AbstractController
         $customers = $entityManager
             ->getRepository(Customer::class)
             ->findAll();
-        
+
         return $grid->getGridResponse('customer/apy_index.html.twig');
 
-            // $propertyAccessor = PropertyAccess::createPropertyAccessor();
-            // foreach ($customers as $customer) {
-            // }
-            // die();
+        // $propertyAccessor = PropertyAccess::createPropertyAccessor();
+        // foreach ($customers as $customer) {
+        // }
+        // die();
         return $this->render('customer/index.html.twig', [
             'customers' => $customers,
             'title' => 'My title',
             //'columns' => $entityManager->getClassMetadata(Customer::class)
-             'columns' => ['Id', 'Code', 'Username', 'Email', 'Password', 'UnconfirmedEmail', 'RegistrationIp', 'Active', 'ConfirmedAt', 'LastLoginAt', 'BlockedAt', 'CreatedAt', 'UpdatedAt', 'actions']
+            'columns' => ['Id', 'Code', 'Username', 'Email', 'Password', 'UnconfirmedEmail', 'RegistrationIp', 'Active', 'ConfirmedAt', 'LastLoginAt', 'BlockedAt', 'CreatedAt', 'UpdatedAt', 'actions']
         ]);
     }
 
-    #[Route('/new', name: 'app_customer_customer_new', methods: ['GET', 'POST'])]
+    #[Route('/new', name: 'app_customer_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $customer = new CustomerCreateModel();
@@ -220,7 +220,7 @@ class CustomerController extends AbstractController
 
             $customer = new Customer();
             $customerProfile = new CustomerProfile();
-            
+
             $customer->setCode($customerModel->code);
             $customer->setUsername($customerModel->username);
             $customer->setEmail($customerModel->email);
@@ -273,7 +273,7 @@ class CustomerController extends AbstractController
     #[Route('/{id}', name: 'app_customer_customer_delete', methods: ['POST'])]
     public function delete(Request $request, Customer $customer, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$customer->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $customer->getId(), $request->request->get('_token'))) {
             $entityManager->remove($customer);
             $entityManager->flush();
         }
@@ -289,7 +289,7 @@ class CustomerController extends AbstractController
         return $this->container->get('apy_grid.factory')->createBuilder('grid', $source, $options);
     }
 
-     /**
+    /**
      * @return Grid
      */
     public function createGrid(GridFactory $gridFactory, $type, Source $source = null, array $options = [])

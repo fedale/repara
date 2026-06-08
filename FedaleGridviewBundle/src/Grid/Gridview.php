@@ -59,6 +59,11 @@ class Gridview implements GridviewInterface
             'templates' => [],
             'slots'     => [],
         ],
+        'filterControls' => [
+            'headerIcon'  => true,
+            'inlineClear' => false,
+        ],
+        'maxQueryLength' => 4000,
     ];
 
     public function __construct(
@@ -144,6 +149,9 @@ class Gridview implements GridviewInterface
 
             if (isset($this->searchModel) && $column->isFilterable() && isset($column->filter)) {
                 $options = $column->filter['options'] ?? [];
+                if (isset($column->filter['clientOptions'])) {
+                    $options['client_options'] = $column->filter['clientOptions'];
+                }
                 $this->searchForm->addFilter($column->getAttribute(), $column->filter['type'], $options);
             }
 
@@ -157,6 +165,9 @@ class Gridview implements GridviewInterface
     {
         if (isset($options['layout'])) {
             $options['layout'] = array_replace($this->options['layout'] ?? [], $options['layout']);
+        }
+        if (isset($options['filterControls'])) {
+            $options['filterControls'] = array_replace($this->options['filterControls'] ?? [], $options['filterControls']);
         }
         $this->options = array_merge($this->options, $options);
     }
@@ -191,6 +202,21 @@ class Gridview implements GridviewInterface
     public function hasHiddenColumns(): bool
     {
         return $this->columns->exists(fn($k, $col) => !$col->isVisible());
+    }
+
+    public function getFilterBarColumns(): array
+    {
+        return $this->columns
+            ->filter(fn($col) =>
+                $col instanceof \Fedale\GridviewBundle\Column\DataColumn
+                && $col->isInFilterBar()
+            )
+            ->toArray();
+    }
+
+    public function hasFilterBar(): bool
+    {
+        return !empty($this->getFilterBarColumns());
     }
 
     public function parseLayout(string $section): array

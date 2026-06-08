@@ -49,7 +49,9 @@
         </service>
         <service id="Fedale\GridviewBundle\Grid\GridviewConfigRegistry" alias="fedale_gridview.config_registry"/>
 
-        <service id="fedale_gridview.column_factory" class="Fedale\GridviewBundle\Column\ColumnFactory"/>
+        <service id="fedale_gridview.column_factory" class="Fedale\GridviewBundle\Column\ColumnFactory">
+            <argument type="service" id="security.authorization_checker" on-invalid="null"/>
+        </service>
         <service id="Fedale\GridviewBundle\Column\ColumnFactory" alias="fedale_gridview.column_factory"/>
 
         <service id="fedale_gridview.gridview_builder" class="Fedale\GridviewBundle\Grid\GridviewBuilder">

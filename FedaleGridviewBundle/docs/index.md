@@ -10,7 +10,7 @@ The grid is not automagic: you configure a data source and a column list, the bu
 1. [Overview](#overview)
 2. [Quick Start](#quick-start)
 3. [Data Provider](#data-provider)
-4. [Columns](#columns)
+4. [Columns](#columns) — [ActionColumn](#actioncolumn--token-based-actions)
 5. [Sorting](#sorting)
 6. [Pagination](#pagination)
 7. [Filtering & Search](#filtering--search)
@@ -197,6 +197,174 @@ $columns = [
 | `action` | `ActionColumn` | View / update / delete action links |
 | `boolean` | `BooleanColumn` | Renders `✓` / `✗` for truthy/falsy values |
 
+### ActionColumn — token-based actions
+
+`ActionColumn` renders per-row action buttons (view, edit, delete, or anything custom).
+Which buttons appear is controlled by a **layout string** of `{token}` placeholders — the same
+concept used for the grid layout system.
+
+#### Default behaviour
+
+```php
+['type' => 'action']
+// renders: {view} {edit} {delete}  — three placeholder <a> links
+```
+
+#### Controlling which buttons appear
+
+Set `layout` to any combination of built-in or custom token names:
+
+```php
+['type' => 'action', 'layout' => '{view}']
+
+['type' => 'action', 'layout' => '{edit} {delete}']
+
+['type' => 'action', 'layout' => '{view} {archive} {delete}']
+```
+
+#### Custom button content
+
+The `buttons` key maps token names to their rendering specification.
+You can mix `ActionButton` objects, closures, plain HTML strings, or arrays:
+
+```php
+use Fedale\GridviewBundle\Column\ActionButton;
+
+$columns = [
+    [
+        'type'    => 'action',
+        'layout'  => '{view} {edit} {delete}',
+        'buttons' => [
+            // Closure — full control, receives the row data and row index
+            'view' => new ActionButton(
+                fn(array $row, int $i) => sprintf(
+                    '<a href="/customers/%d" class="btn btn-sm btn-outline-primary">View</a>',
+                    $row['id']
+                )
+            ),
+
+            // Plain HTML string — static content
+            'edit' => new ActionButton(
+                '<a href="#" class="btn btn-sm btn-outline-secondary">Edit</a>'
+            ),
+
+            // Array shorthand — no need to import ActionButton
+            'delete' => [
+                'content' => fn(array $row) => sprintf(
+                    '<a href="/customers/%d/delete" class="btn btn-sm btn-danger">Delete</a>',
+                    $row['id']
+                ),
+            ],
+        ],
+    ],
+];
+```
+
+#### Role-based visibility
+
+Pass a `roles` array to hide a button from users who lack **all listed roles**.
+Only one role needs to match (OR logic). Requires the Symfony Security component.
+
+```php
+use Fedale\GridviewBundle\Column\ActionButton;
+
+'buttons' => [
+    'view' => new ActionButton(
+        fn(array $row) => '<a href="/customers/' . $row['id'] . '">View</a>',
+    ),
+
+    // Shown only to ROLE_EDITOR or ROLE_ADMIN
+    'edit' => new ActionButton(
+        fn(array $row) => '<a href="/customers/' . $row['id'] . '/edit">Edit</a>',
+        roles: ['ROLE_EDITOR', 'ROLE_ADMIN'],
+    ),
+
+    // Shown only to ROLE_ADMIN
+    'delete' => new ActionButton(
+        fn(array $row) => '<a href="/customers/' . $row['id'] . '/delete">Delete</a>',
+        roles: ['ROLE_ADMIN'],
+    ),
+],
+```
+
+When the security component is not installed, the `roles` check is skipped and all
+buttons are shown regardless.
+
+#### Conditional visibility per row
+
+Use the `visible` parameter (bool or closure) to show or hide a button based on row data:
+
+```php
+'edit' => new ActionButton(
+    fn(array $row) => '<a href="/customers/' . $row['id'] . '/edit">Edit</a>',
+    visible: fn(array $row, int $i) => $row['active'] === true,
+),
+```
+
+#### Array shorthand (no import needed)
+
+All `ActionButton` constructor options are available as array keys:
+
+```php
+'buttons' => [
+    'delete' => [
+        'content' => fn(array $row) => '<a href="/customers/' . $row['id'] . '/delete">Delete</a>',
+        'roles'   => ['ROLE_ADMIN'],
+        'visible' => fn(array $row) => $row['deletable'] === true,
+    ],
+],
+```
+
+#### Adding a completely custom action
+
+Any token name works — just add a matching entry in `buttons`:
+
+```php
+[
+    'type'    => 'action',
+    'layout'  => '{view} {impersonate}',
+    'buttons' => [
+        'view'        => new ActionButton(fn($row) => '<a href="/customers/' . $row['id'] . '">View</a>'),
+        'impersonate' => new ActionButton(
+            fn($row) => '<a href="/?_switch_user=' . $row['email'] . '">Impersonate</a>',
+            roles: ['ROLE_ALLOWED_TO_SWITCH'],
+        ),
+    ],
+]
+```
+
+#### Summary of `ActionButton` constructor
+
+```php
+new ActionButton(
+    content: string|\Closure,   // HTML string or fn(mixed $row, int $index): string
+    roles:   string[],          // Symfony roles required (empty = always shown)
+    visible: bool|\Closure,     // fn(mixed $row, int $index): bool, or plain bool
+)
+```
+
+#### ActionColumn options reference
+
+These keys are specific to `['type' => 'action']` and have no meaning for data columns
+(`id`, `name`, `email`, …).
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `layout` | `string` | `'{view} {edit} {delete}'` | Token string controlling which buttons appear and in what order |
+| `buttons` | `array` | built-in icon placeholders | Map of token name → `ActionButton`, callable, HTML string, or array spec |
+| `label` | `string` | `'Actions'` | Column header text |
+
+#### YAML configuration
+
+Column definitions — including `layout` and `buttons` — **cannot be set from YAML**.
+The YAML config (`fedale_gridview` in `gridview.yaml`) only covers grid-level `options`
+(layout tokens, globalSearch, useTurbo, …) and `attributes`.
+
+Columns must always be declared in PHP because they routinely contain closures (for `value`,
+`visible`, `buttons`), which YAML cannot represent.
+
+---
+
 ### Registering custom column types
 
 Third-party code can register new column types through `ColumnFactory::register()`.
@@ -343,25 +511,239 @@ $gridview = $this->createGridviewBuilder()
 
 ### Declaring filter inputs in columns
 
+Each filterable column needs a `filter` key with at least `type`. Additional options are
+passed under `options` and forwarded directly to the underlying Symfony Form type.
+
 ```php
 $columns = [
     [
         'attribute' => 'name',
-        'label'     => 'Name',
         'filter'    => ['type' => 'text'],
     ],
     [
-        'attribute' => 'status',
-        'label'     => 'Status',
-        'filter'    => [
-            'type'    => 'select',
-            'options' => ['active' => 'Active', 'inactive' => 'Inactive'],
-        ],
+        'attribute' => 'active',
+        'filter'    => ['type' => 'boolean'],
     ],
 ];
 ```
 
-Supported filter types: `text`, `select`.
+### Filter types reference
+
+#### `text`
+
+A plain text input. Supports any operator prefix (e.g. `>= 100`, `like foo%`).
+
+```php
+'filter' => ['type' => 'text']
+```
+
+No additional options.
+
+---
+
+#### `boolean`
+
+A `<select>` with two choices and an empty "show all" placeholder.
+Submits `'1'` (true) or `'0'` (false) as string values.
+
+```php
+'filter' => ['type' => 'boolean']
+```
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `true_label` | `string` | `'Sì'` | Label for the truthy option |
+| `false_label` | `string` | `'No'` | Label for the falsy option |
+| `placeholder` | `string` | `'–'` | Label for the empty "show all" option |
+
+**Custom labels example:**
+
+```php
+[
+    'attribute' => 'active',
+    'label'     => 'Status',
+    'filter'    => [
+        'type'    => 'boolean',
+        'options' => [
+            'true_label'  => 'Active',
+            'false_label' => 'Inactive',
+        ],
+    ],
+    'value' => fn(array $data) => $data['active'] ? 'Active' : 'Inactive',
+],
+```
+
+**Repository filter example** — cast the submitted string to a typed boolean for Doctrine:
+
+```php
+if (isset($params['active']) && $params['active'] !== '') {
+    $qb->andWhere('c.active = :active')
+       ->setParameter('active', $params['active'] === '1', \Doctrine\DBAL\Types\Types::BOOLEAN);
+}
+```
+
+---
+
+#### `choice`
+
+A `<select>` built from a static choices array.
+
+```php
+'filter' => [
+    'type'    => 'choice',
+    'options' => [
+        'choices' => ['Active' => 'active', 'Inactive' => 'inactive'],
+    ],
+]
+```
+
+Accepts all standard Symfony `ChoiceType` options under `options`.
+
+---
+
+#### `relation`
+
+A multi-select (or single-select) for relation fields. Supports a built-in searchable
+search input and optional AJAX loading.
+
+```php
+// Static choices + searchable input
+'filter' => [
+    'type'    => 'relation',
+    'options' => [
+        'choices'    => $locationChoices,   // ['Label' => id, ...]
+        'multiple'   => true,
+        'searchable' => true,
+    ],
+]
+
+// AJAX loading
+'filter' => [
+    'type'    => 'relation',
+    'options' => [
+        'ajax_url'     => '/api/filter-options/locations',
+        'option_label' => 'name',
+        'option_value' => 'id',
+        'multiple'     => true,
+    ],
+]
+```
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `choices` | `array` | `[]` | Static `['Label' => value]` map |
+| `multiple` | `bool` | `false` | Allow multiple selections |
+| `searchable` | `bool` | `false` | Show a live-filter search input above the options |
+| `ajax_url` | `string\|null` | `null` | URL that returns `[{"id":1,"name":"…"},…]` |
+| `option_label` | `string` | `'name'` | JSON key used as option label (AJAX mode) |
+| `option_value` | `string` | `'id'` | JSON key used as option value (AJAX mode) |
+
+**Repository filter example** — use the `in` operator for multi-select:
+
+```php
+$this->searchForm->andFilterWhere($qb, ['in', 'l.id', $params['locations'] ?? []]);
+```
+
+---
+
+#### `number`
+
+Two `<input type="number">` fields rendered side by side as a from/to range.
+Submits as `myform[field][from]` and `myform[field][to]`.
+
+```php
+'filter' => ['type' => 'number']
+```
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `from_placeholder` | `string` | `'Min'` | Placeholder for the lower bound input |
+| `to_placeholder` | `string` | `'Max'` | Placeholder for the upper bound input |
+
+**Repository filter example:**
+
+```php
+$from = ($params['price']['from'] ?? '') !== '' ? (float)$params['price']['from'] : null;
+$to   = ($params['price']['to']   ?? '') !== '' ? (float)$params['price']['to']   : null;
+$this->searchForm->andFilterWhere($qb, ['gte', 'p.price', $from]);
+$this->searchForm->andFilterWhere($qb, ['lte', 'p.price', $to]);
+```
+
+---
+
+#### `date`
+
+A **Flatpickr** calendar popup that replaces the two native `<input type="date">` fields.
+Supports both single-date and date-range selection. Always submits ISO `YYYY-MM-DD` values
+as `myform[field][from]` and `myform[field][to]`.
+
+```php
+'filter' => ['type' => 'date']   // range mode, Italian locale, d/m/Y display
+```
+
+**PHP form options** (`options` key — Symfony form type):
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `from_placeholder` | `string` | `'Da'` | Placeholder on the underlying from input (shown before JS loads) |
+| `to_placeholder` | `string` | `'A'` | Placeholder on the underlying to input |
+
+**Client options** (`clientOptions` key — passed verbatim to Flatpickr):
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `mode` | `string` | `'range'` | `'single'` or `'range'` |
+| `locale` | `string` | `'it'` | Locale code; currently `'it'` (Italian) is bundled |
+| `altFormat` | `string` | `'d/m/Y'` | Display format shown to the user |
+| `dateFormat` | `string` | `'Y-m-d'` | Value format sent to the server (keep ISO) |
+| `minDate` | `string` | — | Earliest selectable date (e.g. `'2020-01-01'` or `'today'`) |
+| `maxDate` | `string` | — | Latest selectable date |
+
+Any other [Flatpickr option](https://flatpickr.js.org/options/) can be passed via `clientOptions`.
+
+**Examples:**
+
+```php
+// Default — range, Italian, d/m/Y
+'filter' => ['type' => 'date'],
+
+// Single date
+'filter' => [
+    'type'          => 'date',
+    'clientOptions' => ['mode' => 'single'],
+],
+
+// Range with min/max and custom display format
+'filter' => [
+    'type'          => 'date',
+    'clientOptions' => [
+        'mode'      => 'range',
+        'minDate'   => '2020-01-01',
+        'maxDate'   => 'today',
+        'altFormat' => 'd MMMM Y',
+    ],
+],
+```
+
+**Repository filter example:**
+
+```php
+$fromDate = ($params['createdAt']['from'] ?? '') !== ''
+    ? new \DateTime($params['createdAt']['from'])
+    : null;
+$toDate = ($params['createdAt']['to'] ?? '') !== ''
+    ? new \DateTime($params['createdAt']['to'] . ' 23:59:59')
+    : null;
+$this->searchForm->andFilterWhere($qb, ['gte', 'c.createdAt', $fromDate]);
+$this->searchForm->andFilterWhere($qb, ['lte', 'c.createdAt', $toDate]);
+```
+
+> **DateTime serialization:** the bundle serializes entity `DateTime` fields to ISO 8601
+> strings (e.g. `2024-01-15T10:30:00+01:00`) using `DateTimeNormalizer`. Twig's `|date()`
+> filter accepts this format directly:
+> ```php
+> 'twigFilter' => "date('d/m/Y')",
+> ```
 
 ### Global search
 
@@ -738,6 +1120,8 @@ $columns = [
 A complete controller action combining the most common features:
 
 ```php
+use Fedale\GridviewBundle\Column\ActionButton;
+
 #[Route('/customers', name: 'customer_list', methods: ['GET'])]
 public function list(Request $request): Response
 {
@@ -770,7 +1154,23 @@ public function list(Request $request): Response
             'label'     => 'Notes',
             'visible'   => false,
         ],
-        ['type' => 'action'],
+        [
+            'type'    => 'action',
+            'layout'  => '{view} {edit} {delete}',
+            'buttons' => [
+                'view' => new ActionButton(
+                    fn(array $row) => sprintf('<a href="/customers/%d">View</a>', $row['id'])
+                ),
+                'edit' => new ActionButton(
+                    fn(array $row) => sprintf('<a href="/customers/%d/edit">Edit</a>', $row['id']),
+                    roles: ['ROLE_EDITOR', 'ROLE_ADMIN'],
+                ),
+                'delete' => new ActionButton(
+                    fn(array $row) => sprintf('<a href="/customers/%d/delete">Delete</a>', $row['id']),
+                    roles: ['ROLE_ADMIN'],
+                ),
+            ],
+        ],
     ];
 
     $gridview = $this->createGridviewBuilder()

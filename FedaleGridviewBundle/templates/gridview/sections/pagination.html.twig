@@ -1,34 +1,34 @@
 {% set _currentRoute = app.request.attributes.get('_route') %}
-{% set _lastPage    = paginator.pageCount %}
+{% set _lastPage    = pagination.pageCount %}
 {% set _currentPage = gridview.urlState.page %}
 {% set turboAction  = gridview.options.useTurbo ? 'advance' : null %}
 
-{% if paginator.pageCount > 1 %}
+{% if pagination.pageCount > 1 %}
     <nav>
-        <ul class="pagination justify-content-center pagination-dark" data-bs-theme="dark">
-            <li class="page-item{{ _currentPage <= 1 ? ' disabled' : '' }}">
-                <a class="page-link"
+        <ul class="gv-pagination">
+            <li class="gv-page-item{{ _currentPage <= 1 ? ' gv-disabled' : '' }}">
+                <a class="gv-page-link"
                    href="{{ path(_currentRoute, gridview.urlState.withPage(_currentPage - 1)) }}"
                    {% if turboAction %}data-turbo-action="{{ turboAction }}"{% endif %}
                    aria-label="Previous">
-                    &laquo; Previous
+                    &laquo;
                 </a>
             </li>
             {% for i in 1.._lastPage %}
-                <li class="page-item{{ i == _currentPage ? ' active' : '' }}">
-                    <a class="page-link"
+                <li class="gv-page-item{{ i == _currentPage ? ' gv-active' : '' }}">
+                    <a class="gv-page-link"
                        href="{{ path(_currentRoute, gridview.urlState.withPage(i)) }}"
                        {% if turboAction %}data-turbo-action="{{ turboAction }}"{% endif %}>
                         {{ i }}
                     </a>
                 </li>
             {% endfor %}
-            <li class="page-item{{ _currentPage >= _lastPage ? ' disabled' : '' }}">
-                <a class="page-link"
+            <li class="gv-page-item{{ _currentPage >= _lastPage ? ' gv-disabled' : '' }}">
+                <a class="gv-page-link"
                    href="{{ path(_currentRoute, gridview.urlState.withPage(_currentPage + 1)) }}"
                    {% if turboAction %}data-turbo-action="{{ turboAction }}"{% endif %}
                    aria-label="Next">
-                    Next &raquo;
+                    &raquo;
                 </a>
             </li>
         </ul>

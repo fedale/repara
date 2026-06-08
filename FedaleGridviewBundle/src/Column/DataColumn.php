@@ -23,6 +23,8 @@ class DataColumn extends AbstractColumn
     public $value;
 
     public $filter;
+
+    public bool $filterBar = false;
     
 
     public function __construct (
@@ -92,9 +94,24 @@ class DataColumn extends AbstractColumn
       return $current;
     }
 
-    public function setFilter($filter) 
+    public function isInFilterBar(): bool
+    {
+        return $this->filterBar;
+    }
+
+    public function setFilterBar(bool $filterBar): void
+    {
+        $this->filterBar = $filterBar;
+    }
+
+    public function setFilter($filter): void
     {
         $this->filter = $filter;
+    }
+
+    public function getFilter(): mixed
+    {
+        return $this->filter;
     }
     
     public function getOptions(): array

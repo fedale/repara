@@ -5,14 +5,11 @@ namespace Fedale\GridviewBundle\Form;
 use Fedale\GridviewBundle\Contract\SearchFormInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Form\FormFactoryInterface;
-use Symfony\Component\Form\FormBuilderInterface;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Form;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Uid\Uuid;
 
 
 class SearchForm implements SearchFormInterface
@@ -23,8 +20,6 @@ class SearchForm implements SearchFormInterface
     private Criteria $criteria;
 
     private ArrayCollection $filters;
-
-    private Request $request;
 
     public function __construct(
         private FormFactoryInterface $formFactory,
@@ -44,7 +39,7 @@ class SearchForm implements SearchFormInterface
             ]
         );
         $this->modelType = $formBuilder->getForm();
-        $this->modelType->add('save', SubmitType::class, ['label' => 'Filter', 'attr' => ['class' => 'btn btn-primary btn-sm']]);
+        $this->modelType->add('save', SubmitType::class, ['label' => 'Filter', 'attr' => ['class' => 'gv-btn gv-btn-primary']]);
     }
 
     public function getFilters()
@@ -105,13 +100,18 @@ class SearchForm implements SearchFormInterface
         $newArgs = [];
         $c = 0;
         foreach ($args as $arg) {
-            $param = $baseParam . '_' . $c;
-            $operator = $arg[0];
+            $operator  = $arg[0];
             $attribute = $arg[1];
-            $param = trim($arg[2]);
-            $newArgs[] = $this->searchWithOperator($qb, $operator, $attribute, $param);
-
+            $param     = is_string($arg[2]) ? trim($arg[2]) : $arg[2];
+            $result    = $this->searchWithOperator($qb, $operator, $attribute, $param);
+            if ($result !== null) {
+                $newArgs[] = $result;
+            }
             $c++;
+        }
+
+        if (empty($newArgs)) {
+            return;
         }
 
         if ($condition == 'or') {
@@ -122,7 +122,6 @@ class SearchForm implements SearchFormInterface
         } else {
             \call_user_func_array([$qb, 'andWhere'], $newArgs);
         }
-        $newArgs = [];
     }
 
     public function orFilterWhere()
@@ -141,13 +140,18 @@ class SearchForm implements SearchFormInterface
         $newArgs = [];
         $c = 0;
         foreach ($args as $arg) {
-            $param = $baseParam . '_' . $c;
-            $operator = $arg[0];
+            $operator  = $arg[0];
             $attribute = $arg[1];
-            $param = trim($arg[2]);
-            $newArgs[] = $this->searchWithOperator($qb, $operator, $attribute, $param);
-
+            $param     = is_string($arg[2]) ? trim($arg[2]) : $arg[2];
+            $result    = $this->searchWithOperator($qb, $operator, $attribute, $param);
+            if ($result !== null) {
+                $newArgs[] = $result;
+            }
             $c++;
+        }
+
+        if (empty($newArgs)) {
+            return;
         }
 
         if ($condition == 'and') {
@@ -161,7 +165,15 @@ class SearchForm implements SearchFormInterface
         $newArgs = [];
     }
 
-    public function searchWithOperator(QueryBuilder $qb, string $operator, string $attribute, string $param) {
+    public function searchWithOperator(QueryBuilder $qb, string $operator, string $attribute, string|array|\DateTimeInterface|null $param): mixed {
+        if ($param === null || $param === '' || $param === []) {
+            return null;
+        }
+
+        // Array values are only valid for 'in' — skip gracefully for other operators
+        if (is_array($param) && $operator !== 'in') {
+            return null;
+        }
         $search = match($operator) {
             'eq', '==' => $this->eq($qb, $attribute, $param),
             'ieq', '=' => $this->ieq($qb, $attribute, $param),
@@ -179,6 +191,7 @@ class SearchForm implements SearchFormInterface
             'startwith', '-%' => $this->startWith($qb, $attribute, $param),
             'istartwith', '-%' => $this->iStartWith($qb, $attribute, $param),
             'endWith', '%-' => $this->endWith($qb, $attribute, $param),
+            'in' => $this->inOp($qb, $attribute, $param),
             default => $this->default($qb, $attribute, $param),
         };
         return $search;
@@ -290,28 +303,32 @@ class SearchForm implements SearchFormInterface
         $qb->setParameter(':param', strtolower($searchTerm));
     }
 
-    private function gt(QueryBuilder $qb, string $attribute, string $searchTerm)
+    private function gt(QueryBuilder $qb, string $attribute, string|\DateTimeInterface $searchTerm): void
     {
-        $qb->andWhere($qb->expr()->gt($attribute, ':param'));
-        $qb->setParameter(':param', strtolower($searchTerm));
+        $p = 'p_' . uniqid();
+        $qb->andWhere($qb->expr()->gt($attribute, ':' . $p));
+        $qb->setParameter($p, $searchTerm);
     }
 
-    private function gte(QueryBuilder $qb, string $attribute, string $searchTerm)
+    private function gte(QueryBuilder $qb, string $attribute, string|\DateTimeInterface $searchTerm): void
     {
-        $qb->andWhere($qb->expr()->gte($attribute, ':param'));
-        $qb->setParameter(':param', strtolower($searchTerm));
+        $p = 'p_' . uniqid();
+        $qb->andWhere($qb->expr()->gte($attribute, ':' . $p));
+        $qb->setParameter($p, $searchTerm);
     }
 
-    private function lt(QueryBuilder $qb, string $attribute, string $searchTerm)
+    private function lt(QueryBuilder $qb, string $attribute, string|\DateTimeInterface $searchTerm): void
     {
-        $qb->andWhere($qb->expr()->lt($attribute, ':param'));
-        $qb->setParameter(':param', strtolower($searchTerm));
+        $p = 'p_' . uniqid();
+        $qb->andWhere($qb->expr()->lt($attribute, ':' . $p));
+        $qb->setParameter($p, $searchTerm);
     }
 
-    private function lte(QueryBuilder $qb, string $attribute, string $searchTerm)
+    private function lte(QueryBuilder $qb, string $attribute, string|\DateTimeInterface $searchTerm): void
     {
-        $qb->andWhere($qb->expr()->lte($attribute, ':param'));
-        $qb->setParameter(':param', strtolower($searchTerm));
+        $p = 'p_' . uniqid();
+        $qb->andWhere($qb->expr()->lte($attribute, ':' . $p));
+        $qb->setParameter($p, $searchTerm);
     }
 
     private function between(QueryBuilder $qb, string $attribute, string $searchTerm)
@@ -378,5 +395,21 @@ class SearchForm implements SearchFormInterface
     private function default(QueryBuilder $qb, string $attribute, string $searchTerm)
     {
         $this->ilike($qb, $attribute, $searchTerm);
+    }
+
+    private function inOp(QueryBuilder $qb, string $attribute, string|array $param): mixed
+    {
+        $values = is_array($param)
+            ? $param
+            : array_filter(array_map('trim', explode(',', $param)));
+
+        if (empty($values)) {
+            return null;
+        }
+
+        $paramName = 'in_' . uniqid();
+        $qb->setParameter($paramName, $values);
+
+        return $qb->expr()->in($attribute, ':' . $paramName);
     }
 }

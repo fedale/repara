@@ -3,8 +3,14 @@ fedale_gridview:
     options:
       emptyText: "No records found"
       useTurbo: true
-      showHeader: true
-      showFooter: true
+      showThead: true
+      showTfoot: true
+      maxQueryLength: 8000
+      # layout:
+      #   gridview: "{header} {table} {footer}"
+      #   header:   "{globalSearch}"
+      #   table:    "{thead} {filter} {tbody} {tfoot}"
+      #   footer:   "{pagination}"
     attributes: {}
 #     class: "table table-striped"
 #     container:
@@ -14,6 +20,11 @@ fedale_gridview:
 #   customer_list:
 #     options:
 #       globalSearch: ["c.code", "c.email"]
+#       layout:
+#         table: "{tbody}"                    # solo body, niente thead/filter/tfoot
+#         footer: "{pagination}"
+#       templates:
+#         header: "@App/gridview/custom_header.html.twig"
 #     attributes:
 #       class: "table table-dark"
 #       row:

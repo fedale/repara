@@ -27,6 +27,17 @@ abstract class AbstractDataProvider implements DataProviderInterface
     protected SortInterface $sort;
 
     /**
+     * Filter defaults declared in the column config, applied by concrete
+     * providers when the request carries no filter params at all.
+     */
+    protected array $defaultParams = [];
+
+    public function setDefaultParams(array $defaults): void
+    {
+        $this->defaultParams = $defaults;
+    }
+
+    /**
      * @param PaginationInterface $pagination
      *
      * @return $this

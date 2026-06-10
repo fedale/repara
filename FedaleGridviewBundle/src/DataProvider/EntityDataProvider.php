@@ -40,6 +40,25 @@ class EntityDataProvider extends AbstractDataProvider
         $this->params = $this->requestStack->getCurrentRequest()?->get('myform') ?? [];
     }
 
+    public function setDefaultParams(array $defaults): void
+    {
+        parent::setDefaultParams($defaults);
+
+        if ($defaults === []) {
+            return;
+        }
+
+        // A submitted GET form always sends every field (even empty), so a
+        // present-but-empty 'myform' means the user cleared the filters:
+        // defaults apply only when 'myform' is absent from the query string.
+        $request = $this->requestStack->getCurrentRequest();
+        if ($request !== null && $request->query->has('myform')) {
+            return;
+        }
+
+        $this->params = $defaults;
+    }
+
     public function setQueryBuilder(QueryBuilder $queryBuilder): void
     {
         $this->queryBuilder = $queryBuilder;

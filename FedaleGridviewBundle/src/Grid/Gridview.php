@@ -10,6 +10,7 @@ use Fedale\GridviewBundle\Contract\DataProviderInterface;
 use Fedale\GridviewBundle\Contract\GridviewInterface;
 use Fedale\GridviewBundle\Contract\SearchFormInterface;
 use Fedale\GridviewBundle\Contract\SearchModelInterface;
+use Fedale\GridviewBundle\Filter\FilterDefaultNormalizer;
 use Fedale\GridviewBundle\Grid\State\GridviewUrlState;
 use Fedale\GridviewBundle\Service\GridviewService;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,6 +23,9 @@ class Gridview implements GridviewInterface
     private GridviewUrlState $urlState;
     private Environment $twig;
     private SearchFormInterface $searchForm;
+    private ?array $dataProviderOptions = null;
+    private array $defaultFilterParams = [];
+    private bool $dataProviderInitialized = false;
 
     protected ?string $key = null;
     protected ?string $id  = null;
@@ -119,14 +123,40 @@ class Gridview implements GridviewInterface
 
     public function setDataProviderOptions(array $dataProviderOptions): void
     {
-        $this->dataProvider->prepareModels($dataProviderOptions['models']);
+        // Deferred: prepareModels() runs in initializeDataProvider() so that
+        // filter defaults declared in setColumns() are known regardless of the
+        // setDataProvider()/setColumns() call order.
+        $this->dataProviderOptions = $dataProviderOptions;
+    }
 
-        if (!empty($dataProviderOptions['sort'])) {
-            $this->dataProvider->getSort()->setAttributes($dataProviderOptions['sort']);
+    private function initializeDataProvider(): void
+    {
+        if ($this->dataProviderInitialized) {
+            return;
         }
-        if (!empty($dataProviderOptions['pagination'])) {
-            $this->dataProvider->getPagination()->setAttributes($dataProviderOptions['pagination']);
+        $this->dataProviderInitialized = true;
+
+        if ($this->defaultFilterParams !== []) {
+            $this->dataProvider->setDefaultParams($this->defaultFilterParams);
         }
+
+        if ($this->dataProviderOptions === null) {
+            return;
+        }
+
+        $this->dataProvider->prepareModels($this->dataProviderOptions['models']);
+
+        if (!empty($this->dataProviderOptions['sort'])) {
+            $this->dataProvider->getSort()->setAttributes($this->dataProviderOptions['sort']);
+        }
+        if (!empty($this->dataProviderOptions['pagination'])) {
+            $this->dataProvider->getPagination()->setAttributes($this->dataProviderOptions['pagination']);
+        }
+    }
+
+    public function getDefaultFilterParams(): array
+    {
+        return $this->defaultFilterParams;
     }
 
     public function getSearchModel(): ?SearchModelInterface
@@ -151,6 +181,13 @@ class Gridview implements GridviewInterface
                 $options = $column->filter['options'] ?? [];
                 if (isset($column->filter['clientOptions'])) {
                     $options['client_options'] = $column->filter['clientOptions'];
+                }
+                if (array_key_exists('default', $column->filter)) {
+                    $default = FilterDefaultNormalizer::normalize($column->filter['type'], $column->filter['default'], $options);
+                    $options['data'] ??= $default;
+                    // Key mangling must mirror SearchForm::addFilter(), so the
+                    // default param key matches the submitted param key
+                    $this->defaultFilterParams[str_replace('.', '_', $column->getAttribute())] = $default;
                 }
                 $this->searchForm->addFilter($column->getAttribute(), $column->filter['type'], $options);
             }
@@ -259,6 +296,8 @@ class Gridview implements GridviewInterface
 
     public function renderGrid(string $view, array $parameters = []): Response
     {
+        $this->initializeDataProvider();
+
         $request  = $this->gridviewService->getRequest();
         $formName = $this->options['formName'];
 

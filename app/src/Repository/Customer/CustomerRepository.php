@@ -40,7 +40,6 @@ class CustomerRepository extends ServiceEntityRepository
         }
     }
 
-    
     public function search(array $params = [])
     {
         $qb = $this
@@ -52,252 +51,27 @@ class CustomerRepository extends ServiceEntityRepository
             ->join('c.type', 't')
         ;
 
-        // First case: search in one field using LIKE
-        /*
-            $this->searchForm->andFilterWhere(
-                $qb,
-                [
-                    'like',
-                    'l.zipcode',
-                    $params['locations']
-                ]
-            );
-        */
-        // Second case: search in more fields using LIKE
-        /*
-            $this->searchForm->andFilterWhere(
-                $qb,
-                [
-                    'like',
-                    'l.zipcode',
-                    $params['locations']
-                ],
-                [
-                    'like',
-                    'secondField',
-                    $params['otherParam']
-                ]
-            );
-        */
-        
-         // Symfony way
-         /*
-        $qb->andWhere(
-            $qb->expr()->like('l.zipcode', ':locations'),
-        );
-        $qb->setParameter('locations', '%' . $params['locations'] . '%');
-        $qb->setParameter('locations2', '%' . $params['locations'] . '%');
-        */
-        /*
-        $qb->where('o.foo = 1')
-            ->andWhere($qb->expr()->orX(
-                $qb->expr()->eq('o.bar', 1),
-                $qb->expr()->eq('o.bar', 2)
-        ));
-        */
-        
-        $this->searchForm->andFilterWhere(
-            $qb,
-            [
-                'like',
-                'c.code',
-                $params['code'] ?? null,
-            ]
-        );
-        // ->andFilterWhere(['like', 'tbl_city.name', $this->city]) // Yii2 way
-        // My way: I want that this statement produces a condition like this:
-        // AND (p.firstname LIKE %s OR p.lastname LIKE %s OR CONCAT(p.firstname, ' ', p.lastname) LIKE %s OR CONCAT (p.lastname, ' ', p.firstname) LIKE %s)
-        $this->searchForm->andFilterWhere(
-            $qb,
-            'or', // conditional object to use (optional) could be 'and' or 'or'. By default it is the same as function
-            [
-                'ilike',
-                'p.firstname',
-                $params['profile_fullname'] ?? null,
-            ],
-            [
-                'ilike',
-                'p.lastname',
-                $params['profile_fullname'] ?? null,
-            ],
-            [
-                'ilike',
-                'CONCAT(p.firstname, \' \', p.lastname)',
-                $params['profile_fullname'] ?? null,
-            ],
-            [
-                'ilike',
-                'CONCAT(p.lastname, \' \', p.firstname)',
-                $params['profile_fullname'] ?? null,
-            ],
-            [
-                'ilike',
-                'c.email',
-                $params['profile_fullname'] ?? null,
-            ],
-        );
-
-
-        $this->searchForm->andFilterWhere(
-            $qb,
-            [
-                'in',
-                'l.id',
-                $params['locations'] ?? [],
-            ],
-        );
-
-        if (isset($params['active']) && $params['active'] !== '') {
-            $qb->andWhere('c.active = :active')
-               ->setParameter('active', $params['active'] === '1', \Doctrine\DBAL\Types\Types::BOOLEAN);
-        }
-
-        $isIsoDate = static fn(string $s): bool => (bool) preg_match('/^\d{4}-\d{2}-\d{2}$/', $s);
-
-        $fromDate = ($params['createdAt']['from'] ?? '') !== '' && $isIsoDate($params['createdAt']['from'])
-            ? new \DateTime($params['createdAt']['from'])
-            : null;
-        $toDate = ($params['createdAt']['to'] ?? '') !== '' && $isIsoDate($params['createdAt']['to'])
-            ? new \DateTime($params['createdAt']['to'] . ' 23:59:59')
-            : null;
-
-        $this->searchForm->andFilterWhere($qb, ['gte', 'c.createdAt', $fromDate]);
-        $this->searchForm->andFilterWhere($qb, ['lte', 'c.createdAt', $toDate]);
-
-
-        $this->searchForm->andFilterWhere(
-            $qb,
-            [
-                'like',
-                'c.email',
-                $params['email'] ?? null,
-            ]
-        );
-/*
-        $this->searchForm->andFilterWhere(
-            $qb,
-            [
-                'like', // operator
-                'l.zipcode', // attribute
-                $params['locations'] // param
-            ],
-            [
-                'like',
-                'l.zipcode',
-                $params['locations']
-            ],
-            [
-                'like',
-                'l.zipcode',
-                $params['locations']
-            ]
-        );
-  */      
-       
-
-        /* 
-        // Yii2 way with nested or/and
-        // docs: https://www.yiiframework.com/doc/api/2.0/yii-db-queryinterface#where()-detail
-        $query->andFilterWhere([
-            'or',
-            [
-                'and',
-                ['>=', 't1.price', $this>start_price],
-                ['<=', 't1.price', $this->end_price]
-            ],
-            [
-                'and',
-                ['>=', 't2.price', $this->start_price],
-                ['<=', 't2.price', $this->end_price]
-            ]
+        // Per-type filter logic (date range parsing, boolean cast, IN, ...)
+        // lives in the bundle appliers; the map declares param key => [type, DQL field]
+        $this->searchForm->applyFilters($qb, $params, [
+            'code'      => ['text',     'c.code'],
+            'email'     => ['text',     'c.email'],
+            'active'    => ['boolean',  'c.active'],
+            'createdAt' => ['date',     'c.createdAt'],
+            'locations' => ['relation', 'l.id'],
         ]);
 
-        "AND WHERE 
-
-        */
-
-        /*
-        $qb->andWhere(
-            $this->searchForm->search($qb, 'l.zipcode', $params['locations'])
-        );*/
-            
-        /*
-        $fullname = strtolower($params['profile_fullname']);
-        $qb->andWhere(
-            $qb->expr()->orX(
-                $this->searchForm->search($qb, 'p.firstname', $fullname),
-                $this->searchForm->search($qb, 'p.lastname', $fullname),
-                $this->searchForm->search(
-                    $qb,
-                    $qb->expr()->concat('p.firstname', $qb->expr()->literal(' '), 'p.lastname'),
-                    $fullname
-                ),
-                $this->searchForm->search(
-                    $qb,
-                    $qb->expr()->concat('p.lastname', $qb->expr()->literal(' '), 'p.firstname'),
-                    $fullname
-                ),
-            )
+        // Genuinely custom condition: fullname matches any of several fields
+        $this->searchForm->andFilterWhere(
+            $qb,
+            'or',
+            ['ilike', 'p.firstname', $params['profile_fullname'] ?? null],
+            ['ilike', 'p.lastname', $params['profile_fullname'] ?? null],
+            ['ilike', 'CONCAT(p.firstname, \' \', p.lastname)', $params['profile_fullname'] ?? null],
+            ['ilike', 'CONCAT(p.lastname, \' \', p.firstname)', $params['profile_fullname'] ?? null],
+            ['ilike', 'c.email', $params['profile_fullname'] ?? null],
         );
-        */
 
-        // $fullname = $params['profile_fullname'];
-        // $criteria->andWhere(
-        //     $expr->orX(
-        //         $expr->contains('p.firstname', $fullname),
-        //         $expr->contains('p.lastname', $fullname),
-        //         $expr->contains('CONCAT(p.firstname, " ", p.lastname)', $fullname),
-        //     )
-        // );
-        
-        // $qb->addCriteria($criteria);
-        // //$qb->setParameter(':fullname', '%' . $fullname . '%');
-
-        /*
-        $qb->andWhere(
-            $qb->expr()->orX(
-                $qb->expr()->like('LOWER(p.firstname)', ':fullname'),
-                $qb->expr()->like('LOWER(p.lastname)', ':fullname'),
-                $qb->expr()->like(
-                    $qb->expr()->concat(
-                        $qb->expr()->lower('p.firstname'), 
-                        $qb->expr()->literal(' '), 
-                        $qb->expr()->lower('p.lastname'), 
-                    ),
-                    ':fullname'
-                ),
-                $qb->expr()->like(
-                    $qb->expr()->concat(
-                        $qb->expr()->lower('p.lastname'), 
-                        $qb->expr()->literal(' '), 
-                        $qb->expr()->lower('p.firstname'), 
-                    ),
-                    ':fullname'
-                ),
-            )
-        )
-            ->setParameter(':fullname', '%' . $fullname . '%')
-        ;
-         */
         return $qb;
-        /**
-         * ++++++++++ What I want to achieve ++++++++++++
-         * // We have to do some search... Lets do some magic
-         *   $query->andFilterWhere([
-         *      //... other searched attributes here
-         *   ])
-         * 
-         *   // Here we search the attributes of our relations using our previously configured
-         *   // ones in "TourSearch"
-         *   ->andFilterWhere(['like', 'tbl_city.name', $this->city])
-         *   ->andFilterWhere(['like', 'tbl_country.name', $this->country]);
-         */
-
-         /**
-          * maybe something like:
-          * $filterService->andFilterWhere([$qb, 'like', $value, $attribute])
-          * or
-          * $this->andFilterWhere([$qb, 'like', $value, $attribute])
-          */
     }
 }

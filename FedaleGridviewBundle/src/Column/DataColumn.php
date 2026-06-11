@@ -25,7 +25,14 @@ class DataColumn extends AbstractColumn
     public $filter;
 
     public bool $filterBar = false;
-    
+
+    /**
+     * When the filter is shown in the filterBar, also render a "mirror" input in
+     * the column header (text/number filters only). Opt-in: by default a filterBar
+     * filter lives ONLY in the filterBar.
+     */
+    public bool $headerMirror = false;
+
 
     public function __construct (
         private Gridview $gridview,
@@ -102,6 +109,16 @@ class DataColumn extends AbstractColumn
     public function setFilterBar(bool $filterBar): void
     {
         $this->filterBar = $filterBar;
+    }
+
+    public function hasHeaderMirror(): bool
+    {
+        return $this->headerMirror;
+    }
+
+    public function setHeaderMirror(bool $headerMirror): void
+    {
+        $this->headerMirror = $headerMirror;
     }
 
     public function setFilter($filter): void

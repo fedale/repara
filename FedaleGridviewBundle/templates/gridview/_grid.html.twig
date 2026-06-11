@@ -9,7 +9,7 @@
          data-gridview-selection-grid-id-value="{{ gridview.key }}"
          {% endif %}>
         {% if form is defined and form is not null %}
-        {{ form_start(form, {'attr': {'data-controller': 'gridview-filter', 'data-turbo-action': 'replace'}}) }}
+        {{ form_start(form, {'attr': {'id': 'gv-form-' ~ gridview.key, 'data-controller': 'gridview-filter', 'data-turbo-action': 'replace'}}) }}
         {% endif %}
         {% for section in gridview.parseLayout('gridview') %}
             {{ gridview_include(gridview, section) }}

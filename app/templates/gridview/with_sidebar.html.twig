@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Entity index{% endblock %}
+
+{% block sidebar %}
+    {# Wrapper con data-gridview così dropdown e filterBar ereditano le variabili
+       --gv-* e le regole [data-gridview] anche fuori dal container griglia.
+       I widget della filterBar si collegano alla form della griglia via
+       form="gv-form-{key}", quindi funzionano pur stando qui nella sidebar. #}
+    <div data-gridview class="gv-sidebar-tools mb-3">
+        {{ gridview_include(gridview, 'columnVisibility') }}
+        {{ gridview_include(gridview, 'filterBar') }}
+    </div>
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+<h1>Entity index</h1>
+{% include '@FedaleGridview/gridview/_grid.html.twig'
+   with {'gridview': gridview, 'columns': columns, 'models': models,
+         'pagination': pagination, 'form': form is defined ? form : null} %}
+{% endblock %}

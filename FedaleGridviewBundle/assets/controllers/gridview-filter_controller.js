@@ -12,8 +12,14 @@ export default class extends Controller {
             const el = document.getElementById(frame.dataset.lastFocusedId);
             if (el) {
                 el.focus();
-                const len = el.value.length;
-                el.setSelectionRange(len, len);
+                // Caret to end — only for inputs that support text selection
+                // (<select>, checkbox, number/date inputs don't and would throw).
+                if (typeof el.setSelectionRange === 'function') {
+                    try {
+                        const len = el.value.length;
+                        el.setSelectionRange(len, len);
+                    } catch (_) { /* input type doesn't support selection */ }
+                }
             }
         }
 
@@ -41,6 +47,22 @@ export default class extends Controller {
         document.addEventListener('turbo:submit-end', this._onSubmitEnd);
         document.addEventListener('turbo:fetch-request-error', this._onFetchError);
 
+        // Filter widgets associated to this form via HTML `form="<id>"` but rendered
+        // OUTSIDE the controller's DOM (e.g. a filterBar placed in a page sidebar)
+        // can't reach the Stimulus `data-action`. Delegate from the document so the
+        // debounced auto-submit still fires for them.
+        this._onDetachedInput = e => {
+            const el = e.target;
+            if (el.form === this.element
+                && !this.element.contains(el)
+                && this._isFilterField(el)) {
+                this._mirrorToHeader(el);
+                this._scheduleSubmit(el);
+            }
+        };
+        document.addEventListener('input',  this._onDetachedInput);
+        document.addEventListener('change', this._onDetachedInput);
+
         this._applyHighlights();
         this._updateHeaderIcons();
     }
@@ -50,60 +72,53 @@ export default class extends Controller {
         this.element.removeEventListener('submit', this._onSubmit);
         document.removeEventListener('turbo:submit-end', this._onSubmitEnd);
         document.removeEventListener('turbo:fetch-request-error', this._onFetchError);
+        document.removeEventListener('input',  this._onDetachedInput);
+        document.removeEventListener('change', this._onDetachedInput);
     }
 
     // ── Actions ────────────────────────────────────────────────────────
 
     input(event) {
-        // If there is no enclosing <turbo-frame> (useTurbo: false), skip auto-submit.
-        const frame = this.element.closest('turbo-frame');
-        if (!frame) return;
-
-        frame.dataset.lastFocusedId = event.target.id;
-
-        clearTimeout(this._timer);
-        this._timer = setTimeout(() => {
-            this._updateHeaderIcons();
-            this.element.requestSubmit();
-        }, this.delayValue);
+        this._scheduleSubmit(event.target);
     }
 
     filterBarInput(event) {
-        const frame = this.element.closest('turbo-frame');
-        if (!frame) return;
-
-        frame.dataset.lastFocusedId = event.target.id;
-
-        const attr = event.target.dataset.gvFbAttr;
-        if (attr) {
-            this.element.querySelectorAll(`[data-gv-mirror-attr="${attr}"]`)
-                .forEach(el => { el.value = event.target.value; });
-        }
-
-        clearTimeout(this._timer);
-        this._timer = setTimeout(() => {
-            this._updateHeaderIcons();
-            this.element.requestSubmit();
-        }, this.delayValue);
+        this._mirrorToHeader(event.target);
+        this._scheduleSubmit(event.target);
     }
 
     mirrorInput(event) {
         const attr = event.target.dataset.gvMirrorAttr;
         if (!attr) return;
 
+        const realInput = this.element.querySelector(`[data-gv-fb-attr="${attr}"]`);
+        if (realInput) realInput.value = event.target.value;
+
+        this._scheduleSubmit(event.target);
+    }
+
+    // Debounced auto-submit shared by inline, filterBar (in-grid or detached) and
+    // mirror inputs.
+    _scheduleSubmit(target) {
+        // If there is no enclosing <turbo-frame> (useTurbo: false), skip auto-submit.
         const frame = this.element.closest('turbo-frame');
         if (!frame) return;
 
-        frame.dataset.lastFocusedId = event.target.id;
-
-        const realInput = this.element.querySelector(`[data-gv-fb-attr="${attr}"]`);
-        if (realInput) realInput.value = event.target.value;
+        if (target?.id) frame.dataset.lastFocusedId = target.id;
 
         clearTimeout(this._timer);
         this._timer = setTimeout(() => {
             this._updateHeaderIcons();
             this.element.requestSubmit();
         }, this.delayValue);
+    }
+
+    // Copy a filterBar widget's value into its mirror input(s) in the header (if any).
+    _mirrorToHeader(target) {
+        const attr = target.dataset.gvFbAttr;
+        if (!attr) return;
+        this.element.querySelectorAll(`[data-gv-mirror-attr="${attr}"]`)
+            .forEach(el => { el.value = target.value; });
     }
 
     toggleFilter(event) {
@@ -238,11 +253,21 @@ export default class extends Controller {
     // ── Helpers ────────────────────────────────────────────────────────
 
     _findFilterInputs(field) {
-        return [
-            ...this.element.querySelectorAll(
-                `[name*="[${field}]"], [name="${field}"]`
-            ),
-        ];
+        // Use form.elements (not querySelectorAll) so inputs associated via
+        // `form="<id>"` but rendered outside the form's DOM are also found.
+        return [...this.element.elements].filter(el =>
+            el.name && (el.name.includes(`[${field}]`) || el.name === field)
+        );
+    }
+
+    _isFilterField(el) {
+        if (!el.name) return false;
+        const tag = el.tagName;
+        if (tag === 'SELECT' || tag === 'TEXTAREA') return true;
+        if (tag === 'INPUT') {
+            return !['submit', 'reset', 'button', 'hidden'].includes(el.type);
+        }
+        return false;
     }
 
     _hasValue(el) {

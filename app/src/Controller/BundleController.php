@@ -126,7 +126,8 @@ class BundleController extends AbstractController
                 'twigFilter' => 'raw',
                 'filter' => [
                     'type' => 'text',
-                ]
+                ],
+                'filterBar' => true,
             ],
 
             [
@@ -170,6 +171,8 @@ class BundleController extends AbstractController
                 'value' => function (array $data, string $key, ColumnInterface $column) {
                     return $data['username'];
                 },
+                'filter' => ['type' => 'text'],
+                'filterBar' => true,
             ],
             [
                 'type' => 'action',
@@ -221,8 +224,10 @@ class BundleController extends AbstractController
             ->setOptions([
                 'layout' => [
                     // 'gridview' => '{toolbar} {header} {table} {footer}',
-                    'gridview' => '{toolbar} {filterBar} {header} {table} {footer}',
-                    'toolbar' => '{columnVisibility}',
+                    // columnVisibility e filterBar resi nella sidebar di pagina
+                    // (vedi gridview/with_sidebar.html.twig). La form resta attorno
+                    // alla sola tabella; la filterBar staccata si collega per id.
+                    'gridview' => '{header} {table} {footer}',
                 ],
             ])
             ->setAttributes([
@@ -243,7 +248,7 @@ class BundleController extends AbstractController
             ->renderGridview();
 
 
-        return $gridview->renderGrid('@FedaleGridview/gridview/index.html.twig', []);//, ['pagination' => $pagination]); //, 'form' => $form->createView()]);
+        return $gridview->renderGrid('gridview/with_sidebar.html.twig', []);//, ['pagination' => $pagination]); //, 'form' => $form->createView()]);
     }
 
     public function createGridviewBuilder(): GridviewBuilderInterface

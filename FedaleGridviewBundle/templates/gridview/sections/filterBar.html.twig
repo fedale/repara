@@ -10,6 +10,7 @@
             <div class="gv-filter-bar__control">
                 {{ form_widget(form[attr], {
                     'attr': {
+                        'form':            'gv-form-' ~ gridview.key,
                         'data-action':     'input->gridview-filter#filterBarInput',
                         'data-gv-fb-attr': attr
                     }

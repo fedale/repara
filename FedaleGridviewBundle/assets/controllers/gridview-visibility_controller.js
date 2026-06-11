@@ -14,10 +14,19 @@ export default class extends Controller {
             }
         };
         document.addEventListener('click', this._outsideClick);
+
+        // When the dropdown lives outside the <turbo-frame> (e.g. in a page
+        // sidebar), it does not re-connect on frame swaps — re-apply the stored
+        // visibility to the freshly rendered cells.
+        this._onFrameRender = e => {
+            if (e.target?.id === `gridview-${this.gridIdValue}`) this._restore();
+        };
+        document.addEventListener('turbo:frame-render', this._onFrameRender);
     }
 
     disconnect() {
         document.removeEventListener('click', this._outsideClick);
+        document.removeEventListener('turbo:frame-render', this._onFrameRender);
     }
 
     toggleMenu(event) {

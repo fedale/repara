@@ -13,15 +13,78 @@
         {% block javascripts %}
             {{ encore_entry_script_tags('app') }}
         {% endblock %}
+
+        <style>
+            html, body { height: 100%; }
+            body { margin: 0; }
+            .page-layout {
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
+            }
+            .page-header {
+                flex: 0 0 auto;
+            }
+            .page-main {
+                flex: 1 1 auto;
+                display: flex;
+                min-height: 0;
+            }
+            .page-sidebar {
+                flex: 0 0 10%;
+                max-width: 10%;
+                overflow: auto;
+            }
+            .page-body {
+                flex: 1 1 auto;
+                min-width: 0;
+                overflow: auto;
+                padding: 1rem;
+            }
+            .page-footer {
+                flex: 0 0 auto;
+            }
+        </style>
     </head>
     <body>
-        <div style="padding: .5rem 1rem; display: flex; justify-content: flex-end;">
-            <button class="btn btn-sm btn-outline-secondary"
-                    data-controller="color-theme"
-                    data-action="click->color-theme#toggle">
-                <span data-color-theme-target="icon">☀</span>
-            </button>
+        <div class="page-layout">
+            <header class="page-header navbar navbar-expand bg-body-tertiary border-bottom px-3 py-2">
+                <a class="navbar-brand" href="{{ path('app_gridview') }}">⚫️ Repara</a>
+                <nav class="navbar-nav flex-row gap-3 me-auto">
+                    <a class="nav-link" href="{{ path('app_gridview') }}">Gridview</a>
+                    <a class="nav-link" href="{{ path('app_customer_customer_index') }}">Customers</a>
+                    <a class="nav-link" href="{{ path('new_app_grid') }}">New Customer Grid</a>
+                    <a class="nav-link" href="{{ path('app_user_user_index') }}">Users</a>
+                </nav>
+                <button class="btn btn-sm btn-outline-secondary"
+                        data-controller="color-theme"
+                        data-action="click->color-theme#toggle">
+                    <span data-color-theme-target="icon">☀</span>
+                </button>
+            </header>
+
+            <div class="page-main">
+                <aside class="page-sidebar bg-body-tertiary border-end p-2">
+                    {% block sidebar %}
+                        <nav class="nav flex-column">
+                            <a class="nav-link px-1 py-1" href="{{ path('app_gridview') }}">Gridview</a>
+                            <a class="nav-link px-1 py-1" href="{{ path('app_customer_customer_index') }}">Customers</a>
+                            <a class="nav-link px-1 py-1" href="{{ path('new_app_grid') }}">New Grid</a>
+                            <a class="nav-link px-1 py-1" href="{{ path('app_user_user_index') }}">Users</a>
+                        </nav>
+                    {% endblock %}
+                </aside>
+
+                <main class="page-body">
+                    {% block body %}{% endblock %}
+                </main>
+            </div>
+
+            <footer class="page-footer bg-body-tertiary border-top text-center small py-2">
+                {% block footer %}
+                    <span class="text-body-secondary">© {{ "now"|date("Y") }} Repara</span>
+                {% endblock %}
+            </footer>
         </div>
-        {% block body %}{% endblock %}
     </body>
 </html>

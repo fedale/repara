@@ -244,3 +244,38 @@ footer.main {
     border-radius: 0 !important;
 }
 
+/****** GRIDVIEW — column visibility in page sidebar ******/
+/* The sidebar is narrow with overflow:auto, which would clip the dropdown's
+   absolute menu. Render it inline (static) so it flows within the sidebar. */
+.page-sidebar .gv-sidebar-tools {
+    position: static;
+}
+.page-sidebar .gv-dropdown {
+    display: block;
+}
+.page-sidebar .gv-dropdown .gv-btn {
+    width: 100%;
+    text-align: left;
+}
+.page-sidebar .gv-dropdown .gv-dropdown-menu {
+    position: static;
+    width: 100%;
+    min-width: 0;
+    box-shadow: none;
+}
+
+/* FilterBar placed in the sidebar: stack items vertically, full-width controls.
+   (Free to restyle — the filterBar can live anywhere; this is just a sane default.) */
+.page-sidebar .gv-filter-bar {
+    flex-direction: column;
+    align-items: stretch;
+    border-bottom: 0;
+}
+.page-sidebar .gv-filter-bar__item {
+    max-width: none;
+}
+.page-sidebar .gv-filter-bar__control input,
+.page-sidebar .gv-filter-bar__control select {
+    width: 100%;
+}
+

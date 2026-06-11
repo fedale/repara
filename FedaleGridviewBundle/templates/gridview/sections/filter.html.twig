@@ -7,7 +7,7 @@
             {% if form[attr] is defined %}
                 {% set inFilterBar = column.isInFilterBar() %}
                 {% set filterType  = column.filter.type ?? 'text' %}
-                {% if inFilterBar and filterType in ['text', 'number'] %}
+                {% if inFilterBar and column.hasHeaderMirror() and filterType in ['text', 'number'] %}
                 <div class="gv-filter-cell">
                     <input type="{{ filterType }}"
                            id="gv-mirror-{{ attr }}"

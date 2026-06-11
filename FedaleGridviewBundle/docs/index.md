@@ -175,6 +175,8 @@ $columns = [
 | `filter` | `array\|null` | `null` | Column filter definition (requires a `SearchModel`) |
 | `sortable` | `bool` | `true` | Whether clicking the header sorts the grid |
 | `filterable` | `bool` | `true` | Whether the column shows a filter input |
+| `filterBar` | `bool` | `false` | Render this column's filter in the `{filterBar}` section instead of inline in the header row |
+| `headerMirror` | `bool` | `false` | Only with `filterBar: true` (text/number filters): also render a synced "mirror" input in the column header. Off by default → the filter lives **only** in the filterBar |
 
 ### Column types
 
@@ -527,6 +529,60 @@ $columns = [
 ];
 ```
 
+### The filterBar — placing filters anywhere
+
+By default a column filter is rendered inline in the table header row. Set
+`filterBar: true` to render it in the dedicated `{filterBar}` section instead:
+
+```php
+$columns = [
+    [
+        'attribute' => 'profile_fullname',
+        'filter'    => ['type' => 'text'],
+        'filterBar' => true,           // → rendered in {filterBar}, not in the header
+    ],
+];
+```
+
+**The `{filterBar}` section can live anywhere on the page**, with whatever CSS you
+like — including outside the grid itself (e.g. a page sidebar). The form and the
+`<turbo-frame>` do **not** need to wrap the whole page: the filterBar widgets are
+associated to the grid's form by id (`form="gv-form-{key}"`), so they belong to the
+form even when rendered far from it. `FormData` / `requestSubmit` / `reset` include
+them, and the debounced auto-submit-as-you-type still fires (a delegated listener
+handles inputs rendered outside the controller's DOM).
+
+Render it wherever you want via the token in the layout, or directly in a host
+template:
+
+```twig
+{# In a page sidebar, outside the grid container #}
+<aside class="my-sidebar">
+    {{ gridview_include(gridview, 'filterBar') }}
+</aside>
+```
+
+When the filterBar is placed outside the grid, drop `{filterBar}` from the grid's
+internal `layout` so it is not rendered twice.
+
+#### `headerMirror` — also show the filter in the column header
+
+For `text` / `number` filters in the filterBar you can opt to **also** render a
+synced "mirror" input in the column header, so users can type from either place:
+
+```php
+[
+    'attribute'    => 'code',
+    'filter'       => ['type' => 'text'],
+    'filterBar'    => true,
+    'headerMirror' => true,   // filterBar + a mirror input in the header
+],
+```
+
+`headerMirror` is **off by default**: a `filterBar` filter lives only in the
+filterBar. It has no effect on non-text/number filters (relation, boolean, date),
+which are never mirrored.
+
 ### Filter types reference
 
 #### `text`
@@ -792,7 +848,8 @@ tfoot:    ""
 | `{table}` | `sections/table.html.twig` | The `<table>` element |
 | `{footer}` | `sections/footer.html.twig` | Wrapper below the table |
 | `{thead}` | `sections/thead.html.twig` | Column header row |
-| `{filter}` | `sections/filter.html.twig` | Column filter inputs row |
+| `{filter}` | `sections/filter.html.twig` | Column filter inputs row (header) |
+| `{filterBar}` | `sections/filterBar.html.twig` | Filters of columns with `filterBar: true`; placeable anywhere, even outside the grid (see [The filterBar](#the-filterbar--placing-filters-anywhere)) |
 | `{tbody}` | `sections/tbody.html.twig` | Data rows |
 | `{tfoot}` | `sections/tfoot.html.twig` | Table footer row |
 | `{globalSearch}` | `sections/globalSearch.html.twig` | Global search input |

@@ -126,7 +126,8 @@ class BundleController extends AbstractController
                 'twigFilter' => 'raw',
                 'filter' => [
                     'type' => 'text',
-                ]
+                ],
+                'filterBar' => true,
             ],
 
             [
@@ -170,6 +171,8 @@ class BundleController extends AbstractController
                 'value' => function (array $data, string $key, ColumnInterface $column) {
                     return $data['username'];
                 },
+                'filter' => ['type' => 'text'],
+                'filterBar' => true,
             ],
             [
                 'type' => 'action',

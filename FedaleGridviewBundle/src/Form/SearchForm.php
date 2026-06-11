@@ -3,6 +3,7 @@
 namespace Fedale\GridviewBundle\Form;
 
 use Fedale\GridviewBundle\Contract\SearchFormInterface;
+use Fedale\GridviewBundle\Filter\Applier\FilterApplierRegistry;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Form\FormFactoryInterface;
 use Doctrine\ORM\QueryBuilder;
@@ -23,7 +24,8 @@ class SearchForm implements SearchFormInterface
 
     public function __construct(
         private FormFactoryInterface $formFactory,
-        private RequestStack $requestStack
+        private RequestStack $requestStack,
+        private ?FilterApplierRegistry $applierRegistry = null
     ) {
         $this->filters = new ArrayCollection();
 
@@ -62,6 +64,40 @@ class SearchForm implements SearchFormInterface
         $name = str_replace('.', '_', $name);
         $class = "Fedale\\GridviewBundle\\Filter\\Filter" . ucfirst($type) . 'Type';
         $this->modelType->add($name, $class, $options);
+    }
+
+    /**
+     * Applies a set of filter params to the QueryBuilder, delegating the
+     * per-type logic (date ranges, boolean cast, IN, ...) to the registered
+     * filter appliers. Blank values are skipped silently.
+     *
+     * Map keys are the submitted param keys (column attributes with dots
+     * replaced by underscores, as produced by addFilter()). Each entry is
+     * [type, dqlField] with an optional third element of applier options:
+     *
+     *   $searchForm->applyFilters($qb, $params, [
+     *       'code'      => ['text',     'c.code'],
+     *       'active'    => ['boolean',  'c.active'],
+     *       'createdAt' => ['date',     'c.createdAt'],
+     *       'locations' => ['relation', 'l.id'],
+     *   ]);
+     */
+    public function applyFilters(QueryBuilder $qb, array $params, array $map): void
+    {
+        $this->applierRegistry ??= new FilterApplierRegistry();
+
+        foreach ($map as $paramKey => $spec) {
+            [$type, $dqlField] = $spec;
+
+            $this->applierRegistry
+                ->get($type)
+                ->apply($qb, $dqlField, $params[$paramKey] ?? null, $spec[2] ?? []);
+        }
+    }
+
+    public function getApplierRegistry(): FilterApplierRegistry
+    {
+        return $this->applierRegistry ??= new FilterApplierRegistry();
     }
 
     public function getCriteria(): Criteria|null

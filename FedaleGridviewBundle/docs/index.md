@@ -529,6 +529,48 @@ $columns = [
 ];
 ```
 
+### Default filter values
+
+A filter can declare a `default` value so the grid opens **already filtered** on first
+visit, with the filter input pre-filled accordingly:
+
+```php
+$columns = [
+    [
+        'attribute' => 'active',
+        'filter'    => ['type' => 'boolean', 'default' => '1'],   // open on active rows
+    ],
+    [
+        'attribute' => 'createdAt',
+        'filter'    => ['type' => 'date', 'default' => ['from' => '2025-01-01', 'to' => null]],
+    ],
+];
+```
+
+**Accepted shapes per type** (validated at configuration time — an invalid shape throws
+`InvalidArgumentException`):
+
+| Filter type | `default` shape |
+|-------------|-----------------|
+| `text` | scalar, e.g. `'abc'` |
+| `boolean` | `'1'`/`'0'` (also `1`, `0`, `true`, `false`) |
+| `date` | `['from' => 'YYYY-MM-DD', 'to' => 'YYYY-MM-DD']` (either bound nullable) or the string shorthand `'YYYY-MM-DD'` (= `from`) |
+| `number` | `['from' => 10, 'to' => 20]` (either bound nullable) or a numeric shorthand (= `from`) |
+| `choice` / `relation` | scalar value, or an array of values when the filter has `'multiple' => true` |
+
+**Semantics:**
+
+- Defaults apply **only when the request carries no `myform` parameter at all** (first
+  visit). A submitted GET form always sends every field — even empty ones — so a
+  present-but-empty `myform` means *the user cleared the filter*, and the default is
+  **not** reapplied.
+- Sort and pagination links generated from a first visit carry no `myform` params, so
+  defaults keep applying consistently while navigating.
+- The default value also pre-fills the form input (via the form `data` option), so what
+  the user sees always matches the applied query.
+- For columns with dotted attributes (e.g. `t.name`) the default is keyed by the mangled
+  param name (`t_name`), matching the submitted form field name.
+
 ### The filterBar — placing filters anywhere
 
 By default a column filter is rendered inline in the table header row. Set
@@ -629,7 +671,16 @@ Submits `'1'` (true) or `'0'` (false) as string values.
 ],
 ```
 
-**Repository filter example** — cast the submitted string to a typed boolean for Doctrine:
+**Repository filter example** — the `boolean` applier casts `'1'`/`'0'` to a typed
+Doctrine boolean parameter:
+
+```php
+$this->searchForm->applyFilters($qb, $params, [
+    'active' => ['boolean', 'c.active'],
+]);
+```
+
+<details><summary>Under the hood (manual equivalent)</summary>
 
 ```php
 if (isset($params['active']) && $params['active'] !== '') {
@@ -637,6 +688,7 @@ if (isset($params['active']) && $params['active'] !== '') {
        ->setParameter('active', $params['active'] === '1', \Doctrine\DBAL\Types\Types::BOOLEAN);
 }
 ```
+</details>
 
 ---
 
@@ -694,11 +746,21 @@ search input and optional AJAX loading.
 | `option_label` | `string` | `'name'` | JSON key used as option label (AJAX mode) |
 | `option_value` | `string` | `'id'` | JSON key used as option value (AJAX mode) |
 
-**Repository filter example** — use the `in` operator for multi-select:
+**Repository filter example** — the `relation` applier handles both single values (`=`)
+and multi-select arrays (`IN`):
+
+```php
+$this->searchForm->applyFilters($qb, $params, [
+    'locations' => ['relation', 'l.id'],
+]);
+```
+
+<details><summary>Under the hood (manual equivalent)</summary>
 
 ```php
 $this->searchForm->andFilterWhere($qb, ['in', 'l.id', $params['locations'] ?? []]);
 ```
+</details>
 
 ---
 
@@ -716,7 +778,16 @@ Submits as `myform[field][from]` and `myform[field][to]`.
 | `from_placeholder` | `string` | `'Min'` | Placeholder for the lower bound input |
 | `to_placeholder` | `string` | `'Max'` | Placeholder for the upper bound input |
 
-**Repository filter example:**
+**Repository filter example** — the `number` applier validates both bounds and applies
+`>=` / `<=`:
+
+```php
+$this->searchForm->applyFilters($qb, $params, [
+    'price' => ['number', 'p.price'],
+]);
+```
+
+<details><summary>Under the hood (manual equivalent)</summary>
 
 ```php
 $from = ($params['price']['from'] ?? '') !== '' ? (float)$params['price']['from'] : null;
@@ -724,6 +795,7 @@ $to   = ($params['price']['to']   ?? '') !== '' ? (float)$params['price']['to'] 
 $this->searchForm->andFilterWhere($qb, ['gte', 'p.price', $from]);
 $this->searchForm->andFilterWhere($qb, ['lte', 'p.price', $to]);
 ```
+</details>
 
 ---
 
@@ -781,7 +853,19 @@ Any other [Flatpickr option](https://flatpickr.js.org/options/) can be passed vi
 ],
 ```
 
-**Repository filter example:**
+**Repository filter example** — the `date` applier validates ISO bounds, converts them to
+`DateTime` and extends the upper bound to end of day (`23:59:59`):
+
+```php
+$this->searchForm->applyFilters($qb, $params, [
+    'createdAt' => ['date', 'c.createdAt'],
+]);
+
+// Pass applier options as an optional third tuple element:
+// 'createdAt' => ['date', 'c.createdAt', ['end_of_day' => false]],
+```
+
+<details><summary>Under the hood (manual equivalent)</summary>
 
 ```php
 $fromDate = ($params['createdAt']['from'] ?? '') !== ''
@@ -793,6 +877,7 @@ $toDate = ($params['createdAt']['to'] ?? '') !== ''
 $this->searchForm->andFilterWhere($qb, ['gte', 'c.createdAt', $fromDate]);
 $this->searchForm->andFilterWhere($qb, ['lte', 'c.createdAt', $toDate]);
 ```
+</details>
 
 > **DateTime serialization:** the bundle serializes entity `DateTime` fields to ISO 8601
 > strings (e.g. `2024-01-15T10:30:00+01:00`) using `DateTimeNormalizer`. Twig's `|date()`
@@ -800,6 +885,63 @@ $this->searchForm->andFilterWhere($qb, ['lte', 'c.createdAt', $toDate]);
 > ```php
 > 'twigFilter' => "date('d/m/Y')",
 > ```
+
+### Applying filters in the repository — `applyFilters()`
+
+`SearchForm::applyFilters()` centralizes the per-type filter logic (operator parsing for
+text, boolean cast, date-range validation and end-of-day handling, `IN` for relations)
+that would otherwise be re-implemented by hand in every repository `search()` method:
+
+```php
+public function search(array $params = [])
+{
+    $qb = $this->createQueryBuilder('c')
+        ->select('c', 'p', 'l')
+        ->join('c.profile', 'p')
+        ->join('c.locations', 'l');
+
+    $this->searchForm->applyFilters($qb, $params, [
+        'code'      => ['text',     'c.code'],
+        'email'     => ['text',     'c.email'],
+        'active'    => ['boolean',  'c.active'],
+        'createdAt' => ['date',     'c.createdAt'],
+        'locations' => ['relation', 'l.id'],
+    ]);
+
+    // Genuinely custom conditions still use andFilterWhere():
+    $this->searchForm->andFilterWhere($qb, 'or',
+        ['ilike', 'p.firstname', $params['fullname'] ?? null],
+        ['ilike', 'p.lastname',  $params['fullname'] ?? null],
+    );
+
+    return $qb;
+}
+```
+
+**Map format:** `param key => [type, dqlField]` with an optional third element of
+applier options (e.g. `['date', 'c.createdAt', ['end_of_day' => false]]`).
+Map keys are the **submitted param names**, i.e. the column attribute with dots replaced
+by underscores (`t.name` → `t_name`).
+
+**Built-in types:** `text`, `boolean`, `date`, `number`, `choice`, `relation`.
+
+**Semantics:**
+
+- Blank values (`null`, `''`, `[]`, all-empty range arrays) are skipped silently —
+  filter-when-set, like `andFilterWhere()`. Note that `'0'` is a *valid* value.
+- Every condition is `AND`-combined and uses **bound parameters** with unique names
+  (never string-concatenated literals).
+- The `text` applier supports the operator-prefix syntax (`= foo`, `>= 10`, `in a,b`,
+  `btw 1 AND 9`, ...) and defaults to case-insensitive contains (`ilike`); override with
+  the `default_operator` option.
+- An unknown type in the map throws `InvalidArgumentException` (configuration error).
+
+**Custom appliers:** implement `Fedale\GridviewBundle\Contract\FilterApplierInterface`
+and register the instance on the `fedale_gridview.filter_applier_registry` service:
+
+```php
+$searchForm->getApplierRegistry()->register('money', new MoneyFilterApplier());
+```
 
 ### Global search
 

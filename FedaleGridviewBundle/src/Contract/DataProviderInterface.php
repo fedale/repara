@@ -6,6 +6,8 @@ interface DataProviderInterface
 {
     public function prepareModels(string|array $models);
 
+    public function setDefaultParams(array $defaults): void;
+
     public function getData();
 
     public function getSort();

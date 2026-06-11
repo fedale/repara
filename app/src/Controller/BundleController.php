@@ -156,7 +156,8 @@ class BundleController extends AbstractController
             [
                 'attribute' => 'active',
                 'label' => 'Attivo',
-                'filter' => ['type' => 'boolean'],
+                // La griglia apre già filtrata sui clienti attivi
+                'filter' => ['type' => 'boolean', 'default' => '1'],
                 'filterBar' => true,
                 'value' => fn(array $data) => $data['active'] ? 'Sì' : 'No',
             ],
@@ -164,7 +165,7 @@ class BundleController extends AbstractController
                 'attribute' => 'createdAt',
                 'label' => 'Creato il',
                 'twigFilter' => "date('d/m/Y')",
-                'filter' => ['type' => 'date'],
+                'filter' => ['type' => 'date', 'default' => ['from' => '2023-01-01', 'to' => null]],
             ],
             [
                 'attribute' => 't.name',

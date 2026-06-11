@@ -30,9 +30,13 @@
         </service>
         <service id="Fedale\GridviewBundle\Contract\SearchModelInterface" alias="fedale_gridview.search_model"/>
 
+        <service id="fedale_gridview.filter_applier_registry" class="Fedale\GridviewBundle\Filter\Applier\FilterApplierRegistry"/>
+        <service id="Fedale\GridviewBundle\Filter\Applier\FilterApplierRegistry" alias="fedale_gridview.filter_applier_registry"/>
+
         <service id="fedale_gridview.search_form" class="Fedale\GridviewBundle\Form\SearchForm">
             <argument type="service" id="form.factory"/>
             <argument type="service" id="request_stack"/>
+            <argument type="service" id="fedale_gridview.filter_applier_registry"/>
         </service>
         <service id="Fedale\GridviewBundle\Form\SearchForm" alias="fedale_gridview.search_form"/>
         <service id="Fedale\GridviewBundle\Contract\SearchFormInterface" alias="fedale_gridview.search_form"/>

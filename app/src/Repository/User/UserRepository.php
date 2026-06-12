@@ -4,7 +4,9 @@ namespace App\Repository\User;
 
 use App\Entity\User\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
+use Fedale\GridviewBundle\Form\SearchForm;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
@@ -19,9 +21,50 @@ use Symfony\Bridge\Doctrine\Security\User\UserLoaderInterface;
  */
 class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface, UserLoaderInterface
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, private SearchForm $searchForm)
     {
         parent::__construct($registry, User::class);
+    }
+
+    /**
+     * QueryBuilder consumed by the gridview EntityDataProvider. The param keys
+     * mirror the column attributes (dots replaced by underscores) declared in
+     * the Gridview controller.
+     */
+    public function search(array $params = []): QueryBuilder
+    {
+        $qb = $this
+            ->createQueryBuilder('u')
+            ->select('u', 'p', 't', 'g', 'r')
+            ->distinct()
+            ->leftJoin('u.profile', 'p')
+            ->leftJoin('u.type', 't')
+            ->leftJoin('u.groups', 'g')
+            ->leftJoin('u.roles', 'r')
+        ;
+
+        $this->searchForm->applyFilters($qb, $params, [
+            'code'      => ['text',     'u.code'],
+            'username'  => ['text',     'u.username'],
+            'email'     => ['text',     'u.email'],
+            'active'    => ['boolean',  'u.active'],
+            'type'      => ['relation', 't.id'],
+            'groups'    => ['relation', 'g.id'],
+            'roles'     => ['relation', 'r.id'],
+            'createdAt' => ['date',     'u.createdAt'],
+        ]);
+
+        // Fullname matches first/last name or username
+        $this->searchForm->andFilterWhere(
+            $qb,
+            'or',
+            ['ilike', 'p.firstname', $params['profile_fullname'] ?? null],
+            ['ilike', 'p.lastname', $params['profile_fullname'] ?? null],
+            ['ilike', 'CONCAT(p.firstname, \' \', p.lastname)', $params['profile_fullname'] ?? null],
+            ['ilike', 'u.username', $params['profile_fullname'] ?? null],
+        );
+
+        return $qb;
     }
 
     /**

@@ -59,6 +59,7 @@ class CustomerRepository extends ServiceEntityRepository
             'active'    => ['boolean',  'c.active'],
             'createdAt' => ['date',     'c.createdAt'],
             'locations' => ['relation', 'l.id'],
+            'type'      => ['relation', 't.id'],
         ]);
 
         // Genuinely custom condition: fullname matches any of several fields

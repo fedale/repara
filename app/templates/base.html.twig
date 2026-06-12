@@ -49,12 +49,10 @@
     <body>
         <div class="page-layout">
             <header class="page-header navbar navbar-expand bg-body-tertiary border-bottom px-3 py-2">
-                <a class="navbar-brand" href="{{ path('app_gridview') }}">⚫️ Repara</a>
+                <a class="navbar-brand" href="{{ path('gridview_customer_index') }}">⚫️ Repara</a>
                 <nav class="navbar-nav flex-row gap-3 me-auto">
-                    <a class="nav-link" href="{{ path('app_gridview') }}">Gridview</a>
-                    <a class="nav-link" href="{{ path('app_customer_customer_index') }}">Customers</a>
-                    <a class="nav-link" href="{{ path('new_app_grid') }}">New Customer Grid</a>
-                    <a class="nav-link" href="{{ path('app_user_user_index') }}">Users</a>
+                    <a class="nav-link" href="{{ path('gridview_customer_index') }}">Customers</a>
+                    <a class="nav-link" href="{{ path('gridview_user_index') }}">Users</a>
                 </nav>
                 <button class="btn btn-sm btn-outline-secondary"
                         data-controller="color-theme"
@@ -67,10 +65,8 @@
                 <aside class="page-sidebar bg-body-tertiary border-end p-2">
                     {% block sidebar %}
                         <nav class="nav flex-column">
-                            <a class="nav-link px-1 py-1" href="{{ path('app_gridview') }}">Gridview</a>
-                            <a class="nav-link px-1 py-1" href="{{ path('app_customer_customer_index') }}">Customers</a>
-                            <a class="nav-link px-1 py-1" href="{{ path('new_app_grid') }}">New Grid</a>
-                            <a class="nav-link px-1 py-1" href="{{ path('app_user_user_index') }}">Users</a>
+                            <a class="nav-link px-1 py-1" href="{{ path('gridview_customer_index') }}">Customers</a>
+                            <a class="nav-link px-1 py-1" href="{{ path('gridview_user_index') }}">Users</a>
                         </nav>
                     {% endblock %}
                 </aside>

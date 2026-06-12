@@ -172,7 +172,7 @@ $columns = [
 | `value` | `Closure\|string\|null` | `null` | Custom cell value; closure receives `($data, $key, $column)` |
 | `twigFilter` | `string\|null` | `null` | Any Twig filter applied to the rendered value (e.g. `raw`, `upper`, `date('d/m/Y')`) |
 | `visible` | `bool` | `true` | Whether the column is rendered; `false` columns are hidden but toggleable via the UI |
-| `filter` | `array\|null` | `null` | Column filter definition (requires a `SearchModel`) |
+| `filter` | `array\|bool\|null` | `null` | Column filter definition (requires a `SearchModel`). `true` enables a filter whose type is inherited from the column `type`; an array may set its own `type` to override it |
 | `sortable` | `bool` | `true` | Whether clicking the header sorts the grid |
 | `filterable` | `bool` | `true` | Whether the column shows a filter input |
 | `filterBar` | `bool` | `false` | Render this column's filter in the `{filterBar}` section instead of inline in the header row |
@@ -180,24 +180,47 @@ $columns = [
 
 ### Column types
 
-Pass `'type'` to use a non-data column:
+The root `type` of a column has **two flavours**:
+
+1. **Data types** — describe the *kind of data* the column holds. They render via
+   `DataColumn` and, crucially, set the **default filter type** (see
+   [Inheriting the filter type from the column](#inheriting-the-filter-type-from-the-column)).
+   When `type` is omitted it defaults to **`text`**.
+2. **Structural types** — dedicated column classes for non-data concerns (selection,
+   numbering, actions).
 
 ```php
 $columns = [
-    ['type' => 'checkbox'],  // row selection checkboxes
-    ['type' => 'serial'],    // sequential row numbers
-    // ... data columns ...
-    ['type' => 'action'],    // view / edit / delete links
+    ['type' => 'checkbox'],                       // structural: row selection
+    ['type' => 'serial'],                         // structural: row numbers
+    ['attribute' => 'email'],                     // data: text (the default)
+    ['attribute' => 'active', 'type' => 'boolean'], // data: renders ✓/✗
+    ['type' => 'action'],                         // structural: action links
 ];
 ```
 
+**Data types** (rendered by `DataColumn`):
+
+| Type | Renders as | Default filter |
+|------|-----------|----------------|
+| `text` | Raw scalar / closure value (**default** when `type` is omitted) | `text` |
+| `boolean` | `✓` / `✗` for truthy / falsy values | `boolean` |
+| `date` | Raw value (format it with `twigFilter`) | `date` |
+| `number` | Raw value | `number` |
+| `relation` | Raw value (use `value` to render the related label) | `relation` |
+| `choice` | Raw value | `choice` |
+| `data` | Raw value (legacy alias of `text`) | `text` |
+
+**Structural types** (dedicated classes):
+
 | Type | Class | Description |
 |------|-------|-------------|
-| `data` | `DataColumn` | Default. Renders a scalar or closure value |
 | `checkbox` | `CheckboxColumn` | Row selection with header toggle; not sortable or filterable |
 | `serial` | `SerialColumn` | Auto-incrementing row index |
 | `action` | `ActionColumn` | View / update / delete action links |
-| `boolean` | `BooleanColumn` | Renders `✓` / `✗` for truthy/falsy values |
+
+> A `value` closure always wins over the data type's built-in rendering — set
+> `type: 'boolean'` for the ✓/✗ default, or supply your own `value` to override it.
 
 ### ActionColumn — token-based actions
 
@@ -560,8 +583,8 @@ $gridview = $this->createGridviewBuilder()
 
 ### Declaring filter inputs in columns
 
-Each filterable column needs a `filter` key with at least `type`. Additional options are
-passed under `options` and forwarded directly to the underlying Symfony Form type.
+A filterable column needs a `filter` key. Additional options are passed under `options`
+and forwarded directly to the underlying Symfony Form type.
 
 ```php
 $columns = [
@@ -574,6 +597,39 @@ $columns = [
         'filter'    => ['type' => 'boolean'],
     ],
 ];
+```
+
+### Inheriting the filter type from the column
+
+You rarely need to repeat the type: the filter **inherits the column's root `type`** by
+default. Set `filter: true` (or an array without `type`) and the filter takes the column
+type; the column `type` itself defaults to `text` when omitted.
+
+```php
+$columns = [
+    // type defaults to "text" → text filter
+    ['attribute' => 'name',   'filter' => true],
+
+    // boolean cell (✓/✗) AND boolean filter — declared once
+    ['attribute' => 'active', 'type' => 'boolean', 'filter' => true],
+
+    // date filter inherited; options still allowed on the array form
+    ['attribute' => 'createdAt', 'type' => 'date', 'filter' => true],
+
+    // relation filter inherited, only the options are given
+    ['attribute' => 'type', 'type' => 'relation',
+     'filter' => ['options' => ['choices' => $choices, 'multiple' => true]]],
+];
+```
+
+**A `filter.type` set explicitly always wins** over the column type. The two axes are
+independent — the cell renders according to the column `type`, the filter according to its
+resolved type. So a column left at the default `text` type but given a `boolean` filter
+renders its cell as plain text while filtering as a boolean:
+
+```php
+// cell rendered as text, filter behaves as boolean
+['attribute' => 'active', 'filter' => ['type' => 'boolean']]
 ```
 
 ### Default filter values

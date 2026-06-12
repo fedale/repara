@@ -109,7 +109,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct()
     {
         $this->roles = new ArrayCollection();
-        $this->userRoles = new ArrayCollection();
         $this->groups = new ArrayCollection();
         $this->projectTaskUserAssigneds = new ArrayCollection();
         $this->projectTasks = new ArrayCollection();
@@ -261,11 +260,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     //     return array_unique(array_merge($defaultRoles, $roles));
     // }
-
-    public function getUserRoles(): Collection
-    {
-        return $this->userRoles;
-    }
 
     // https://www.youtube.com/watch?v=W0FhUq-P9zQ
     public function getRoles(): array

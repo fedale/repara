@@ -24,6 +24,12 @@ class DataColumn extends AbstractColumn
 
     public $filter;
 
+    /**
+     * Semantic data type of the column (text, boolean, date, number, ...).
+     * Drives value rendering (e.g. boolean → ✓/✗) and the default filter type.
+     */
+    public ?string $dataType = null;
+
     public bool $filterBar = false;
 
     /**
@@ -61,11 +67,24 @@ class DataColumn extends AbstractColumn
                 : ($this->value)($data, $index, $this);
         }
 
-        if (\str_contains($this->attribute, '.')) {
-            return $this->resolve($data, $this->attribute);
+        $raw = \str_contains($this->attribute, '.')
+            ? $this->resolve($data, $this->attribute)
+            : ($data[$this->attribute] ?? null);
+
+        if ($this->dataType === 'boolean') {
+            return $this->renderBoolean($raw);
         }
 
-        return $data[$this->attribute] ?? null;
+        return $raw;
+    }
+
+    private function renderBoolean(mixed $value): string
+    {
+        return match (true) {
+            $value === true,  $value === 1, $value === '1', $value === 'true'  => '✓',
+            $value === false, $value === 0, $value === '0', $value === 'false' => '✗',
+            default => '',
+        };
     }
 
     public function renderHeader($label): string
@@ -119,6 +138,16 @@ class DataColumn extends AbstractColumn
     public function setHeaderMirror(bool $headerMirror): void
     {
         $this->headerMirror = $headerMirror;
+    }
+
+    public function getDataType(): ?string
+    {
+        return $this->dataType;
+    }
+
+    public function setDataType(?string $dataType): void
+    {
+        $this->dataType = $dataType;
     }
 
     public function setFilter($filter): void

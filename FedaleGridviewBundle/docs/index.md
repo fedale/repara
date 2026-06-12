@@ -493,6 +493,53 @@ To remove pagination entirely, omit the token from the footer layout:
 ->setOptions(['layout' => ['footer' => '']])
 ```
 
+### Navigation UI
+
+The pagination renders a **sliding window** of page numbers rather than every page, so a
+50-page list never prints 50 buttons. Around the current page it shows `_window` pages per
+side (2 by default → 5 numbers), framed by first / previous / next / last icon buttons and
+ellipses when the window does not reach an edge:
+
+```
+« ‹ … 8 9 10 11 12 … › »
+```
+
+First/previous are disabled on page 1, next/last on the last page. Each piece carries a
+dedicated CSS class so it can be targeted independently:
+
+| Class | Element |
+|-------|---------|
+| `gv-pagination` | the `<ul>` wrapper |
+| `gv-page-item` | every `<li>` |
+| `gv-page-first` / `gv-page-prev` / `gv-page-next` / `gv-page-last` | icon buttons |
+| `gv-page-number` | a numbered page |
+| `gv-page-ellipsis` | the `…` separator (non-interactive) |
+| `gv-page-jump` | the "jump to page" `<select>` wrapper |
+| `gv-page-link` | the `<a>`/`<span>`/`<select>` inside each item |
+| `gv-active` | the current page |
+| `gv-disabled` | a disabled control |
+
+### Jump-to-page select
+
+For long lists a `<select>` lets the user jump directly to any page. It is controlled by the
+`pagination` options:
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `pagination.pageSelect` | `bool` | `true` | Show the jump-to-page `<select>` |
+| `pagination.pageSelectThreshold` | `int` | `10` | Minimum page count before the `<select>` appears |
+
+```php
+// Disable the select for this grid
+->setOptions(['pagination' => ['pageSelect' => false]])
+
+// Or only show it from 20 pages up
+->setOptions(['pagination' => ['pageSelectThreshold' => 20]])
+```
+
+Each `<option>` value is the fully-built page URL, so navigation needs no client-side query
+rebuilding — see the [`gridview-page-jump`](#gridview-page-jump) controller.
+
 ---
 
 ## Filtering & Search
@@ -1238,6 +1285,8 @@ $gridview = $this->createGridviewBuilder()
 | `addLabel` | `string` | `'Add'` | Label for the `{addButton}` link |
 | `formName` | `string` | `'myform'` | Name of the filter form; change this to support multiple grids with filters on the same page |
 | `caption` | `string\|null` | `null` | Optional `<caption>` text for the table |
+| `pagination.pageSelect` | `bool` | `true` | Show the jump-to-page `<select>` in the pagination |
+| `pagination.pageSelectThreshold` | `int` | `10` | Minimum page count before the `<select>` appears |
 | `layout` | `array` | see above | Layout token strings, template overrides, and inline slots |
 
 ### Multiple grids with filters on the same page
@@ -1275,7 +1324,7 @@ $this->createGridviewBuilder()
 
 ## JavaScript Controllers
 
-The bundle ships three Stimulus controllers located in
+The bundle ships four Stimulus controllers located in
 `FedaleGridviewBundle/assets/controllers/`.
 
 Register them in your app's `controllers.json` (or import them in `bootstrap.js`).
@@ -1389,6 +1438,29 @@ $columns = [
     ],
 ];
 ```
+
+---
+
+### `gridview-page-jump`
+
+Navigates to the page chosen in the pagination's jump-to-page `<select>`. Each `<option>`
+value is the target page URL, so the controller just visits it on `change` — using
+`Turbo.visit(url, { action: 'advance' })` when Turbo is active, otherwise `window.location`.
+
+**Connects to:** the `{pagination}` `<select>` wrapper (rendered automatically when
+`pagination.pageSelect` is on and the page count reaches the threshold).
+
+**Values:**
+
+| Value | Type | Description |
+|-------|------|-------------|
+| `turbo` | `Boolean` | Use `Turbo.visit` instead of a full navigation (mirrors the `useTurbo` option) |
+
+**Action available in templates:**
+
+| Action | Description |
+|--------|-------------|
+| `gridview-page-jump#jump` | Navigate to the URL of the selected `<option>` |
 
 ---
 

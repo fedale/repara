@@ -459,6 +459,12 @@
       color: var(--gv-page-color-active);
       border-color: var(--gv-page-bg-active);
     }
+    // L'ellissi è solo un separatore visivo: niente bordo né hover.
+    &.gv-page-ellipsis .gv-page-link {
+      border-color: transparent;
+      background: transparent;
+      &:hover { background: transparent; }
+    }
   }
 
   .gv-page-link {
@@ -474,6 +480,14 @@
     transition: background var(--gv-transition);
 
     &:hover { background: var(--gv-color-bg-hover); }
+  }
+
+  // Select "vai a pagina": staccata dai bottoni numerici.
+  .gv-page-jump {
+    margin-left: .5rem;
+  }
+  .gv-page-select {
+    cursor: pointer;
   }
 }
 

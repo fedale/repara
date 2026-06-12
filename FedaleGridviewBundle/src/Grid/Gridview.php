@@ -67,6 +67,10 @@ class Gridview implements GridviewInterface
             'headerIcon'  => true,
             'inlineClear' => false,
         ],
+        'pagination' => [
+            'pageSelect'          => true,
+            'pageSelectThreshold' => 10,
+        ],
         'maxQueryLength' => 4000,
     ];
 

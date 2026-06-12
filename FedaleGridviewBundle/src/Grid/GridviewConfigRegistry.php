@@ -13,6 +13,10 @@ class GridviewConfigRegistry
         'addRoute'     => null,
         'addLabel'     => 'Add',
         'formName'     => 'myform',
+        'pagination'   => [
+            'pageSelect'          => true,
+            'pageSelectThreshold' => 10,
+        ],
         'layout'       => [
             'gridview'  => '{header} {table} {footer}',
             'header'    => '{globalSearch} {filterSubmit}',

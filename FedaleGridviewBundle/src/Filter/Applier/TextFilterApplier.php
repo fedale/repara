@@ -33,10 +33,24 @@ class TextFilterApplier extends AbstractFilterApplier
         }
 
         $defaultOperator = $options['default_operator'] ?? 'ilike';
+        // Mirror the NG TextFilter 'trim' / 'wildcard' args (defaults: true / '%').
+        // 'wildcard' is the char the END USER types; its position drives the match:
+        //   "%foo%" → contains, "foo%" → starts-with, "%foo" → ends-with.
+        $trim     = $options['trim'] ?? true;
+        $wildcard = (string) ($options['wildcard'] ?? '%');
 
-        [$operator, $term] = $this->parse(trim((string) $rawValue), $defaultOperator);
+        $value = (string) $rawValue;
+        [$operator, $term, $explicit] = $this->parse($trim ? trim($value) : $value, $defaultOperator);
 
         if ($term === '') {
+            return;
+        }
+
+        // Client-driven wildcard: only when the user did NOT type an explicit
+        // operator prefix and the term carries the wildcard char on an edge.
+        if (!$explicit && $wildcard !== '' && $this->hasEdgeWildcard($term, $wildcard)) {
+            $this->applyWildcard($qb, $dqlField, $term, $wildcard);
+
             return;
         }
 
@@ -133,7 +147,8 @@ class TextFilterApplier extends AbstractFilterApplier
      * Splits "<operator> <term>" on the first whitespace only, so terms that
      * contain an operator substring (e.g. "sequence") are never mangled.
      *
-     * @return array{0: string, 1: string} [operator, term]
+     * @return array{0: string, 1: string, 2: bool} [operator, term, explicit]
+     *         'explicit' is true when an operator prefix was actually matched.
      */
     private function parse(string $input, string $defaultOperator): array
     {
@@ -143,13 +158,58 @@ class TextFilterApplier extends AbstractFilterApplier
             $token = strtolower(substr($input, 0, $spacePos));
 
             if (isset(self::OPERATOR_ALIASES[$token])) {
-                return [self::OPERATOR_ALIASES[$token], trim(substr($input, $spacePos + 1))];
+                return [self::OPERATOR_ALIASES[$token], trim(substr($input, $spacePos + 1)), true];
             }
         }
 
         $normalizedDefault = self::OPERATOR_ALIASES[strtolower($defaultOperator)] ?? 'ilike';
 
-        return [$normalizedDefault, $input];
+        return [$normalizedDefault, $input, false];
+    }
+
+    private function hasEdgeWildcard(string $term, string $wildcard): bool
+    {
+        return str_starts_with($term, $wildcard) || str_ends_with($term, $wildcard);
+    }
+
+    /**
+     * Translates the END USER's wildcard position into a case-insensitive LIKE,
+     * mirroring the NG TextFilter:
+     *   "%foo%" → contains, "foo%" → starts-with, "%foo" → ends-with.
+     * The wildcard char(s) are stripped; the SQL pattern always uses '%'.
+     * A term made only of wildcards yields no constraint (matches everything).
+     */
+    private function applyWildcard(QueryBuilder $qb, string $dqlField, string $term, string $wildcard): void
+    {
+        $wlen   = strlen($wildcard);
+        $starts = str_starts_with($term, $wildcard);
+        $ends   = str_ends_with($term, $wildcard);
+
+        if ($starts && $ends && strlen($term) >= 2 * $wlen) {
+            $core  = substr($term, $wlen, strlen($term) - 2 * $wlen);
+            $shape = 'contains';
+        } elseif ($starts) {
+            $core  = substr($term, $wlen);
+            $shape = 'ends';   // field ends with core
+        } else { // $ends
+            $core  = substr($term, 0, -$wlen);
+            $shape = 'starts'; // field starts with core
+        }
+
+        if ($core === '') {
+            return;
+        }
+
+        $core    = strtolower($core);
+        $pattern = match ($shape) {
+            'contains' => '%' . $core . '%',
+            'ends'     => '%' . $core,
+            'starts'   => $core . '%',
+        };
+
+        $p = $this->uniqueParam();
+        $qb->andWhere($qb->expr()->like($qb->expr()->lower($dqlField), ':' . $p));
+        $qb->setParameter($p, $pattern);
     }
 
     private function applyIlike(QueryBuilder $qb, string $dqlField, string $term): void

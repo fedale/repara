@@ -11,13 +11,15 @@ class FilterNumberType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        // Plain text inputs (not type=number) so the bounds also accept the
+        // operator/range syntax handled by NumberFilterApplier (">5", "1-5", …).
         $builder
             ->add('from', TextType::class, [
                 'required' => false,
                 'label'    => false,
                 'attr'     => [
-                    'type'      => 'number',
-                    'inputmode' => 'numeric',
+                    'type'        => 'text',
+                    'inputmode'   => 'text',
                     'placeholder' => $options['from_placeholder'],
                 ],
             ])
@@ -25,8 +27,8 @@ class FilterNumberType extends AbstractType
                 'required' => false,
                 'label'    => false,
                 'attr'     => [
-                    'type'      => 'number',
-                    'inputmode' => 'numeric',
+                    'type'        => 'text',
+                    'inputmode'   => 'text',
                     'placeholder' => $options['to_placeholder'],
                 ],
             ]);

@@ -22,6 +22,16 @@ export default class extends Controller {
         const locale = LOCALES[opts.locale] ?? Italian;
         const mode   = opts.mode;
 
+        // minDate/maxDate arrive as ISO (Y-m-d) from the server, but flatpickr's
+        // dateFormat here is d/m/Y — parsing the ISO string against that format
+        // would misread it. Convert to Date objects (format-independent) first.
+        const isoToDate = (s) =>
+            (typeof s === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s))
+                ? new Date(s + 'T00:00:00')
+                : s;
+        if (opts.minDate) opts.minDate = isoToDate(opts.minDate);
+        if (opts.maxDate) opts.maxDate = isoToDate(opts.maxDate);
+
         // Read Symfony input values before anything else touches them
         const fromVal = this._fromInput.value;
         const toVal   = this._toInput?.value ?? '';

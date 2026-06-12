@@ -629,13 +629,52 @@ which are never mirrored.
 
 #### `text`
 
-A plain text input. Supports any operator prefix (e.g. `>= 100`, `like foo%`).
+A plain text input. Supports any operator prefix (e.g. `>= 100`, `like foo%`) and a
+client-driven **wildcard** (see below).
 
 ```php
 'filter' => ['type' => 'text']
 ```
 
-No additional options.
+**PHP form options** (`options` key — Symfony form type):
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `placeholder` | `string` | `''` | Placeholder shown in the input (injected into `attr.placeholder`) |
+
+```php
+'filter' => ['type' => 'text', 'options' => ['placeholder' => 'Search by name…']]
+```
+
+**Applier options** (third tuple element of the `applyFilters()` map — query-side behavior):
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `default_operator` | `string` | `'ilike'` | Operator used when the term has no prefix (case-insensitive contains) |
+| `trim` | `bool` | `true` | Trim the submitted value before matching |
+| `wildcard` | `string` | `'%'` | The char the **end user** types; its position drives the match |
+
+**Client-driven wildcard.** When the user has not typed an explicit operator prefix, the
+position of the wildcard char in their input shapes the query (case-insensitive `LIKE`):
+
+| User types (wildcard `%`) | Match | SQL pattern |
+|---------------------------|-------|-------------|
+| `foo` | contains | `%foo%` |
+| `%foo%` | contains | `%foo%` |
+| `foo%` | starts-with | `foo%` |
+| `%foo` | ends-with | `%foo` |
+| `%%` (only wildcards) | no constraint | — |
+
+The wildcard char(s) are stripped before matching; the SQL pattern always uses `%`. An
+explicit operator prefix (`eq foo`, `like foo`, …) takes precedence — the wildcard char is
+then kept verbatim. Change the char per column via the applier option, e.g. so users type
+`*`:
+
+```php
+// In the repository applyFilters() map:
+'code' => ['text', 'c.code', ['wildcard' => '*']],   // user types  cod*  → starts-with
+'name' => ['text', 'p.name', ['trim' => false, 'default_operator' => 'eq']],
+```
 
 ---
 
@@ -766,28 +805,57 @@ $this->searchForm->andFilterWhere($qb, ['in', 'l.id', $params['locations'] ?? []
 
 #### `number`
 
-Two `<input type="number">` fields rendered side by side as a from/to range.
+Two text inputs rendered side by side as a from/to range.
 Submits as `myform[field][from]` and `myform[field][to]`.
 
 ```php
 'filter' => ['type' => 'number']
 ```
 
+**PHP form options** (`options` key — Symfony form type):
+
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
 | `from_placeholder` | `string` | `'Min'` | Placeholder for the lower bound input |
 | `to_placeholder` | `string` | `'Max'` | Placeholder for the upper bound input |
 
-**Repository filter example** — the `number` applier validates both bounds and applies
-`>=` / `<=`:
+**Hybrid operator / range syntax.** Each bound is a plain text input, so besides a plain
+number it also accepts an operator expression or a range — same spirit as the `text`
+filter. A plain number keeps the range semantics (`from` → `>=`, `to` → `<=`); an operator
+expression applies as-is. Bounds AND-combine.
+
+| You type in a bound | Result |
+|---------------------|--------|
+| `10` (in `from`) | `>= 10` |
+| `10` (in `to`) | `<= 10` |
+| `>5`, `>=5`, `<5`, `<=5` | `>` / `>=` / `<` / `<=` 5 |
+| `=10` | `= 10` |
+| `!=10` / `<>10` | `<> 10` |
+| `1-5` | `BETWEEN 1 AND 5` (bounds auto-sorted) |
+| `>=-5` | `>= -5` (negative lower bound) |
+
+Decimal commas are accepted (`2,5` → `2.5`). Range bounds must be non-negative (the default
+`-` separator would clash with a leading minus — use `>=-5` for negatives). The example
+`from = ">5"`, `to = "20"` yields `(5, 20]`.
+
+**Applier options** (third tuple element of the `applyFilters()` map):
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `range_separator` | `string` | `'-'` | Character splitting a `a<sep>b` range expression |
+
+**Repository filter example** — the `number` applier validates both bounds, parses any
+operator/range expression and applies the matching comparison(s):
 
 ```php
 $this->searchForm->applyFilters($qb, $params, [
     'price' => ['number', 'p.price'],
+    // custom range separator, so users can type "1:5":
+    // 'price' => ['number', 'p.price', ['range_separator' => ':']],
 ]);
 ```
 
-<details><summary>Under the hood (manual equivalent)</summary>
+<details><summary>Under the hood (plain-number equivalent)</summary>
 
 ```php
 $from = ($params['price']['from'] ?? '') !== '' ? (float)$params['price']['from'] : null;
@@ -824,8 +892,13 @@ as `myform[field][from]` and `myform[field][to]`.
 | `locale` | `string` | `'it'` | Locale code; currently `'it'` (Italian) is bundled |
 | `altFormat` | `string` | `'d/m/Y'` | Display format shown to the user |
 | `dateFormat` | `string` | `'Y-m-d'` | Value format sent to the server (keep ISO) |
-| `minDate` | `string` | — | Earliest selectable date (e.g. `'2020-01-01'` or `'today'`) |
-| `maxDate` | `string` | — | Latest selectable date |
+| `minDate` | `string` | today − 1 year | Earliest selectable date (e.g. `'2020-01-01'` or `'today'`) |
+| `maxDate` | `string` | today + 1 year | Latest selectable date |
+
+`minDate`/`maxDate` default to a one-year window around today (mirroring the NG DateFilter);
+pass your own values via `clientOptions` to widen, narrow, or remove the bounds. ISO
+(`YYYY-MM-DD`) bounds are accepted even though the display format is `d/m/Y` — the Stimulus
+controller converts them to `Date` objects before handing them to Flatpickr.
 
 Any other [Flatpickr option](https://flatpickr.js.org/options/) can be passed via `clientOptions`.
 
@@ -933,7 +1006,12 @@ by underscores (`t.name` → `t_name`).
   (never string-concatenated literals).
 - The `text` applier supports the operator-prefix syntax (`= foo`, `>= 10`, `in a,b`,
   `btw 1 AND 9`, ...) and defaults to case-insensitive contains (`ilike`); override with
-  the `default_operator` option.
+  the `default_operator` option. It also honors a client-driven, positional `wildcard`
+  char (default `%`) and a `trim` toggle (default `true`) — see the [`text` filter
+  reference](#text).
+- The `number` applier accepts a from/to range and, in either bound, an operator/range
+  expression (`>5`, `=10`, `1-5`, …); the range separator is configurable via
+  `range_separator` — see the [`number` filter reference](#number).
 - An unknown type in the map throws `InvalidArgumentException` (configuration error).
 
 **Custom appliers:** implement `Fedale\GridviewBundle\Contract\FilterApplierInterface`

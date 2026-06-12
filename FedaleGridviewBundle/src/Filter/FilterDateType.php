@@ -48,7 +48,15 @@ class FilterDateType extends AbstractType
 
         // Merge client_options with defaults and inject Stimulus data attributes onto the wrapper div
         $resolver->setNormalizer('attr', function (Options $options, array $value): array {
-            $clientOpts = array_merge(self::CLIENT_DEFAULTS, $options['client_options']);
+            // Mirror the NG DateFilter min/max default window (today ± 1 year).
+            // ISO strings; the Stimulus controller converts them to Date objects.
+            $today = new \DateTimeImmutable('today');
+            $rangeDefaults = [
+                'minDate' => $today->modify('-1 year')->format('Y-m-d'),
+                'maxDate' => $today->modify('+1 year')->format('Y-m-d'),
+            ];
+
+            $clientOpts = array_merge(self::CLIENT_DEFAULTS, $rangeDefaults, $options['client_options']);
             return array_merge([
                 'data-controller'                         => 'gridview-date-filter',
                 'data-gridview-date-filter-options-value' => json_encode($clientOpts),

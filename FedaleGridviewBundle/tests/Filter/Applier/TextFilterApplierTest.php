@@ -117,6 +117,67 @@ class TextFilterApplierTest extends TestCase
         $this->assertSame(sprintf('c.code = :%s', $param->getName()), $this->whereDql($qb));
     }
 
+    public function testTrimCanBeDisabled(): void
+    {
+        $qb = $this->createTestQueryBuilder();
+        $this->applier->apply($qb, 'c.name', '  Foo  ', ['trim' => false]);
+
+        $this->assertSame('%  foo  %', $qb->getParameters()->first()->getValue());
+    }
+
+    /**
+     * Client-typed wildcard ('%' by default): position drives the match.
+     *
+     * @dataProvider wildcardPositions
+     */
+    public function testClientWildcardPosition(string $input, string $expectedPattern): void
+    {
+        $qb = $this->createTestQueryBuilder();
+        $this->applier->apply($qb, 'c.name', $input);
+
+        $param = $qb->getParameters()->first();
+        $this->assertSame($expectedPattern, $param->getValue());
+        $this->assertSame(sprintf('LOWER(c.name) LIKE :%s', $param->getName()), $this->whereDql($qb));
+    }
+
+    public function wildcardPositions(): array
+    {
+        return [
+            'contains'    => ['%foo%', '%foo%'],
+            'starts with' => ['foo%', 'foo%'],
+            'ends with'   => ['%foo', '%foo'],
+        ];
+    }
+
+    public function testClientWildcardCharIsConfigurable(): void
+    {
+        $qb = $this->createTestQueryBuilder();
+        // Custom wildcard '*' typed by the user → translated to SQL '%'.
+        $this->applier->apply($qb, 'c.name', 'foo*', ['wildcard' => '*']);
+
+        $this->assertSame('foo%', $qb->getParameters()->first()->getValue());
+    }
+
+    public function testWildcardOnlyTermAddsNoConstraint(): void
+    {
+        $qb = $this->createTestQueryBuilder();
+        $this->applier->apply($qb, 'c.name', '%%');
+
+        $this->assertNull($qb->getDQLPart('where'));
+        $this->assertCount(0, $qb->getParameters());
+    }
+
+    public function testExplicitOperatorBeatsClientWildcard(): void
+    {
+        $qb = $this->createTestQueryBuilder();
+        // "eq" prefix is explicit → wildcard chars are kept verbatim, no LIKE.
+        $this->applier->apply($qb, 'c.name', 'eq %foo%');
+
+        $param = $qb->getParameters()->first();
+        $this->assertSame('%foo%', $param->getValue());
+        $this->assertSame(sprintf('c.name = :%s', $param->getName()), $this->whereDql($qb));
+    }
+
     /**
      * @dataProvider blankValues
      */

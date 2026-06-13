@@ -1540,6 +1540,49 @@ public function bulkUpdate(Request $request): Response
 > `/{id}/delete`. Batch update uses PropertyAccess; collection associations (ManyToMany) need a
 > custom apply and are best left out of `batchUpdate` for now.
 
+### Inline editing
+
+A column with a `control` becomes inline-editable with `editable => true` (or
+`['trigger' => 'click'|'dblclick']`, default `dblclick`). The cell value is wrapped in a
+`.gv-editable` span; on the trigger the `gridview-inline-edit` controller fetches a single-field
+editor (built from the column's control, so it reuses validation incl. NotBlank/UniqueEntity),
+submits it via fetch, and swaps in the new value. Enter saves, Escape cancels, one cell at a time.
+
+```php
+['attribute' => 'code',   'editable' => true, 'control' => ['type' => 'text', 'unique' => true, ...]],
+['attribute' => 'active', 'editable' => true, 'type' => 'boolean', 'control' => ['required' => false]],
+['attribute' => 'type',   'editable' => true, 'type' => 'relation', 'control' => ['options' => [...]]],
+```
+
+Set the base URL in `crud.inlineUrl`; the controller appends `/{id}/{field}`. One endpoint serves
+both GET (editor) and POST (save), and **must only edit columns flagged editable**:
+
+```php
+'crud' => ['inlineUrl' => $this->generateUrl('gridview_user_index') . '/inline'],
+
+#[Route('/inline/{id}/{field}', name: 'inline', methods: ['GET', 'POST'],
+        requirements: ['id' => '\d+', 'field' => '[a-zA-Z_]+'])]
+public function inline(Request $request, int $id, string $field): Response
+{
+    $entity = $repo->find($id) ?? throw $this->createNotFoundException();
+    $column = null;
+    foreach ($this->buildGridview()->getColumns() as $c) {
+        if ($c->getAttribute() === $field && $c->isEditable()) { $column = $c; break; }
+    }
+    if ($column === null) { throw $this->createNotFoundException(); }   // editable-only
+
+    $action = $this->generateUrl('gridview_user_inline', ['id' => $id, 'field' => $field]);
+    if ($request->isMethod('GET')) {
+        return new Response($crud->renderInlineEditor(User::class, $column, $entity, $action));
+    }
+    $r = $crud->saveInline(User::class, $column, $entity, $request, $action); // ['ok','body']
+    return new Response($r['body'], $r['ok'] ? 200 : 422);
+}
+```
+
+The new cell display after save is produced by the handler's value stringifier (scalar / DateTime /
+`getName()` / collection-join), so relations show their label.
+
 ### Clone semantics
 
 `clone` copies the entity, nulls the identifier, and gives each **to-many association its own new
@@ -1847,6 +1890,26 @@ an HTML response (validation errors) is re-injected into the modal.
 |--------|-------------|
 | `gridview-crud#open` | Open the modal and load the form/recap from `data-gridview-crud-url-param` |
 | `gridview-crud#submit` | Intercept the modal form / inline form submit (handles the Turbo Stream) |
+
+---
+
+### `gridview-inline-edit`
+
+Inline cell editing. On an editable cell's trigger it fetches the editor from
+`${base}/${id}/${field}`, submits via fetch (server validation is authoritative), and swaps the cell
+with the new value. Enter saves, Escape cancels, one cell at a time.
+
+**Connects to:** the grid container (applied when `crud.inlineUrl` is set).
+
+**Values:** `base` (String) — inline endpoint base; the controller appends `/{id}/{field}`.
+
+**Actions** (emitted on `.gv-editable` cells / the injected editor):
+
+| Action | Description |
+|--------|-------------|
+| `gridview-inline-edit#edit` | Open the editor for the clicked cell |
+| `gridview-inline-edit#submit` | Submit the editor form (fetch) |
+| `gridview-inline-edit#key` | Enter = save, Escape = cancel |
 
 ---
 

@@ -53,7 +53,7 @@ consultare codice esterno).
 | Sort / Paginazione | ✅ ([Sort.php](../src/Component/Sort.php), [Pagination.php](../src/Component/Pagination.php)) | ✅ (riuso, +parziale via Turbo) | Basso |
 | Filtri | text/boolean/choice + operatori ricchi ([SearchForm.php](../src/Service/SearchForm.php)) | per-colonna + global search + relation | Medio |
 | Custom render | `value` closure + `twigFilter` | pipeline `valueGetter → formatter → renderer` | Medio |
-| Inline editing | ❌ | click/dblclick → editor inline → autosave + feedback | **Alto** |
+| Inline editing | ✅ click/dblclick → editor (dal control) → save + validazione | click/dblclick → editor inline → autosave + feedback | ✅ **Fatto** (Fase 3) |
 | Selezione multipla / bulk | ✅ select-all/all-mode + barra azioni + batch update dialog | select-all + barra azioni + batch update dialog | ✅ **Fatto** (Fase 2) |
 | CRUD dialog (add/edit/clone/delete) | ✅ form generati da config colonne, modale Turbo, validazione | form generati da config colonne + delete con recap | ✅ **Fatto** (Fase 4) |
 | Export CSV/Excel | ❌ | ✅ | **Alto** |
@@ -138,7 +138,17 @@ Spec originali (riferimento):
 - Dialog "batch update" (vedi Fase 4 per il meccanismo dialog).
 - **Verifica:** selezione righe, select-all, esecuzione azione bulk su un set.
 
-### Fase 3 — Inline editing — *priorità 1*
+### Fase 3 — Inline editing — *priorità 1* — ✅ **IMPLEMENTATA**
+
+> **Stato:** completata e verificata. Scelta: **Stimulus `gridview-inline-edit` + endpoint** (no
+> LiveComponent). Colonna `editable: true|['trigger'=>...]` (richiede un `control`); la cella mostra
+> un editor a campo singolo costruito dal `control` → **riusa la validazione** (NotBlank/UniqueEntity).
+> Endpoint unico `/inline/{id}/{field}` (GET editor / POST save), **solo colonne editable** (404
+> altrimenti). `GridCrudHandler::renderInlineEditor/saveInline`; Enter salva, Escape annulla, una
+> cella per volta. Display post-save via `stringifyValue`. Reference:
+> `app/src/Controller/Gridview/UserController.php`.
+
+Spec originali (riferimento):
 - **LiveComponent** (`symfony/ux-live-component`, da aggiungere) per la cella editabile: click →
   input → submit → persiste via Doctrine → re-render cella. In alternativa Stimulus
   `gridview-inline-edit` + endpoint PATCH se si vuole evitare LiveComponent.

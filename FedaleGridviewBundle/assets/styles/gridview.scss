@@ -710,3 +710,19 @@ turbo-frame[busy] > [data-gridview] {
   flex-direction: column;
   gap: 2px;
 }
+
+// ── CRUD form — mark required fields with an asterisk after the label ──
+
+.gv-crud-form label.required::after {
+  content: " *";
+  color: #dc3545;
+  font-weight: 700;
+}
+
+// ── CRUD form — live validation inline message ──
+
+.gv-crud-form .gv-validate-msg {
+  color: #dc3545;
+  font-size: 0.85em;
+  margin-top: 0.25rem;
+}

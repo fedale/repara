@@ -2,7 +2,9 @@
 
 namespace Fedale\GridviewBundle\Contract;
 
+use Fedale\GridviewBundle\Form\Control\ControlTypeRegistry;
 use Fedale\GridviewBundle\Grid\Gridview;
+use Symfony\Component\Form\FormBuilderInterface;
 
 interface ColumnInterface
 {
@@ -21,6 +23,19 @@ interface ColumnInterface
     public function getLabel(): ?string;
 
     public function getTwigFilter(): ?string;
+
+    /**
+     * Normalized write-side control spec, or null when the column is not editable.
+     *
+     * @return array{type: string, required: bool, options: array}|null
+     */
+    public function getControl(): ?array;
+
+    /** Adds this column's editable field to the given form builder (no-op when not editable). */
+    public function buildControl(FormBuilderInterface $form, ControlTypeRegistry $registry): void;
+
+    /** Whether/how this column appears in the delete-confirm recap (bool|array). */
+    public function getShowInDeleteConfirm(): bool|array;
 
     /** Render a data cell for the given row model. */
     public function render(mixed $model, int $index): mixed;

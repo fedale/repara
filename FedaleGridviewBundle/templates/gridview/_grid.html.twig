@@ -1,21 +1,26 @@
 {% if gridview.options.useTurbo %}
 <turbo-frame id="gridview-{{ gridview.key }}">
 {% endif %}
+    {% set gvCrud = gridview.options.crud|default(false) %}
+    {% set gvControllers = [] %}
+    {% if gridview.hasCheckboxColumn %}{% set gvControllers = gvControllers|merge(['gridview-selection']) %}{% endif %}
+    {% if gvCrud %}{% set gvControllers = gvControllers|merge(['gridview-crud']) %}{% endif %}
     <div data-gridview
          data-gv-max-query-length="{{ gridview.options.maxQueryLength }}"
          {{ gridview.containerAttr|options }}
-         {% if gridview.hasCheckboxColumn %}
-         data-controller="gridview-selection"
-         data-gridview-selection-grid-id-value="{{ gridview.key }}"
-         {% endif %}>
+         {% if gvControllers is not empty %}data-controller="{{ gvControllers|join(' ') }}"{% endif %}
+         {% if gridview.hasCheckboxColumn %}data-gridview-selection-grid-id-value="{{ gridview.key }}"{% endif %}>
         {% if form is defined and form is not null %}
-        {{ form_start(form, {'attr': {'id': 'gv-form-' ~ gridview.key, 'data-controller': 'gridview-filter', 'data-turbo-action': 'replace'}}) }}
+        {{ form_start(form, {'action': gridview.options.routeName ? path(gridview.options.routeName) : '', 'attr': {'id': 'gv-form-' ~ gridview.key, 'data-controller': 'gridview-filter', 'data-turbo-action': 'replace'}}) }}
         {% endif %}
         {% for section in gridview.parseLayout('gridview') %}
             {{ gridview_include(gridview, section) }}
         {% endfor %}
         {% if form is defined and form is not null %}
         {{ form_end(form, {'render_rest': false}) }}
+        {% endif %}
+        {% if gvCrud %}
+        {% include '@FedaleGridview/crud/_modal.html.twig' %}
         {% endif %}
     </div>
 {% if gridview.options.useTurbo %}

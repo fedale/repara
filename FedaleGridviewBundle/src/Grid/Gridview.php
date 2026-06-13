@@ -50,6 +50,7 @@ class Gridview implements GridviewInterface
         'showTfoot'    => true,
         'useTurbo'     => true,
         'globalSearch' => [],
+        'routeName'    => null,
         'addRoute'     => null,
         'addLabel'     => 'Add',
         'formName'     => 'myform',
@@ -133,6 +134,15 @@ class Gridview implements GridviewInterface
         $this->dataProviderOptions = $dataProviderOptions;
     }
 
+    /**
+     * The entity FQCN backing this grid (the data provider `models` option),
+     * used as the data_class for generated CRUD forms. Null when unset.
+     */
+    public function getDataClass(): ?string
+    {
+        return $this->dataProviderOptions['models'] ?? null;
+    }
+
     private function initializeDataProvider(): void
     {
         if ($this->dataProviderInitialized) {
@@ -155,6 +165,13 @@ class Gridview implements GridviewInterface
         }
         if (!empty($this->dataProviderOptions['pagination'])) {
             $this->dataProvider->getPagination()->setAttributes($this->dataProviderOptions['pagination']);
+        }
+
+        // Pin sort/pagination/filter links to an explicit list route so the grid
+        // renders correctly even when handled by a different route (e.g. a CRUD
+        // POST returning a Turbo Stream). Falls back to the current _route.
+        if (!empty($this->options['routeName'])) {
+            $this->dataProvider->getPagination()->setRoute($this->options['routeName']);
         }
     }
 

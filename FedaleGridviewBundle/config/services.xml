@@ -33,6 +33,12 @@
         <service id="fedale_gridview.filter_applier_registry" class="Fedale\GridviewBundle\Filter\Applier\FilterApplierRegistry"/>
         <service id="Fedale\GridviewBundle\Filter\Applier\FilterApplierRegistry" alias="fedale_gridview.filter_applier_registry"/>
 
+        <service id="fedale_gridview.control_type_registry" class="Fedale\GridviewBundle\Form\Control\ControlTypeRegistry"/>
+        <service id="Fedale\GridviewBundle\Form\Control\ControlTypeRegistry" alias="fedale_gridview.control_type_registry"/>
+
+        <service id="fedale_gridview.control_resolver" class="Fedale\GridviewBundle\Form\Control\ControlResolver"/>
+        <service id="Fedale\GridviewBundle\Form\Control\ControlResolver" alias="fedale_gridview.control_resolver"/>
+
         <service id="fedale_gridview.search_form" class="Fedale\GridviewBundle\Form\SearchForm">
             <argument type="service" id="form.factory"/>
             <argument type="service" id="request_stack"/>
@@ -40,6 +46,23 @@
         </service>
         <service id="Fedale\GridviewBundle\Form\SearchForm" alias="fedale_gridview.search_form"/>
         <service id="Fedale\GridviewBundle\Contract\SearchFormInterface" alias="fedale_gridview.search_form"/>
+
+        <service id="fedale_gridview.grid_form_builder" class="Fedale\GridviewBundle\Form\GridFormBuilder">
+            <argument type="service" id="form.factory"/>
+            <argument type="service" id="fedale_gridview.control_type_registry"/>
+        </service>
+        <service id="Fedale\GridviewBundle\Form\GridFormBuilder" alias="fedale_gridview.grid_form_builder"/>
+        <service id="Fedale\GridviewBundle\Contract\GridFormBuilderInterface" alias="fedale_gridview.grid_form_builder"/>
+
+        <service id="fedale_gridview.crud_handler" class="Fedale\GridviewBundle\Crud\GridCrudHandler">
+            <argument type="service" id="doctrine.orm.default_entity_manager"/>
+            <argument type="service" id="fedale_gridview.grid_form_builder"/>
+            <argument type="service" id="security.csrf.token_manager"/>
+            <argument type="service" id="twig"/>
+            <argument type="service" id="doctrine"/>
+        </service>
+        <service id="Fedale\GridviewBundle\Crud\GridCrudHandler" alias="fedale_gridview.crud_handler"/>
+        <service id="Fedale\GridviewBundle\Contract\GridCrudHandlerInterface" alias="fedale_gridview.crud_handler"/>
 
         <service id="fedale_gridview.gridview" class="Fedale\GridviewBundle\Grid\Gridview">
             <argument type="service" id="twig"/>
@@ -55,6 +78,7 @@
 
         <service id="fedale_gridview.column_factory" class="Fedale\GridviewBundle\Column\ColumnFactory">
             <argument type="service" id="security.authorization_checker" on-invalid="null"/>
+            <argument type="service" id="fedale_gridview.control_resolver"/>
         </service>
         <service id="Fedale\GridviewBundle\Column\ColumnFactory" alias="fedale_gridview.column_factory"/>
 

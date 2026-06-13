@@ -350,7 +350,7 @@ class Sort implements SortInterface
         $parameters = $gridview->getUrlState()->withSort($this->createSortParam($attribute));
 
         return $this->router->generate(
-            $this->request->get('_route'),
+            $gridview->getOptions()['routeName'] ?? $this->request->get('_route'),
             $parameters,
             $absolute ? RouterInterface::ABSOLUTE_URL : RouterInterface::ABSOLUTE_PATH
         );

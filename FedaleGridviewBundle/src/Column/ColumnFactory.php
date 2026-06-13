@@ -3,14 +3,20 @@
 namespace Fedale\GridviewBundle\Column;
 
 use Fedale\GridviewBundle\Contract\ColumnInterface;
+use Fedale\GridviewBundle\Form\Control\ControlResolver;
 use Fedale\GridviewBundle\Grid\Gridview;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class ColumnFactory
 {
+    private ControlResolver $controlResolver;
+
     public function __construct(
         private ?AuthorizationCheckerInterface $authChecker = null,
-    ) {}
+        ?ControlResolver $controlResolver = null,
+    ) {
+        $this->controlResolver = $controlResolver ?? new ControlResolver();
+    }
 
     /**
      * Structural columns: selected by the root `type` and backed by a dedicated
@@ -87,6 +93,12 @@ class ColumnFactory
             // its own type, which always wins.
             if (\array_key_exists('filter', $spec)) {
                 $spec['filter'] = $this->normalizeFilter($spec['filter'], $type);
+            }
+
+            // The per-column control (write-side field) inherits the root data
+            // type unless it names its own type, mirroring the filter logic.
+            if (\array_key_exists('control', $spec)) {
+                $spec['control'] = $this->controlResolver->resolve($spec['control'], $type);
             }
         } else {
             throw new \InvalidArgumentException(sprintf('Unknown column type "%s".', $type));

@@ -55,7 +55,7 @@ consultare codice esterno).
 | Custom render | `value` closure + `twigFilter` | pipeline `valueGetter → formatter → renderer` | Medio |
 | Inline editing | ❌ | click/dblclick → editor inline → autosave + feedback | **Alto** |
 | Selezione multipla / bulk | CheckboxColumn base, nessuna logica | select-all + barra azioni + batch update dialog | **Alto** |
-| CRUD dialog (add/edit/clone/delete) | ❌ | form generati da config colonne + delete con recap | **Alto** |
+| CRUD dialog (add/edit/clone/delete) | ✅ form generati da config colonne, modale Turbo, validazione | form generati da config colonne + delete con recap | ✅ **Fatto** (Fase 4) |
 | Export CSV/Excel | ❌ | ✅ | **Alto** |
 | Salva ricerche/selezioni | ❌ | ✅ provider pluggable (localStorage) | **Alto** |
 | Show/hide + reorder colonne | flag `visible`/`hidden` statici | ✅ UI + drag-drop + persistenza | **Alto** |
@@ -142,7 +142,24 @@ estende `base.html.twig` con CSS/JS da CDN). Lo trasformiamo in modo **non-distr
   `canEditRow(row): bool`.
 - **Verifica:** doppio click su cella editabile, modifica persistita, errore gestito.
 
-### Fase 4 — CRUD dialog (add/edit/clone/delete) — *priorità 2*
+### Fase 4 — CRUD dialog (add/edit/clone/delete) — *priorità 2* — ✅ **IMPLEMENTATA**
+
+> **Stato:** completata e verificata end-to-end. Implementazione effettiva (può divergere dalle spec
+> sotto, che restano come riferimento storico):
+> - Form generata dai `control` delle colonne (`ControlTypeRegistry` + `GridFormBuilder`), dialog via
+>   `gridview-crud` Stimulus controller + Turbo Stream. Modalità add/edit/clone.
+> - **Validazione**: `control.required`→NotBlank, `control.unique`→UniqueEntity (messaggi
+>   personalizzabili), `constraints` escape hatch, rete sicurezza su Unique/ForeignKey violation;
+>   validazione live opzionale (`gridview-form-validate`) con check univocità async.
+> - **Per-mode**: `control.modes`. **Layout override**: view Twig con token `{ attribute }`.
+> - **Delete con recap**: `showInDeleteConfirm` + `renderDeleteConfirm` (svuota le M2M owning prima
+>   del remove). **Clone**: deep-copy delle collection to-many.
+> - Servizi bundle: `GridFormBuilder`, `GridCrudHandler` (+ `existsWithValue`, `deleteTokenId`),
+>   `CrudButton`. Opzione `routeName` per i link sort/paginazione sotto POST CRUD.
+> - Reference: `app/src/Controller/Gridview/UserController.php`. Doc: sezione "CRUD forms" in
+>   [index.md](index.md).
+
+Spec originali (riferimento):
 - TwigComponent + Turbo Frame `modal`: riusare il pattern di
   [modal-form_controller.js](../../app/assets/controllers/modal-form_controller.js) (già fa fetch
   del form in modale).

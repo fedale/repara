@@ -1246,6 +1246,262 @@ is computed automatically (i.e. when `table` is `null`):
 
 ---
 
+## CRUD forms (generated from columns)
+
+The grid can generate **add / edit / clone / delete** forms directly from the columns'
+configuration — no hand-written `FormType`. The form is built from a per-column `control` spec
+(the write-side twin of `filter`), bound to the data provider's entity (`models`), persisted by a
+bundle service, and shown in a Bootstrap modal that refreshes the grid via Turbo Stream.
+
+### Declaring a control on a column
+
+Add a `control` key. Its shape mirrors `filter`: an explicit `type` wins, otherwise it inherits the
+column's root data type (falling back to `text`).
+
+```php
+$columns = [
+    ['attribute' => 'code',     'control' => ['type' => 'text', 'required' => true]],
+    ['attribute' => 'active',   'type' => 'boolean', 'control' => ['required' => false]],
+    // relation control binds a MANAGED entity → needs options.class (+ choice_label, multiple)
+    ['attribute' => 'type',     'type' => 'relation',
+     'control' => ['options' => ['class' => UserType::class, 'choice_label' => 'name']]],
+    ['attribute' => 'groups',   'type' => 'relation',
+     'control' => ['options' => ['class' => UserGroup::class, 'choice_label' => 'name', 'multiple' => true]]],
+    // a write-only control that is never shown in the grid
+    ['attribute' => 'plainPassword', 'visible' => false, 'control' => ['type' => 'text']],
+];
+```
+
+Control types map to Symfony FormTypes via `ControlTypeRegistry`:
+`text→TextType`, `number→NumberType`, `date→DateType`, `boolean→CheckboxType`,
+`relation→EntityType`, `choice→ChoiceType`, `hidden→HiddenType`, `html→TextareaType`.
+
+> **Filter ≠ control.** A `relation` *filter* uses scalar ids (ChoiceType); a `relation` *control*
+> uses `EntityType` and binds managed entities. They are separate registry entries on purpose.
+> A column's `value` closure is display-only and never used to populate the form.
+
+### Validation: required & unique
+
+Constraints are declared on the control and expanded by the bundle (they also stack with any
+`#[Assert]`/`#[UniqueEntity]` already on the entity). A violation re-renders the form inline — never a
+500.
+
+```php
+['attribute' => 'code', 'control' => [
+    'type' => 'text',
+    'required' => true,  'requiredMessage' => 'Il codice è obbligatorio.',   // → NotBlank
+    'unique'   => true,  'uniqueMessage'   => 'Codice già presente.',        // → UniqueEntity
+]],
+// composite uniqueness / explicit form
+['attribute' => 'code', 'control' => ['unique' => ['fields' => ['code', 'companyId'], 'message' => '…']]],
+// arbitrary constraints escape hatch
+['attribute' => 'email', 'control' => ['constraints' => [new Assert\Email()]]],
+```
+
+- `required: true` adds `NotBlank` (server-side; the HTML `required` alone is not enough). For
+  text/textarea controls the bundle also sets `empty_data: ''` so a blank submit reports NotBlank
+  instead of breaking a non-nullable typed setter.
+- `unique` becomes a root-level `UniqueEntity` (excludes the current row on edit). `true` = this
+  attribute; a list / `['fields'=>…]` = composite.
+- As a last resort a DB `UniqueConstraintViolationException` is caught in `save()` (which then returns
+  `null`) so even undeclared DB UNIQUE constraints don't 500 — handle the `null` to re-render:
+  ```php
+  if ($crud->save($form, $mode) !== null) { /* success → Turbo Stream */ }
+  // else: fall through to renderForm() with the error
+  ```
+
+Required fields are marked with a red asterisk after the label (the Bootstrap form theme adds a
+`required` class; the bundle styles `.gv-crud-form label.required::after`).
+
+### Live validation (Stimulus, optional)
+
+Progressive enhancement over the server-side validation. Pass a `validate` context to
+`renderForm()` and the form gets the `gridview-form-validate` controller, which validates
+required/format on input/blur (HTML5 Constraint Validation API) and checks uniqueness with a
+debounced fetch:
+
+```php
+$crud->renderForm($form, $columns, $view, [
+    'action'   => $request->getRequestUri(),
+    'validate' => [
+        'checkUrl' => $this->generateUrl('gridview_user_exists'),
+        'unique'   => ['code', 'username', 'email'],
+        'id'       => $mode === 'edit' ? $id : null, // exclude self on edit only
+    ],
+]);
+```
+
+The uniqueness endpoint delegates to `GridCrudHandlerInterface::existsWithValue()` (which only
+queries real mapped fields); whitelist the exposed fields in the action:
+
+```php
+#[Route('/exists', name: 'exists', methods: ['GET'])]
+public function exists(Request $request): JsonResponse
+{
+    $field = (string) $request->query->get('field');
+    if (!in_array($field, ['code', 'username', 'email'], true)) {
+        return new JsonResponse(['exists' => false]);
+    }
+    return new JsonResponse(['exists' => $crud->existsWithValue(
+        User::class, $field, $request->query->get('value'), $request->query->get('id')
+    )]);
+}
+```
+
+Register the controller once in `assets/bootstrap.js` (like the others). The server-side
+NotBlank/UniqueEntity remain the source of truth — the live layer is purely UX.
+
+### Per-mode controls (`modes`)
+
+Limit a control to specific CRUD modes — e.g. a password required only when creating:
+
+```php
+['attribute' => 'plainPassword', 'visible' => false,
+ 'control' => ['type' => 'text', 'modes' => ['add', 'clone'], 'required' => true]],
+```
+
+In `edit` the field is simply not added to the form.
+
+### Relations with a non-standard accessor (`getter`/`setter`)
+
+When the entity getter doesn't return the bound entities (e.g. `User::getRoles()` returns role codes
+for the Security contract), pass Symfony's field `getter`/`setter` through `control.options`:
+
+```php
+['attribute' => 'roles', 'type' => 'relation', 'control' => ['options' => [
+    'class' => UserRole::class, 'choice_label' => 'name', 'multiple' => true,
+    'getter' => fn(User $u) => $u->getRoleEntities(),
+    'setter' => function (User $u, $roles) {
+        $u->getRoleEntities()->clear();
+        foreach ($roles as $r) { $u->addRole($r); }
+    },
+]]],
+```
+
+### Wiring the routes (host app owns them)
+
+The bundle ships the services; the app provides thin actions that delegate to
+`GridCrudHandlerInterface`. Build the grid once (shared by index + form + delete) and set
+`routeName` so sort/pagination/filter links stay pinned to the list route even while a CRUD POST is
+rendering the refreshed grid:
+
+```php
+->setOptions([
+    'routeName' => 'gridview_user_index',
+    'crud'   => ['title' => 'User', 'addUrl' => $this->generateUrl('gridview_user_form')],
+    'layout' => ['gridview' => '{toolbar} {header} {table} {footer}', 'toolbar' => '{addButton}'],
+])
+```
+
+```php
+#[Route('/form/{id}', name: 'form', methods: ['GET','POST'], defaults: ['id' => null])]
+public function form(Request $request, ?int $id, GridCrudHandlerInterface $crud): Response
+{
+    $mode   = $id === null ? 'add' : ($request->query->get('mode') === 'clone' ? 'clone' : 'edit');
+    $entity = $id !== null ? $repo->find($id) : null;
+
+    $gridview = $this->buildGridview();
+    $columns  = $gridview->getColumns();
+
+    $form = $crud->createForm(User::class, $columns, $mode, $entity, $request);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        $crud->save($form, $mode);                       // persist()+flush() (add/clone), flush() (edit)
+        $resp = $gridview->renderGrid('@FedaleGridview/gridview/sections/_stream.html.twig');
+        $resp->headers->set('Content-Type', 'text/vnd.turbo-stream.html');
+        return $resp;
+    }
+    return new Response($crud->renderForm($form, $columns, $view, ['action' => $request->getRequestUri()]));
+}
+```
+
+The action buttons and the `{addButton}` token open the modal. Use the `CrudButton` helper inside an
+`action` column so the URLs (route-owned by the app) get the right Stimulus hooks:
+
+```php
+['type' => 'action', 'layout' => '{edit} {clone} {delete}', 'buttons' => [
+    'edit'   => fn($row) => CrudButton::edit($this->generateUrl('gridview_user_form', ['id' => $row['id']])),
+    'clone'  => fn($row) => CrudButton::clone($this->generateUrl('gridview_user_form', ['id' => $row['id'], 'mode' => 'clone'])),
+    'delete' => fn($row) => CrudButton::delete(
+        $this->generateUrl('gridview_user_delete', ['id' => $row['id']]),
+        $csrf->getToken('gridcrud_delete_' . $row['id'])->getValue()
+    ),
+]]
+```
+
+Register the Stimulus controller once (app `assets/bootstrap.js`):
+
+```js
+import GridviewCrudController from '.../FedaleGridviewBundle/assets/controllers/gridview-crud_controller.js';
+app.register('gridview-crud', GridviewCrudController);
+```
+
+### Overriding the form layout with a Twig view
+
+By default the fields render automatically. To control the layout, point `crud.form.view` at a Twig
+template (passed as the `$view` argument to `renderForm()`) and place **single-brace tokens**
+`{ attribute }` — consistent with the layout tokens (`{toolbar}`, `{header}`…). Each token is
+replaced by that attribute's generated widget; CSRF and any unplaced fields are appended by
+`form_end()`.
+
+```twig
+{# templates/gridview/user/_form.html.twig #}
+<div class="row g-3">
+    <div class="col-md-6">{ code }</div>
+    <div class="col-md-6">{ username }</div>
+    <div class="col-12">{ groups }</div>
+</div>
+```
+
+> Tokens are plain text replaced after Twig renders (no `template_from_string`), so a custom layout
+> cannot inject Twig code. Use a **file** template, not an inline string. A control with **no token**
+> in the view still renders — it falls through to `form_end()` at the bottom — so fields are never
+> silently lost.
+
+### Delete with recap
+
+`delete()` is split into GET (recap) + POST (delete). The GET branch renders a confirmation summary
+into the modal via `renderDeleteConfirm()`; columns flagged `showInDeleteConfirm` drive the recap
+(fallback: the first few visible columns):
+
+```php
+['attribute' => 'code', 'showInDeleteConfirm' => true, /* … */],
+
+#[Route('/{id}/delete', name: 'delete', methods: ['GET', 'POST'])]
+public function delete(Request $request, int $id): Response
+{
+    $entity = $repo->find($id) ?? throw $this->createNotFoundException();
+    if ($request->isMethod('GET')) {
+        return new Response($crud->renderDeleteConfirm(
+            $entity, $this->buildGridview()->getColumns(),
+            $this->generateUrl('gridview_user_delete', ['id' => $id]),
+            $csrf->getToken($crud->deleteTokenId($entity))->getValue(),
+        ));
+    }
+    $crud->delete($entity, $request->request->get('_token'), $crud->deleteTokenId($entity));
+    // … return the Turbo Stream
+}
+```
+
+`delete()` clears owning-side ManyToMany collections before removing the entity (so join-table rows
+don't block the DELETE) and catches `ForeignKeyConstraintViolationException` (returns `false`, resets
+the EM) when the row is still referenced elsewhere — no 500.
+
+### Clone semantics
+
+`clone` copies the entity, nulls the identifier, and gives each **to-many association its own new
+collection** (same related entities, independent of the source). Use `cloneCallback(object $clone,
+object $source)` only to reset unique scalar fields or further customize:
+
+```php
+$crud->createForm(User::class, $columns, $mode, $entity, $request, [
+    'cloneCallback' => fn(User $c) => $c->setCode('')->setUsername('')->setEmail(''),
+]);
+```
+
+---
+
 ## Attributes & Styling
 
 HTML attributes for the table and its surrounding elements are set via `setAttributes()`:
@@ -1339,6 +1595,8 @@ $gridview = $this->createGridviewBuilder()
 | `globalSearch` | `string[]` | `[]` | DQL fields searched by the global search input |
 | `addRoute` | `string\|null` | `null` | Route name for the `{addButton}` token |
 | `addLabel` | `string` | `'Add'` | Label for the `{addButton}` link |
+| `routeName` | `string\|null` | `null` | List route used for sort/pagination/filter links instead of the current `_route` — required so the grid renders correctly from a CRUD POST (Turbo Stream) |
+| `crud` | `array` | `[]` | CRUD modal config: `title`, `addUrl` (enables the `{addButton}` modal trigger) |
 | `formName` | `string` | `'myform'` | Name of the filter form; change this to support multiple grids with filters on the same page |
 | `caption` | `string\|null` | `null` | Optional `<caption>` text for the table |
 | `pagination.pageSelect` | `bool` | `true` | Show the jump-to-page `<select>` in the pagination |
@@ -1517,6 +1775,41 @@ value is the target page URL, so the controller just visits it on `change` — u
 | Action | Description |
 |--------|-------------|
 | `gridview-page-jump#jump` | Navigate to the URL of the selected `<option>` |
+
+---
+
+### `gridview-crud`
+
+Drives the CRUD modal: fetches add/edit/clone/delete forms into a Bootstrap modal and submits them
+via `fetch`. A `text/vnd.turbo-stream.html` response refreshes the grid frame and closes the modal;
+an HTML response (validation errors) is re-injected into the modal.
+
+**Connects to:** the grid container (applied automatically when `crud` options are set).
+
+**Actions available in templates** (emitted by `CrudButton` / the `{addButton}` token):
+
+| Action | Description |
+|--------|-------------|
+| `gridview-crud#open` | Open the modal and load the form/recap from `data-gridview-crud-url-param` |
+| `gridview-crud#submit` | Intercept the modal form / inline form submit (handles the Turbo Stream) |
+
+---
+
+### `gridview-form-validate`
+
+Optional live validation for the generated CRUD form (see *Live validation* above). Validates
+required/format on `input`/`blur` and checks uniqueness with a debounced fetch. Server-side
+validation stays authoritative.
+
+**Connects to:** the CRUD form (applied when a `validate` context is passed to `renderForm()`).
+
+**Values:**
+
+| Value | Type | Description |
+|-------|------|-------------|
+| `checkUrl` | `String` | Endpoint returning `{exists: bool}` for the uniqueness check |
+| `unique` | `Array` | Field names (bare, e.g. `code`) checked for uniqueness |
+| `id` | `String` | Current row id to exclude (edit only; empty for add/clone) |
 
 ---
 

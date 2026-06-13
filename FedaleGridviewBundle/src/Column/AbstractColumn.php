@@ -34,6 +34,9 @@ abstract class AbstractColumn implements ColumnInterface
     /** Whether this column is editable in the bulk "batch update" dialog. */
     protected bool $batchUpdate = false;
 
+    /** Inline-editing config: false, true, or ['trigger' => 'click'|'dblclick']. */
+    protected bool|array $editable = false;
+
     protected $value;
 
     protected Environment $twig;
@@ -198,6 +201,22 @@ abstract class AbstractColumn implements ColumnInterface
     public function setBatchUpdate(bool $batchUpdate): void
     {
         $this->batchUpdate = $batchUpdate;
+    }
+
+    /** Inline-editable when `editable` is truthy AND the column has a control. */
+    public function isEditable(): bool
+    {
+        return $this->editable !== false && $this->control !== null;
+    }
+
+    public function getEditableTrigger(): string
+    {
+        return \is_array($this->editable) ? ($this->editable['trigger'] ?? 'dblclick') : 'dblclick';
+    }
+
+    public function setEditable(bool|array $editable): void
+    {
+        $this->editable = $editable;
     }
 
     /**

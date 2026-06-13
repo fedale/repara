@@ -316,6 +316,49 @@ class GridCrudHandler implements GridCrudHandlerInterface
         return (int) $qb->getQuery()->getSingleScalarResult() > 0;
     }
 
+    public function renderInlineEditor(string $dataClass, ColumnInterface $column, object $entity, string $action): string
+    {
+        $form = $this->formBuilder->build($dataClass, [$column], $entity, ['name' => 'inline', 'submit' => false]);
+
+        return $this->renderInlineForm($form, $column, $action);
+    }
+
+    /**
+     * Validates and saves a single inline-edited field. Returns
+     * ['ok' => bool, 'body' => string] — on success the new cell display HTML,
+     * otherwise the editor re-rendered with errors.
+     */
+    public function saveInline(string $dataClass, ColumnInterface $column, object $entity, Request $request, string $action): array
+    {
+        $form = $this->formBuilder->build($dataClass, [$column], $entity, ['name' => 'inline', 'submit' => false]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                $this->entityManager->flush();
+            } catch (UniqueConstraintViolationException) {
+                $this->managerRegistry->resetManager();
+
+                return ['ok' => false, 'body' => $this->renderInlineForm($form, $column, $action)];
+            }
+
+            $value = PropertyAccess::createPropertyAccessor()->getValue($entity, $column->getAttribute());
+
+            return ['ok' => true, 'body' => $this->stringifyValue($value)];
+        }
+
+        return ['ok' => false, 'body' => $this->renderInlineForm($form, $column, $action)];
+    }
+
+    private function renderInlineForm(FormInterface $form, ColumnInterface $column, string $action): string
+    {
+        return $this->twig->render('@FedaleGridview/crud/_inline.html.twig', [
+            'form'   => $form->createView(),
+            'field'  => $column->getAttribute(),
+            'action' => $action,
+        ]);
+    }
+
     public function deleteTokenId(object $entity): string
     {
         $meta = $this->entityManager->getClassMetadata($entity::class);

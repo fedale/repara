@@ -1,0 +1,11 @@
+{#
+  Inline cell editor: a single-field form (built from the column's control, so it
+  reuses validation incl. NotBlank/UniqueEntity). Submitted via the
+  gridview-inline-edit controller (Enter / blur / save), Escape cancels.
+#}
+{{ form_start(form, {'action': action, 'attr': {'class': 'gv-inline-form', 'data-action': 'submit->gridview-inline-edit#submit'}}) }}
+    <div class="gv-inline-field">
+        {{ form_widget(attribute(form, field), {'attr': {'data-gridview-inline-edit-target': 'input', 'data-action': 'keydown->gridview-inline-edit#key'}}) }}
+        {{ form_errors(attribute(form, field)) }}
+    </div>
+{{ form_end(form) }}

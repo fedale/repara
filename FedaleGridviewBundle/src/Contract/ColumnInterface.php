@@ -40,6 +40,12 @@ interface ColumnInterface
     /** Whether this column is editable in the bulk batch-update dialog. */
     public function isBatchUpdate(): bool;
 
+    /** Whether this column supports inline cell editing (truthy `editable` + a control). */
+    public function isEditable(): bool;
+
+    /** The inline-edit trigger event: 'click' or 'dblclick' (default). */
+    public function getEditableTrigger(): string;
+
     /** Render a data cell for the given row model. */
     public function render(mixed $model, int $index): mixed;
 

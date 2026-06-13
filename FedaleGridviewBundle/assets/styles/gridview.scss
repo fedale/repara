@@ -745,3 +745,36 @@ turbo-frame[busy] > [data-gridview] {
     gap: 0.5rem;
   }
 }
+
+// ── Inline cell editing ──
+
+.gv-editable {
+  cursor: pointer;
+  border-bottom: 1px dashed transparent;
+
+  &:hover {
+    border-bottom-color: #9bbcff;
+  }
+}
+
+.gv-editing {
+  display: block;
+
+  .gv-inline-form {
+    margin: 0;
+  }
+}
+
+.gv-inline-spinner {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid #cdddff;
+  border-top-color: #3b71ca;
+  border-radius: 50%;
+  animation: gv-inline-spin 0.6s linear infinite;
+}
+
+@keyframes gv-inline-spin {
+  to { transform: rotate(360deg); }
+}

@@ -5,7 +5,10 @@
 #}
 {{ form_start(form, {'action': action, 'attr': {'class': 'gv-inline-form', 'data-action': 'submit->gridview-inline-edit#submit'}}) }}
     <div class="gv-inline-field">
-        {{ form_widget(attribute(form, field), {'attr': {'data-gridview-inline-edit-target': 'input', 'data-action': 'keydown->gridview-inline-edit#key'}}) }}
+        {{ form_widget(attribute(form, field), {'attr': {
+            'data-gridview-inline-edit-target': 'input',
+            'data-action': 'keydown->gridview-inline-edit#key blur->gridview-inline-edit#save change->gridview-inline-edit#save',
+        }}) }}
         {{ form_errors(attribute(form, field)) }}
     </div>
 {{ form_end(form) }}

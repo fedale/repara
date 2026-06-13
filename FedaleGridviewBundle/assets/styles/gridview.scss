@@ -789,3 +789,18 @@ turbo-frame[busy] > [data-gridview] {
   0%   { background-color: #d1e7dd; }
   100% { background-color: transparent; }
 }
+
+.gv-editable.gv-save-error {
+  animation: gv-save-error-flash 2s ease-out;
+}
+
+@keyframes gv-save-error-flash {
+  0%   { background-color: #f8d7da; }
+  100% { background-color: transparent; }
+}
+
+.gv-saved-badge {
+  margin-left: 0.35rem;
+  color: #198754;
+  font-weight: 700;
+}

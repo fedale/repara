@@ -2,15 +2,15 @@ import { Controller } from '@hotwired/stimulus';
 
 /**
  * Inline cell editing. An editable cell (.gv-editable with data-gv-field/data-gv-id)
- * fetches a single-field editor from `${base}/${id}/${field}` on click/dblclick,
- * submits it via fetch (server-side validation is authoritative), and swaps the
- * cell with the new display value. Enter saves, Escape cancels, one cell at a time.
+ * fetches a single-field editor from `${base}/${id}/${field}` on its trigger, then
+ * saves on blur / change / Enter (server-side validation is authoritative) and
+ * swaps the cell with the new value. Escape cancels, one cell at a time.
  */
 export default class extends Controller {
     static values = { base: String };
 
     connect() {
-        this._editing = null; // { cell, original }
+        this._editing = null; // { cell, original, saving }
     }
 
     edit(event) {
@@ -22,24 +22,34 @@ export default class extends Controller {
         const field = cell.dataset.gvField;
         if (!id || !field) return;
 
-        this._editing = { cell, original: cell.innerHTML };
+        this._editing = { cell, original: cell.innerHTML, saving: false };
         cell.classList.add('gv-editing');
         cell.innerHTML = '<span class="gv-inline-spinner"></span>';
 
         fetch(`${this.baseValue}/${id}/${field}`, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
             .then((r) => r.text())
             .then((html) => {
+                if (!this._editing || this._editing.cell !== cell) return;
                 cell.innerHTML = html;
                 this._focus(cell);
             })
             .catch(() => this._cancelActive());
     }
 
+    // Native form submit (Enter) → save.
     submit(event) {
         event.preventDefault();
-        const form = event.target.closest('form');
-        const cell = this._editing && this._editing.cell;
-        if (!form || !cell) return;
+        this.save();
+    }
+
+    // Save trigger from blur / change / Enter. Guarded against double-fire.
+    save() {
+        if (!this._editing || this._editing.saving) return;
+        const cell = this._editing.cell;
+        const form = cell.querySelector('form');
+        if (!form) return;
+
+        this._editing.saving = true;
 
         fetch(form.action, {
             method: 'POST',
@@ -48,18 +58,31 @@ export default class extends Controller {
         })
             .then(async (response) => {
                 const text = await response.text();
+                if (!this._editing || this._editing.cell !== cell) return;
+
                 if (response.ok) {
-                    cell.innerHTML = text;          // new display value
+                    // New display value + explicit success feedback (✓ + green flash).
+                    cell.innerHTML = text + '<span class="gv-saved-badge" title="Salvato">✓</span>';
                     cell.classList.remove('gv-editing');
-                    cell.classList.add('gv-saved');  // brief success flash
-                    setTimeout(() => cell.classList.remove('gv-saved'), 1500);
+                    cell.classList.add('gv-saved');
+                    setTimeout(() => {
+                        cell.classList.remove('gv-saved');
+                        cell.querySelector('.gv-saved-badge')?.remove();
+                    }, 1800);
                     this._editing = null;
                 } else {
-                    cell.innerHTML = text;          // editor re-rendered with errors
+                    // Validation error: re-render the editor (form_errors) and retry.
+                    cell.innerHTML = text;
+                    this._editing.saving = false;
                     this._focus(cell);
                 }
             })
-            .catch(() => this._cancelActive());
+            .catch(() => {
+                if (this._editing && this._editing.cell === cell) {
+                    this._editing.saving = false;
+                    this._flagError(cell);
+                }
+            });
     }
 
     key(event) {
@@ -68,7 +91,7 @@ export default class extends Controller {
             this._cancelActive();
         } else if (event.key === 'Enter' && event.target.tagName !== 'TEXTAREA') {
             event.preventDefault();
-            event.target.closest('form')?.requestSubmit();
+            this.save();
         }
     }
 
@@ -82,10 +105,16 @@ export default class extends Controller {
         }
     }
 
+    _flagError(cell) {
+        cell.classList.add('gv-save-error');
+        setTimeout(() => cell.classList.remove('gv-save-error'), 2000);
+    }
+
     _cancelActive() {
         if (!this._editing) return;
-        this._editing.cell.innerHTML = this._editing.original;
-        this._editing.cell.classList.remove('gv-editing');
-        this._editing = null;
+        const { cell, original } = this._editing;
+        this._editing = null;            // clear first so the blur-triggered save is ignored
+        cell.innerHTML = original;
+        cell.classList.remove('gv-editing');
     }
 }

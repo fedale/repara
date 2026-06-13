@@ -30,3 +30,6 @@ app.register('gridview-crud', GridviewCrudController);
 
 import GridviewFormValidateController from '../../FedaleGridviewBundle/assets/controllers/gridview-form-validate_controller.js';
 app.register('gridview-form-validate', GridviewFormValidateController);
+
+import GridviewInlineEditController from '../../FedaleGridviewBundle/assets/controllers/gridview-inline-edit_controller.js';
+app.register('gridview-inline-edit', GridviewInlineEditController);

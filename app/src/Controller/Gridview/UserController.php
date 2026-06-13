@@ -188,6 +188,37 @@ class UserController extends AbstractController
         return new Response($this->crud->renderBatchForm($form, \count($ids), $request->getRequestUri()));
     }
 
+    #[Route('/inline/{id}/{field}', name: 'inline', methods: ['GET', 'POST'], requirements: ['id' => '\d+', 'field' => '[a-zA-Z_]+'])]
+    public function inline(Request $request, int $id, string $field): Response
+    {
+        $entity = $this->entityManager->getRepository(User::class)->find($id);
+        if ($entity === null) {
+            throw $this->createNotFoundException();
+        }
+
+        // Only columns explicitly marked editable may be edited inline.
+        $column = null;
+        foreach ($this->buildGridview()->getColumns() as $c) {
+            if ($c->getAttribute() === $field && $c->isEditable()) {
+                $column = $c;
+                break;
+            }
+        }
+        if ($column === null) {
+            throw $this->createNotFoundException();
+        }
+
+        $action = $this->generateUrl('gridview_user_inline', ['id' => $id, 'field' => $field]);
+
+        if ($request->isMethod('GET')) {
+            return new Response($this->crud->renderInlineEditor(User::class, $column, $entity, $action));
+        }
+
+        $result = $this->crud->saveInline(User::class, $column, $entity, $request, $action);
+
+        return new Response($result['body'], $result['ok'] ? Response::HTTP_OK : Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
     /**
      * Resolves the target ids: explicit `ids[]` from the query, or all-mode
      * (`all=1`) resolved server-side by re-running the filtered search.
@@ -262,6 +293,8 @@ class UserController extends AbstractController
                     'addUrl'        => $this->generateUrl('gridview_user_form'),
                     'bulkDeleteUrl' => $this->generateUrl('gridview_user_bulk_delete'),
                     'bulkUpdateUrl' => $this->generateUrl('gridview_user_bulk_update'),
+                    // Base for inline editing; the JS appends /{id}/{field}.
+                    'inlineUrl'     => $this->generateUrl('gridview_user_index') . '/inline',
                 ],
                 'addLabel' => 'Nuovo utente',
                 'layout' => [
@@ -305,6 +338,7 @@ class UserController extends AbstractController
                 'filter' => ['type' => 'text'],
                 'filterBar' => true,
                 'showInDeleteConfirm' => true,
+                'editable' => true,
                 'control' => [
                     'type' => 'text',
                     'required' => true,
@@ -320,6 +354,7 @@ class UserController extends AbstractController
                 'filter' => ['type' => 'text'],
                 'filterBar' => true,
                 'showInDeleteConfirm' => true,
+                'editable' => true,
                 'control' => [
                     'type' => 'text',
                     'required' => true,
@@ -357,6 +392,7 @@ class UserController extends AbstractController
                 'filter' => ['type' => 'text'],
                 'filterBar' => true,
                 'showInDeleteConfirm' => true,
+                'editable' => true,
                 'control' => [
                     'type' => 'text',
                     'required' => true,
@@ -374,6 +410,7 @@ class UserController extends AbstractController
                 'filter' => ['options' => ['choices' => $typeChoices, 'multiple' => true, 'searchable' => true]],
                 'filterBar' => true,
                 'batchUpdate' => true,
+                'editable' => true,
                 'control' => ['options' => ['class' => UserType::class, 'choice_label' => 'name']],
             ],
             // groups (ManyToMany) — multi relation control
@@ -418,6 +455,7 @@ class UserController extends AbstractController
                 'filter' => true,
                 'filterBar' => true,
                 'batchUpdate' => true,
+                'editable' => true,
                 'control' => ['required' => false],
             ],
             // lastLoginAt (unix timestamp)

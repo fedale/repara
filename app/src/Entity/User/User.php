@@ -312,6 +312,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    /**
+     * Raw UserRole collection — getRoles() is reserved by the Security contract
+     * (returns role codes as strings), so forms bind to the entities via this.
+     */
+    public function getRoleEntities(): Collection
+    {
+        return $this->roles;
+    }
     
     /**
      * @see PasswordAuthenticatedUserInterface

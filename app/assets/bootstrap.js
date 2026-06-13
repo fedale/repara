@@ -24,3 +24,9 @@ app.register('gridview-relation-filter', GridviewRelationFilterController);
 
 import GridviewDateFilterController from '../../FedaleGridviewBundle/assets/controllers/gridview-date-filter_controller.js';
 app.register('gridview-date-filter', GridviewDateFilterController);
+
+import GridviewCrudController from '../../FedaleGridviewBundle/assets/controllers/gridview-crud_controller.js';
+app.register('gridview-crud', GridviewCrudController);
+
+import GridviewFormValidateController from '../../FedaleGridviewBundle/assets/controllers/gridview-form-validate_controller.js';
+app.register('gridview-form-validate', GridviewFormValidateController);

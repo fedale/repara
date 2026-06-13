@@ -1,0 +1,15 @@
+{#
+  Custom CRUD form layout for the User grid (crud.form.view).
+  Single-brace `{ attribute }` tokens are replaced by the widget generated from
+  the column's `control`, consistent with the gridview layout tokens.
+  Remove this view (FORM_VIEW = null) to fall back to automatic rendering.
+#}
+<div class="row g-3">
+    <div class="col-md-6">{ code }</div>
+    <div class="col-md-6">{ username }</div>
+    <div class="col-md-6">{ email }</div>
+    <div class="col-md-6">{ plainPassword }</div>
+    <div class="col-md-6">{ type }</div>
+    <div class="col-md-6 d-flex align-items-end">{ active }</div>
+    <div class="col-12">{ groups }</div>
+</div>

@@ -211,7 +211,7 @@ abstract class AbstractColumn implements ColumnInterface
 
     public function getEditableTrigger(): string
     {
-        return \is_array($this->editable) ? ($this->editable['trigger'] ?? 'dblclick') : 'dblclick';
+        return \is_array($this->editable) ? ($this->editable['trigger'] ?? 'click') : 'click';
     }
 
     public function setEditable(bool|array $editable): void

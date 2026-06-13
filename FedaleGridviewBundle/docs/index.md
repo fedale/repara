@@ -1543,7 +1543,7 @@ public function bulkUpdate(Request $request): Response
 ### Inline editing
 
 A column with a `control` becomes inline-editable with `editable => true` (or
-`['trigger' => 'click'|'dblclick']`, default `dblclick`). The cell value is wrapped in a
+`['trigger' => 'click'|'dblclick']`, default `click`). The cell value is wrapped in a
 `.gv-editable` span; on the trigger the `gridview-inline-edit` controller fetches a single-field
 editor (built from the column's control, so it reuses validation incl. NotBlank/UniqueEntity),
 submits it via fetch, and swaps in the new value. Enter saves, Escape cancels, one cell at a time.

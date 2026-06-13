@@ -51,6 +51,8 @@ export default class extends Controller {
                 if (response.ok) {
                     cell.innerHTML = text;          // new display value
                     cell.classList.remove('gv-editing');
+                    cell.classList.add('gv-saved');  // brief success flash
+                    setTimeout(() => cell.classList.remove('gv-saved'), 1500);
                     this._editing = null;
                 } else {
                     cell.innerHTML = text;          // editor re-rendered with errors

@@ -778,3 +778,14 @@ turbo-frame[busy] > [data-gridview] {
 @keyframes gv-inline-spin {
   to { transform: rotate(360deg); }
 }
+
+// ── Inline edit — success flash after save ──
+
+.gv-editable.gv-saved {
+  animation: gv-saved-flash 1.5s ease-out;
+}
+
+@keyframes gv-saved-flash {
+  0%   { background-color: #d1e7dd; }
+  100% { background-color: transparent; }
+}

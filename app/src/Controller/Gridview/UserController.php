@@ -127,7 +127,7 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/delete', name: 'delete', methods: ['GET', 'POST'])]
+    #[Route('/{id}/delete', name: 'delete', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     public function delete(Request $request, int $id): Response
     {
         $entity = $this->entityManager->getRepository(User::class)->find($id);
@@ -148,6 +148,67 @@ class UserController extends AbstractController
         // POST → delete and refresh the grid via Turbo Stream.
         $this->crud->delete($entity, $request->request->get('_token'), $this->crud->deleteTokenId($entity));
 
+        return $this->bulkStream();
+    }
+
+    #[Route('/bulk/delete', name: 'bulk_delete', methods: ['GET', 'POST'])]
+    public function bulkDelete(Request $request): Response
+    {
+        $ids = $this->resolveBulkIds($request);
+
+        if ($request->isMethod('GET')) {
+            return new Response($this->crud->renderBulkDeleteConfirm(
+                \count($ids),
+                $request->getRequestUri(),
+                $this->csrfTokenManager->getToken('gridcrud_bulk_delete')->getValue(),
+            ));
+        }
+
+        if ($this->isCsrfTokenValid('gridcrud_bulk_delete', (string) $request->request->get('_token'))) {
+            $this->crud->bulkDelete(User::class, $ids);
+        }
+
+        return $this->bulkStream();
+    }
+
+    #[Route('/bulk/update', name: 'bulk_update', methods: ['GET', 'POST'])]
+    public function bulkUpdate(Request $request): Response
+    {
+        $ids     = $this->resolveBulkIds($request);
+        $columns = $this->buildGridview()->getColumns();
+        $form    = $this->crud->createBatchForm($columns);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->crud->applyBatch(User::class, $ids, $form, $columns);
+
+            return $this->bulkStream();
+        }
+
+        return new Response($this->crud->renderBatchForm($form, \count($ids), $request->getRequestUri()));
+    }
+
+    /**
+     * Resolves the target ids: explicit `ids[]` from the query, or all-mode
+     * (`all=1`) resolved server-side by re-running the filtered search.
+     *
+     * @return int[]
+     */
+    private function resolveBulkIds(Request $request): array
+    {
+        if ($request->query->getBoolean('all')) {
+            $params = $request->query->all('myform'); // filter form name (default)
+            $qb = $this->entityManager->getRepository(User::class)->search($params);
+            $qb->select('DISTINCT u.id')->setFirstResult(null)->setMaxResults(null);
+
+            return array_map(static fn(array $row) => (int) $row['id'], $qb->getQuery()->getScalarResult());
+        }
+
+        return array_map('intval', (array) $request->query->all('ids'));
+    }
+
+    private function bulkStream(): Response
+    {
         $response = $this->buildGridview()->renderGrid('@FedaleGridview/gridview/sections/_stream.html.twig');
         $response->headers->set('Content-Type', 'text/vnd.turbo-stream.html');
 
@@ -197,12 +258,14 @@ class UserController extends AbstractController
             ->setOptions([
                 'routeName' => 'gridview_user_index',
                 'crud' => [
-                    'title'  => 'Utente',
-                    'addUrl' => $this->generateUrl('gridview_user_form'),
+                    'title'         => 'Utente',
+                    'addUrl'        => $this->generateUrl('gridview_user_form'),
+                    'bulkDeleteUrl' => $this->generateUrl('gridview_user_bulk_delete'),
+                    'bulkUpdateUrl' => $this->generateUrl('gridview_user_bulk_update'),
                 ],
                 'addLabel' => 'Nuovo utente',
                 'layout' => [
-                    'gridview' => '{toolbar} {header} {table} {footer}',
+                    'gridview' => '{toolbar} {bulkBar} {header} {table} {footer}',
                     'toolbar'  => '{addButton}',
                 ],
             ])
@@ -231,6 +294,8 @@ class UserController extends AbstractController
         }
 
         return [
+            // selection checkbox (enables bulk actions)
+            ['type' => 'checkbox'],
             // id (integer)
             'id',
             // code (string)
@@ -308,6 +373,7 @@ class UserController extends AbstractController
                 'value' => fn(array $data) => $data['type']['name'] ?? '—',
                 'filter' => ['options' => ['choices' => $typeChoices, 'multiple' => true, 'searchable' => true]],
                 'filterBar' => true,
+                'batchUpdate' => true,
                 'control' => ['options' => ['class' => UserType::class, 'choice_label' => 'name']],
             ],
             // groups (ManyToMany) — multi relation control
@@ -351,6 +417,7 @@ class UserController extends AbstractController
                 'type' => 'boolean',
                 'filter' => true,
                 'filterBar' => true,
+                'batchUpdate' => true,
                 'control' => ['required' => false],
             ],
             // lastLoginAt (unix timestamp)

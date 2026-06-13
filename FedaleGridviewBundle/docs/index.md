@@ -1738,6 +1738,8 @@ Supports three selection modes: current page, visible rows, and all records.
 |--------|---------|-------------|
 | `checkbox` | `<input type="checkbox">` in each data row | Row checkbox |
 | `headerCheckbox` | `<input type="checkbox">` in the header | Select-all checkbox |
+| `bulkBar` | the `{bulkBar}` wrapper | Bulk action bar; shown when ≥1 row is selected |
+| `count` | element inside the bulk bar | Selected-count display (or "Tutti i record" in all-mode) |
 
 **Actions available in templates:**
 
@@ -1748,6 +1750,7 @@ Supports three selection modes: current page, visible rows, and all records.
 | `gridview-selection#selectAll` | Enter all-mode (all pages, all records) |
 | `gridview-selection#selectVisible` | Add all visible rows to selection |
 | `gridview-selection#deselectAll` | Clear selection completely |
+| `gridview-selection#bulk` | Open the CRUD modal for a bulk action; appends the selected ids (or `all=1` + current filters) to the button's `url` param. Dispatches `gridview-selection:open` (caught by `gridview-crud#openFromEvent`) |
 
 **Session storage keys:**
 

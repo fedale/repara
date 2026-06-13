@@ -36,24 +36,27 @@ export default class extends Controller {
             .catch(() => this._cancelActive());
     }
 
-    // Native form submit (Enter) → save.
-    submit(event) {
-        event.preventDefault();
-        this.save();
-    }
-
-    // Save trigger from blur / change / Enter. Guarded against double-fire.
+    // Save trigger from OK button / Enter. Guarded against double-fire.
+    // The editor has no <form> (it lives inside the grid's filter form, and
+    // nested forms are invalid), so we collect the cell's inputs and POST them.
     save() {
         if (!this._editing || this._editing.saving) return;
         const cell = this._editing.cell;
-        const form = cell.querySelector('form');
-        if (!form) return;
+        const { gvId: id, gvField: field } = cell.dataset;
+        if (!id || !field) return;
+
+        const data = new FormData();
+        cell.querySelectorAll('input, select, textarea').forEach((el) => {
+            if (!el.name) return;
+            if ((el.type === 'checkbox' || el.type === 'radio') && !el.checked) return;
+            data.append(el.name, el.value);
+        });
 
         this._editing.saving = true;
 
-        fetch(form.action, {
+        fetch(`${this.baseValue}/${id}/${field}`, {
             method: 'POST',
-            body: new FormData(form),
+            body: data,
             headers: { 'X-Requested-With': 'XMLHttpRequest', Accept: 'text/html' },
         })
             .then(async (response) => {

@@ -750,18 +750,49 @@ turbo-frame[busy] > [data-gridview] {
 
 .gv-editable {
   cursor: pointer;
-  border-bottom: 1px dashed transparent;
 
-  &:hover {
-    border-bottom-color: #9bbcff;
+  // Pencil edit affordance (replaces the dashed underline). Pseudo-element so it
+  // survives innerHTML swaps and disappears while editing.
+  &::after {
+    content: '✎';
+    margin-left: 0.35rem;
+    font-size: 0.85em;
+    color: #3b71ca;
+    opacity: 0;
+    transition: opacity 0.12s;
+  }
+
+  &:hover::after {
+    opacity: 0.7;
   }
 }
 
 .gv-editing {
   display: block;
 
+  &::after {
+    content: none; // hide the pencil while the editor is open
+  }
+
   .gv-inline-form {
     margin: 0;
+  }
+
+  .gv-inline-field {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+
+    .form-control,
+    .form-select {
+      min-width: 6rem;
+    }
+  }
+
+  .gv-btn {
+    padding: 0.15rem 0.5rem;
+    font-size: 0.85em;
+    line-height: 1.2;
   }
 }
 

@@ -95,6 +95,11 @@ export default class extends Controller {
         }
     }
 
+    cancel(event) {
+        if (event) event.preventDefault();
+        this._cancelActive();
+    }
+
     _focus(cell) {
         const input = cell.querySelector('[data-gridview-inline-edit-target="input"]');
         if (input) {

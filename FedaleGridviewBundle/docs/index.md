@@ -1546,7 +1546,7 @@ A column with a `control` becomes inline-editable with `editable => true` (or
 `['trigger' => 'click'|'dblclick']`, default `click`). The cell value is wrapped in a
 `.gv-editable` span; on the trigger the `gridview-inline-edit` controller fetches a single-field
 editor (built from the column's control, so it reuses validation incl. NotBlank/UniqueEntity),
-submits it via fetch, and swaps in the new value. Enter saves, Escape cancels, one cell at a time.
+submits it via fetch (OK button or Enter), and swaps in the new value with a ✓ flash. ✕ or Escape cancels, one cell at a time.
 
 ```php
 ['attribute' => 'code',   'editable' => true, 'control' => ['type' => 'text', 'unique' => true, ...]],
@@ -1897,7 +1897,7 @@ an HTML response (validation errors) is re-injected into the modal.
 
 Inline cell editing. On an editable cell's trigger it fetches the editor from
 `${base}/${id}/${field}`, submits via fetch (server validation is authoritative), and swaps the cell
-with the new value. Enter saves, Escape cancels, one cell at a time.
+with the new value. OK/Enter saves (✓ flash), ✕/Escape cancels, one cell at a time.
 
 **Connects to:** the grid container (applied when `crud.inlineUrl` is set).
 

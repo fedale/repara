@@ -31,6 +31,9 @@ abstract class AbstractColumn implements ColumnInterface
     /** Whether this column appears in the delete-confirm recap (bool|array). */
     protected bool|array $showInDeleteConfirm = false;
 
+    /** Whether this column is editable in the bulk "batch update" dialog. */
+    protected bool $batchUpdate = false;
+
     protected $value;
 
     protected Environment $twig;
@@ -185,6 +188,16 @@ abstract class AbstractColumn implements ColumnInterface
     public function setShowInDeleteConfirm(bool|array $showInDeleteConfirm): void
     {
         $this->showInDeleteConfirm = $showInDeleteConfirm;
+    }
+
+    public function isBatchUpdate(): bool
+    {
+        return $this->batchUpdate;
+    }
+
+    public function setBatchUpdate(bool $batchUpdate): void
+    {
+        $this->batchUpdate = $batchUpdate;
     }
 
     /**

@@ -726,3 +726,22 @@ turbo-frame[busy] > [data-gridview] {
   font-size: 0.85em;
   margin-top: 0.25rem;
 }
+
+// ── Bulk action bar ──
+
+.gv-bulk-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.5rem;
+  background: #eef4ff;
+  border: 1px solid #cdddff;
+  border-radius: 0.375rem;
+
+  .gv-bulk-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+}

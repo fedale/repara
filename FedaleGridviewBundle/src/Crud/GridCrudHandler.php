@@ -152,17 +152,7 @@ class GridCrudHandler implements GridCrudHandlerInterface
             return false;
         }
 
-        // Clear owning-side ManyToMany associations first so their join-table
-        // rows are removed; otherwise the FK to the row blocks the DELETE.
-        $meta = $this->entityManager->getClassMetadata($entity::class);
-        foreach ($meta->getAssociationNames() as $field) {
-            if ($meta->isCollectionValuedAssociation($field) && !$meta->isAssociationInverseSide($field)) {
-                $collection = $meta->getFieldValue($entity, $field);
-                if ($collection instanceof Collection) {
-                    $collection->clear();
-                }
-            }
-        }
+        $this->clearOwningCollections($entity);
 
         try {
             $this->entityManager->remove($entity);
@@ -176,6 +166,125 @@ class GridCrudHandler implements GridCrudHandlerInterface
         }
 
         return true;
+    }
+
+    public function bulkDelete(string $dataClass, array $ids): int
+    {
+        if ($ids === []) {
+            return 0;
+        }
+
+        $repo  = $this->entityManager->getRepository($dataClass);
+        $count = 0;
+        foreach ($ids as $id) {
+            $entity = $repo->find($id);
+            if ($entity === null) {
+                continue;
+            }
+            $this->clearOwningCollections($entity);
+            $this->entityManager->remove($entity);
+            ++$count;
+        }
+
+        try {
+            $this->entityManager->flush();
+        } catch (ForeignKeyConstraintViolationException) {
+            $this->managerRegistry->resetManager();
+
+            return 0;
+        }
+
+        return $count;
+    }
+
+    public function renderBulkDeleteConfirm(int $count, string $action, string $token, array $context = []): string
+    {
+        return $this->twig->render('@FedaleGridview/crud/_bulk_delete.html.twig', array_merge($context, [
+            'count'  => $count,
+            'action' => $action,
+            'token'  => $token,
+        ]));
+    }
+
+    public function createBatchForm(iterable $columns): FormInterface
+    {
+        return $this->formBuilder->buildBatchForm($columns);
+    }
+
+    public function renderBatchForm(FormInterface $form, int $count, string $action, array $context = []): string
+    {
+        return $this->twig->render('@FedaleGridview/crud/_batch.html.twig', array_merge($context, [
+            'form'   => $form->createView(),
+            'count'  => $count,
+            'action' => $action,
+        ]));
+    }
+
+    /**
+     * Applies the checked batch fields to every entity in $ids. Returns the count.
+     *
+     * @param iterable<\Fedale\GridviewBundle\Contract\ColumnInterface> $columns
+     */
+    public function applyBatch(string $dataClass, array $ids, FormInterface $form, iterable $columns): int
+    {
+        if ($ids === []) {
+            return 0;
+        }
+
+        $data     = $form->getData();
+        $accessor = PropertyAccess::createPropertyAccessor();
+
+        // Collect the fields whose enable checkbox is checked.
+        $changes = [];
+        foreach ($columns as $column) {
+            if (!$column instanceof ColumnInterface || !$column->isBatchUpdate()) {
+                continue;
+            }
+            $attribute = $column->getAttribute();
+            if (!empty($data['enable_' . $attribute])) {
+                $changes[$attribute] = $data[$attribute] ?? null;
+            }
+        }
+
+        if ($changes === []) {
+            return 0;
+        }
+
+        $repo  = $this->entityManager->getRepository($dataClass);
+        $count = 0;
+        foreach ($ids as $id) {
+            $entity = $repo->find($id);
+            if ($entity === null) {
+                continue;
+            }
+            foreach ($changes as $attribute => $value) {
+                if ($accessor->isWritable($entity, $attribute)) {
+                    $accessor->setValue($entity, $attribute, $value);
+                }
+            }
+            ++$count;
+        }
+
+        $this->entityManager->flush();
+
+        return $count;
+    }
+
+    /**
+     * Clears owning-side ManyToMany collections so their join-table rows are
+     * removed before the entity DELETE (otherwise the FK blocks it).
+     */
+    private function clearOwningCollections(object $entity): void
+    {
+        $meta = $this->entityManager->getClassMetadata($entity::class);
+        foreach ($meta->getAssociationNames() as $field) {
+            if ($meta->isCollectionValuedAssociation($field) && !$meta->isAssociationInverseSide($field)) {
+                $collection = $meta->getFieldValue($entity, $field);
+                if ($collection instanceof Collection) {
+                    $collection->clear();
+                }
+            }
+        }
     }
 
     public function existsWithValue(string $dataClass, string $field, mixed $value, mixed $excludeId = null): bool

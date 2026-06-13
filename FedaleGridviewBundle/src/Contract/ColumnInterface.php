@@ -37,6 +37,9 @@ interface ColumnInterface
     /** Whether/how this column appears in the delete-confirm recap (bool|array). */
     public function getShowInDeleteConfirm(): bool|array;
 
+    /** Whether this column is editable in the bulk batch-update dialog. */
+    public function isBatchUpdate(): bool;
+
     /** Render a data cell for the given row model. */
     public function render(mixed $model, int $index): mixed;
 

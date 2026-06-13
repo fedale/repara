@@ -6,6 +6,7 @@ use Fedale\GridviewBundle\Contract\ColumnInterface;
 use Fedale\GridviewBundle\Contract\GridFormBuilderInterface;
 use Fedale\GridviewBundle\Form\Control\ControlTypeRegistry;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -86,6 +87,51 @@ class GridFormBuilder implements GridFormBuilderInterface
         if ($options['submit'] ?? true) {
             $builder->add('save', SubmitType::class, [
                 'label' => $options['submit_label'] ?? 'Salva',
+                'attr'  => ['class' => 'gv-btn gv-btn-primary'],
+            ]);
+        }
+
+        return $builder->getForm();
+    }
+
+    /**
+     * Builds the bulk batch-update form (not bound to an entity): for each column
+     * flagged `batchUpdate`, an `enable_<attr>` checkbox plus the value field
+     * (reusing the control type, forced optional). On submit only the fields whose
+     * enable checkbox is checked are applied.
+     *
+     * @param iterable<ColumnInterface> $columns
+     */
+    public function buildBatchForm(iterable $columns, array $options = []): FormInterface
+    {
+        $builder = $this->formFactory->createNamedBuilder(
+            $options['name'] ?? 'batch',
+            FormType::class,
+            null,
+            ['method' => 'POST']
+        );
+
+        foreach ($columns as $column) {
+            if (!$column instanceof ColumnInterface || !$column->isBatchUpdate() || $column->getControl() === null) {
+                continue;
+            }
+            $attribute = $column->getAttribute();
+            $control   = $column->getControl();
+
+            $builder->add('enable_' . $attribute, CheckboxType::class, [
+                'required' => false,
+                'label'    => $column->getLabel() ?? $attribute,
+            ]);
+
+            $fieldOptions = $control['options'] ?? [];
+            $fieldOptions['required'] = false;
+            $fieldOptions['label'] = false;
+            $builder->add($attribute, $this->controlTypeRegistry->get($control['type']), $fieldOptions);
+        }
+
+        if ($options['submit'] ?? true) {
+            $builder->add('apply', SubmitType::class, [
+                'label' => $options['submit_label'] ?? 'Applica',
                 'attr'  => ['class' => 'gv-btn gv-btn-primary'],
             ]);
         }

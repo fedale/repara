@@ -1,12 +1,13 @@
 import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-    static targets = ['checkbox', 'headerCheckbox'];
+    static targets = ['checkbox', 'headerCheckbox', 'bulkBar', 'count'];
     static values  = { gridId: String };
 
     connect() {
         this._restore();
         this._syncHeader();
+        this._syncBulkBar();
     }
 
     get _key()    { return `gv-sel-${this.gridIdValue}`; }
@@ -85,10 +86,46 @@ export default class extends Controller {
 
     // Sincronizza la checkbox header
     _syncHeader() {
+        this._syncBulkBar();
         if (!this.hasHeaderCheckboxTarget) return;
         const total   = this.checkboxTargets.length;
         const checked = this.checkboxTargets.filter(cb => cb.checked).length;
         this.headerCheckboxTarget.checked       = total > 0 && checked === total;
         this.headerCheckboxTarget.indeterminate = checked > 0 && checked < total;
+    }
+
+    // Mostra/nasconde la barra azioni bulk e aggiorna il conteggio.
+    _syncBulkBar() {
+        if (!this.hasBulkBarTarget) return;
+        const allMode = this._isAllMode();
+        const count   = allMode ? this.checkboxTargets.filter(cb => cb.checked).length : this._load().size;
+        const active  = allMode || count > 0;
+
+        this.bulkBarTarget.hidden = !active;
+        if (this.hasCountTarget) {
+            this.countTarget.textContent = allMode ? 'Tutti i record' : String(count);
+        }
+    }
+
+    // Azione bulk: costruisce l'URL con gli id selezionati (o all-mode + filtri
+    // correnti) e chiede al controller gridview-crud di aprire il modale.
+    bulk(event) {
+        const base = event.params.url;
+        if (!base) return;
+
+        const allMode = this._isAllMode();
+        const ids = allMode ? [] : [...this._load()];
+        if (!allMode && ids.length === 0) return;
+
+        const url = new URL(base, window.location.origin);
+        if (allMode) {
+            url.searchParams.set('all', '1');
+            // Forward the grid's current filters so the server resolves the set.
+            new URLSearchParams(window.location.search).forEach((v, k) => url.searchParams.append(k, v));
+        } else {
+            ids.forEach(id => url.searchParams.append('ids[]', id));
+        }
+
+        this.dispatch('open', { detail: { url: url.pathname + url.search } });
     }
 }

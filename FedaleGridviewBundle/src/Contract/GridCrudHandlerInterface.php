@@ -55,6 +55,25 @@ interface GridCrudHandlerInterface
     /** Validates the CSRF token and removes the entity. Returns false on bad token. */
     public function delete(object $entity, ?string $token, string $csrfId): bool;
 
+    /** Deletes every entity in $ids (clearing owning collections). Returns the count. */
+    public function bulkDelete(string $dataClass, array $ids): int;
+
+    /** Renders the bulk-delete confirmation (count + CSRF form) for the modal. */
+    public function renderBulkDeleteConfirm(int $count, string $action, string $token, array $context = []): string;
+
+    /** Builds the bulk batch-update form from the columns flagged `batchUpdate`. */
+    public function createBatchForm(iterable $columns): FormInterface;
+
+    /** Renders the batch-update form (built via createBatchForm) for the modal. */
+    public function renderBatchForm(FormInterface $form, int $count, string $action, array $context = []): string;
+
+    /**
+     * Applies the checked batch fields to every entity in $ids. Returns the count.
+     *
+     * @param iterable<ColumnInterface> $columns
+     */
+    public function applyBatch(string $dataClass, array $ids, FormInterface $form, iterable $columns): int;
+
     /**
      * Whether another row of $dataClass already has $value in $field (optionally
      * excluding $excludeId, for edit). $field must be a mapped field. Backs the

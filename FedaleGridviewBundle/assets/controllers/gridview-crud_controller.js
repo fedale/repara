@@ -20,7 +20,16 @@ export default class extends Controller {
             || event.currentTarget.dataset.url
             || event.currentTarget.getAttribute('href');
         if (!url || url === '#') return;
+        this._openUrl(url);
+    }
 
+    // Opened from the gridview-selection controller's `open` event (bulk actions).
+    openFromEvent(event) {
+        const url = event.detail && event.detail.url;
+        if (url) this._openUrl(url);
+    }
+
+    _openUrl(url) {
         this._spinner();
         this._modal().show();
 

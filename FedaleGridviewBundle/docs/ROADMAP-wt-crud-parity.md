@@ -54,7 +54,7 @@ consultare codice esterno).
 | Filtri | text/boolean/choice + operatori ricchi ([SearchForm.php](../src/Service/SearchForm.php)) | per-colonna + global search + relation | Medio |
 | Custom render | `value` closure + `twigFilter` | pipeline `valueGetter → formatter → renderer` | Medio |
 | Inline editing | ❌ | click/dblclick → editor inline → autosave + feedback | **Alto** |
-| Selezione multipla / bulk | CheckboxColumn base, nessuna logica | select-all + barra azioni + batch update dialog | **Alto** |
+| Selezione multipla / bulk | ✅ select-all/all-mode + barra azioni + batch update dialog | select-all + barra azioni + batch update dialog | ✅ **Fatto** (Fase 2) |
 | CRUD dialog (add/edit/clone/delete) | ✅ form generati da config colonne, modale Turbo, validazione | form generati da config colonne + delete con recap | ✅ **Fatto** (Fase 4) |
 | Export CSV/Excel | ❌ | ✅ | **Alto** |
 | Salva ricerche/selezioni | ❌ | ✅ provider pluggable (localStorage) | **Alto** |
@@ -115,7 +115,16 @@ estende `base.html.twig` con CSS/JS da CDN). Lo trasformiamo in modo **non-distr
   [SearchForm.php](../src/Service/SearchForm.php), che già supporta `orFilterWhere`).
 - **Verifica:** digitando in un filtro la griglia si aggiorna senza reload pagina.
 
-### Fase 2 — Selezione multipla + bulk actions — *priorità 1*
+### Fase 2 — Selezione multipla + bulk actions — *priorità 1* — ✅ **IMPLEMENTATA**
+
+> **Stato:** completata e verificata. Implementazione: `CheckboxColumn` + `gridview-selection`
+> (selezione cross-pagina, all-mode, header indeterminate, conteggio, barra `{bulkBar}`); bulk delete
+> e batch update via modale (riusa `gridview-crud`); `GridFormBuilder::buildBatchForm` +
+> `GridCrudHandler::bulkDelete/renderBulkDeleteConfirm/createBatchForm/renderBatchForm/applyBatch`;
+> colonne `batchUpdate:true`. All-mode (`all=1`) risolto server-side ri-eseguendo il search filtrato.
+> Reference: `app/src/Controller/Gridview/UserController.php` (azioni `bulk/delete`, `bulk/update`).
+
+Spec originali (riferimento):
 - Potenziare [CheckboxColumn.php](../src/Column/CheckboxColumn.php): emettere checkbox con
   valore PK + checkbox "select-all" in header.
 - Stimulus controller `gridview-selection`: gestione select-all/indeterminate, conteggio

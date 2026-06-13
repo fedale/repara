@@ -1488,6 +1488,58 @@ public function delete(Request $request, int $id): Response
 don't block the DELETE) and catches `ForeignKeyConstraintViolationException` (returns `false`, resets
 the EM) when the row is still referenced elsewhere — no 500.
 
+### Bulk actions (selection + batch update)
+
+With a `checkbox` column the `gridview-selection` controller tracks the selection across pages
+(sessionStorage, with an all-records mode). Add the `{bulkBar}` layout token and the bulk URLs to
+`crud` to get a bulk action bar (count + buttons) that opens the CRUD modal with the selected ids:
+
+```php
+'crud' => [
+    'bulkDeleteUrl' => $this->generateUrl('gridview_user_bulk_delete'),
+    'bulkUpdateUrl' => $this->generateUrl('gridview_user_bulk_update'),
+],
+'layout' => ['gridview' => '{toolbar} {bulkBar} {header} {table} {footer}'],
+```
+
+Columns editable in the batch dialog declare `batchUpdate => true`; the dialog renders an "apply"
+checkbox + the control per such column, and only checked fields are applied. Endpoints resolve the
+target ids from `ids[]`, or — in all-records mode — from `all=1` plus the current filters
+(re-running the repository search server-side):
+
+```php
+#[Route('/bulk/delete', name: 'bulk_delete', methods: ['GET', 'POST'])]
+public function bulkDelete(Request $request): Response
+{
+    $ids = $this->resolveBulkIds($request);            // ids[] or all=1 + filters
+    if ($request->isMethod('GET')) {
+        return new Response($crud->renderBulkDeleteConfirm(count($ids), $request->getRequestUri(),
+            $csrf->getToken('gridcrud_bulk_delete')->getValue()));
+    }
+    if ($this->isCsrfTokenValid('gridcrud_bulk_delete', $request->request->get('_token'))) {
+        $crud->bulkDelete(User::class, $ids);
+    }
+    return $this->turboStream();
+}
+
+#[Route('/bulk/update', name: 'bulk_update', methods: ['GET', 'POST'])]
+public function bulkUpdate(Request $request): Response
+{
+    $columns = $gridview->getColumns();
+    $form = $crud->createBatchForm($columns);
+    $form->handleRequest($request);
+    if ($form->isSubmitted() && $form->isValid()) {
+        $crud->applyBatch(User::class, $this->resolveBulkIds($request), $form, $columns);
+        return $this->turboStream();
+    }
+    return new Response($crud->renderBatchForm($form, count($ids), $request->getRequestUri()));
+}
+```
+
+> Constrain id routes (`requirements: ['id' => '\d+']`) so `/bulk/delete` isn't captured by
+> `/{id}/delete`. Batch update uses PropertyAccess; collection associations (ManyToMany) need a
+> custom apply and are best left out of `batchUpdate` for now.
+
 ### Clone semantics
 
 `clone` copies the entity, nulls the identifier, and gives each **to-many association its own new

@@ -1,6 +1,7 @@
 import { Controller } from '@hotwired/stimulus';
 import * as Turbo from '@hotwired/turbo';
 import { preferenceProvider } from '../preferences.js';
+import { promptModal } from '../prompt-modal.js';
 
 /**
  * Saved searches: stores the current querystring (filters + sort) under a name
@@ -19,11 +20,12 @@ export default class extends Controller {
         return this.scopeValue || window.location.pathname;
     }
 
-    save() {
-        const name = window.prompt('Nome della ricerca da salvare:');
+    async save() {
+        const items = preferenceProvider().load(this._scope, 'searches');
+        const proposed = `ricerca ${new Date().toLocaleDateString('it-IT')} (${items.length + 1})`;
+        const name = await promptModal({ title: 'Salva ricerca', label: 'Nome', value: proposed });
         if (!name) return;
 
-        const items = preferenceProvider().load(this._scope, 'searches');
         const query = window.location.search;
         const existing = items.findIndex((i) => i.name === name);
         if (existing >= 0) items[existing] = { name, query };

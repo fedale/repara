@@ -855,3 +855,43 @@ turbo-frame[busy] > [data-gridview] {
     cursor: pointer;
   }
 }
+
+// ── Prompt modal (saved searches/selections naming) ──
+
+.gv-prompt-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1080;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.gv-prompt {
+  width: min(92vw, 360px);
+  padding: 1rem 1.25rem;
+  background: var(--gv-color-bg, #fff);
+  color: var(--gv-color-text, #1a1f2e);
+  border-radius: 8px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+}
+
+.gv-prompt-title {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.gv-prompt-label {
+  display: block;
+  font-size: 0.85em;
+  color: var(--gv-color-text-muted, #6b7280);
+  margin-bottom: 0.25rem;
+}
+
+.gv-prompt-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}

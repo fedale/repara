@@ -1,5 +1,6 @@
 import { Controller } from '@hotwired/stimulus';
 import { preferenceProvider } from '../preferences.js';
+import { promptModal } from '../prompt-modal.js';
 
 export default class extends Controller {
     static targets = ['checkbox', 'headerCheckbox', 'bulkBar', 'count', 'savedList'];
@@ -113,7 +114,7 @@ export default class extends Controller {
 
     // ── Selezioni salvate (provider persistente, scope per-rotta) ──────
 
-    saveSelection() {
+    async saveSelection() {
         const ids = [...this._load()];
         if (ids.length === 0) {
             window.alert('Nessuna riga selezionata da salvare.');
@@ -123,10 +124,12 @@ export default class extends Controller {
             window.alert('Selezione troppo grande da salvare (max 5000).');
             return;
         }
-        const name = window.prompt('Nome della selezione da salvare:');
-        if (!name) return;
 
         const items = preferenceProvider().load(this._scope, 'selections');
+        const proposed = `selezione ${new Date().toLocaleDateString('it-IT')} (${items.length + 1})`;
+        const name = await promptModal({ title: 'Salva selezione', label: 'Nome', value: proposed });
+        if (!name) return;
+
         const existing = items.findIndex((i) => i.name === name);
         if (existing >= 0) items[existing] = { name, ids };
         else items.push({ name, ids });

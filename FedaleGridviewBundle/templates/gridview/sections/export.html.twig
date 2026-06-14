@@ -11,7 +11,9 @@
     <ul class="dropdown-menu dropdown-menu-end">
         {% for f in ex.formats %}
         <li>
-            <a class="dropdown-item"
+            {# data-turbo="false": let the browser download the file instead of
+               Turbo fetching it into the frame. #}
+            <a class="dropdown-item" data-turbo="false" rel="nofollow"
                href="{{ ex.url }}?format={{ f.key }}{% if app.request.queryString %}&{{ app.request.queryString }}{% endif %}">
                 {{ f.label }}
             </a>

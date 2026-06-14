@@ -44,6 +44,10 @@ class CheckboxColumn extends AbstractColumn
       <li><hr class="dropdown-divider"></li>
       <li><button class="dropdown-item" type="button"
                   data-action="click->gridview-selection#deselectAll">Deseleziona</button></li>
+      <li><hr class="dropdown-divider"></li>
+      <li><button class="dropdown-item" type="button"
+                  data-action="click->gridview-selection#saveSelection">💾 Salva selezione…</button></li>
+      <span data-gridview-selection-target="savedList"></span>
     </ul>
   </div>
 </div>

@@ -202,7 +202,16 @@ Spec originali (riferimento):
 - Pulsante export nella toolbar.
 - **Verifica:** export del dataset filtrato in CSV/XLSX.
 
-### Fase 6 — Preferenze utente (colonne + ricerche/selezioni salvate) — *priorità 2*
+### Fase 6 — Preferenze utente (colonne + ricerche/selezioni salvate) — *priorità 2* — 🟡 **PARZIALE**
+
+> **Fatto:** salva ricerche (querystring) e salva selezioni (set di PK), persistenza client-side
+> pluggable (`assets/preferences.js`, default localStorage, override via
+> `window.gridviewPreferenceProvider`), scope per-rotta. Controller `gridview-saved-search` +
+> estensione di `gridview-selection`; token `{savedSearch}` e voci nel dropdown del CheckboxColumn.
+> **In più (fuori spec originale):** CRUD anche in pagina intera con `crud.mode` modal/page/custom.
+> **Mancano:** show/hide + **reorder colonne con drag-drop** e relativa persistenza.
+
+Spec originali (riferimento):
 - **Show/hide + reorder colonne:** Stimulus `gridview-column-selector` (dropdown checkbox +
   drag-drop). Persistenza: localStorage di default + interfaccia `PreferenceProviderInterface`
   (metodi `load(scope)`, `save(scope, prefs)`) per consentire backend custom (es. DB).

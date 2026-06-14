@@ -1626,6 +1626,32 @@ $crud->createForm(User::class, $columns, $mode, $entity, $request, [
 
 ---
 
+## Saved searches & selections
+
+Users can save the current **filters** (querystring) and **row selections** under a name and
+re-apply them. Persistence is client-side and **pluggable** via `assets/preferences.js`:
+
+```js
+// Default: localStorage (persistent, per-browser), scoped per route.
+// To back it with your API instead, set this before the controllers connect:
+window.gridviewPreferenceProvider = {
+    load(scope, bucket) { /* return Array */ },
+    save(scope, bucket, items) { /* persist */ },
+};
+```
+
+**Saved searches** — add the `{savedSearch}` token (e.g. in the toolbar). The
+`gridview-saved-search` controller saves `window.location.search` under a name and re-applies it
+with `Turbo.visit`. Bucket `searches`, items `{ name, query }`.
+
+**Saved selections** — with a `checkbox` column the header dropdown gains *Salva selezione…* and a
+list of saved sets. `gridview-selection` stores the selected ids (bucket `selections`,
+`{ name, ids }`, max 5000) and reloads them into the selection on demand.
+
+Both are scoped by `window.location.pathname` and need no new backend endpoints.
+
+---
+
 ## Attributes & Styling
 
 HTML attributes for the table and its surrounding elements are set via `setAttributes()`:
@@ -1823,6 +1849,23 @@ Supports three selection modes: current page, visible rows, and all records.
 | `gridview-selection#selectVisible` | Add all visible rows to selection |
 | `gridview-selection#deselectAll` | Clear selection completely |
 | `gridview-selection#bulk` | Open the CRUD modal for a bulk action; appends the selected ids (or `all=1` + current filters) to the button's `url` param. Dispatches `gridview-selection:open` (caught by `gridview-crud#openFromEvent`) |
+| `gridview-selection#saveSelection` | Save the current selected ids under a name (preference provider) |
+| `gridview-selection#loadSelection` | Re-apply a saved selection (`index` param) |
+| `gridview-selection#removeSelection` | Delete a saved selection (`index` param) |
+
+Extra targets: `bulkBar`, `count` (bulk bar); `savedList` (saved-selections list, filled by JS).
+
+---
+
+### `gridview-saved-search`
+
+Saves the current querystring (filters + sort) under a name and re-applies it (`Turbo.visit`).
+Persisted via the pluggable preference provider, scoped per route.
+
+**Connects to:** the `{savedSearch}` widget.
+
+**Actions:** `#save` (save current), `#apply` (`query` param), `#remove` (`index` param).
+**Target:** `list` (saved-searches list, filled by JS).
 
 **Session storage keys:**
 

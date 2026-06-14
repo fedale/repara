@@ -1,14 +1,18 @@
 import { Controller } from '@hotwired/stimulus';
+import { preferenceProvider } from '../preferences.js';
 
 export default class extends Controller {
-    static targets = ['checkbox', 'headerCheckbox', 'bulkBar', 'count'];
+    static targets = ['checkbox', 'headerCheckbox', 'bulkBar', 'count', 'savedList'];
     static values  = { gridId: String };
 
     connect() {
         this._restore();
         this._syncHeader();
         this._syncBulkBar();
+        this._renderSaved();
     }
+
+    get _scope() { return window.location.pathname; }
 
     get _key()    { return `gv-sel-${this.gridIdValue}`; }
     get _allKey() { return `gv-sel-${this.gridIdValue}-all`; }
@@ -105,6 +109,74 @@ export default class extends Controller {
         if (this.hasCountTarget) {
             this.countTarget.textContent = allMode ? 'Tutti i record' : String(count);
         }
+    }
+
+    // ── Selezioni salvate (provider persistente, scope per-rotta) ──────
+
+    saveSelection() {
+        const ids = [...this._load()];
+        if (ids.length === 0) {
+            window.alert('Nessuna riga selezionata da salvare.');
+            return;
+        }
+        if (ids.length > 5000) {
+            window.alert('Selezione troppo grande da salvare (max 5000).');
+            return;
+        }
+        const name = window.prompt('Nome della selezione da salvare:');
+        if (!name) return;
+
+        const items = preferenceProvider().load(this._scope, 'selections');
+        const existing = items.findIndex((i) => i.name === name);
+        if (existing >= 0) items[existing] = { name, ids };
+        else items.push({ name, ids });
+
+        preferenceProvider().save(this._scope, 'selections', items);
+        this._renderSaved();
+    }
+
+    loadSelection(event) {
+        const item = preferenceProvider().load(this._scope, 'selections')[event.params.index];
+        if (!item) return;
+        sessionStorage.removeItem(this._allKey);
+        this._save(new Set(item.ids.map(String)));
+        this._restore();
+        this._syncHeader();
+    }
+
+    removeSelection(event) {
+        event.stopPropagation();
+        const items = preferenceProvider().load(this._scope, 'selections');
+        items.splice(event.params.index, 1);
+        preferenceProvider().save(this._scope, 'selections', items);
+        this._renderSaved();
+    }
+
+    _renderSaved() {
+        if (!this.hasSavedListTarget) return;
+        const items = preferenceProvider().load(this._scope, 'selections');
+
+        if (items.length === 0) {
+            this.savedListTarget.innerHTML = '<li><span class="dropdown-item-text text-muted">Nessuna selezione salvata</span></li>';
+            return;
+        }
+
+        this.savedListTarget.innerHTML = items.map((item, index) => `
+            <li class="gv-saved-row">
+                <button type="button" class="dropdown-item"
+                        data-action="gridview-selection#loadSelection"
+                        data-gridview-selection-index-param="${index}">${this._esc(item.name)} (${item.ids.length})</button>
+                <button type="button" class="gv-saved-del" title="Elimina"
+                        data-action="gridview-selection#removeSelection"
+                        data-gridview-selection-index-param="${index}">✕</button>
+            </li>
+        `).join('');
+    }
+
+    _esc(s) {
+        const d = document.createElement('div');
+        d.textContent = s;
+        return d.innerHTML;
     }
 
     // Azione bulk: costruisce l'URL con gli id selezionati (o all-mode + filtri

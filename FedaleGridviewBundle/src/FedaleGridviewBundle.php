@@ -2,6 +2,7 @@
 
 namespace Fedale\GridviewBundle;
 
+use Fedale\GridviewBundle\Export\ExporterInterface;
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -18,6 +19,11 @@ class FedaleGridviewBundle extends AbstractBundle
     {
         $containerConfigurator->import('../config/services.xml');
         $containerConfigurator->import('../config/columns.xml');
+
+        // Any service implementing ExporterInterface (incl. host-app ones) is
+        // auto-tagged and collected by the export registry.
+        $containerBuilder->registerForAutoconfiguration(ExporterInterface::class)
+            ->addTag('fedale_gridview.exporter');
 
         $containerConfigurator->parameters()
             ->set('fedale_gridview.config', $config);

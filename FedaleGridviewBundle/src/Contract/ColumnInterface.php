@@ -40,6 +40,9 @@ interface ColumnInterface
     /** Whether this column is editable in the bulk batch-update dialog. */
     public function isBatchUpdate(): bool;
 
+    /** Whether this column is included in exports. */
+    public function isExportable(): bool;
+
     /** Whether this column supports inline cell editing (truthy `editable` + a control). */
     public function isEditable(): bool;
 

@@ -10,6 +10,9 @@ interface DataProviderInterface
 
     public function getData();
 
+    /** All rows matching the current filters/sort, without pagination (for export). */
+    public function getAllData();
+
     public function getSort();
 
     public function getPagination();

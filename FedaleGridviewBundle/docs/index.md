@@ -1632,6 +1632,49 @@ $crud->createForm(User::class, $columns, $mode, $entity, $request, [
 
 ---
 
+## Export
+
+Exports respect the **current filters/sort** (the data provider is re-run without
+pagination) and the **export columns** (those flagged `exportable`, else the visible data columns).
+Built-in **CSV**; the format set is **extensible** — implement `ExporterInterface` and the service is
+auto-registered (no config), appearing in the export menu and selectable via `?format=<key>`:
+
+```php
+// app/src/Export/JsonExporter.php
+class JsonExporter implements \Fedale\GridviewBundle\Export\ExporterInterface
+{
+    public function getKey(): string   { return 'json'; }
+    public function getLabel(): string { return 'JSON'; }
+    public function export(iterable $rows, iterable $columns, array $context = []): Response { /* … */ }
+}
+```
+
+Wire it: add the `{export}` token and pass the menu (`url` + `formats` from the registry); the export
+action delegates to the chosen exporter:
+
+```php
+->setOptions([
+    'export' => [
+        'url'     => $this->generateUrl('gridview_user_export'),
+        'formats' => array_map(fn($e) => ['key' => $e->getKey(), 'label' => $e->getLabel()],
+                               array_values($exporters->all())),  // GridExporterRegistry
+    ],
+    'layout' => ['toolbar' => '{addButton} {export}'],
+])
+
+#[Route('/export', name: 'export', methods: ['GET'])]
+public function export(Request $request, GridExporterRegistry $exporters): Response
+{
+    $format = (string) $request->query->get('format', 'csv');
+    if (!$exporters->has($format)) { throw $this->createNotFoundException(); }
+    $g = $this->buildGridview();
+    return $exporters->get($format)->export($g->getExportRows(), $g->getExportColumns(), ['filename' => 'utenti']);
+}
+```
+
+The `{export}` link carries the current querystring, so the download reflects the active filters.
+Mark columns with `exportable => true` to restrict the export to a subset.
+
 ## Saved searches & selections
 
 Users can save the current **filters** (querystring) and **row selections** under a name and

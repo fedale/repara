@@ -9,6 +9,7 @@ use App\Service\GridSearchModel;
 use Doctrine\ORM\EntityManagerInterface;
 use Fedale\GridviewBundle\Contract\GridCrudHandlerInterface;
 use Fedale\GridviewBundle\Crud\CrudButton;
+use Fedale\GridviewBundle\Export\GridExporterRegistry;
 use Fedale\GridviewBundle\Grid\Gridview;
 use Fedale\GridviewBundle\Grid\GridviewBuilderFactory;
 use App\Entity\User\UserRole;
@@ -39,6 +40,7 @@ class UserController extends AbstractController
         private GridCrudHandlerInterface $crud,
         private CsrfTokenManagerInterface $csrfTokenManager,
         private UserPasswordHasherInterface $passwordHasher,
+        private GridExporterRegistry $exporters,
     ) {
     }
 
@@ -168,6 +170,23 @@ class UserController extends AbstractController
                 $request->query->get('id'),
             ),
         ]);
+    }
+
+    #[Route('/export', name: 'export', methods: ['GET'])]
+    public function export(Request $request): Response
+    {
+        $format = (string) $request->query->get('format', 'csv');
+        if (!$this->exporters->has($format)) {
+            throw $this->createNotFoundException();
+        }
+
+        $gridview = $this->buildGridview();
+
+        return $this->exporters->get($format)->export(
+            $gridview->getExportRows(),
+            $gridview->getExportColumns(),
+            ['filename' => 'utenti'],
+        );
     }
 
     #[Route('/{id}/delete', name: 'delete', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
@@ -321,6 +340,13 @@ class UserController extends AbstractController
             ->setOptions([
                 'routeName' => 'gridview_user_index',
                 'reorderColumns' => true,
+                'export' => [
+                    'url'     => $this->generateUrl('gridview_user_export'),
+                    'formats' => array_map(
+                        static fn($e) => ['key' => $e->getKey(), 'label' => $e->getLabel()],
+                        array_values($this->exporters->all()),
+                    ),
+                ],
                 'crud' => [
                     'title'         => 'Utente',
                     'mode'          => self::CRUD_MODE,
@@ -334,7 +360,7 @@ class UserController extends AbstractController
                 'addLabel' => 'Nuovo utente',
                 'layout' => [
                     'gridview' => '{toolbar} {bulkBar} {header} {table} {footer}',
-                    'toolbar'  => '{addButton} {savedSearch}',
+                    'toolbar'  => '{addButton} {savedSearch} {export}',
                 ],
             ])
             ->setAttributes(['class' => 'table'])

@@ -99,6 +99,19 @@ class EntityDataProvider extends AbstractDataProvider
         return $this->models;
     }
 
+    public function getAllData()
+    {
+        // Same as getData() but without pagination limits — applies the current
+        // sort and returns every row matching the filters (used by exports).
+        foreach ($this->getSort()->fetchOrders() as $fieldName => $sortType) {
+            $this->queryBuilder->addOrderBy($fieldName, $sortType);
+        }
+
+        $this->prepareData();
+
+        return $this->models;
+    }
+
     private function prepareData(): void
     {
         if (!$this->queryBuilder instanceof QueryBuilder) {

@@ -56,7 +56,7 @@ consultare codice esterno).
 | Inline editing | ✅ click/dblclick → editor (dal control) → save + validazione | click/dblclick → editor inline → autosave + feedback | ✅ **Fatto** (Fase 3) |
 | Selezione multipla / bulk | ✅ select-all/all-mode + barra azioni + batch update dialog | select-all + barra azioni + batch update dialog | ✅ **Fatto** (Fase 2) |
 | CRUD dialog (add/edit/clone/delete) | ✅ form generati da config colonne, modale Turbo, validazione | form generati da config colonne + delete con recap | ✅ **Fatto** (Fase 4) |
-| Export CSV/Excel | ❌ | ✅ | **Alto** |
+| Export CSV/Excel | ✅ CSV nativo + registry estensibile (ExporterInterface) | ✅ | ✅ **Fatto** (Fase 5) |
 | Salva ricerche/selezioni | ❌ | ✅ provider pluggable (localStorage) | **Alto** |
 | Show/hide + reorder colonne | ✅ show/hide UI + reorder drag-drop + persistenza | ✅ UI + drag-drop + persistenza | ✅ **Fatto** (Fase 6) |
 | Relation select | gestito a mano in closure | ✅ componente dedicato | Medio |
@@ -193,7 +193,17 @@ Spec originali (riferimento):
 - **Verifica:** add/edit/clone/delete da modale senza lasciare la pagina; la griglia si aggiorna
   via Turbo Stream.
 
-### Fase 5 — Export — *priorità 2*
+### Fase 5 — Export — *priorità 2* — ✅ **IMPLEMENTATA**
+
+> **Stato:** completata. Architettura **estensibile**: `ExporterInterface` + `GridExporterRegistry`
+> (tagged_iterator + `registerForAutoconfiguration` → il client aggiunge un export implementando
+> l'interfaccia, zero config). Built-in `CsvExporter` (nativo). Rispetta filtri/sort (riusa
+> `EntityDataProvider::getAllData`, no paginazione) e colonne `exportable`/visibili
+> (`Gridview::getExportColumns`). Token `{export}` (menu formati) + rotta app che delega al registry
+> via `?format=<key>`. XLSX non incluso (basta un exporter app con phpspreadsheet). Demo:
+> `app/src/Export/JsonExporter.php`.
+
+Spec originali (riferimento):
 - Servizio `GridviewExporter` (CSV nativo PHP; XLSX via `phpoffice/phpspreadsheet` se accettata
   la dipendenza).
 - Rispetta colonne visibili/`exportable` (flag già presente in

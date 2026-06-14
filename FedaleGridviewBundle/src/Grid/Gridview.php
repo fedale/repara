@@ -143,6 +143,35 @@ class Gridview implements GridviewInterface
         return $this->dataProviderOptions['models'] ?? null;
     }
 
+    /** All rows matching the current filters/sort, unpaginated (for export). */
+    public function getExportRows(): iterable
+    {
+        $this->initializeDataProvider();
+
+        return $this->dataProvider->getAllData();
+    }
+
+    /**
+     * Columns to export: those flagged `exportable`, or — when none is flagged —
+     * the visible data columns (excluding structural/action columns).
+     *
+     * @return ColumnInterface[]
+     */
+    public function getExportColumns(): array
+    {
+        $columns = $this->columns->toArray();
+
+        $flagged = array_values(array_filter($columns, static fn ($c) => $c->isExportable()));
+        if ($flagged !== []) {
+            return $flagged;
+        }
+
+        return array_values(array_filter(
+            $columns,
+            static fn ($c) => $c->isToggleable() && $c->getAttribute() !== null && $c->isVisible()
+        ));
+    }
+
     private function initializeDataProvider(): void
     {
         if ($this->dataProviderInitialized) {

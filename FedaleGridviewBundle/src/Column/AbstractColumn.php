@@ -203,6 +203,16 @@ abstract class AbstractColumn implements ColumnInterface
         $this->batchUpdate = $batchUpdate;
     }
 
+    public function isExportable(): bool
+    {
+        return $this->exportable;
+    }
+
+    public function setExportable(bool $exportable): void
+    {
+        $this->exportable = $exportable;
+    }
+
     /** Inline-editable when `editable` is truthy AND the column has a control. */
     public function isEditable(): bool
     {

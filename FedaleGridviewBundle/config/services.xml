@@ -39,6 +39,15 @@
         <service id="fedale_gridview.control_resolver" class="Fedale\GridviewBundle\Form\Control\ControlResolver"/>
         <service id="Fedale\GridviewBundle\Form\Control\ControlResolver" alias="fedale_gridview.control_resolver"/>
 
+        <service id="fedale_gridview.exporter.csv" class="Fedale\GridviewBundle\Export\CsvExporter">
+            <tag name="fedale_gridview.exporter"/>
+        </service>
+
+        <service id="fedale_gridview.exporter_registry" class="Fedale\GridviewBundle\Export\GridExporterRegistry">
+            <argument type="tagged_iterator" tag="fedale_gridview.exporter"/>
+        </service>
+        <service id="Fedale\GridviewBundle\Export\GridExporterRegistry" alias="fedale_gridview.exporter_registry"/>
+
         <service id="fedale_gridview.search_form" class="Fedale\GridviewBundle\Form\SearchForm">
             <argument type="service" id="form.factory"/>
             <argument type="service" id="request_stack"/>

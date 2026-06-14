@@ -103,6 +103,23 @@
   --gv-error-bg:            #fee2e2;
   --gv-error-color:         #991b1b;
   --gv-error-border:        #fca5a5;
+
+  // ── Column types (Fase 7) ───────────────────────────────────────
+  // Image
+  --gv-img-max-h:           40px;
+  --gv-img-radius:          3px;
+  // Rating
+  --gv-rating-color:        #f59e0b;   // stars
+  // Badge (status chip)
+  --gv-badge-bg:            #eaecef;
+  --gv-badge-color:         #374151;
+  --gv-badge-radius:        999px;
+  --gv-badge-padding:       .1rem .55rem;
+  --gv-badge-font-size:     .75rem;
+  // JSON / code
+  --gv-json-bg:             #f7f8f9;
+  --gv-json-color:          #374151;
+  --gv-json-border:         #d0d5dd;
 }
 
 // ── Dark mode — system preference ─────────────────────────────────
@@ -148,6 +165,12 @@
   --gv-page-bg-active:    #3a58a0;
   --gv-color-highlight-bg: #78350f;
   --gv-color-highlight-txt: #fde68a;
+  // Column types (Fase 7)
+  --gv-badge-bg:          #2a3040;
+  --gv-badge-color:       #c9d0de;
+  --gv-json-bg:           #1e2330;
+  --gv-json-color:        #c9d0de;
+  --gv-json-border:       #2e3548;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -908,4 +931,68 @@ turbo-frame[busy] > [data-gridview] {
 
 [data-gridview] th.gv-col-drop-target {
   box-shadow: inset 3px 0 0 0 var(--gv-color-primary, #4b6cb7);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// Column types (Fase 7) — emitted by the type render pipeline
+// ═══════════════════════════════════════════════════════════════════
+
+// Number / currency / percent — right-aligned, tabular figures.
+[data-gridview] .gv-num {
+  display: inline-block;
+  width: 100%;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+// Image
+[data-gridview] .gv-img {
+  max-height: var(--gv-img-max-h, 40px);
+  width: auto;
+  border-radius: var(--gv-img-radius, 3px);
+  vertical-align: middle;
+  object-fit: cover;
+}
+
+// List / array
+[data-gridview] .gv-list {
+  margin: 0;
+  padding-left: 1.1em;
+}
+[data-gridview] .gv-list li {
+  line-height: 1.4;
+}
+
+// Rating — filled/empty stars
+[data-gridview] .gv-rating {
+  color: var(--gv-rating-color, #f59e0b);
+  letter-spacing: .05em;
+  white-space: nowrap;
+}
+
+// Badge / status chip
+[data-gridview] .gv-badge {
+  display: inline-block;
+  padding: var(--gv-badge-padding, .1rem .55rem);
+  border-radius: var(--gv-badge-radius, 999px);
+  background: var(--gv-badge-bg, #eaecef);
+  color: var(--gv-badge-color, #374151);
+  font-size: var(--gv-badge-font-size, .75rem);
+  font-weight: 600;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+// JSON — preformatted block
+[data-gridview] .gv-json {
+  margin: 0;
+  padding: .35rem .5rem;
+  max-height: 12rem;
+  overflow: auto;
+  background: var(--gv-json-bg, #f7f8f9);
+  color: var(--gv-json-color, #374151);
+  border: 1px solid var(--gv-json-border, #d0d5dd);
+  border-radius: var(--gv-radius, 5px);
+  font-size: .8125rem;
+  white-space: pre;
 }

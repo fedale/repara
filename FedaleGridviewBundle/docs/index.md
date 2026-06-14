@@ -2264,3 +2264,83 @@ class MyRowSubscriber implements EventSubscriberInterface
 ```
 
 Tag the subscriber with `kernel.event_subscriber` or rely on Symfony's autoconfigure.
+
+## Theming
+
+The bundle ships a **framework-agnostic** stylesheet
+(`assets/styles/gridview.scss`, compiled into the `gridview` Encore entry — no
+CDN dependency). All visuals are driven by **CSS custom properties** scoped under
+`[data-gridview]`, so you restyle the grid without touching the bundle.
+
+### Light / dark mode
+
+Dark mode is automatic and also togglable, in this order of precedence:
+
+- `@media (prefers-color-scheme: dark)` — follows the OS.
+- `html[data-bs-theme="dark"]` — Bootstrap's theme toggle (used by this app).
+- `html[data-gv-theme="dark"]` — generic toggle for non-Bootstrap apps.
+
+A matching `…="light"` selector forces light mode back on.
+
+### Overriding tokens
+
+Three equivalent recipes — pick the one matching your stack:
+
+```css
+/* 1) Plain CSS / custom — scope to the grid */
+[data-gridview] {
+  --gv-color-primary: #d6336c;
+  --gv-th-bg: #faf0f3;
+}
+```
+
+```scss
+// 2) Bootstrap 5 — bridge gridview tokens to Bootstrap variables
+[data-gridview] {
+  --gv-color-primary: var(--bs-primary);
+  --gv-color-border:  var(--bs-border-color);
+  --gv-th-bg:         var(--bs-tertiary-bg);
+}
+```
+
+```css
+/* 3) Tailwind — set tokens in a base layer */
+@layer base {
+  [data-gridview] { --gv-color-primary: theme('colors.indigo.600'); }
+}
+```
+
+### Token reference
+
+Core: `--gv-color-primary`, `--gv-color-bg`, `--gv-color-bg-subtle`,
+`--gv-color-bg-hover`, `--gv-color-border`, `--gv-color-text`,
+`--gv-color-text-muted`, `--gv-color-link`, `--gv-color-link-hover`,
+`--gv-color-highlight-bg`, `--gv-color-highlight-txt`.
+
+Inputs/buttons: `--gv-input-bg`, `--gv-input-border`, `--gv-input-border-focus`,
+`--gv-input-radius`, `--gv-btn-bg`, `--gv-btn-bg-hover`, `--gv-btn-border`,
+`--gv-btn-primary-bg`, `--gv-btn-primary-hover`, `--gv-btn-radius`.
+
+Table/toolbar/pagination/dropdown: `--gv-th-bg`, `--gv-th-color`,
+`--gv-table-border`, `--gv-tr-hover-bg`, `--gv-sort-color`,
+`--gv-sort-active-color`, `--gv-page-bg`, `--gv-page-bg-active`,
+`--gv-page-border`, `--gv-dropdown-bg`, `--gv-dropdown-border`,
+`--gv-dropdown-shadow`.
+
+**Column types** (Fase 7 — emitted by the render pipeline):
+
+| Token | Used by | Default |
+|---|---|---|
+| `--gv-img-max-h` / `--gv-img-radius` | `image` (`.gv-img`) | `40px` / `3px` |
+| `--gv-rating-color` | `rating` (`.gv-rating`) | `#f59e0b` |
+| `--gv-badge-bg` / `--gv-badge-color` | `badge` (`.gv-badge`) | grey chip |
+| `--gv-badge-radius` / `--gv-badge-padding` / `--gv-badge-font-size` | `badge` shape | pill |
+| `--gv-json-bg` / `--gv-json-color` / `--gv-json-border` | `json` (`.gv-json`) | subtle box |
+
+`number`/`currency`/`percent` cells carry `.gv-num` (right-aligned, tabular
+figures); `list`/`array` carry `.gv-list`. Per-value badge colours can also be
+passed inline from the column config (`format.colors: {VALUE: '#0a0'}`), which
+emit a `gv-badge--<value>` modifier class for finer CSS targeting.
+
+> After changing the SCSS, rebuild assets: `cd app && yarn encore dev`
+> (or `yarn watch`).

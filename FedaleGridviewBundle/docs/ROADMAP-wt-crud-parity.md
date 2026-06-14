@@ -233,7 +233,23 @@ Spec originali (riferimento):
   max-id configurabile, default ~5000). Provider pluggable, scope per-rotta.
 - **Verifica:** nascondi colonna/riordina → persiste tra reload; salva ed applica una ricerca.
 
-### Fase 7 — Rifiniture: tipi colonna, theming, i18n — *priorità 3*
+### Fase 7 — Rifiniture: tipi colonna, theming, i18n — *priorità 3* — ✅ **IMPLEMENTATA**
+
+> **Stato:** completata. Piano di dettaglio in [FASE7-rifiniture-plan.md](FASE7-rifiniture-plan.md).
+> - **A — type system + pipeline:** catalogo tipi ispirato a Twenty CRM con ereditarietà reale PHP
+>   (`currency` extends `number`, `rating`/`multiSelect`/`badge` extend `select`, ...): text/uuid/
+>   html/richText/json/link/url/email/image, number/currency/percent, boolean, date/datetime,
+>   select/multiSelect/rating/badge, list, relation (`src/Column/Type/`). Pipeline a 3 stadi
+>   `getRawValue → format → render` (HTML-safe via `Twig\Markup`), `ColumnTypeRegistry` con
+>   `registerForAutoconfiguration` → **tipi custom dell'app a zero config**. Back-compat: `value`
+>   closure e `twigFilter` invariati. Compositi (fullName/address/phone) progettati ma rimandati.
+> - **B — theming:** token/classi `--gv-*` per i nuovi tipi (`.gv-num/.gv-img/.gv-list/.gv-rating/
+>   .gv-badge/.gv-json`), light/dark; audit CDN (nessuna dipendenza). Docs "Theming" in
+>   [index.md](index.md).
+> - **C — i18n:** UI chrome tradotta via dominio `GridviewBundle` (it/en); boolean glifo neutro.
+>   Docs "Internationalization" in [index.md](index.md).
+
+Spec originali (riferimento):
 - Nuovi tipi colonna per parità: `number`, `date`, `image`, `html`, `list` (estendendo
   [AbstractColumn.php](../src/Column/AbstractColumn.php), pattern di
   [DataColumn.php](../src/Column/DataColumn.php)).

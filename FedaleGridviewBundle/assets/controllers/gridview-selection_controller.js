@@ -126,7 +126,8 @@ export default class extends Controller {
         }
 
         const items = preferenceProvider().load(this._scope, 'selections');
-        const proposed = `selezione ${new Date().toLocaleDateString('it-IT')} (${items.length + 1})`;
+        // N = numero di righe selezionate.
+        const proposed = `selezione ${new Date().toLocaleDateString('it-IT')} (${ids.length})`;
         const name = await promptModal({ title: 'Salva selezione', label: 'Nome', value: proposed });
         if (!name) return;
 

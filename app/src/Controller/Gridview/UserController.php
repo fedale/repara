@@ -48,16 +48,32 @@ class UserController extends AbstractController
         return $this->buildGridview()->renderGrid('gridview/with_sidebar.html.twig');
     }
 
-    /**
-     * Add / edit / clone form. The form is generated from the columns' `control`
-     * config (no hand-written FormType). On success returns a Turbo Stream that
-     * replaces the grid frame.
-     */
-    #[Route('/form/{id}', name: 'form', methods: ['GET', 'POST'], defaults: ['id' => null])]
-    public function form(Request $request, ?int $id): Response
+    // Semantic CRUD URLs — each delegates to handleForm() with an explicit mode.
+    #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
+    public function new(Request $request): Response
     {
-        $mode = $this->resolveMode($request, $id);
+        return $this->handleForm($request, GridCrudHandlerInterface::MODE_ADD, null);
+    }
 
+    #[Route('/update/{id}', name: 'update', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
+    public function update(Request $request, int $id): Response
+    {
+        return $this->handleForm($request, GridCrudHandlerInterface::MODE_EDIT, $id);
+    }
+
+    #[Route('/clone/{id}', name: 'clone', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
+    public function cloneRecord(Request $request, int $id): Response
+    {
+        return $this->handleForm($request, GridCrudHandlerInterface::MODE_CLONE, $id);
+    }
+
+    /**
+     * Shared add/edit/clone handler. The form is generated from the columns'
+     * `control` config (no hand-written FormType). XHR (modal) → partial/Turbo
+     * Stream; direct navigation → full page + redirect on submit.
+     */
+    private function handleForm(Request $request, string $mode, ?int $id): Response
+    {
         $entity = null;
         if ($id !== null) {
             $entity = $this->entityManager->getRepository(User::class)->find($id);
@@ -273,17 +289,6 @@ class UserController extends AbstractController
         return $response;
     }
 
-    private function resolveMode(Request $request, ?int $id): string
-    {
-        if ($id === null) {
-            return GridCrudHandlerInterface::MODE_ADD;
-        }
-
-        return $request->query->get('mode') === GridCrudHandlerInterface::MODE_CLONE
-            ? GridCrudHandlerInterface::MODE_CLONE
-            : GridCrudHandlerInterface::MODE_EDIT;
-    }
-
     /** Hashes the submitted plain password for new users (mirrors the app's CRUD scaffold). */
     private function applyPassword(\Symfony\Component\Form\FormInterface $form, string $mode): void
     {
@@ -319,7 +324,7 @@ class UserController extends AbstractController
                     'title'         => 'Utente',
                     'mode'          => self::CRUD_MODE,
                     'pageTemplate'  => self::CRUD_PAGE_TEMPLATE,
-                    'addUrl'        => $this->generateUrl('gridview_user_form'),
+                    'addUrl'        => $this->generateUrl('gridview_user_new'),
                     'bulkDeleteUrl' => $this->generateUrl('gridview_user_bulk_delete'),
                     'bulkUpdateUrl' => $this->generateUrl('gridview_user_bulk_update'),
                     // Base for inline editing; the JS appends /{id}/{field}.
@@ -510,11 +515,11 @@ class UserController extends AbstractController
                 'layout' => '{edit} {clone} {delete}',
                 'buttons' => [
                     'edit' => fn(array $row) => CrudButton::edit(
-                        $this->generateUrl('gridview_user_form', ['id' => $row['id']]),
+                        $this->generateUrl('gridview_user_update', ['id' => $row['id']]),
                         self::CRUD_MODE
                     ),
                     'clone' => fn(array $row) => CrudButton::clone(
-                        $this->generateUrl('gridview_user_form', ['id' => $row['id'], 'mode' => 'clone']),
+                        $this->generateUrl('gridview_user_clone', ['id' => $row['id']]),
                         self::CRUD_MODE
                     ),
                     'delete' => fn(array $row) => CrudButton::delete(

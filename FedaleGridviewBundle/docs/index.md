@@ -1388,41 +1388,47 @@ rendering the refreshed grid:
 ```php
 ->setOptions([
     'routeName' => 'gridview_user_index',
-    'crud'   => ['title' => 'User', 'addUrl' => $this->generateUrl('gridview_user_form')],
+    'crud'   => ['title' => 'User', 'addUrl' => $this->generateUrl('gridview_user_new')],
     'layout' => ['gridview' => '{toolbar} {header} {table} {footer}', 'toolbar' => '{addButton}'],
 ])
 ```
 
+Use semantic routes — `new` / `update/{id}` / `clone/{id}` — each delegating to one private handler
+with an explicit mode (cleaner URLs; `/gridview/user/update/2` opens the edit form directly):
+
 ```php
-#[Route('/form/{id}', name: 'form', methods: ['GET','POST'], defaults: ['id' => null])]
-public function form(Request $request, ?int $id, GridCrudHandlerInterface $crud): Response
+#[Route('/new', name: 'new', methods: ['GET','POST'])]
+public function new(Request $r): Response { return $this->handleForm($r, 'add', null); }
+
+#[Route('/update/{id}', name: 'update', methods: ['GET','POST'], requirements: ['id' => '\d+'])]
+public function update(Request $r, int $id): Response { return $this->handleForm($r, 'edit', $id); }
+
+#[Route('/clone/{id}', name: 'clone', methods: ['GET','POST'], requirements: ['id' => '\d+'])]
+public function cloneRecord(Request $r, int $id): Response { return $this->handleForm($r, 'clone', $id); }
+
+private function handleForm(Request $request, string $mode, ?int $id): Response
 {
-    $mode   = $id === null ? 'add' : ($request->query->get('mode') === 'clone' ? 'clone' : 'edit');
-    $entity = $id !== null ? $repo->find($id) : null;
-
-    $gridview = $this->buildGridview();
-    $columns  = $gridview->getColumns();
-
+    $entity = $id !== null ? ($repo->find($id) ?? throw $this->createNotFoundException()) : null;
     $form = $crud->createForm(User::class, $columns, $mode, $entity, $request);
     $form->handleRequest($request);
 
-    if ($form->isSubmitted() && $form->isValid()) {
-        $crud->save($form, $mode);                       // persist()+flush() (add/clone), flush() (edit)
-        $resp = $gridview->renderGrid('@FedaleGridview/gridview/sections/_stream.html.twig');
-        $resp->headers->set('Content-Type', 'text/vnd.turbo-stream.html');
-        return $resp;
+    $isXhr = $request->isXmlHttpRequest();
+    if ($form->isSubmitted() && $form->isValid() && $crud->save($form, $mode) !== null) {
+        return $isXhr ? $turboStream : $this->redirectToRoute('gridview_user_index'); // modal vs page
     }
-    return new Response($crud->renderForm($form, $columns, $view, ['action' => $request->getRequestUri()]));
+    return $isXhr
+        ? new Response($crud->renderForm($form, $columns, $view, ['action' => $request->getRequestUri()]))
+        : new Response($crud->renderFormPage($form, $columns, $view, $pageTemplate, [...]));
 }
 ```
 
-The action buttons and the `{addButton}` token open the modal. Use the `CrudButton` helper inside an
-`action` column so the URLs (route-owned by the app) get the right Stimulus hooks:
+The action buttons and the `{addButton}` token open the modal (or navigate, per `crud.mode`). Use the
+`CrudButton` helper inside an `action` column so the URLs (route-owned by the app) get the right hooks:
 
 ```php
 ['type' => 'action', 'layout' => '{edit} {clone} {delete}', 'buttons' => [
-    'edit'   => fn($row) => CrudButton::edit($this->generateUrl('gridview_user_form', ['id' => $row['id']])),
-    'clone'  => fn($row) => CrudButton::clone($this->generateUrl('gridview_user_form', ['id' => $row['id'], 'mode' => 'clone'])),
+    'edit'   => fn($row) => CrudButton::edit($this->generateUrl('gridview_user_update', ['id' => $row['id']]), $mode),
+    'clone'  => fn($row) => CrudButton::clone($this->generateUrl('gridview_user_clone', ['id' => $row['id']]), $mode),
     'delete' => fn($row) => CrudButton::delete(
         $this->generateUrl('gridview_user_delete', ['id' => $row['id']]),
         $csrf->getToken('gridcrud_delete_' . $row['id'])->getValue()

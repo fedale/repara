@@ -835,3 +835,23 @@ turbo-frame[busy] > [data-gridview] {
   color: #198754;
   font-weight: 700;
 }
+
+// ── Saved searches / selections dropdown rows ──
+
+.gv-saved-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .dropdown-item {
+    flex: 1 1 auto;
+  }
+
+  .gv-saved-del {
+    border: 0;
+    background: none;
+    color: #dc3545;
+    padding: 0 0.6rem;
+    cursor: pointer;
+  }
+}

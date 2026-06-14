@@ -33,3 +33,6 @@ app.register('gridview-form-validate', GridviewFormValidateController);
 
 import GridviewInlineEditController from '../../FedaleGridviewBundle/assets/controllers/gridview-inline-edit_controller.js';
 app.register('gridview-inline-edit', GridviewInlineEditController);
+
+import GridviewSavedSearchController from '../../FedaleGridviewBundle/assets/controllers/gridview-saved-search_controller.js';
+app.register('gridview-saved-search', GridviewSavedSearchController);

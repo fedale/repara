@@ -328,7 +328,7 @@ class UserController extends AbstractController
                 'addLabel' => 'Nuovo utente',
                 'layout' => [
                     'gridview' => '{toolbar} {bulkBar} {header} {table} {footer}',
-                    'toolbar'  => '{addButton}',
+                    'toolbar'  => '{addButton} {savedSearch}',
                 ],
             ])
             ->setAttributes(['class' => 'table'])

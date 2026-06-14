@@ -2,6 +2,7 @@
 
 namespace Fedale\GridviewBundle;
 
+use Fedale\GridviewBundle\Column\Type\ColumnTypeInterface;
 use Fedale\GridviewBundle\Export\ExporterInterface;
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
@@ -24,6 +25,11 @@ class FedaleGridviewBundle extends AbstractBundle
         // auto-tagged and collected by the export registry.
         $containerBuilder->registerForAutoconfiguration(ExporterInterface::class)
             ->addTag('fedale_gridview.exporter');
+
+        // Likewise, any host-app ColumnTypeInterface service is auto-tagged and
+        // collected by the column type registry (custom data types, zero config).
+        $containerBuilder->registerForAutoconfiguration(ColumnTypeInterface::class)
+            ->addTag('fedale_gridview.column_type');
 
         $containerConfigurator->parameters()
             ->set('fedale_gridview.config', $config);

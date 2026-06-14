@@ -2,6 +2,7 @@
 
 namespace Fedale\GridviewBundle\Column;
 
+use Fedale\GridviewBundle\Column\Type\ColumnTypeRegistry;
 use Fedale\GridviewBundle\Contract\ColumnInterface;
 use Fedale\GridviewBundle\Form\Control\ControlResolver;
 use Fedale\GridviewBundle\Grid\Gridview;
@@ -10,12 +11,15 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 class ColumnFactory
 {
     private ControlResolver $controlResolver;
+    private ColumnTypeRegistry $typeRegistry;
 
     public function __construct(
         private ?AuthorizationCheckerInterface $authChecker = null,
         ?ControlResolver $controlResolver = null,
+        ?ColumnTypeRegistry $typeRegistry = null,
     ) {
         $this->controlResolver = $controlResolver ?? new ControlResolver();
+        $this->typeRegistry    = $typeRegistry ?? ColumnTypeRegistry::withBuiltins();
     }
 
     /**
@@ -27,15 +31,6 @@ class ColumnFactory
         'checkbox' => CheckboxColumn::class,
         'serial'   => SerialColumn::class,
     ];
-
-    /**
-     * Semantic data types handled by DataColumn. The root `type` defines the
-     * column's data type (driving rendering and the default filter type) and
-     * defaults to "text" when omitted; the subset that also names a filter is
-     * listed in FILTER_TYPES. "data" is kept as a raw-rendering alias of "text".
-     */
-    private const DATA_TYPES   = ['data', 'text', 'boolean', 'date', 'number', 'relation', 'choice'];
-    private const FILTER_TYPES = ['text', 'boolean', 'date', 'number', 'relation', 'choice'];
 
     /** Register a custom column type. Call from a Symfony CompilerPass or bundle boot. */
     public function register(string $type, string $columnClass): void
@@ -66,7 +61,10 @@ class ColumnFactory
             );
         }
 
-        return new DataColumn($gridview, $m[1], $m[3] ?? null, $m[5] ?? $m[1]);
+        $column = new DataColumn($gridview, $m[1], $m[3] ?? null, $m[5] ?? $m[1]);
+        $column->setColumnType($this->typeRegistry->get('text'));
+
+        return $column;
     }
 
     private function createFromArray(array $spec, Gridview $gridview, int|string $key): ColumnInterface
@@ -83,22 +81,27 @@ class ColumnFactory
             $column = $type === 'action'
                 ? new $class($gridview, $attribute, null, $spec['label'] ?? null, [], $this->authChecker)
                 : new $class($gridview, null, $spec['label'] ?? $attribute, []);
-        } elseif (\in_array($type, self::DATA_TYPES, true)) {
-            // Data column carrying a semantic data type.
+        } elseif ($this->typeRegistry->has($type)) {
+            // Data column carrying a semantic data type from the type registry.
+            $columnType = $this->typeRegistry->get($type);
             $column = new DataColumn($gridview, $attribute, null, $spec['label'] ?? $attribute, []);
             $column->value = $value;
             $column->setDataType($type);
+            $column->setColumnType($columnType);
 
-            // The per-column filter inherits the root data type unless it names
-            // its own type, which always wins.
+            // The per-column filter inherits the type's default filter unless it
+            // names its own type, which always wins.
             if (\array_key_exists('filter', $spec)) {
-                $spec['filter'] = $this->normalizeFilter($spec['filter'], $type);
+                $spec['filter'] = $this->normalizeFilter($spec['filter'], $columnType->inferFilterType());
             }
 
-            // The per-column control (write-side field) inherits the root data
-            // type unless it names its own type, mirroring the filter logic.
+            // The per-column control (write-side field) inherits the type's
+            // default control unless it names its own type, mirroring the filter.
             if (\array_key_exists('control', $spec)) {
-                $spec['control'] = $this->controlResolver->resolve($spec['control'], $type);
+                $spec['control'] = $this->controlResolver->resolve(
+                    $spec['control'],
+                    $columnType->inferControlType() ?? 'text'
+                );
             }
         } else {
             throw new \InvalidArgumentException(sprintf('Unknown column type "%s".', $type));
@@ -119,12 +122,12 @@ class ColumnFactory
 
     /**
      * Normalizes a column's `filter` spec into an array with a resolved `type`.
-     * A `filter.type` set explicitly always wins; otherwise the root data type
-     * is inherited (falling back to "text" for non-filterable data types).
+     * A `filter.type` set explicitly always wins; otherwise the type's default
+     * filter is inherited (falling back to "text" when the type is not filterable).
      */
-    private function normalizeFilter(mixed $filter, string $dataType): array
+    private function normalizeFilter(mixed $filter, ?string $inheritedType): array
     {
-        $inherited = \in_array($dataType, self::FILTER_TYPES, true) ? $dataType : 'text';
+        $inherited = $inheritedType ?? 'text';
 
         if (\is_array($filter)) {
             $filter['type'] ??= $inherited;

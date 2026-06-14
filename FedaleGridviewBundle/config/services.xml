@@ -39,6 +39,12 @@
         <service id="fedale_gridview.control_resolver" class="Fedale\GridviewBundle\Form\Control\ControlResolver"/>
         <service id="Fedale\GridviewBundle\Form\Control\ControlResolver" alias="fedale_gridview.control_resolver"/>
 
+        <service id="fedale_gridview.column_type_registry" class="Fedale\GridviewBundle\Column\Type\ColumnTypeRegistry">
+            <factory class="Fedale\GridviewBundle\Column\Type\ColumnTypeRegistry" method="create"/>
+            <argument type="tagged_iterator" tag="fedale_gridview.column_type"/>
+        </service>
+        <service id="Fedale\GridviewBundle\Column\Type\ColumnTypeRegistry" alias="fedale_gridview.column_type_registry"/>
+
         <service id="fedale_gridview.exporter.csv" class="Fedale\GridviewBundle\Export\CsvExporter">
             <tag name="fedale_gridview.exporter"/>
         </service>
@@ -88,6 +94,7 @@
         <service id="fedale_gridview.column_factory" class="Fedale\GridviewBundle\Column\ColumnFactory">
             <argument type="service" id="security.authorization_checker" on-invalid="null"/>
             <argument type="service" id="fedale_gridview.control_resolver"/>
+            <argument type="service" id="fedale_gridview.column_type_registry"/>
         </service>
         <service id="Fedale\GridviewBundle\Column\ColumnFactory" alias="fedale_gridview.column_factory"/>
 

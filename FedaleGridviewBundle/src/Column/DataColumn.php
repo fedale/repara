@@ -1,11 +1,27 @@
 <?php 
 namespace Fedale\GridviewBundle\Column;
 
+use Fedale\GridviewBundle\Column\Type\ColumnTypeInterface;
 use Fedale\GridviewBundle\Grid\Gridview;
 use \Closure;
 
-class DataColumn extends AbstractColumn 
+class DataColumn extends AbstractColumn
 {
+    /** Resolved data type driving the render pipeline (set by the ColumnFactory). */
+    private ?ColumnTypeInterface $columnType = null;
+
+    /** Stage-1 override: raw value extractor `($data, $index, $column)`. */
+    private ?Closure $valueGetter = null;
+
+    /** Stage-2 override: display formatter `($rawValue, $data, $column)`. */
+    private ?Closure $formatter = null;
+
+    /** Stage-3 override: HTML renderer `($displayValue, $data, $column)`. */
+    private ?Closure $renderer = null;
+
+    /** Per-column options passed to the data type's pipeline stages. */
+    private array $format = [];
+
      /**
      * @var string|Closure|null an anonymous function or a string that is used to determine the value to display in the current column.
      *
@@ -61,30 +77,82 @@ class DataColumn extends AbstractColumn
     {
         $data = $model->data;
 
+        // Legacy `value` short-circuit: full-cell override, behaviour unchanged.
         if ($this->value !== null) {
             return \is_string($this->value)
                 ? $this->value
                 : ($this->value)($data, $index, $this);
         }
 
-        $raw = \str_contains($this->attribute, '.')
-            ? $this->resolve($data, $this->attribute)
-            : ($data[$this->attribute] ?? null);
+        $type    = $this->columnType;
+        $options = $type !== null
+            ? \array_merge($type->getDefaultOptions(), $this->format)
+            : $this->format;
 
-        if ($this->dataType === 'boolean') {
-            return $this->renderBoolean($raw);
+        // Stage 1 — raw value
+        $raw = $this->valueGetter !== null
+            ? ($this->valueGetter)($data, $index, $this)
+            : ($type !== null ? $type->getRawValue($data, $this) : $this->defaultRawValue($data));
+
+        // Back-compat: a `twigFilter` is the historical formatter and operated on
+        // the raw value (render() used to return it as-is). When present, the
+        // type's format/render stages step aside so the twigFilter still receives
+        // the raw value — unless an explicit formatter/renderer overrides them.
+        if ($this->twigFilter !== null && $this->formatter === null && $this->renderer === null) {
+            return $raw;
         }
 
-        return $raw;
+        // Stage 2 — display value
+        $display = $this->formatter !== null
+            ? ($this->formatter)($raw, $data, $this)
+            : ($type !== null ? $type->format($raw, $options, $this) : $raw);
+
+        // Stage 3 — cell output (string escaped by Twig, or Twig\Markup passed through)
+        return $this->renderer !== null
+            ? ($this->renderer)($display, $data, $this)
+            : ($type !== null ? $type->render($display, $options, $this) : $display);
     }
 
-    private function renderBoolean(mixed $value): string
+    private function defaultRawValue(array $data): mixed
     {
-        return match (true) {
-            $value === true,  $value === 1, $value === '1', $value === 'true'  => '✓',
-            $value === false, $value === 0, $value === '0', $value === 'false' => '✗',
-            default => '',
-        };
+        return \str_contains($this->attribute, '.')
+            ? $this->resolve($data, $this->attribute)
+            : ($data[$this->attribute] ?? null);
+    }
+
+    public function setColumnType(ColumnTypeInterface $columnType): void
+    {
+        $this->columnType = $columnType;
+    }
+
+    public function getColumnType(): ?ColumnTypeInterface
+    {
+        return $this->columnType;
+    }
+
+    public function setValueGetter(Closure $valueGetter): void
+    {
+        $this->valueGetter = $valueGetter;
+    }
+
+    public function setFormatter(Closure $formatter): void
+    {
+        $this->formatter = $formatter;
+    }
+
+    public function setRenderer(Closure $renderer): void
+    {
+        $this->renderer = $renderer;
+    }
+
+    public function setFormat(array $format): void
+    {
+        $this->format = $format;
+    }
+
+    public function getFormat(): array
+    {
+        return $this->format;
     }
 
     public function renderHeader($label): string

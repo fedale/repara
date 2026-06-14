@@ -7,6 +7,7 @@
     {% if gridview.hasCheckboxColumn %}{% set gvControllers = gvControllers|merge(['gridview-selection']) %}{% endif %}
     {% if gvCrud %}{% set gvControllers = gvControllers|merge(['gridview-crud']) %}{% endif %}
     {% if gvInline %}{% set gvControllers = gvControllers|merge(['gridview-inline-edit']) %}{% endif %}
+    {% if gridview.options.reorderColumns|default(false) %}{% set gvControllers = gvControllers|merge(['gridview-column-order']) %}{% endif %}
     <div data-gridview
          data-gv-max-query-length="{{ gridview.options.maxQueryLength }}"
          {{ gridview.containerAttr|options }}

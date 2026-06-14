@@ -320,6 +320,7 @@ class UserController extends AbstractController
             ->setColumns($this->buildColumns())
             ->setOptions([
                 'routeName' => 'gridview_user_index',
+                'reorderColumns' => true,
                 'crud' => [
                     'title'         => 'Utente',
                     'mode'          => self::CRUD_MODE,

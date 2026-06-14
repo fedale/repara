@@ -895,3 +895,17 @@ turbo-frame[busy] > [data-gridview] {
   gap: 0.5rem;
   margin-top: 1rem;
 }
+
+// ── Column reorder (drag-and-drop) ──
+
+[data-gridview] th[draggable="true"] {
+  cursor: grab;
+}
+
+[data-gridview] th.gv-col-dragging {
+  opacity: 0.5;
+}
+
+[data-gridview] th.gv-col-drop-target {
+  box-shadow: inset 3px 0 0 0 var(--gv-color-primary, #4b6cb7);
+}

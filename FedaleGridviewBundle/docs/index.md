@@ -1661,6 +1661,12 @@ Promise-based `promptModal({title, label, value})`) collects the name, pre-fille
 default: `ricerca <date> (<n>)` for searches (n = next index) and `selezione <date> (<n>)` for
 selections (n = number of selected rows). Enter confirms, Escape / backdrop cancels.
 
+**Column reorder** — set `reorderColumns => true` to make toggleable column headers draggable
+(native HTML5 drag-and-drop). `gridview-column-order` reorders the `<th>` and every row's `<td>` by
+their `data-col-key` (the column attribute) and persists the order via the preference provider
+(bucket `columnOrder`), re-applying it on connect — so it survives Turbo refreshes. Purely cosmetic
+(client-side); structural columns (checkbox/actions) stay put.
+
 ---
 
 ## Attributes & Styling
@@ -1877,6 +1883,14 @@ Persisted via the pluggable preference provider, scoped per route.
 
 **Actions:** `#save` (save current), `#apply` (`query` param), `#remove` (`index` param).
 **Target:** `list` (saved-searches list, filled by JS).
+
+---
+
+### `gridview-column-order`
+
+Drag-and-drop column reorder (enabled by `reorderColumns => true`). Reorders `<th>`/`<td>` by
+`data-col-key` and persists the order via the preference provider (`columnOrder`), re-applied on
+connect. No template actions — it binds native drag events on the header.
 
 **Session storage keys:**
 

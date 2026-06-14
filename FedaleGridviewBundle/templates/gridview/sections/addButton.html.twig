@@ -1,10 +1,16 @@
 {% set crud = gridview.options.crud|default({}) %}
 {% if crud.addUrl is defined and crud.addUrl is not empty %}
-<a href="#" class="gv-btn gv-btn-primary"
+    {% if (crud.mode|default('modal')) == 'modal' %}
+<a href="{{ crud.addUrl }}" class="gv-btn gv-btn-primary"
    data-action="gridview-crud#open"
    data-gridview-crud-url-param="{{ crud.addUrl }}">
     {{ gridview.options.addLabel|default('Aggiungi') }}
 </a>
+    {% else %}
+<a href="{{ crud.addUrl }}" class="gv-btn gv-btn-primary">
+    {{ gridview.options.addLabel|default('Aggiungi') }}
+</a>
+    {% endif %}
 {% elseif gridview.options.addRoute is not empty %}
 <a href="{{ path(gridview.options.addRoute) }}" class="gv-btn gv-btn-primary">
     {{ gridview.options.addLabel }}

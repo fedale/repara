@@ -37,6 +37,14 @@ interface GridCrudHandlerInterface
     public function renderForm(FormInterface $form, iterable $columns, ?string $view = null, array $context = []): string;
 
     /**
+     * Renders the form wrapped in a full-page template (crud.mode = page/custom).
+     * $template is the page wrapper; the rendered form is passed as `formHtml`.
+     *
+     * @param iterable<ColumnInterface> $columns
+     */
+    public function renderFormPage(FormInterface $form, iterable $columns, ?string $view, string $template, array $context = []): string;
+
+    /**
      * Persists a valid submitted form. persist() for add/clone, flush() always.
      * Returns the persisted entity, or null when a DB UNIQUE constraint was hit
      * (a form error is added and the caller should re-render the form).

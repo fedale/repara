@@ -14,15 +14,18 @@ final class CrudButton
     private const ICON_CLONE  = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
     private const ICON_DELETE = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#dc3545" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>';
 
-    /** Open the form modal in edit/clone mode for the row at $url. */
-    public static function edit(string $url, string $title = 'Modifica'): string
+    /**
+     * Edit trigger. In 'modal' mode opens the CRUD modal (with a real href as a
+     * no-JS fallback); in 'page'/'custom' mode it's a plain link to the form page.
+     */
+    public static function edit(string $url, string $mode = 'modal', string $title = 'Modifica'): string
     {
-        return self::trigger($url, $title, self::ICON_EDIT);
+        return self::action($url, $mode, $title, self::ICON_EDIT);
     }
 
-    public static function clone(string $url, string $title = 'Duplica'): string
+    public static function clone(string $url, string $mode = 'modal', string $title = 'Duplica'): string
     {
-        return self::trigger($url, $title, self::ICON_CLONE);
+        return self::action($url, $mode, $title, self::ICON_CLONE);
     }
 
     /**
@@ -39,14 +42,23 @@ final class CrudButton
         );
     }
 
-    private static function trigger(string $url, string $title, string $icon): string
+    /**
+     * Renders an edit/clone action honoring the CRUD mode: 'modal' opens the
+     * dialog (real href as no-JS fallback), otherwise a plain navigation link.
+     */
+    private static function action(string $url, string $mode, string $title, string $icon): string
     {
-        return sprintf(
-            '<a href="#" title="%s" data-action="gridview-crud#open" data-gridview-crud-url-param="%s">%s</a>',
-            self::esc($title),
-            self::esc($url),
-            $icon
-        );
+        if ($mode === 'modal') {
+            return sprintf(
+                '<a href="%s" title="%s" data-action="gridview-crud#open" data-gridview-crud-url-param="%s">%s</a>',
+                self::esc($url),
+                self::esc($title),
+                self::esc($url),
+                $icon
+            );
+        }
+
+        return sprintf('<a href="%s" title="%s">%s</a>', self::esc($url), self::esc($title), $icon);
     }
 
     private static function esc(string $value): string

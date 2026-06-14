@@ -121,6 +121,13 @@ class GridCrudHandler implements GridCrudHandlerInterface
         ]));
     }
 
+    public function renderFormPage(FormInterface $form, iterable $columns, ?string $view, string $template, array $context = []): string
+    {
+        $formHtml = $this->renderForm($form, $columns, $view, ['page' => true] + $context);
+
+        return $this->twig->render($template, ['formHtml' => $formHtml] + $context);
+    }
+
     public function save(FormInterface $form, string $mode): ?object
     {
         $entity = $form->getData();

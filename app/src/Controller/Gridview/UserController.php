@@ -26,6 +26,12 @@ class UserController extends AbstractController
     /** Optional custom layout for the generated form; set to null for automatic rendering. */
     private const FORM_VIEW = 'gridview/user/_form.html.twig';
 
+    /** CRUD presentation: 'modal' | 'page' | 'custom' (client choice). */
+    private const CRUD_MODE = 'modal';
+
+    /** Full-page wrapper template for 'page'/'custom'; null = bundle default. */
+    private const CRUD_PAGE_TEMPLATE = null;
+
     public function __construct(
         private GridviewBuilderFactory $gridviewBuilderFactory,
         private GridSearchModel $searchModel,
@@ -73,16 +79,26 @@ class UserController extends AbstractController
         ]);
         $form->handleRequest($request);
 
+        // Modal requests are XHR (gridview-crud fetch); direct navigation is the
+        // full-page form. This drives both the response and the submit behavior.
+        $isXhr = $request->isXmlHttpRequest();
+
         if ($form->isSubmitted() && $form->isValid()) {
             $this->applyPassword($form, $mode);
 
             // save() returns null when a DB UNIQUE constraint slipped past
             // validation; fall through to re-render the form with the error.
             if ($this->crud->save($form, $mode) !== null) {
-                $response = $gridview->renderGrid('@FedaleGridview/gridview/sections/_stream.html.twig');
-                $response->headers->set('Content-Type', 'text/vnd.turbo-stream.html');
+                if ($isXhr) {
+                    $response = $gridview->renderGrid('@FedaleGridview/gridview/sections/_stream.html.twig');
+                    $response->headers->set('Content-Type', 'text/vnd.turbo-stream.html');
 
-                return $response;
+                    return $response;
+                }
+
+                $this->addFlash('success', 'Record salvato.');
+
+                return $this->redirectToRoute('gridview_user_index');
             }
         }
 
@@ -93,7 +109,7 @@ class UserController extends AbstractController
             }
         }
 
-        return new Response($this->crud->renderForm($form, $columns, self::FORM_VIEW, [
+        $context = [
             'action' => $request->getRequestUri(),
             'mode'   => $mode,
             'validate' => [
@@ -103,6 +119,17 @@ class UserController extends AbstractController
                 'id'       => $mode === GridCrudHandlerInterface::MODE_EDIT ? $id : null,
                 'formName' => 'gridform',
             ],
+        ];
+
+        if ($isXhr) {
+            return new Response($this->crud->renderForm($form, $columns, self::FORM_VIEW, $context));
+        }
+
+        // Full page (crud.mode = page/custom, or no-JS fallback for modal).
+        $template = self::CRUD_PAGE_TEMPLATE ?? '@FedaleGridview/crud/page.html.twig';
+
+        return new Response($this->crud->renderFormPage($form, $columns, self::FORM_VIEW, $template, $context + [
+            'pageTitle' => 'Utente',
         ]));
     }
 
@@ -290,6 +317,8 @@ class UserController extends AbstractController
                 'routeName' => 'gridview_user_index',
                 'crud' => [
                     'title'         => 'Utente',
+                    'mode'          => self::CRUD_MODE,
+                    'pageTemplate'  => self::CRUD_PAGE_TEMPLATE,
                     'addUrl'        => $this->generateUrl('gridview_user_form'),
                     'bulkDeleteUrl' => $this->generateUrl('gridview_user_bulk_delete'),
                     'bulkUpdateUrl' => $this->generateUrl('gridview_user_bulk_update'),
@@ -481,10 +510,12 @@ class UserController extends AbstractController
                 'layout' => '{edit} {clone} {delete}',
                 'buttons' => [
                     'edit' => fn(array $row) => CrudButton::edit(
-                        $this->generateUrl('gridview_user_form', ['id' => $row['id']])
+                        $this->generateUrl('gridview_user_form', ['id' => $row['id']]),
+                        self::CRUD_MODE
                     ),
                     'clone' => fn(array $row) => CrudButton::clone(
-                        $this->generateUrl('gridview_user_form', ['id' => $row['id'], 'mode' => 'clone'])
+                        $this->generateUrl('gridview_user_form', ['id' => $row['id'], 'mode' => 'clone']),
+                        self::CRUD_MODE
                     ),
                     'delete' => fn(array $row) => CrudButton::delete(
                         $this->generateUrl('gridview_user_delete', ['id' => $row['id']])

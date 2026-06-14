@@ -1656,6 +1656,11 @@ list of saved sets. `gridview-selection` stores the selected ids (bucket `select
 
 Both are scoped by `window.location.pathname` and need no new backend endpoints.
 
+**Naming** — instead of `window.prompt`, a small built-in modal (`assets/prompt-modal.js`, a
+Promise-based `promptModal({title, label, value})`) collects the name, pre-filled with a sensible
+default: `ricerca <date> (<n>)` for searches (n = next index) and `selezione <date> (<n>)` for
+selections (n = number of selected rows). Enter confirms, Escape / backdrop cancels.
+
 ---
 
 ## Attributes & Styling

@@ -2344,3 +2344,32 @@ emit a `gv-badge--<value>` modifier class for finer CSS targeting.
 
 > After changing the SCSS, rebuild assets: `cd app && yarn encore dev`
 > (or `yarn watch`).
+
+## Internationalization (i18n)
+
+All built-in UI chrome (pagination, bulk bar, export, saved searches, CRUD
+dialogs, empty text, filter reset, search placeholder) is translated through the
+**`GridviewBundle`** translation domain. The bundle ships `it` and `en`
+catalogs in `translations/GridviewBundle.<locale>.yaml`; the grid follows the
+request locale automatically.
+
+Override or add a language from the host app by creating
+`translations/GridviewBundle.<locale>.yaml` (app translations win over the
+bundle's). Keys are dotted (`pagination.next`, `bulk.delete`, `crud.cancel`, …);
+count-bearing messages take a `%count%` parameter.
+
+Two config defaults use the **source string as key** so they localize out of the
+box while letting custom values pass through untranslated:
+
+- `options.emptyText` (default `No records found`)
+- `options.addLabel` (default `Add`)
+
+Set either to one of your own translation keys (or any literal) to override.
+
+**Booleans** render as language-neutral glyphs (`✓` / `✗`) by default — no
+translation needed. For textual booleans, set the column's `format` options:
+`{'true': 'Yes', 'false': 'No'}` (pass already-translated strings from your
+controller if you need them localized).
+
+> Column **labels** and **select option labels** are passed through your app's
+> templates/config as-is; use translation keys there if you want them localized.

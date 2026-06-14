@@ -6,7 +6,7 @@
 #}
 <div class="gv-batch">
     <p class="mb-3 text-muted">
-        Modifica in blocco di <strong>{{ count }}</strong> record. Spunta i campi da applicare.
+        {{ 'bulk.batch_intro'|trans({'%count%': '<strong>' ~ count ~ '</strong>'}, 'GridviewBundle')|raw }}
     </p>
 
     {{ form_start(form, {'action': action, 'attr': {'data-action': 'submit->gridview-crud#submit'}}) }}
@@ -21,7 +21,7 @@
             {% endif %}
         {% endfor %}
         <div class="d-flex justify-content-end gap-2 mt-3">
-            <button type="button" class="gv-btn" data-bs-dismiss="modal">Annulla</button>
+            <button type="button" class="gv-btn" data-bs-dismiss="modal">{{ 'crud.cancel'|trans({}, 'GridviewBundle') }}</button>
             {{ form_widget(form.apply) }}
         </div>
     {{ form_end(form) }}

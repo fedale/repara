@@ -4,13 +4,13 @@
   preference provider. Place the {savedSearch} token in the layout (e.g. toolbar).
 #}
 <div class="gv-saved-search dropdown" data-controller="gridview-saved-search">
-    <button type="button" class="gv-btn" data-bs-toggle="dropdown" title="Ricerche salvate" aria-expanded="false">
-        ★ Ricerche
+    <button type="button" class="gv-btn" data-bs-toggle="dropdown" title="{{ 'saved.title'|trans({}, 'GridviewBundle') }}" aria-expanded="false">
+        ★ {{ 'saved.button'|trans({}, 'GridviewBundle') }}
     </button>
     <ul class="dropdown-menu dropdown-menu-end">
         <li>
             <button type="button" class="dropdown-item" data-action="gridview-saved-search#save">
-                💾 Salva ricerca corrente
+                💾 {{ 'saved.save'|trans({}, 'GridviewBundle') }}
             </button>
         </li>
         <li><hr class="dropdown-divider"></li>

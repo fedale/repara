@@ -13,9 +13,9 @@
             'data-gridview-inline-edit-target': 'input',
             'data-action': 'keydown->gridview-inline-edit#key',
         }}) }}
-        <button type="button" class="gv-btn gv-btn-primary gv-inline-ok" title="Conferma"
+        <button type="button" class="gv-btn gv-btn-primary gv-inline-ok" title="{{ 'crud.confirm'|trans({}, 'GridviewBundle') }}"
                 data-action="gridview-inline-edit#save">OK</button>
-        <button type="button" class="gv-btn gv-inline-cancel" title="Annulla"
+        <button type="button" class="gv-btn gv-inline-cancel" title="{{ 'crud.cancel'|trans({}, 'GridviewBundle') }}"
                 data-action="gridview-inline-edit#cancel">✕</button>
     </div>
     {{ form_widget(attribute(form, '_token')) }}

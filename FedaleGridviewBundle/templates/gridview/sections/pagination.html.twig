@@ -28,14 +28,14 @@
         {% endif %}
     {% endif %}
 
-    <nav aria-label="Pagination">
+    <nav aria-label="{{ 'pagination.aria'|trans({}, 'GridviewBundle') }}">
         <ul class="gv-pagination">
             {# Prima pagina #}
             <li class="gv-page-item gv-page-first{{ _currentPage <= 1 ? ' gv-disabled' : '' }}">
                 <a class="gv-page-link"
                    href="{{ path(_currentRoute, gridview.urlState.withPage(1)) }}"
                    {% if turboAction %}data-turbo-action="{{ turboAction }}"{% endif %}
-                   aria-label="Prima pagina">&laquo;</a>
+                   aria-label="{{ 'pagination.first'|trans({}, 'GridviewBundle') }}">&laquo;</a>
             </li>
 
             {# Pagina precedente #}
@@ -43,7 +43,7 @@
                 <a class="gv-page-link"
                    href="{{ path(_currentRoute, gridview.urlState.withPage(_currentPage - 1)) }}"
                    {% if turboAction %}data-turbo-action="{{ turboAction }}"{% endif %}
-                   aria-label="Pagina precedente">&lsaquo;</a>
+                   aria-label="{{ 'pagination.previous'|trans({}, 'GridviewBundle') }}">&lsaquo;</a>
             </li>
 
             {# Ellissi iniziale #}
@@ -75,7 +75,7 @@
                 <a class="gv-page-link"
                    href="{{ path(_currentRoute, gridview.urlState.withPage(_currentPage + 1)) }}"
                    {% if turboAction %}data-turbo-action="{{ turboAction }}"{% endif %}
-                   aria-label="Pagina successiva">&rsaquo;</a>
+                   aria-label="{{ 'pagination.next'|trans({}, 'GridviewBundle') }}">&rsaquo;</a>
             </li>
 
             {# Ultima pagina #}
@@ -83,7 +83,7 @@
                 <a class="gv-page-link"
                    href="{{ path(_currentRoute, gridview.urlState.withPage(_lastPage)) }}"
                    {% if turboAction %}data-turbo-action="{{ turboAction }}"{% endif %}
-                   aria-label="Ultima pagina">&raquo;</a>
+                   aria-label="{{ 'pagination.last'|trans({}, 'GridviewBundle') }}">&raquo;</a>
             </li>
 
             {# Select "vai a pagina" per liste molto lunghe #}
@@ -92,7 +92,7 @@
                     data-controller="gridview-page-jump"
                     data-gridview-page-jump-turbo-value="{{ turboAction ? 'true' : 'false' }}">
                     <select class="gv-page-link gv-page-select"
-                            aria-label="Vai a pagina"
+                            aria-label="{{ 'pagination.jump'|trans({}, 'GridviewBundle') }}"
                             data-action="change->gridview-page-jump#jump">
                         {% for i in 1.._lastPage %}
                             <option value="{{ path(_currentRoute, gridview.urlState.withPage(i)) }}"

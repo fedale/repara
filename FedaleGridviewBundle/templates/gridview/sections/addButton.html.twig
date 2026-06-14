@@ -4,15 +4,15 @@
 <a href="{{ crud.addUrl }}" class="gv-btn gv-btn-primary"
    data-action="gridview-crud#open"
    data-gridview-crud-url-param="{{ crud.addUrl }}">
-    {{ gridview.options.addLabel|default('Aggiungi') }}
+    {{ gridview.options.addLabel|default('Add')|trans({}, 'GridviewBundle') }}
 </a>
     {% else %}
 <a href="{{ crud.addUrl }}" class="gv-btn gv-btn-primary">
-    {{ gridview.options.addLabel|default('Aggiungi') }}
+    {{ gridview.options.addLabel|default('Add')|trans({}, 'GridviewBundle') }}
 </a>
     {% endif %}
 {% elseif gridview.options.addRoute is not empty %}
 <a href="{{ path(gridview.options.addRoute) }}" class="gv-btn gv-btn-primary">
-    {{ gridview.options.addLabel }}
+    {{ gridview.options.addLabel|trans({}, 'GridviewBundle') }}
 </a>
 {% endif %}

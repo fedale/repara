@@ -19,7 +19,7 @@ La roadmap originale tratta theming e asset come "da fare". **Non è più così.
 | Tipi colonna | mancano number/date/image/html/list | `number`/`date`/`relation`/`choice` esistono come *type* ma **senza rendering dedicato** (solo `boolean` formatta ✓/✗); mancano gli altri | **Alto** |
 | Pipeline render | solo `value` closure + `twigFilter` | confermato: [DataColumn::render()](../src/Column/DataColumn.php) fa `value` closure → dot-path resolve → caso speciale `boolean` | **Alto** |
 | Theming | CSS via CDN, asset fuori dal bundle | **già fatto**: [gridview.scss](../assets/styles/gridview.scss) usa token `--gv-*`, temi light/dark (`prefers-color-scheme` + `data-bs-theme`/`data-gv-theme`), framework-agnostic, asset nel bundle | ✅ **fatto** (token+classi nuovi tipi, audit CDN: nessuna, docs Theming) |
-| i18n | `translations/` quasi inutilizzata | confermato: solo `label.true`/`label.false`; **nessun** `\|trans` nei template | **Medio** |
+| i18n | `translations/` quasi inutilizzata | confermato: solo `label.true`/`label.false`; **nessun** `\|trans` nei template | ✅ **fatto** (UI chrome tradotta it/en; boolean resta glifo neutro) |
 
 **Conseguenza sulla priorità:** il grosso del valore è in **Workstream A** (tipi colonna +
 pipeline). Theming (**B**) è rifinitura. i18n (**C**) è meccanico ma trasversale.

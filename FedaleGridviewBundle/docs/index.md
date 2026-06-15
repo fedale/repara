@@ -15,10 +15,13 @@ The grid is not automagic: you configure a data source and a column list, the bu
 6. [Pagination](#pagination)
 7. [Filtering & Search](#filtering--search)
 8. [Layout System](#layout-system)
-9. [Attributes & Styling](#attributes--styling)
-10. [YAML Configuration](#yaml-configuration)
-11. [JavaScript Controllers](#javascript-controllers)
-12. [Extending the Bundle](#extending-the-bundle)
+9. [CRUD forms (generated from columns)](#crud-forms-generated-from-columns)
+10. [Controller base classes](#controller-base-classes)
+11. [Export](#export)
+12. [Attributes & Styling](#attributes--styling)
+13. [YAML Configuration](#yaml-configuration)
+14. [JavaScript Controllers](#javascript-controllers)
+15. [Extending the Bundle](#extending-the-bundle)
 
 ---
 
@@ -792,7 +795,7 @@ Submits `'1'` (true) or `'0'` (false) as string values.
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `true_label` | `string` | `'Sì'` | Label for the truthy option |
+| `true_label` | `string` | `'Yes'` | Label for the truthy option |
 | `false_label` | `string` | `'No'` | Label for the falsy option |
 | `placeholder` | `string` | `'–'` | Label for the empty "show all" option |
 
@@ -1289,8 +1292,8 @@ Constraints are declared on the control and expanded by the bundle (they also st
 ```php
 ['attribute' => 'code', 'control' => [
     'type' => 'text',
-    'required' => true,  'requiredMessage' => 'Il codice è obbligatorio.',   // → NotBlank
-    'unique'   => true,  'uniqueMessage'   => 'Codice già presente.',        // → UniqueEntity
+    'required' => true,  'requiredMessage' => 'The code is required.',   // → NotBlank
+    'unique'   => true,  'uniqueMessage'   => 'Code already exists.',     // → UniqueEntity
 ]],
 // composite uniqueness / explicit form
 ['attribute' => 'code', 'control' => ['unique' => ['fields' => ['code', 'companyId'], 'message' => '…']]],
@@ -1379,6 +1382,11 @@ for the Security contract), pass Symfony's field `getter`/`setter` through `cont
 ```
 
 ### Wiring the routes (host app owns them)
+
+> **Shortcut:** most apps don't need to write these actions by hand — extend
+> `AbstractCrudGridController` (see [Controller base classes](#controller-base-classes))
+> and the routes/actions below are inherited. The manual wiring here is the
+> low-level reference, useful when you need a fully custom action set.
 
 The bundle ships the services; the app provides thin actions that delegate to
 `GridCrudHandlerInterface`. Build the grid once (shared by index + form + delete) and set
@@ -1629,6 +1637,146 @@ $crud->createForm(User::class, $columns, $mode, $entity, $request, [
     'cloneCallback' => fn(User $c) => $c->setCode('')->setUsername('')->setEmail(''),
 ]);
 ```
+
+---
+
+## Controller base classes
+
+The bundle ships two abstract controllers that package everything above (grid
+building plus the `index` / `export` / CRUD actions and their route wiring), so a
+host controller only declares its entity, its columns and a small config array.
+They live in `Fedale\GridviewBundle\Controller`:
+
+- **`AbstractGridController`** — read-only grid: `index` + `export`.
+- **`AbstractCrudGridController`** — extends it with `new`, `update/{id}`,
+  `clone/{id}`, `exists`, `{id}/delete`, `bulk/delete`, `bulk/update`,
+  `inline/{id}/{field}`.
+
+### How the routes work
+
+The `#[Route]` attributes sit on the base methods and are **inherited** by every
+concrete controller; each picks up that controller's own class-level prefix. So a
+single `#[Route('/gridview/user', name: 'gridview_user_')]` on the subclass yields
+`gridview_user_index`, `gridview_user_new`, … automatically. The route loader only
+scans the app's `src/Controller/`, so the abstract bases never register routes on
+their own. To customise one route, override that method in the subclass with a new
+`#[Route]`.
+
+Services (builder factory, CRUD handler, exporter registry, search model, entity
+manager, CSRF manager) are pulled lazily via `getSubscribedServices()`, so a
+subclass needs **no constructor** unless it has extra dependencies of its own.
+
+### What a subclass implements
+
+| Member | Required | Purpose |
+|--------|----------|---------|
+| `getDataClass(): string` | yes | Entity FQCN backing the grid |
+| `buildColumns(): array` | yes | Column definitions |
+| `getDataProviderConfig(): array` | yes | `models` / `pagination` / `sort` |
+| `configure(): array` | no | Scalar config overrides (see below) |
+| `beforeSave(FormInterface, string $mode): void` | no (CRUD) | Hook before persist (e.g. password hashing) |
+| `onClone(object $clone): void` | no (CRUD) | Extra mutation of a clone (unique fields are cleared automatically) |
+
+### The `configure()` array
+
+`configure()` returns only the keys you want to change; they are merged over the
+defaults. The live-uniqueness whitelist (`exists`) and the clear-on-clone fields
+are **derived automatically** from the columns flagged `control.unique` — no extra
+config needed.
+
+| Key | Default | Applies to | Description |
+|-----|---------|------------|-------------|
+| `id` | entity short name (`User`→`user`) | both | Grid id + YAML config lookup |
+| `indexTemplate` | `gridview/with_sidebar.html.twig` | both | Template rendered by `index` |
+| `exportFilename` | `null` → falls back to `id` | both | Export file name (no extension) |
+| `attributes` | `['class' => 'table']` | both | Table-level HTML attributes |
+| `options` | `[]` | both | Extra builder options (layout, `reorderColumns`, …) |
+| `title` | `''` | CRUD | Modal / page title |
+| `mode` | `'modal'` | CRUD | `'modal'` \| `'page'` \| `'custom'` |
+| `formView` | `null` | CRUD | Custom form layout (null = auto) |
+| `pageTemplate` | `null` | CRUD | Full-page wrapper for page/custom mode |
+| `addLabel` | `'New'` | CRUD | Label of the add toolbar button |
+| `filterFormName` | `'myform'` | CRUD | Query key of the filter form (for "all" bulk ids) |
+
+### Read-only example
+
+```php
+#[Route('/gridview/customer', name: 'gridview_customer_')]
+class CustomerController extends AbstractGridController
+{
+    protected function getDataClass(): string { return Customer::class; }
+
+    protected function getDataProviderConfig(): array
+    {
+        return [
+            'models' => Customer::class,
+            'pagination' => ['defaultPageSize' => 20],
+            'sort' => ['id' => ['asc' => ['c.id'], 'desc' => ['c.id'], 'default' => 'desc']],
+        ];
+    }
+
+    protected function buildColumns(): array
+    {
+        return ['id', ['attribute' => 'code', 'label' => 'Code', 'filter' => ['type' => 'text']]];
+    }
+}
+```
+
+`id` defaults to `customer`, so no `configure()` is needed; `index` and `export`
+come for free.
+
+### Full-CRUD example
+
+```php
+#[Route('/gridview/user', name: 'gridview_user_')]
+class UserController extends AbstractCrudGridController
+{
+    public function __construct(private UserPasswordHasherInterface $passwordHasher) {}
+
+    protected function getDataClass(): string { return User::class; }
+
+    protected function configure(): array
+    {
+        return [
+            'title'    => 'User',
+            'addLabel' => 'New user',
+            'formView' => 'gridview/user/_form.html.twig',
+            'options'  => ['layout' => ['toolbar' => '{addButton} {savedSearch} {export}']],
+        ];
+    }
+
+    protected function getDataProviderConfig(): array { /* models / pagination / sort */ }
+
+    protected function buildColumns(): array
+    {
+        return [
+            ['type' => 'checkbox'],
+            'id',
+            ['attribute' => 'code', 'label' => 'Code', 'editable' => true,
+             'control' => ['type' => 'text', 'required' => true, 'unique' => true]],
+            ['type' => 'action', 'layout' => '{edit} {clone} {delete}', 'buttons' => [
+                'edit'   => fn($r) => CrudButton::edit($this->generateUrl($this->routeName('update'), ['id' => $r['id']]), $this->config('mode')),
+                'clone'  => fn($r) => CrudButton::clone($this->generateUrl($this->routeName('clone'), ['id' => $r['id']]), $this->config('mode')),
+                'delete' => fn($r) => CrudButton::delete($this->generateUrl($this->routeName('delete'), ['id' => $r['id']])),
+            ]],
+        ];
+    }
+
+    // Hash the plaintext password on add/clone only.
+    protected function beforeSave(FormInterface $form, string $mode): void
+    {
+        if (in_array($mode, ['add', 'clone'], true)) {
+            $user = $form->getData();
+            $user->setPassword($this->passwordHasher->hashPassword($user, (string) $form->get('plainPassword')->getData()));
+        }
+    }
+}
+```
+
+`routeName('update')` builds the route name from this controller's own prefix, so
+the action buttons keep working whatever the prefix is. The manual
+[route wiring](#wiring-the-routes-host-app-owns-them) remains available for
+controllers that need a fully custom action set.
 
 ---
 

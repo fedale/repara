@@ -12,7 +12,7 @@ class FilterBooleanType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'true_label'         => 'Sì',
+            'true_label'         => 'Yes',
             'false_label'        => 'No',
             'placeholder'        => '–',
             'translation_domain' => false,

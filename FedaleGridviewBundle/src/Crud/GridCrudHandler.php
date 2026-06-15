@@ -144,7 +144,7 @@ class GridCrudHandler implements GridCrudHandlerInterface
             // caller re-renders the form, whose EntityType fields need a live EM).
             $this->managerRegistry->resetManager();
             $form->addError(new FormError(
-                'Esiste già un record con questi valori (vincolo di unicità violato).'
+                'A record with these values already exists (unique constraint violated).'
             ));
 
             return null;
@@ -381,7 +381,7 @@ class GridCrudHandler implements GridCrudHandlerInterface
             return '—';
         }
         if (\is_bool($value)) {
-            return $value ? 'Sì' : 'No';
+            return $value ? 'Yes' : 'No';
         }
         if ($value instanceof \DateTimeInterface) {
             return $value->format('d/m/Y H:i');

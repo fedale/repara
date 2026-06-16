@@ -33,6 +33,21 @@ class GridviewConfigRegistry
         ],
     ];
 
+    /**
+     * Detail-view defaults. Deliberately disjoint from OPTION_DEFAULTS: a detail
+     * has no pagination/realtime/global-search nor a table layout — only the few
+     * knobs that make sense for a key/value record view.
+     */
+    private const DETAIL_OPTION_DEFAULTS = [
+        'emptyText'   => 'No data',
+        'onlyVisible' => false,
+        'template'    => '@FedaleGridview/detailview/detailview.html.twig',
+    ];
+
+    private const DETAIL_ATTRIBUTE_DEFAULTS = [
+        'class' => 'table table-bordered',
+    ];
+
     public function __construct(private array $config) {}
 
     public function resolveOptions(?string $id): array
@@ -95,5 +110,49 @@ class GridviewConfigRegistry
             }
         }
         return $base;
+    }
+
+    /**
+     * Options for a DetailView. Sibling of {@see resolveOptions()} but it reads
+     * the dedicated `defaults.detailview` / `detailviews.<id>` sections — never
+     * the grid-only `gridviews.<id>`, whose pagination/realtime/layout keys are
+     * meaningless for a single record. Per-id overrides win over defaults.
+     */
+    public function resolveDetailOptions(?string $id): array
+    {
+        $resolved = array_replace(
+            self::DETAIL_OPTION_DEFAULTS,
+            $this->config['defaults']['detailview']['options'] ?? []
+        );
+
+        if ($id !== null && isset($this->config['detailviews'][$id]['options'])) {
+            $resolved = array_replace($resolved, $this->config['detailviews'][$id]['options']);
+        }
+
+        return $resolved;
+    }
+
+    /**
+     * Table-level HTML attributes for a DetailView. The detail bag is flat
+     * (class + arbitrary attrs); merging is plain key-by-key (per-id over
+     * defaults over the built-in default class).
+     */
+    public function resolveDetailAttributes(?string $id): array
+    {
+        $resolved = $this->mergeDetailAttributeLayer(
+            self::DETAIL_ATTRIBUTE_DEFAULTS,
+            $this->config['defaults']['detailview']['attributes'] ?? []
+        );
+
+        if ($id !== null && isset($this->config['detailviews'][$id]['attributes'])) {
+            $resolved = $this->mergeDetailAttributeLayer($resolved, $this->config['detailviews'][$id]['attributes']);
+        }
+
+        return $resolved;
+    }
+
+    private function mergeDetailAttributeLayer(array $base, array $layer): array
+    {
+        return array_replace($base, $layer);
     }
 }

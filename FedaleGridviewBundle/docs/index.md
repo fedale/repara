@@ -17,12 +17,13 @@ The grid is not automagic: you configure a data source and a column list, the bu
 8. [Layout System](#layout-system)
 9. [CRUD forms (generated from columns)](#crud-forms-generated-from-columns)
 10. [Controller base classes](#controller-base-classes)
-11. [Export](#export)
-12. [Attributes & Styling](#attributes--styling)
-13. [YAML Configuration](#yaml-configuration)
-14. [JavaScript Controllers](#javascript-controllers)
-15. [Real-time updates (Mercure)](#real-time-updates-mercure)
-16. [Extending the Bundle](#extending-the-bundle)
+11. [DetailView (single record)](#detailview-single-record)
+12. [Export](#export)
+13. [Attributes & Styling](#attributes--styling)
+14. [YAML Configuration](#yaml-configuration)
+15. [JavaScript Controllers](#javascript-controllers)
+16. [Real-time updates (Mercure)](#real-time-updates-mercure)
+17. [Extending the Bundle](#extending-the-bundle)
 
 ---
 
@@ -1652,6 +1653,9 @@ They live in `Fedale\GridviewBundle\Controller`:
 - **`AbstractCrudGridController`** — extends it with `new`, `update/{id}`,
   `clone/{id}`, `exists`, `{id}/delete`, `bulk/delete`, `bulk/update`,
   `inline/{id}/{field}`.
+- **`AbstractDetailController`** — read-only single-record "show" (`show/{id}`)
+  that reuses the same `buildColumns()` to render a key/value table. See
+  [DetailView](#detailview-single-record).
 
 ### How the routes work
 
@@ -1778,6 +1782,135 @@ class UserController extends AbstractCrudGridController
 the action buttons keep working whatever the prefix is. The manual
 [route wiring](#wiring-the-routes-host-app-owns-them) remains available for
 controllers that need a fully custom action set.
+
+---
+
+## DetailView (single record)
+
+`DetailView` is the single-record sibling of the grid: same column DNA, but it
+renders **one** model as a vertical **key/value table** (the "show" view of a
+CRUD) instead of a list. It has **no** filters, sort, pagination, global search,
+Turbo-Frame switching or token layout — none of those apply to one record.
+
+You declare columns **exactly as for the grid** (same `buildColumns()` array): the
+detail reuses each column's `label` and cell renderer, ignoring the filter/sort
+side entirely.
+
+### Quick start
+
+```php
+use Fedale\GridviewBundle\Grid\GridviewBuilderFactory;
+use Fedale\GridviewBundle\Row\Row;
+
+$detail = $factory->createDetailViewBuilder()
+    ->setId('customer')                 // YAML lookup key (see below)
+    ->setModel($row)                    // a Row whose ->data is the record (see "The model")
+    ->setColumns($columns)              // the SAME definitions used by the grid
+    ->setOptions(['onlyVisible' => false])
+    ->setAttributes(['class' => 'table table-bordered'])
+    ->renderDetailView();               // → DetailView
+
+return $detail->render();               // → Response (Twig key/value table)
+```
+
+The factory method mirrors `createGridviewBuilder()`:
+
+```php
+GridviewBuilderFactory::createDetailViewBuilder(): DetailViewBuilder
+```
+
+### Using the controller base
+
+`AbstractDetailController` packages the lookup + wrapping + rendering, so a host
+controller declares only its entity and columns. It is **not** a subclass of
+`AbstractGridController`: a show shares only the columns, not the list machinery —
+so concrete controllers usually move `buildColumns()` into a shared trait used by
+both the grid and the detail controller, keeping them in sync.
+
+```php
+#[Route('/customer', name: 'customer_')]
+final class CustomerDetailController extends AbstractDetailController
+{
+    protected function getDataClass(): string { return Customer::class; }
+
+    protected function buildColumns(): array
+    {
+        return ['id', 'code', ['attribute' => 'active', 'type' => 'boolean']];
+    }
+}
+// → GET /customer/{id}  renders the record as a key/value table
+```
+
+`show/{id}` is inherited (route name `customer_show`), `id` defaults to the entity
+short name (`customer`). Override `findModel()` for custom lookup and `toRow()` for
+custom normalization.
+
+### The model — what `setModel()` expects
+
+Cells are rendered with `column->render($model, 0)`, and a `DataColumn` reads
+`$model->data[<attribute>]` — the same `Row` shape the data provider produces for
+the grid. So `setModel()` wants a `Row` whose `->data` is the **normalized** record
+array (dotted/nested attributes work just like in the grid):
+
+```php
+$row = new Row(0, 1);
+$row->data = $serializer->normalize($entity);  // ObjectNormalizer + DateTimeNormalizer
+```
+
+`AbstractDetailController::toRow()` does exactly this for you (mirroring the
+`EntityDataProvider` normalizer setup), so DateTime fields serialize to ISO strings
+and `twigFilter`s like `date('d/m/Y')` keep working unchanged.
+
+### Which columns are shown
+
+Only **data columns** (`getAttribute() !== null`) appear — action/structural
+columns (`action`, `checkbox`, `serial`) are skipped. By default **every** data
+column is rendered, *including ones hidden in the grid* (`visible: false`), because
+a show page usually wants the full record. Flip `onlyVisible: true` to honour grid
+visibility instead.
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `emptyText` | `string` | `'No data'` | Shown when there are no data columns |
+| `onlyVisible` | `bool` | `false` | When true, skip columns hidden in the grid (`visible: false`) |
+| `template` | `string` | `@FedaleGridview/detailview/detailview.html.twig` | Template used by `render()` |
+
+### Rendering
+
+`render(?string $view = null)` returns a `Response` (defaulting to the `template`
+option). The shipped template emits a `<table>` (HTML attributes from
+`setAttributes()`) with one `<tr><th>label</th><td>value</td></tr>` per data
+column, replicating the grid's `tbody` cell escaping (including per-column
+`twigFilter`). For non-Twig consumers, `DetailView::rows()` returns a plain
+`[['label' => …, 'value' => …], …]` array (note: `rows()` does not apply
+`twigFilter` — use the template for that).
+
+### YAML configuration
+
+Detail views read YAML **like the grid**, but from a dedicated, **separate**
+section — `detailviews.<id>` / `defaults.detailview` — so the grid-only keys
+(`pagination`, `realtime`, `globalSearch`, table `layout`) never leak in:
+
+```yaml
+fedale_gridview:
+  defaults:
+    detailview:                       # defaults for ALL detail views
+      options:
+        emptyText: "No data"
+      attributes:
+        class: "table table-bordered"
+  detailviews:                        # per-id override (id = entity short name, lowercased)
+    customer:
+      options:
+        onlyVisible: true
+      attributes:
+        class: "table table-sm"
+```
+
+> A grid and a detail for the same entity **share the `id`** but live in separate
+> sections (`gridviews.<id>` vs `detailviews.<id>`) — no semantic collision. The
+> merge precedence mirrors the grid: built-in detail defaults < `defaults.detailview`
+> < `detailviews.<id>` < runtime `setOptions()`/`setAttributes()`.
 
 ---
 
@@ -1963,6 +2096,12 @@ $gridview = $this->createGridviewBuilder()
 | `realtime.enabled` | `bool` | `false` | Enable real-time updates over Mercure (see [Real-time updates](#real-time-updates-mercure)) |
 | `realtime.topicPrefix` | `string` | `'gridview/'` | Prefix for the per-grid Mercure topic (`<prefix><id>`) |
 | `layout` | `array` | see above | Layout token strings, template overrides, and inline slots |
+
+### Detail-view presets
+
+Single-record [DetailViews](#detailview-single-record) use their own YAML sections
+— `defaults.detailview` and `detailviews.<id>` — kept separate from `gridviews` so
+grid-only keys never leak in. See [DetailView → YAML configuration](#yaml-configuration-1).
 
 ### Multiple grids with filters on the same page
 

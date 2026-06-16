@@ -17,4 +17,9 @@ class GridviewBuilderFactory
     {
         return new GridviewBuilder($this->gridviewService, $this->configRegistry, $this->columnFactory);
     }
+
+    public function createDetailViewBuilder(): DetailViewBuilder
+    {
+        return new DetailViewBuilder($this->gridviewService, $this->configRegistry, $this->columnFactory);
+    }
 }

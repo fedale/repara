@@ -112,6 +112,17 @@ class FedaleGridviewBundle extends AbstractBundle
                                 ->arrayNode('filter')->normalizeKeys(false)->variablePrototype()->end()->end()
                             ->end()
                         ->end()
+                        // Defaults for ALL detail views. Sibling of the grid
+                        // options/attributes above; keys are detail-only (no
+                        // pagination/realtime/table layout), so permissive
+                        // variableNode bags keep it future-proof.
+                        ->arrayNode('detailview')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->arrayNode('options')->normalizeKeys(false)->variablePrototype()->end()->end()
+                                ->arrayNode('attributes')->normalizeKeys(false)->variablePrototype()->end()->end()
+                            ->end()
+                        ->end()
                     ->end()
                 ->end()
                 ->arrayNode('gridviews')
@@ -179,6 +190,18 @@ class FedaleGridviewBundle extends AbstractBundle
                                     ->arrayNode('filter')->normalizeKeys(false)->variablePrototype()->end()->end()
                                 ->end()
                             ->end()
+                        ->end()
+                    ->end()
+                ->end()
+                // Per-id detail-view overrides. Sibling of `gridviews`: grid
+                // and detail of the same entity SHARE the id (entity short name,
+                // lowercased) but live in separate sections — no semantic clash.
+                ->arrayNode('detailviews')
+                    ->useAttributeAsKey('name')
+                    ->arrayPrototype()
+                        ->children()
+                            ->arrayNode('options')->normalizeKeys(false)->variablePrototype()->end()->end()
+                            ->arrayNode('attributes')->normalizeKeys(false)->variablePrototype()->end()->end()
                         ->end()
                     ->end()
                 ->end()

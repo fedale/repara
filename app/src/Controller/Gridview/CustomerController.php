@@ -28,6 +28,10 @@ class CustomerController extends AbstractGridController
         return [
             'models' => Customer::class,
             'pagination' => ['defaultPageSize' => 20],
+            // Not shown in the grid; their getters eager-load relations, so
+            // keep them out of normalization. 'roles' is fetch-joined in
+            // CustomerRepository::search() and displayed, so it stays in.
+            'ignoredAttributes' => ['groups', 'users'],
             'sort' => [
                 'id' => ['asc' => ['c.id'], 'desc' => ['c.id'], 'default' => 'desc'],
                 'code' => ['asc' => ['c.code'], 'desc' => ['c.code'], 'default' => 'asc'],
@@ -60,6 +64,11 @@ class CustomerController extends AbstractGridController
                 'label' => 'Codice',
                 'filter' => ['type' => 'text'],
                 // 'filterBar' => true,
+            ],
+            [
+                'attribute' => 'roles',
+                'label' => 'Ruoli',
+                'value' => fn(array $d) => implode(', ', $d['roles'] ?? []),
             ],
             // profile (OneToOne) — fullname
             [

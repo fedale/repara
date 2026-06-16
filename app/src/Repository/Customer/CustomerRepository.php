@@ -44,11 +44,12 @@ class CustomerRepository extends ServiceEntityRepository
     {
         $qb = $this
             ->createQueryBuilder('c')
-            ->select('c', 'p', 'l', 't')
+            ->select('c', 'p', 'l', 't', 'r')
             ->distinct()
             ->join('c.profile', 'p')
             ->join('c.locations', 'l')
             ->join('c.type', 't')
+            ->leftJoin('c.roles', 'r')
         ;
 
         // Per-type filter logic (date range parsing, boolean cast, IN, ...)

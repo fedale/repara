@@ -43,70 +43,73 @@ The entry point is always a `GridviewBuilder` chain called from a controller act
 
 ## Quick Start
 
-### 1. Inject the builder factory
+The recommended way to expose a grid is to extend one of the bundle's
+[controller base classes](#controller-base-classes): you declare the entity, the
+columns and the data-provider config, and the `index` / `export` actions (plus
+their routes) come for free. No constructor, no manual builder wiring.
+
+### 1. Create a controller
 
 ```php
-use Fedale\GridviewBundle\Grid\GridviewBuilderFactory;
+use App\Entity\Customer\Customer;
+use Fedale\GridviewBundle\Controller\AbstractGridController;
+use Symfony\Component\Routing\Annotation\Route;
 
-class CustomerController extends AbstractController
+#[Route('/gridview/customer', name: 'gridview_customer_')]
+class CustomerController extends AbstractGridController
 {
-    public function __construct(
-        private GridviewBuilderFactory $gridviewBuilderFactory,
-    ) {}
-
-    private function createGridviewBuilder(): GridviewBuilder
+    protected function getDataClass(): string
     {
-        return $this->gridviewBuilderFactory->createGridviewBuilder();
+        return Customer::class;
+    }
+
+    protected function getDataProviderConfig(): array
+    {
+        return [
+            'models'     => Customer::class,
+            'pagination' => ['defaultPageSize' => 25],
+            'sort'       => [
+                'name'  => ['asc' => ['c.name'], 'desc' => ['c.name'], 'default' => 'asc'],
+                'email' => ['asc' => ['c.email'], 'desc' => ['c.email'], 'default' => 'asc'],
+            ],
+        ];
+    }
+
+    protected function buildColumns(): array
+    {
+        return ['id', 'name', 'email'];
     }
 }
 ```
 
-### 2. Build the grid in a controller action
+That's it: the single `#[Route]` prefix yields `gridview_customer_index` and
+`gridview_customer_export`, and the grid id defaults to the entity short name
+(`customer`). For write operations (`new`, `update`, `delete`, bulk, inline, …)
+extend `AbstractCrudGridController` instead — see
+[Controller base classes](#controller-base-classes).
+
+### 2. The index template
+
+`index` renders the template named by the `indexTemplate` config key, which
+defaults to `gridview/with_sidebar.html.twig` (a host-app template). Point it at
+the bundle's bare layout, or your own, via [`configure()`](#the-configure-array):
 
 ```php
-#[Route('/customers', name: 'customer_list', methods: ['GET'])]
-public function list(Request $request): Response
+protected function configure(): array
 {
-    $dataProvider = [
-        'models'     => Customer::class,
-        'pagination' => ['defaultPageSize' => 25],
-        'sort'       => [
-            'name' => ['asc' => ['c.name'], 'desc' => ['c.name'], 'default' => 'asc'],
-            'email' => ['asc' => ['c.email'], 'desc' => ['c.email'], 'default' => 'asc'],
-        ],
-    ];
-
-    $columns = [
-        'id',
-        'name',
-        'email',
-    ];
-
-    $gridview = $this->createGridviewBuilder()
-        ->setDataProvider($dataProvider)
-        ->setColumns($columns)
-        ->renderGridview();
-
-    return $gridview->renderGrid('@FedaleGridview/gridview/index.html.twig', []);
+    return ['indexTemplate' => '@FedaleGridview/gridview/index.html.twig'];
 }
 ```
 
-### 3. The Twig template
+The grid renders itself inside that template — no extra Twig is needed. When a
+Turbo-Frame request arrives, the bundle automatically switches to the internal
+`_grid.html.twig` partial so only the table content is reloaded.
 
-The bundle ships with a default layout template. Your page template only needs to include it:
-
-```twig
-{# templates/customer/list.html.twig #}
-{% extends 'base.html.twig' %}
-
-{% block body %}
-    {# The grid renders itself — no extra Twig code needed here. #}
-{% endblock %}
-```
-
-> The default template passed to `renderGrid()` is `@FedaleGridview/gridview/index.html.twig`.
-> When a Turbo-Frame request arrives, the bundle automatically switches to the internal
-> `_grid.html.twig` partial so only the table content is reloaded.
+> **Lower-level API.** Under the hood these controllers drive a `GridviewBuilder`
+> obtained from `GridviewBuilderFactory`. You can use that builder directly from a
+> plain controller when you need a fully custom action — the
+> [Full Example](#full-example) shows the manual `createGridviewBuilder()` chain,
+> and most sections below illustrate options through it.
 
 ---
 

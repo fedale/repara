@@ -2,6 +2,12 @@
 	"folders": [
 		{
 			"path": "."
+		},
+		{
+			"path": "../../../Scaricati/wt-crud"
+		},
+		{
+			"path": "../twenty-crm/twenty"
 		}
 	],
 	"settings": {}

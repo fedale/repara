@@ -91,6 +91,13 @@
         </service>
         <service id="Fedale\GridviewBundle\Grid\GridviewConfigRegistry" alias="fedale_gridview.config_registry"/>
 
+        <!-- Real-time signal publisher. Hub is optional (on-invalid=null): without
+             symfony/mercure the publisher is a no-op and the bundle still boots. -->
+        <service id="fedale_gridview.mercure_publisher" class="Fedale\GridviewBundle\Mercure\GridviewMercurePublisher">
+            <argument type="service" id="Symfony\Component\Mercure\HubInterface" on-invalid="null"/>
+        </service>
+        <service id="Fedale\GridviewBundle\Mercure\GridviewMercurePublisher" alias="fedale_gridview.mercure_publisher"/>
+
         <service id="fedale_gridview.column_factory" class="Fedale\GridviewBundle\Column\ColumnFactory">
             <argument type="service" id="security.authorization_checker" on-invalid="null"/>
             <argument type="service" id="fedale_gridview.control_resolver"/>

@@ -22,4 +22,5 @@ return [
     Fresh\DoctrineEnumBundle\FreshDoctrineEnumBundle::class => ['all' => true],
     Fedale\CalendarBundle\FedaleCalendarBundle::class => ['all' => true],
     Fedale\GridviewBundle\FedaleGridviewBundle::class => ['all' => true],
+    Symfony\Bundle\MercureBundle\MercureBundle::class => ['all' => true],
 ];

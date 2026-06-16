@@ -3,6 +3,7 @@
 namespace Fedale\GridviewBundle\Controller;
 
 use Fedale\GridviewBundle\Contract\GridCrudHandlerInterface;
+use Fedale\GridviewBundle\Mercure\GridviewMercurePublisher;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -115,7 +116,9 @@ abstract class AbstractCrudGridController extends AbstractGridController
         }
 
         // POST → delete and refresh the grid via Turbo Stream.
-        $crud->delete($entity, $request->request->get('_token'), $crud->deleteTokenId($entity));
+        if ($crud->delete($entity, $request->request->get('_token'), $crud->deleteTokenId($entity))) {
+            $this->publishRealtime('delete');
+        }
 
         return $this->bulkStream();
     }
@@ -133,8 +136,9 @@ abstract class AbstractCrudGridController extends AbstractGridController
             ));
         }
 
-        if ($this->isCsrfTokenValid('gridcrud_bulk_delete', (string) $request->request->get('_token'))) {
-            $this->crud()->bulkDelete($this->getDataClass(), $ids);
+        if ($this->isCsrfTokenValid('gridcrud_bulk_delete', (string) $request->request->get('_token'))
+            && $this->crud()->bulkDelete($this->getDataClass(), $ids) > 0) {
+            $this->publishRealtime('delete');
         }
 
         return $this->bulkStream();
@@ -149,7 +153,9 @@ abstract class AbstractCrudGridController extends AbstractGridController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->crud()->applyBatch($this->getDataClass(), $ids, $form, $columns);
+            if ($this->crud()->applyBatch($this->getDataClass(), $ids, $form, $columns) > 0) {
+                $this->publishRealtime('update');
+            }
 
             return $this->bulkStream();
         }
@@ -184,6 +190,10 @@ abstract class AbstractCrudGridController extends AbstractGridController
         }
 
         $result = $this->crud()->saveInline($this->getDataClass(), $column, $entity, $request, $action);
+
+        if ($result['ok']) {
+            $this->publishRealtime('update');
+        }
 
         return new Response($result['body'], $result['ok'] ? Response::HTTP_OK : Response::HTTP_UNPROCESSABLE_ENTITY);
     }
@@ -235,6 +245,8 @@ abstract class AbstractCrudGridController extends AbstractGridController
             // save() returns null when a DB UNIQUE constraint slipped past
             // validation; fall through to re-render the form with the error.
             if ($crud->save($form, $mode) !== null) {
+                $this->publishRealtime($mode === GridCrudHandlerInterface::MODE_EDIT ? 'update' : 'create');
+
                 if ($isXhr) {
                     $response = $gridview->renderGrid('@FedaleGridview/gridview/sections/_stream.html.twig');
                     $response->headers->set('Content-Type', 'text/vnd.turbo-stream.html');
@@ -337,6 +349,25 @@ abstract class AbstractCrudGridController extends AbstractGridController
         ];
     }
 
+    /**
+     * Broadcasts a real-time "grid changed" signal after a successful write.
+     * No-op unless the grid opted into real-time and a Mercure hub is available.
+     */
+    protected function publishRealtime(string $action): void
+    {
+        $rt = $this->realtime();
+        if (!$rt['active']) {
+            return;
+        }
+
+        $this->mercurePublisher()->publish($this->config('id'), $action, $rt['topicPrefix']);
+    }
+
+    protected function mercurePublisher(): GridviewMercurePublisher
+    {
+        return $this->container->get(GridviewMercurePublisher::class);
+    }
+
     protected function crud(): GridCrudHandlerInterface
     {
         return $this->container->get(GridCrudHandlerInterface::class);
@@ -352,6 +383,7 @@ abstract class AbstractCrudGridController extends AbstractGridController
         return array_merge(parent::getSubscribedServices(), [
             GridCrudHandlerInterface::class,
             CsrfTokenManagerInterface::class,
+            GridviewMercurePublisher::class,
         ]);
     }
 }

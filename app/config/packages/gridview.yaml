@@ -16,7 +16,16 @@ fedale_gridview:
 #     container:
 #       class: "table-responsive"
 
-  gridviews: {}
+  gridviews:
+    # Real-time updates (Mercure): observers of the User grid see other users'
+    # create/update/delete reflected on-the-fly (signal + auto-refresh).
+    # Enable per grid id (the entity short name lowercased). The User grid is a
+    # full CRUD grid (UserController extends AbstractCrudGridController), so its
+    # writes publish the signal.
+    user:
+      options:
+        realtime:
+          enabled: true
 #   customer_list:
 #     options:
 #       globalSearch: ["c.code", "c.email"]

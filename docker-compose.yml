@@ -18,6 +18,18 @@ services:
     ports:
       - 8080:8080
 
+  # Real-time hub for the GridView (signal + auto-refresh).
+  # App publishes to http://mercure/.well-known/mercure (service name); the
+  # browser subscribes same-origin via nginx (proxy on /.well-known/mercure),
+  # so no public port and no CORS are needed.
+  mercure:
+    image: dunglas/mercure
+    restart: unless-stopped
+    environment:
+      SERVER_NAME: ':80'
+      MERCURE_PUBLISHER_JWT_KEY: ${MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
+      MERCURE_SUBSCRIBER_JWT_KEY: ${MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
+
   app:
     environment:
     - APP_NAME=${APP_NAME}

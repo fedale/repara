@@ -39,3 +39,6 @@ app.register('gridview-saved-search', GridviewSavedSearchController);
 
 import GridviewColumnOrderController from '../../FedaleGridviewBundle/assets/controllers/gridview-column-order_controller.js';
 app.register('gridview-column-order', GridviewColumnOrderController);
+
+import GridviewMercureController from '../../FedaleGridviewBundle/assets/controllers/gridview-mercure_controller.js';
+app.register('gridview-mercure', GridviewMercureController);

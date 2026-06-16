@@ -17,6 +17,10 @@ class GridviewConfigRegistry
             'pageSelect'          => true,
             'pageSelectThreshold' => 10,
         ],
+        'realtime'     => [
+            'enabled'     => false,
+            'topicPrefix' => 'gridview/',
+        ],
         'layout'       => [
             'gridview'  => '{header} {table} {footer}',
             'header'    => '{globalSearch} {filterSubmit}',

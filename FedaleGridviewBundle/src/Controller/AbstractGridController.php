@@ -7,9 +7,12 @@ use Fedale\GridviewBundle\Contract\SearchModelInterface;
 use Fedale\GridviewBundle\Export\GridExporterRegistry;
 use Fedale\GridviewBundle\Grid\Gridview;
 use Fedale\GridviewBundle\Grid\GridviewBuilderFactory;
+use Fedale\GridviewBundle\Grid\GridviewConfigRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mercure\Authorization;
+use Symfony\Component\Mercure\HubInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -29,6 +32,8 @@ abstract class AbstractGridController extends AbstractController
     private ?string $routePrefix = null;
 
     private ?array $resolvedConfig = null;
+
+    private ?array $resolvedRealtime = null;
 
     // ---- required configuration ----------------------------------------
 
@@ -96,8 +101,22 @@ abstract class AbstractGridController extends AbstractController
     // ---- actions -------------------------------------------------------
 
     #[Route('', name: 'index', methods: ['GET'])]
-    public function index(): Response
+    public function index(Request $request): Response
     {
+        // When real-time is active, authorize this user to subscribe to *this*
+        // grid's private topic only. The cookie is attached to the response by
+        // Mercure's SetCookieSubscriber. A misconfigured hub (e.g. a public URL
+        // on a different domain than the app) must degrade gracefully — never
+        // take down the grid — so swallow the cookie error and skip real-time.
+        $rt = $this->realtime();
+        if ($rt['active']) {
+            try {
+                $this->mercureAuthorization()?->setCookie($request, [$rt['topic']]);
+            } catch (\Throwable) {
+                // Real-time stays off for this request; the grid renders normally.
+            }
+        }
+
         return $this->buildGridview()->renderGrid($this->config('indexTemplate'));
     }
 
@@ -125,6 +144,8 @@ abstract class AbstractGridController extends AbstractController
     {
         $exporters = $this->exporters();
 
+        $rt = $this->realtime();
+
         $options = array_replace([
             'routeName' => $this->routeName('index'),
             'export' => [
@@ -133,6 +154,13 @@ abstract class AbstractGridController extends AbstractController
                     static fn($e) => ['key' => $e->getKey(), 'label' => $e->getLabel()],
                     array_values($exporters->all()),
                 ),
+            ],
+            // Resolved real-time settings consumed by _grid.html.twig. `enabled`
+            // is only true when both the grid opts in *and* a hub is available.
+            'realtime' => [
+                'enabled' => $rt['active'],
+                'topic'   => $rt['topic'],
+                'hubUrl'  => $rt['hubUrl'],
             ],
         ], $this->crudOptions(), $this->config('options'));
 
@@ -169,6 +197,50 @@ abstract class AbstractGridController extends AbstractController
         return $this->routePrefix . $action;
     }
 
+    /**
+     * Resolved real-time config for this grid, computed once.
+     *  - active:      grid opted in (YAML) AND a Mercure hub is available
+     *  - topic:       the per-grid topic ("<prefix><id>")
+     *  - topicPrefix: prefix used to build the topic
+     *  - hubUrl:      public hub URL for the browser (null when inactive)
+     *
+     * @return array{active: bool, topic: string, topicPrefix: string, hubUrl: ?string}
+     */
+    protected function realtime(): array
+    {
+        if ($this->resolvedRealtime === null) {
+            $rt = $this->container->get(GridviewConfigRegistry::class)
+                ->resolveOptions($this->config('id'))['realtime'] ?? [];
+            $rt += ['enabled' => false, 'topicPrefix' => 'gridview/'];
+
+            $hub    = $this->mercureHub();
+            $active = !empty($rt['enabled']) && $hub !== null;
+
+            $this->resolvedRealtime = [
+                'active'      => $active,
+                'topic'       => ($rt['topicPrefix'] ?: 'gridview/') . $this->config('id'),
+                'topicPrefix' => $rt['topicPrefix'] ?: 'gridview/',
+                'hubUrl'      => $active ? $hub->getPublicUrl() : null,
+            ];
+        }
+
+        return $this->resolvedRealtime;
+    }
+
+    protected function mercureHub(): ?HubInterface
+    {
+        return $this->container->has(HubInterface::class)
+            ? $this->container->get(HubInterface::class)
+            : null;
+    }
+
+    protected function mercureAuthorization(): ?Authorization
+    {
+        return $this->container->has(Authorization::class)
+            ? $this->container->get(Authorization::class)
+            : null;
+    }
+
     protected function builderFactory(): GridviewBuilderFactory
     {
         return $this->container->get(GridviewBuilderFactory::class);
@@ -196,6 +268,10 @@ abstract class AbstractGridController extends AbstractController
             GridExporterRegistry::class,
             SearchModelInterface::class,
             EntityManagerInterface::class,
+            GridviewConfigRegistry::class,
+            // Optional: present only when symfony/mercure-bundle is installed.
+            '?' . HubInterface::class,
+            '?' . Authorization::class,
         ]);
     }
 }

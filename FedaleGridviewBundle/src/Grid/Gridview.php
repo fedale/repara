@@ -195,6 +195,9 @@ class Gridview implements GridviewInterface
         if (!empty($this->dataProviderOptions['pagination'])) {
             $this->dataProvider->getPagination()->setAttributes($this->dataProviderOptions['pagination']);
         }
+        if (!empty($this->dataProviderOptions['ignoredAttributes'])) {
+            $this->dataProvider->setIgnoredAttributes($this->dataProviderOptions['ignoredAttributes']);
+        }
 
         // Pin sort/pagination/filter links to an explicit list route so the grid
         // renders correctly even when handled by a different route (e.g. a CRUD

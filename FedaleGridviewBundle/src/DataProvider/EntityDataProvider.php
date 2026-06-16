@@ -7,8 +7,8 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
+use Fedale\GridviewBundle\Serializer\LazyAwareObjectNormalizer;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Fedale\GridviewBundle\Row\Row;
@@ -120,13 +120,14 @@ class EntityDataProvider extends AbstractDataProvider
 
         $defaultContext = [
             AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => fn($object) => $object->getId(),
+            AbstractNormalizer::IGNORED_ATTRIBUTES => $this->ignoredAttributes,
         ];
         $normalizers = [
             new DateTimeNormalizer([
                 DateTimeNormalizer::FORMAT_KEY   => \DateTimeInterface::ATOM,
                 DateTimeNormalizer::TIMEZONE_KEY => new \DateTimeZone(date_default_timezone_get()),
             ]),
-            new ObjectNormalizer(null, null, null, null, null, null, $defaultContext),
+            new LazyAwareObjectNormalizer(null, null, null, null, null, null, $defaultContext),
         ];
         $serializer  = new Serializer($normalizers);
 

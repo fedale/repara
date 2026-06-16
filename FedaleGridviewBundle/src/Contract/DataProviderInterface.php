@@ -8,6 +8,13 @@ interface DataProviderInterface
 
     public function setDefaultParams(array $defaults): void;
 
+    /**
+     * Entity attribute names to skip when normalizing rows.
+     *
+     * @param string[] $attributes
+     */
+    public function setIgnoredAttributes(array $attributes): void;
+
     public function getData();
 
     /** All rows matching the current filters/sort, without pagination (for export). */

@@ -32,9 +32,26 @@ abstract class AbstractDataProvider implements DataProviderInterface
      */
     protected array $defaultParams = [];
 
+    /**
+     * Entity attribute names to skip when normalizing rows. Use it to keep
+     * heavy or eager-loading getters (e.g. a security {@see \Symfony\Component\Security\Core\User\UserInterface::getRoles()}
+     * that materializes a relation) out of grid serialization.
+     *
+     * @var string[]
+     */
+    protected array $ignoredAttributes = [];
+
     public function setDefaultParams(array $defaults): void
     {
         $this->defaultParams = $defaults;
+    }
+
+    /**
+     * @param string[] $attributes
+     */
+    public function setIgnoredAttributes(array $attributes): void
+    {
+        $this->ignoredAttributes = $attributes;
     }
 
     /**

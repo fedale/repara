@@ -46,8 +46,6 @@ class CustomerController extends AbstractController
             ->findAll();
         $this->ormMetadata = $this->entityManager->getClassMetadata(Customer::class);
 
-        dd($this->ormMetadata, $this->ormMetadata->getReflectionClass(), $this->getFieldsMetadata(Customer::class));
-
         return new Response('Response');
     }
 

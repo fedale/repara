@@ -5,11 +5,11 @@ namespace App\Controller\Gridview;
 use App\Entity\Customer\Customer;
 use App\Entity\Customer\CustomerType;
 use App\Repository\Customer\CustomerLocationRepository;
-use Fedale\GridviewBundle\Controller\AbstractGridController;
+use Fedale\GridviewBundle\Controller\AbstractCrudGridController;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/gridview/customer', name: 'gridview_customer_')]
-class CustomerController extends AbstractGridController
+class CustomerController extends AbstractCrudGridController
 {
     public function __construct(
         private CustomerLocationRepository $locationRepository,
@@ -125,6 +125,10 @@ class CustomerController extends AbstractGridController
                 'twigFilter' => "date('d/m/Y')",
                 'filter' => ['type' => 'date'],
             ],
+            [
+                'type' => 'action',
+                'label' => 'Azioni',
+            ]
         ];
     }
 }

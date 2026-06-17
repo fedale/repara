@@ -47,15 +47,23 @@ COPY app/templates templates/
 COPY app/translations translations/
 
 # local repo for local dev
-COPY FedaleGridviewBundle /srv/FedaleGridviewBundle
+# NOTE: FedaleGridviewBundle ora vive in un repo separato (sibling di repara/, per
+# Packagist) e NON e' piu' nel build context. In dev viene fornito via volume mount
+# (vedi docker-compose.yml: ../gridview-bundle:/srv/gridview-bundle) e composer va
+# eseguito dentro il container. Calendar resta invece nel context.
 COPY FedaleCalendarBundle /srv/FedaleCalendarBundle
 
 # prevent the reinstallation of vendors at every changes in the source code
 COPY app/composer.json app/composer.lock app/symfony.lock ./
 
-RUN set -eux; \
-    composer install --prefer-dist --no-dev --no-scripts --no-progress; \
-    composer clear-cache
+# TODO(prod): il composer install di build e' disattivato perche' dipendeva dal
+# bundle Gridview presente nel context. In dev il vendor/ arriva dal volume mount
+# ./app:/srv/app, quindi non serve baked nell'immagine. Per il build di PRODUZIONE
+# riattivare richiedendo fedale/gridview-bundle da Packagist (versione stabile)
+# invece del path repo locale.
+# RUN set -eux; \
+#     composer install --prefer-dist --no-dev --no-scripts --no-progress; \
+#     composer clear-cache
 
 # RUN set -eux; \
 # 	mkdir -p var/cache var/log; \

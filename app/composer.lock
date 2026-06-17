@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "99d427327bd3ad5d055ada926715241f",
+    "content-hash": "53a0f01acfd98e2ccd4755a0373fe30b",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -1884,20 +1884,32 @@
             "version": "dev-main",
             "dist": {
                 "type": "path",
-                "url": "../FedaleGridviewBundle",
-                "reference": "863f33f7f5ce9546aaeeb40dc33982bdb78b06fb"
+                "url": "../gridview-bundle",
+                "reference": "830bd51a83b7800703bd98cbe1dbdd04c9fa0e5a"
             },
             "require": {
-                "php": ">=7.4",
-                "symfony/framework-bundle": "^6.1"
+                "php": ">=8.1",
+                "symfony/framework-bundle": "^6.4"
             },
             "require-dev": {
                 "doctrine/orm": "^2.12",
                 "phpunit/phpunit": "^9.6",
-                "symfony/form": "6.4.*",
+                "symfony/form": "^6.4",
+                "symfony/property-access": "^6.4",
+                "symfony/serializer": "^6.4",
+                "symfony/translation": "^6.4",
+                "symfony/twig-bundle": "^6.4",
                 "twig/twig": "^3.0"
             },
+            "suggest": {
+                "symfony/mercure-bundle": "Enables real-time grid updates (signal + auto-refresh) over Mercure"
+            },
             "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "1.0-x-dev"
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "Fedale\\GridviewBundle\\": "src/"
@@ -1918,6 +1930,14 @@
                 }
             ],
             "description": "Gridview in Yii2 style inside your Symfony projects",
+            "keywords": [
+                "bundle",
+                "crud",
+                "datagrid",
+                "grid",
+                "gridview",
+                "symfony"
+            ],
             "transport-options": {
                 "relative": true
             }

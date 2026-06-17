@@ -2,6 +2,9 @@
 	"folders": [
 		{
 			"path": "."
+		},
+		{
+			"path": "../gridview-bundle"
 		}
 	],
 	"settings": {}

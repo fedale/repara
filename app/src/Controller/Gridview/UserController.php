@@ -6,6 +6,7 @@ use App\Entity\User\User;
 use App\Entity\User\UserGroup;
 use App\Entity\User\UserRole;
 use App\Entity\User\UserType;
+use Doctrine\Common\Collections\Collection;
 use Fedale\GridviewBundle\Contract\GridCrudHandlerInterface;
 use Fedale\GridviewBundle\Controller\AbstractCrudGridController;
 use Fedale\GridviewBundle\Crud\CrudButton;
@@ -29,12 +30,12 @@ class UserController extends AbstractCrudGridController
     protected function configure(): array
     {
         return [
-            'id'             => 'user',
+            'id' => 'user',
             'exportFilename' => 'utenti',
-            'title'          => 'Utente',
-            'addLabel'       => 'Nuovo utente',
-            'formView'       => 'gridview/user/_form.html.twig',
-            'options'        => [
+            'title' => 'Utente',
+            'addLabel' => 'Nuovo utente',
+            'formView' => 'gridview/user/_form.html.twig',
+            'options' => [
                 'reorderColumns' => true,
                 'layout' => [
                     'gridview' => '{toolbar} {bulkBar} {header} {table} {footer}',
@@ -207,9 +208,14 @@ class UserController extends AbstractCrudGridController
                         'choice_label' => 'name',
                         'multiple' => true,
                         'getter' => fn(User $u) => $u->getRoleEntities(),
-                        'setter' => function (User $u, $roles): void {
+                        'setter' => function (User $u, iterable $roles): void {
+                            // $roles may be the very same Collection instance returned by
+                            // getRoleEntities() (EntityType's MergeDoctrineCollectionListener
+                            // mutates the original collection in place). Snapshot it before
+                            // clear(), otherwise clear() would empty the list we iterate.
+                            $new = $roles instanceof Collection ? $roles->toArray() : iterator_to_array($roles);
                             $u->getRoleEntities()->clear();
-                            foreach ($roles as $role) {
+                            foreach ($new as $role) {
                                 $u->addRole($role);
                             }
                         },

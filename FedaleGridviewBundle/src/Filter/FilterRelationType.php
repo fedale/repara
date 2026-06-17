@@ -3,6 +3,7 @@
 namespace Fedale\GridviewBundle\Filter;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\ChoiceList\View\ChoiceGroupView;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
@@ -44,6 +45,37 @@ class FilterRelationType extends AbstractType
         }
 
         $view->vars['attr'] = $attr;
+    }
+
+    public function finishView(FormView $view, FormInterface $form, array $options): void
+    {
+        if ($options['ajax_url']) {
+            return;
+        }
+
+        $choices = [];
+        $allChoices = array_merge(
+            $view->vars['preferred_choices'] ?? [],
+            $view->vars['choices'] ?? []
+        );
+        foreach ($allChoices as $choice) {
+            if ($choice instanceof ChoiceGroupView) {
+                foreach ($choice->choices as $c) {
+                    $choices[] = ['v' => $c->value, 'l' => $c->label];
+                }
+            } else {
+                $choices[] = ['v' => $choice->value, 'l' => $choice->label];
+            }
+        }
+
+        $attr = $view->vars['attr'] ?? [];
+        $attr['data-gridview-relation-filter-choices-value']  = json_encode($choices);
+        $attr['data-gridview-relation-filter-selected-value'] = json_encode(
+            array_values((array) ($view->vars['value'] ?? []))
+        );
+        $view->vars['attr']              = $attr;
+        $view->vars['choices']           = [];
+        $view->vars['preferred_choices'] = [];
     }
 
     public function getParent(): string

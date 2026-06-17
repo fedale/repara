@@ -6,11 +6,16 @@ export default class extends Controller {
         searchable:  { type: Boolean, default: false },
         optionLabel: { type: String,  default: 'name' },
         optionValue: { type: String,  default: 'id' },
+        choices:     { type: Array,   default: [] },
+        selected:    { type: Array,   default: [] },
     };
 
     connect() {
         if (this.ajaxUrlValue) {
             this._loadOptions().then(() => this._enhance());
+        } else if (this.choicesValue.length > 0) {
+            this._loadChoicesFromData();
+            this._enhance();
         } else {
             this._enhance();
         }
@@ -50,6 +55,21 @@ export default class extends Controller {
         } else if (this.searchableValue || this.ajaxUrlValue) {
             this._buildSearchableSelect();
         }
+    }
+
+    // ── Static choices from data attribute ────────────────────────────
+
+    _loadChoicesFromData() {
+        const select   = this.element;
+        const selected = new Set(this.selectedValue.map(String));
+        select.innerHTML = '';
+        this.choicesValue.forEach(item => {
+            const opt       = document.createElement('option');
+            opt.value       = String(item.v);
+            opt.textContent = item.l;
+            opt.selected    = selected.has(opt.value);
+            select.appendChild(opt);
+        });
     }
 
     // ── AJAX loading ───────────────────────────────────────────────────

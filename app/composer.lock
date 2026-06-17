@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "53a0f01acfd98e2ccd4755a0373fe30b",
+    "content-hash": "16ddfe98dcaae801d4a10739766136dc",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -1881,11 +1881,11 @@
         },
         {
             "name": "fedale/gridview-bundle",
-            "version": "dev-main",
+            "version": "1.0.999",
             "dist": {
                 "type": "path",
                 "url": "../gridview-bundle",
-                "reference": "830bd51a83b7800703bd98cbe1dbdd04c9fa0e5a"
+                "reference": "30e13a08ba51e7c054262860f75186cdf50a377d"
             },
             "require": {
                 "php": ">=8.1",
@@ -1907,7 +1907,7 @@
             "type": "symfony-bundle",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "1.0-x-dev"
+                    "dev-main": "1.0.x-dev"
                 }
             },
             "autoload": {
@@ -1939,6 +1939,7 @@
                 "symfony"
             ],
             "transport-options": {
+                "symlink": true,
                 "relative": true
             }
         },
@@ -12847,8 +12848,7 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "easycorp/easyadmin-bundle": 20,
-        "fedale/calendar-bundle": 20,
-        "fedale/gridview-bundle": 20
+        "fedale/calendar-bundle": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,

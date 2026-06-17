@@ -47,31 +47,30 @@ COPY app/templates templates/
 COPY app/translations translations/
 
 # local repo for local dev
-# NOTE: FedaleGridviewBundle ora vive in un repo separato (sibling di repara/, per
-# Packagist) e NON e' piu' nel build context. In dev viene fornito via volume mount
-# (vedi docker-compose.yml: ../gridview-bundle:/srv/gridview-bundle) e composer va
-# eseguito dentro il container. Calendar resta invece nel context.
+# NOTE: FedaleGridviewBundle ora vive in un repo separato (sibling di repara/) ed e'
+# pubblicato su Packagist. NON e' nel build context: in PROD viene risolto da Packagist
+# (require "^1.0"), in DEV via volume mount + repository type:path con symlink (vedi
+# app/composer.json e docker-compose.yml: ../gridview-bundle:/srv/gridview-bundle).
+# Calendar resta invece un bundle interno nel context.
 COPY FedaleCalendarBundle /srv/FedaleCalendarBundle
 
 # prevent the reinstallation of vendors at every changes in the source code
 COPY app/composer.json app/composer.lock app/symfony.lock ./
 
-# TODO(prod): il composer install di build e' disattivato perche' dipendeva dal
-# bundle Gridview presente nel context. In dev il vendor/ arriva dal volume mount
-# ./app:/srv/app, quindi non serve baked nell'immagine. Per il build di PRODUZIONE
-# riattivare richiedendo fedale/gridview-bundle da Packagist (versione stabile)
-# invece del path repo locale.
-# RUN set -eux; \
-#     composer install --prefer-dist --no-dev --no-scripts --no-progress; \
-#     composer clear-cache
-
-# RUN set -eux; \
-# 	mkdir -p var/cache var/log; \
-# 	composer update; \
-# 	composer dump-autoload --classmap-authoritative --no-dev; \
-# 	composer dump-env prod; \
-# 	composer run-script --no-dev post-install-cmd; \
-# 	chmod +x bin/console; sync
+# Build di PRODUZIONE: il repository type:path di gridview punta a ../gridview-bundle,
+# assente nel build context, quindi Composer lo ignora e risolve fedale/gridview-bundle
+# da Packagist (^1.0). Si usa "composer update" (non "install") perche' il composer.lock
+# committato e' quello di dev e referenzia il dist path locale; update ri-risolve le
+# dipendenze contro Packagist e rigenera il lock dentro l'immagine.
+RUN set -eux; \
+	mkdir -p var/cache var/log; \
+	composer update --no-dev --prefer-dist --no-progress; \
+	composer dump-autoload --classmap-authoritative --no-dev; \
+	composer dump-env prod; \
+	composer run-script --no-dev post-install-cmd; \
+	chmod +x bin/console; \
+	composer clear-cache; \
+	sync
 
 COPY nginx/php/docker-healthcheck.sh /usr/local/bin/docker-healthcheck
 RUN chmod +x /usr/local/bin/docker-healthcheck

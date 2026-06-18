@@ -43,7 +43,7 @@ services:
       - ./app/config:/srv/app/config
       - ./app/templates:/srv/app/templates
       - ./app/public:/srv/app/public
-      # Il bundle ora vive in un repo separato, sibling di repara/ sull'host.
+      # Il bundle ora vive in un repo separato, sibling di repara-demo/ sull'host.
       # Va montato in /srv/gridview-bundle perché composer (dentro il container)
       # risolve il path repo "../gridview-bundle" relativo a /srv/app.
       - ../gridview-bundle:/srv/gridview-bundle

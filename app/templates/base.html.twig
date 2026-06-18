@@ -87,6 +87,8 @@
             { title: 'Progetti', items: [
                 { route: 'gridview_project_index', label: 'Progetti' },
                 { route: 'gridview_project_task_index', label: 'Attività' },
+                { route: 'gridview_project_task_item_index', label: 'Voci attività' },
+                { route: 'gridview_project_milestone_index', label: 'Milestone' },
                 { route: 'gridview_project_task_template_index', label: 'Template attività' },
                 { route: 'gridview_project_task_item_template_index', label: 'Voci template' },
             ] },
@@ -114,6 +116,7 @@
             ] },
             { title: 'Sistema', items: [
                 { route: 'gridview_website_index', label: 'Siti' },
+                { route: 'gridview_access_control_index', label: 'Controllo accessi' },
             ] },
         ] %}
         <div class="page-layout">
@@ -148,18 +151,7 @@
 
             <div class="page-main">
                 <aside class="page-sidebar bg-body-tertiary border-end p-2">
-                    {% block sidebar %}
-                        <nav class="nav flex-column">
-                            {% for group in menu %}
-                                <div class="sidebar-group">
-                                    <div class="sidebar-group__title">{{ group.title }}</div>
-                                    {% for item in group.items %}
-                                        <a class="nav-link px-1 py-1" href="{{ path(item.route) }}">{{ item.label }}</a>
-                                    {% endfor %}
-                                </div>
-                            {% endfor %}
-                        </nav>
-                    {% endblock %}
+                    {% block sidebar %}{% endblock %}
                 </aside>
 
                 <main class="page-body">

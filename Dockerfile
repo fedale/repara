@@ -47,7 +47,7 @@ COPY app/templates templates/
 COPY app/translations translations/
 
 # local repo for local dev
-# NOTE: FedaleGridviewBundle ora vive in un repo separato (sibling di repara/) ed e'
+# NOTE: FedaleGridviewBundle ora vive in un repo separato (sibling di repara-demo/) ed e'
 # pubblicato su Packagist. NON e' nel build context: in PROD viene risolto da Packagist
 # (require "^1.0"), in DEV via volume mount + repository type:path con symlink (vedi
 # app/composer.json e docker-compose.yml: ../gridview-bundle:/srv/gridview-bundle).

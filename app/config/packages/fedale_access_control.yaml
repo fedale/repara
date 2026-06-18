@@ -1,0 +1,19 @@
+fedale_access_control:
+    enabled: true
+
+    # Utenti non autenticati su una richiesta che non matcha alcuna regola: negati.
+    anonymous_access: false
+
+    # Ruolo che bypassa tutte le regole (manteniamo la convenzione dell'app).
+    super_admin_role: ROLE_SuperAdmin
+
+    # allow | deny -> policy quando nessuna regola matcha
+    default_policy: deny
+
+    cache:
+        enabled: true
+        pool: cache.app
+        # ttl: 3600  # secondi; default null = nessuna scadenza (invalidare il pool a mano)
+
+    # Le regole vengono lette dalla tabella access_control (entità del bundle).
+    provider: doctrine

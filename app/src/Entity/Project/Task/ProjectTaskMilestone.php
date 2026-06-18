@@ -21,9 +21,9 @@ class ProjectTaskMilestone
     #[ORM\Column()]
     private bool $active = true;
 
-    // #[ORM\ManyToOne(targetEntity: ProjectTaskMilestone::class, inversedBy: 'projectTaskMilestones')]
-    // #[ORM\JoinColumn(nullable: false)]
-    // private $milestone;
+    #[ORM\ManyToOne(targetEntity: ProjectMilestone::class, inversedBy: 'projectTaskMilestones')]
+    #[ORM\JoinColumn(name: 'project_milestone_id', referencedColumnName: 'id', nullable: false)]
+    private $milestone;
 
     #[ORM\ManyToOne(targetEntity: ProjectTask::class, inversedBy: 'projectTaskMilestones')]
     #[ORM\JoinColumn(nullable: false)]

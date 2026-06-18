@@ -20,7 +20,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
         new ORM\Index(name: 'updated_at', columns: ['updated_at']), 
         new ORM\Index(name: 'sort', columns: ['sort'])]
 )]
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: \App\Repository\Project\TaskTemplate\ProjectTaskItemTemplateRepository::class)]
 class ProjectTaskItemTemplate
 {
     use TimestampableEntity;

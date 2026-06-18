@@ -7,10 +7,10 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
-use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
+use App\Repository\Asset\AssetCategoryRepository;
 
 #[Gedmo\Tree(type:'nested')]
-#[ORM\Entity(repositoryClass: NestedTreeRepository::class)]
+#[ORM\Entity(repositoryClass: AssetCategoryRepository::class)]
 class AssetCategory
 {
     use TimestampableEntity;

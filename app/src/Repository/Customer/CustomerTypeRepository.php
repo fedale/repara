@@ -4,7 +4,9 @@ namespace App\Repository\Customer;
 
 use App\Entity\Customer\CustomerType;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
+use Fedale\GridviewBundle\Form\SearchForm;
 
 /**
  * @extends ServiceEntityRepository<CustomerType>
@@ -16,9 +18,21 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class CustomerTypeRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, private SearchForm $searchForm)
     {
         parent::__construct($registry, CustomerType::class);
+    }
+
+    /** QueryBuilder consumed by the gridview EntityDataProvider. */
+    public function search(array $params = []): QueryBuilder
+    {
+        $qb = $this->createQueryBuilder('t')->select('t');
+
+        $this->searchForm->applyFilters($qb, $params, [
+            'name' => ['text', 't.name'],
+        ]);
+
+        return $qb;
     }
 
     public function add(CustomerType $entity, bool $flush = false): void

@@ -4,7 +4,9 @@ namespace App\Repository\Project\TaskTemplate;
 
 use App\Entity\Project\TaskTemplate\ProjectTaskTemplate;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
+use Fedale\GridviewBundle\Form\SearchForm;
 
 /**
  * @extends ServiceEntityRepository<ProjectTaskTemplate>
@@ -16,9 +18,22 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ProjectTaskTemplateRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, private SearchForm $searchForm)
     {
         parent::__construct($registry, ProjectTaskTemplate::class);
+    }
+
+    /** QueryBuilder consumed by the gridview EntityDataProvider. */
+    public function search(array $params = []): QueryBuilder
+    {
+        $qb = $this->createQueryBuilder('tt')->select('tt');
+
+        $this->searchForm->applyFilters($qb, $params, [
+            'name'   => ['text',    'tt.name'],
+            'active' => ['boolean', 'tt.active'],
+        ]);
+
+        return $qb;
     }
 
     public function add(ProjectTaskTemplate $entity, bool $flush = false): void

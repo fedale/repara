@@ -10,7 +10,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * AssetAttachment
  */
 #[ORM\Table(name: 'asset_attachment', indexes: [new ORM\Index(name: 'stuff_id', columns: ['asset_id']), new ORM\Index(name: 'active', columns: ['active']), new ORM\Index(name: 'name', columns: ['name']), new ORM\Index(name: 'type', columns: ['type']), new ORM\Index(name: 'created_at', columns: ['created_at']), new ORM\Index(name: 'type_2', columns: ['type']), new ORM\Index(name: 'path', columns: ['path']), new ORM\Index(name: 'updated_at', columns: ['updated_at']), new ORM\Index(name: 'size', columns: ['size']), new ORM\Index(name: 'filename', columns: ['filename'])])]
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: \App\Repository\Asset\AssetAttachmentRepository::class)]
 class AssetAttachment
 {
     use TimestampableEntity;

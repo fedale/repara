@@ -4,7 +4,9 @@ namespace App\Repository\User;
 
 use App\Entity\User\UserType;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
+use Fedale\GridviewBundle\Form\SearchForm;
 
 /**
  * @extends ServiceEntityRepository<UserType>
@@ -16,9 +18,22 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class UserTypeRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, private SearchForm $searchForm)
     {
         parent::__construct($registry, UserType::class);
+    }
+
+    /** QueryBuilder consumed by the gridview EntityDataProvider. */
+    public function search(array $params = []): QueryBuilder
+    {
+        $qb = $this->createQueryBuilder('t')->select('t');
+
+        $this->searchForm->applyFilters($qb, $params, [
+            'name' => ['text', 't.name'],
+            'slug' => ['text', 't.slug'],
+        ]);
+
+        return $qb;
     }
 
     public function add(UserType $entity, bool $flush = false): void

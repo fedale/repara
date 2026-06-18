@@ -4,7 +4,9 @@ namespace App\Repository\Customer;
 
 use App\Entity\Customer\CustomerLocationPlaceAsset;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
+use Fedale\GridviewBundle\Form\SearchForm;
 
 /**
  *
@@ -15,9 +17,29 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class CustomerLocationPlaceAssetRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, private SearchForm $searchForm)
     {
         parent::__construct($registry, CustomerLocationPlaceAsset::class);
+    }
+
+    /** QueryBuilder consumed by the gridview EntityDataProvider. */
+    public function search(array $params = []): QueryBuilder
+    {
+        $qb = $this->createQueryBuilder('cpa')
+            ->select('cpa', 'place', 'asset')
+            ->leftJoin('cpa.customerLocationPlace', 'place')
+            ->leftJoin('cpa.asset', 'asset')
+        ;
+
+        $this->searchForm->applyFilters($qb, $params, [
+            'name'                 => ['text',     'cpa.name'],
+            'code'                 => ['text',     'cpa.code'],
+            'active'               => ['boolean',  'cpa.active'],
+            'customerLocationPlace' => ['relation', 'place.id'],
+            'asset'                => ['relation', 'asset.id'],
+        ]);
+
+        return $qb;
     }
 
     public function add(CustomerLocationPlaceAsset $entity, bool $flush = false): void

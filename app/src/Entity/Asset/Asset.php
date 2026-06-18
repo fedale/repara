@@ -22,7 +22,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
         new ORM\Index(name: 'updated_at', columns: ['updated_at'])
     ]
 )]
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: \App\Repository\Asset\AssetRepository::class)]
 class Asset
 {
     use TimestampableEntity;

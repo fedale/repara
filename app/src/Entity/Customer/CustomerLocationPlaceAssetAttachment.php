@@ -9,7 +9,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  * CustomerLocationPlaceAssetAttachment
  */
 #[ORM\Table(name: 'customer_location_place_asset_attachment', indexes: [new ORM\Index(name: 'stuff_id', columns: ['customer_location_place_asset_id']), new ORM\Index(name: 'active', columns: ['active']), new ORM\Index(name: 'name', columns: ['name']), new ORM\Index(name: 'type', columns: ['type']), new ORM\Index(name: 'created_at', columns: ['created_at']), new ORM\Index(name: 'type_2', columns: ['type']), new ORM\Index(name: 'path', columns: ['path']), new ORM\Index(name: 'updated_at', columns: ['updated_at']), new ORM\Index(name: 'size', columns: ['size']), new ORM\Index(name: 'filename', columns: ['filename'])])]
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: \App\Repository\Customer\CustomerLocationPlaceAssetAttachmentRepository::class)]
 class CustomerLocationPlaceAssetAttachment
 {
     use TimestampableEntity;

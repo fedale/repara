@@ -44,15 +44,92 @@
             .page-footer {
                 flex: 0 0 auto;
             }
+            /* Native (JS-free) dropdown groups for the header nav. */
+            .nav-group { position: relative; }
+            .nav-group > summary {
+                list-style: none;
+                cursor: pointer;
+                padding: .25rem .5rem;
+                border-radius: .25rem;
+            }
+            .nav-group > summary::-webkit-details-marker { display: none; }
+            .nav-group > summary::after { content: " ▾"; opacity: .6; }
+            .nav-group[open] > summary { background: var(--bs-secondary-bg); }
+            .nav-group__menu {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                z-index: 1000;
+                min-width: 12rem;
+                margin-top: .25rem;
+                padding: .25rem;
+                background: var(--bs-body-bg);
+                border: 1px solid var(--bs-border-color);
+                border-radius: .375rem;
+                box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
+            }
+            .nav-group__menu a { display: block; padding: .35rem .6rem; border-radius: .25rem; white-space: nowrap; }
+            .nav-group__menu a:hover { background: var(--bs-secondary-bg); }
+            .sidebar-group { margin-bottom: .75rem; }
+            .sidebar-group__title {
+                font-size: .7rem;
+                text-transform: uppercase;
+                letter-spacing: .05em;
+                opacity: .6;
+                padding: .25rem .25rem 0;
+            }
         </style>
     </head>
     <body>
+        {# Single source of truth for the gridview navigation, reused by the
+           header dropdowns and the sidebar sections. #}
+        {% set menu = [
+            { title: 'Progetti', items: [
+                { route: 'gridview_project_index', label: 'Progetti' },
+                { route: 'gridview_project_task_index', label: 'Attività' },
+                { route: 'gridview_project_task_template_index', label: 'Template attività' },
+                { route: 'gridview_project_task_item_template_index', label: 'Voci template' },
+            ] },
+            { title: 'Asset', items: [
+                { route: 'gridview_asset_index', label: 'Asset' },
+                { route: 'gridview_asset_type_index', label: 'Tipi' },
+                { route: 'gridview_asset_brand_index', label: 'Marche' },
+                { route: 'gridview_asset_model_index', label: 'Modelli' },
+                { route: 'gridview_asset_category_index', label: 'Categorie' },
+                { route: 'gridview_asset_attachment_index', label: 'Allegati' },
+            ] },
+            { title: 'Clienti', items: [
+                { route: 'gridview_customer_index', label: 'Clienti' },
+                { route: 'gridview_customer_type_index', label: 'Tipi cliente' },
+                { route: 'gridview_customer_location_index', label: 'Sedi' },
+                { route: 'gridview_customer_location_place_index', label: 'Locali' },
+                { route: 'gridview_customer_location_place_asset_index', label: 'Asset installati' },
+                { route: 'gridview_customer_location_place_asset_attachment_index', label: 'Allegati asset' },
+            ] },
+            { title: 'Utenti', items: [
+                { route: 'gridview_user_index', label: 'Utenti' },
+                { route: 'gridview_user_type_index', label: 'Tipi utente' },
+                { route: 'gridview_user_role_index', label: 'Ruoli' },
+                { route: 'gridview_user_group_index', label: 'Gruppi' },
+            ] },
+            { title: 'Sistema', items: [
+                { route: 'gridview_website_index', label: 'Siti' },
+            ] },
+        ] %}
         <div class="page-layout">
             <header class="page-header navbar navbar-expand bg-body-tertiary border-bottom px-3 py-2">
                 <a class="navbar-brand" href="{{ path('gridview_customer_index') }}">⚫️ Repara</a>
-                <nav class="navbar-nav flex-row gap-3 me-auto">
-                    <a class="nav-link" href="{{ path('gridview_customer_index') }}">Customers</a>
-                    <a class="nav-link" href="{{ path('gridview_user_index') }}">Users</a>
+                <nav class="navbar-nav flex-row gap-2 me-auto">
+                    {% for group in menu %}
+                        <details class="nav-group nav-item">
+                            <summary class="nav-link">{{ group.title }}</summary>
+                            <div class="nav-group__menu">
+                                {% for item in group.items %}
+                                    <a class="nav-link" href="{{ path(item.route) }}">{{ item.label }}</a>
+                                {% endfor %}
+                            </div>
+                        </details>
+                    {% endfor %}
                 </nav>
                 {# Host-page language switcher: drives the gridview instantly via
                    the gridview-locale-switcher controller (window.GridviewI18n).
@@ -73,8 +150,14 @@
                 <aside class="page-sidebar bg-body-tertiary border-end p-2">
                     {% block sidebar %}
                         <nav class="nav flex-column">
-                            <a class="nav-link px-1 py-1" href="{{ path('gridview_customer_index') }}">Customers</a>
-                            <a class="nav-link px-1 py-1" href="{{ path('gridview_user_index') }}">Users</a>
+                            {% for group in menu %}
+                                <div class="sidebar-group">
+                                    <div class="sidebar-group__title">{{ group.title }}</div>
+                                    {% for item in group.items %}
+                                        <a class="nav-link px-1 py-1" href="{{ path(item.route) }}">{{ item.label }}</a>
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
                         </nav>
                     {% endblock %}
                 </aside>

@@ -4,7 +4,9 @@ namespace App\Repository\Asset;
 
 use App\Entity\Asset\AssetCategory;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
+use Fedale\GridviewBundle\Form\SearchForm;
 
 /**
  * @extends ServiceEntityRepository<AssetCategory>
@@ -16,9 +18,27 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class AssetCategoryRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, private SearchForm $searchForm)
     {
         parent::__construct($registry, AssetCategory::class);
+    }
+
+    /** QueryBuilder consumed by the gridview EntityDataProvider. */
+    public function search(array $params = []): QueryBuilder
+    {
+        $qb = $this->createQueryBuilder('c')
+            ->select('c', 'p')
+            ->leftJoin('c.parent', 'p')
+        ;
+
+        $this->searchForm->applyFilters($qb, $params, [
+            'name'   => ['text',     'c.name'],
+            'slug'   => ['text',     'c.slug'],
+            'active' => ['boolean',  'c.active'],
+            'parent' => ['relation', 'p.id'],
+        ]);
+
+        return $qb;
     }
 
     public function add(AssetCategory $entity, bool $flush = false): void

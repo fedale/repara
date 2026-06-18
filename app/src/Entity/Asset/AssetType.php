@@ -9,7 +9,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 #[ORM\Table('asset_type')]
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: \App\Repository\Asset\AssetTypeRepository::class)]
 class AssetType
 {
     use TimestampableEntity;

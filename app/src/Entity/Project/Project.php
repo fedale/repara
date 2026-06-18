@@ -11,7 +11,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  * Project
  */
 #[ORM\Table(name: 'project', uniqueConstraints: [new ORM\UniqueConstraint(name: 'code', columns: ['code'])], indexes: [new ORM\Index(name: 'modified_at', columns: ['modified_at']), new ORM\Index(name: 'priority', columns: ['priority']), new ORM\Index(name: 'status', columns: ['status']), new ORM\Index(name: 'name', columns: ['name']), new ORM\Index(name: 'active', columns: ['active']), new ORM\Index(name: 'created_by', columns: ['created_by']), new ORM\Index(name: 'budget', columns: ['budget']), new ORM\Index(name: 'datetime_start', columns: ['datetime_start']), new ORM\Index(name: 'visible', columns: ['visible']), new ORM\Index(name: 'created_at', columns: ['created_at']), new ORM\Index(name: 'color', columns: ['color']), new ORM\Index(name: 'datetime_end', columns: ['datetime_end'])])]
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: \App\Repository\Project\ProjectRepository::class)]
 class Project
 {
     use TimestampableEntity;
@@ -49,7 +49,7 @@ class Project
     private $datetimeEnd = null;
 
      
-    #[ORM\Column(name: 'status', type: 'string', length: 32, nullable: false)]
+    #[ORM\Column(name: 'state', type: 'string', length: 32, nullable: false)]
     private $status = '0';
 
     /**
@@ -201,12 +201,12 @@ class Project
         return $this;
     }
     
-    public function getPriority(): ?bool
+    public function getPriority(): ?int
     {
         return $this->priority;
     }
-    
-    public function setPriority(bool $priority): self
+
+    public function setPriority(int $priority): self
     {
         $this->priority = $priority;
 

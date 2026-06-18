@@ -29,7 +29,6 @@
         "doctrine/mongodb-odm": "^2.14",
         "doctrine/mongodb-odm-bundle": "^5.6",
         "doctrine/orm": "^2.12",
-        "easycorp/easyadmin-bundle": "4.x-dev",
         "fakerphp/faker": "^1.19",
         "fedale/calendar-bundle": "dev-main",
         "fedale/gridview-bundle": "^1.0",

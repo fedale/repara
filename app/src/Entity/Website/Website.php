@@ -10,7 +10,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  * AdminWebsite
  */
 #[ORM\Table(name: 'website', uniqueConstraints: [new ORM\UniqueConstraint(name: 'code', columns: ['code'])], indexes: [new ORM\Index(name: 'active', columns: ['active']), new ORM\Index(name: 'default_group_id', columns: ['default_group_id']), new ORM\Index(name: 'sort', columns: ['sort'])])]
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: \App\Repository\Website\WebsiteRepository::class)]
 class Website
 {
     use TimestampableEntity;

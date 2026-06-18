@@ -10,7 +10,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * AssetModel
  */
 #[ORM\Table(name: 'asset_model', indexes: [new ORM\Index(name: 'name', columns: ['name']), new ORM\Index(name: 'created_at', columns: ['created_at']), new ORM\Index(name: 'brand_id', columns: ['brand_id']), new ORM\Index(name: 'updated_at', columns: ['updated_at']), new ORM\Index(name: 'type_id', columns: ['type_id']), new ORM\Index(name: 'active', columns: ['active'])])]
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: \App\Repository\Asset\AssetModelRepository::class)]
 class AssetModel
 {
     use TimestampableEntity;

@@ -20,7 +20,7 @@ use App\Entity\Customer\CustomerLocation;
         new ORM\Index(name: 'created_at', columns: ['created_at'])
     ]
 )]
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: \App\Repository\Customer\CustomerLocationPlaceRepository::class)]
 class CustomerLocationPlace
 {
     use TimestampableEntity;

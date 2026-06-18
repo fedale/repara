@@ -37,7 +37,7 @@ use Fresh\DoctrineEnumBundle\Validator\Constraints\EnumType;
         new ORM\Index(name: 'place_id', columns: ['customer_id'])
     ]
 )]
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: \App\Repository\Project\Task\ProjectTaskRepository::class)]
 class ProjectTask
 {
     use TimestampableEntity;

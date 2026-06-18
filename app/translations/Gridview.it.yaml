@@ -1,0 +1,12 @@
+# App/tenant column labels & captions (client domain for the gridview).
+# Keys are referenced from the grid controllers' buildColumns(); shipped to the
+# browser so column headers switch language instantly.
+col.customer.code: "Codice"
+col.customer.roles: "Ruoli"
+col.customer.fullname: "Nominativo"
+col.customer.email: "E-mail"
+col.customer.type: "Tipo"
+col.customer.locations: "Sedi"
+col.customer.active: "Attivo"
+col.customer.createdAt: "Creato il"
+col.customer.actions: "Azioni"

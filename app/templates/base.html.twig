@@ -54,6 +54,14 @@
                     <a class="nav-link" href="{{ path('gridview_customer_index') }}">Customers</a>
                     <a class="nav-link" href="{{ path('gridview_user_index') }}">Users</a>
                 </nav>
+                {# Host-page language switcher: drives the gridview instantly via
+                   the gridview-locale-switcher controller (window.GridviewI18n).
+                   A single switcher for the whole page — no per-grid switcher. #}
+                <button class="btn btn-sm btn-outline-secondary me-2"
+                        data-controller="gridview-locale-switcher"
+                        data-action="click->gridview-locale-switcher#toggle">
+                    🌐 <span data-gridview-locale-switcher-target="label">EN</span>
+                </button>
                 <button class="btn btn-sm btn-outline-secondary"
                         data-controller="color-theme"
                         data-action="click->color-theme#toggle">

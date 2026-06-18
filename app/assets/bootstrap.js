@@ -10,6 +10,12 @@ export const app = startStimulusApp(require.context(
 // register any custom, 3rd party controllers here
 // app.register('some_controller_name', SomeImportedController);
 
+import GridviewI18nController from '../../FedaleGridviewBundle/assets/controllers/gridview-i18n_controller.js';
+app.register('gridview-i18n', GridviewI18nController);
+
+import GridviewLocaleSwitcherController from '../../FedaleGridviewBundle/assets/controllers/gridview-locale-switcher_controller.js';
+app.register('gridview-locale-switcher', GridviewLocaleSwitcherController);
+
 import GridviewFilterController from '../../FedaleGridviewBundle/assets/controllers/gridview-filter_controller.js';
 app.register('gridview-filter', GridviewFilterController);
 

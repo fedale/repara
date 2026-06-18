@@ -1,4 +1,13 @@
 fedale_gridview:
+  # Instant client-side i18n: ship both catalogs to the browser. The app's own
+  # switcher (in the navbar) drives the grid, so the bundle's in-grid switcher
+  # stays off (lang_switcher: false) — no duplicate switcher.
+  i18n:
+    locales: [en, it]
+    default: en
+    client_domain: Gridview
+    lang_switcher: false
+
   defaults:
     options:
       emptyText: "No records found"

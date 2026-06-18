@@ -1,0 +1,10 @@
+# App/tenant column labels & captions (client domain for the gridview).
+col.customer.code: "Code"
+col.customer.roles: "Roles"
+col.customer.fullname: "Full name"
+col.customer.email: "E-mail"
+col.customer.type: "Type"
+col.customer.locations: "Locations"
+col.customer.active: "Active"
+col.customer.createdAt: "Created at"
+col.customer.actions: "Actions"

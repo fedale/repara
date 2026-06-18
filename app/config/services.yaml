@@ -29,6 +29,12 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
     
+    # Locale from the gridview `gv_locale` cookie (server first-paint alignment).
+    App\EventListener\LocaleSubscriber:
+        arguments:
+            $enabledLocales: '%kernel.enabled_locales%'
+            $defaultLocale: '%kernel.default_locale%'
+
     # App\Grid\Serializer\ModelNormalizer:
     #     tags: [serializer.normalizer]
 

@@ -61,19 +61,19 @@ class CustomerController extends AbstractCrudGridController
             // code (string)
             [
                 'attribute' => 'code',
-                'label' => 'Codice',
+                'label' => 'col.customer.code',
                 'filter' => ['type' => 'text'],
                 // 'filterBar' => true,
             ],
             [
                 'attribute' => 'roles',
-                'label' => 'Ruoli',
+                'label' => 'col.customer.roles',
                 'value' => fn(array $d) => implode(', ', $d['roles'] ?? []),
             ],
             // profile (OneToOne) — fullname
             [
                 'attribute' => 'profile_fullname',
-                'label' => 'Nominativo',
+                'label' => 'col.customer.fullname',
                 'value' => fn(array $data) => $data['profile']['fullname'] ?? '—',
                 'filter' => ['type' => 'text'],
                 // 'filterBar' => true,
@@ -81,14 +81,14 @@ class CustomerController extends AbstractCrudGridController
             // email (string)
             [
                 'attribute' => 'email',
-                'label' => 'E-mail',
+                'label' => 'col.customer.email',
                 'filter' => ['type' => 'text'],
                 // 'filterBar' => true,
             ],
             // type (ManyToOne)
             [
                 'attribute' => 'type',
-                'label' => 'Tipo',
+                'label' => 'col.customer.type',
                 'value' => fn(array $data) => $data['type']['name'] ?? '—',
                 'filter' => [
                     'type' => 'relation',
@@ -99,7 +99,7 @@ class CustomerController extends AbstractCrudGridController
             // locations (OneToMany)
             [
                 'attribute' => 'locations',
-                'label' => 'Sedi',
+                'label' => 'col.customer.locations',
                 'value' => fn(array $data) => implode(
                     ', ',
                     array_map(fn(array $location) => $location['name'], $data['locations'] ?? [])
@@ -113,7 +113,7 @@ class CustomerController extends AbstractCrudGridController
             // active (boolean)
             [
                 'attribute' => 'active',
-                'label' => 'Attivo',
+                'label' => 'col.customer.active',
                 'value' => fn(array $data) => $data['active'] ? 'Sì' : 'No',
                 'filter' => ['type' => 'boolean'],
                 // 'filterBar' => true,
@@ -121,13 +121,13 @@ class CustomerController extends AbstractCrudGridController
             // createdAt (datetime)
             [
                 'attribute' => 'createdAt',
-                'label' => 'Creato il',
+                'label' => 'col.customer.createdAt',
                 'twigFilter' => "date('d/m/Y')",
                 'filter' => ['type' => 'date'],
             ],
             [
                 'type' => 'action',
-                'label' => 'Azioni',
+                'label' => 'col.customer.actions',
             ]
         ];
     }

@@ -30,6 +30,12 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Entity'
                 prefix: 'App\Entity'
                 alias: App
+            FedaleAccessControl:
+                is_bundle: false
+                type: attribute
+                dir: '%kernel.project_dir%/vendor/fedale/access-control-bundle/src/Bridge/Doctrine/Entity'
+                prefix: 'Fedale\AccessControlBundle\Bridge\Doctrine\Entity'
+                alias: FedaleAccessControl
 
 when@test:
     doctrine:

@@ -30,6 +30,7 @@
         "doctrine/mongodb-odm-bundle": "^5.6",
         "doctrine/orm": "^2.12",
         "fakerphp/faker": "^1.19",
+        "fedale/access-control-bundle": "^1.0",
         "fedale/calendar-bundle": "dev-main",
         "fedale/gridview-bundle": "^1.0",
         "fresh/doctrine-enum-bundle": "^9.0",

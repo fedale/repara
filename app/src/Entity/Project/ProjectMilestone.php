@@ -3,6 +3,7 @@
 namespace App\Entity\Project;
 
 use App\Entity\Project\Task\ProjectTaskMilestone;
+use App\Repository\Project\ProjectMilestoneRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -13,7 +14,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  * ProjectMilestone
  */
 #[ORM\Table(name: 'project_milestone', indexes: [new ORM\Index(name: 'name', columns: ['name']), new ORM\Index(name: 'active', columns: ['active'])])]
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: ProjectMilestoneRepository::class)]
 class ProjectMilestone
 {
     use TimestampableEntity;
@@ -40,8 +41,12 @@ class ProjectMilestone
     #[ORM\Column()]
     private bool $active = true;
 
-    // #[ORM\OneToMany(mappedBy: 'milestone', targetEntity: ProjectTaskMilestone::class)]
-    // private $projectTaskMilestones;
+    #[ORM\ManyToOne(targetEntity: Project::class)]
+    #[ORM\JoinColumn(name: 'project_id', referencedColumnName: 'id', nullable: false)]
+    private $project;
+
+    #[ORM\OneToMany(mappedBy: 'milestone', targetEntity: ProjectTaskMilestone::class)]
+    private $projectTaskMilestones;
 
     public function __construct()
     {
@@ -89,12 +94,24 @@ class ProjectMilestone
         return $this;
     }
 
+    public function getProject(): ?Project
+    {
+        return $this->project;
+    }
+
+    public function setProject(?Project $project): self
+    {
+        $this->project = $project;
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, ProjectTaskMilestone>
      */
     public function getProjectTaskMilestones(): Collection
     {
-        return $this->projectTasksMilestones;
+        return $this->projectTaskMilestones;
     }
 
     public function addProjectTaskMilestone(ProjectTaskMilestone $projectTaskMilestone): self

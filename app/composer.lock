@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "aa8230ce72766311a0a88b3763747297",
+    "content-hash": "2279d651ff37fdd0d12d0f91374cd50d",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -1741,6 +1741,59 @@
                 "source": "https://github.com/FakerPHP/Faker/tree/v1.24.1"
             },
             "time": "2024-11-21T13:46:39+00:00"
+        },
+        {
+            "name": "fedale/access-control-bundle",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fedale/access-control.git",
+                "reference": "39908cc4bc1827edee23a9dab24aaefcbc19b414"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/fedale/access-control/zipball/39908cc4bc1827edee23a9dab24aaefcbc19b414",
+                "reference": "39908cc4bc1827edee23a9dab24aaefcbc19b414",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.2",
+                "psr/cache": "^3.0",
+                "psr/event-dispatcher": "^1.0",
+                "symfony/config": "^6.4 || ^7.0",
+                "symfony/console": "^6.4 || ^7.0",
+                "symfony/dependency-injection": "^6.4 || ^7.0",
+                "symfony/event-dispatcher": "^6.4 || ^7.0",
+                "symfony/http-foundation": "^6.4 || ^7.0",
+                "symfony/http-kernel": "^6.4 || ^7.0",
+                "symfony/security-bundle": "^6.4 || ^7.0",
+                "symfony/security-core": "^6.4 || ^7.0"
+            },
+            "require-dev": {
+                "doctrine/doctrine-bundle": "^2.8",
+                "doctrine/orm": "^2.14 || ^3.0",
+                "phpunit/phpunit": "^11.0",
+                "symfony/cache": "^6.4 || ^7.0"
+            },
+            "suggest": {
+                "doctrine/doctrine-bundle": "Necessario quando 'provider: doctrine'",
+                "doctrine/orm": "Necessario quando 'provider: doctrine' (sorgente regole di default)"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-4": {
+                    "Fedale\\AccessControlBundle\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "support": {
+                "issues": "https://github.com/fedale/access-control/issues",
+                "source": "https://github.com/fedale/access-control/tree/v1.0.0"
+            },
+            "time": "2026-06-11T13:35:53+00:00"
         },
         {
             "name": "fedale/calendar-bundle",

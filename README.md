@@ -1,4 +1,4 @@
-# repara — app di test / demo
+# repara-demo — app di test / demo
 
 App Symfony di test e demo per i bundle Fedale.
 
@@ -10,7 +10,7 @@ come `fedale/gridview-bundle`), tenuto come directory *sibling* di questo repo:
 ```
 ~/Documenti/projects/
 ├── gridview-bundle/      ← repo del bundle (fedale/gridview-bundle)
-└── repara/               ← questo repo (app demo)
+└── repara-demo/          ← questo repo (app demo)
     ├── app/              ← app Symfony
     └── FedaleCalendarBundle/  ← ancora path bundle interno
 ```
@@ -27,10 +27,10 @@ relativi a `/srv/app` risolvono correttamente).
 
 ```bash
 # clona entrambi i repo come sibling
-git clone <url-app>            repara
+git clone <url-app>            repara-demo
 git clone <url-gridview>       gridview-bundle
 
-cd repara
+cd repara-demo
 docker compose up -d --build
 docker compose exec app composer install
 ```

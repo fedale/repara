@@ -4,6 +4,7 @@ namespace App\DataFixtures\Project;
 
 use App\DataFixtures\Customer\CustomerFixtures;
 use App\DataFixtures\Customer\CustomerLocationPlaceAssetFixtures;
+use App\DataFixtures\Domain\DomainProfileProvider;
 use App\DBAL\Types\ProjectTaskPriorityType;
 use App\DBAL\Types\ProjectTaskStateType;
 use App\Entity\Customer\Customer;
@@ -14,6 +15,7 @@ use App\Entity\Project\Task\ProjectTaskType;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
+use Faker\Factory;
 
 class ProjectTaskFixture extends Fixture implements DependentFixtureInterface
 {
@@ -21,8 +23,18 @@ class ProjectTaskFixture extends Fixture implements DependentFixtureInterface
     private const MAX_TASKS_PER_PROJECT = 70;
     private const BATCH_SIZE = 500;
 
+    public function __construct(private readonly DomainProfileProvider $domains)
+    {
+    }
+
     public function load(ObjectManager $manager): void
     {
+        $faker = Factory::create('it_IT');
+        $domain = $this->domains->get();
+
+        $actions = $domain->taskActions();
+        $subjects = $domain->taskSubjects();
+
         $projects = $manager->getRepository(Project::class)->findAll();
         $taskTypes = $manager->getRepository(ProjectTaskType::class)->findAll();
         $customers = $manager->getRepository(Customer::class)->findAll();
@@ -36,9 +48,12 @@ class ProjectTaskFixture extends Fixture implements DependentFixtureInterface
         foreach ($projects as $project) {
             $taskCount = \rand(self::MIN_TASKS_PER_PROJECT, self::MAX_TASKS_PER_PROJECT);
             for ($i = 0; $i < $taskCount; ++$i) {
+                $action = $actions[\array_rand($actions)];
+                $subject = $subjects[\array_rand($subjects)];
+
                 $task = new ProjectTask();
-                $task->setName('Project Task #' . $c);
-                $task->setDescription('Description of project task #' . $c);
+                $task->setName(\sprintf('%s %s', $action, $subject));
+                $task->setDescription($faker->sentence(10));
                 $task->setProject($project);
                 $task->setType($taskTypes[\array_rand($taskTypes)]);
                 $task->setState($states[\array_rand($states)]);

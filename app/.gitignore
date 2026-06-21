@@ -33,6 +33,9 @@ yarn-error.log
 /templates-tablerio/
 /templates-BAK/
 
+# Uploaded/generated media (asset attachments via VichUploader, demo fixtures images)
+/public/uploads/
+
 ###> phpstan/phpstan ###
 phpstan.neon
 ###< phpstan/phpstan ###

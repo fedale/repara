@@ -9,7 +9,10 @@ ARG APP_ENV=prod
 
 RUN apt update \
     && apt install -y zlib1g-dev g++ git libpq-dev libicu-dev zip libzip-dev zip acl apt-transport-https gnupg apt-utils \
+        libfreetype6-dev libjpeg62-turbo-dev libpng-dev fonts-dejavu-core \
     && docker-php-ext-install intl opcache pdo pdo_mysql pdo_pgsql \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install gd \
     && pecl install apcu \
     && pecl install redis mongodb \
     && pecl clear-cache \
@@ -20,7 +23,7 @@ RUN apt update \
     && docker-php-ext-enable mongodb \
     && docker-php-ext-install zip \
     && docker-php-ext-configure pgsql --with-pgsql=/usr/local/pgsql \
-    && docker-php-ext-install pgsql 
+    && docker-php-ext-install pgsql
 
 WORKDIR /srv/app
 
@@ -47,21 +50,23 @@ COPY app/templates templates/
 COPY app/translations translations/
 
 # local repo for local dev
-# NOTE: FedaleGridviewBundle ora vive in un repo separato (sibling di repara-demo/) ed e'
+# NOTE: gridview-bundle ora vive in un repo separato (sibling di repara-demo/) ed e'
 # pubblicato su Packagist. NON e' nel build context: in PROD viene risolto da Packagist
 # (require "^1.0"), in DEV via volume mount + repository type:path con symlink (vedi
 # app/composer.json e docker-compose.yml: ../gridview-bundle:/srv/gridview-bundle).
-# Calendar resta invece un bundle interno nel context.
-COPY FedaleCalendarBundle /srv/FedaleCalendarBundle
 
 # prevent the reinstallation of vendors at every changes in the source code
 COPY app/composer.json app/composer.lock app/symfony.lock ./
 
-# Build di PRODUZIONE: il repository type:path di gridview punta a ../gridview-bundle,
-# assente nel build context, quindi Composer lo ignora e risolve fedale/gridview-bundle
-# da Packagist (^1.0). Si usa "composer update" (non "install") perche' il composer.lock
-# committato e' quello di dev e referenzia il dist path locale; update ri-risolve le
-# dipendenze contro Packagist e rigenera il lock dentro l'immagine.
+# Build di PRODUZIONE: i repository type:path dei bundle fedale pubblicati su
+# Packagist (gridview, access-control-voter) usano una url glob con graffe
+# "../{nome-bundle}". ATTENZIONE: un path repo con url NON-glob inesistente fa
+# fallire Composer con un fatal ("The `url` supplied for the path (...) does not
+# exist") — NON viene ignorato. La graffa rende il glob tollerante quando la dir
+# e' assente (caso prod/build context), cosi' Composer risolve da Packagist (^1.0).
+# Si usa "composer update" (non "install") perche' il composer.lock committato e'
+# quello di dev e referenzia il dist path locale; update ri-risolve le dipendenze
+# contro Packagist e rigenera il lock dentro l'immagine.
 RUN set -eux; \
 	mkdir -p var/cache var/log; \
 	composer update --no-dev --prefer-dist --no-progress; \

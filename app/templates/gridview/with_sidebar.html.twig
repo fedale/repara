@@ -3,14 +3,17 @@
 {% block title %}Entity index{% endblock %}
 
 {% block sidebar %}
-    {# Wrapper con data-gridview così dropdown e filterBar ereditano le variabili
-       --gv-* e le regole [data-gridview] anche fuori dal container griglia.
-       I widget della filterBar si collegano alla form della griglia via
-       form="gv-form-{key}", quindi funzionano pur stando qui nella sidebar. #}
+    {# Wrapper con data-gridview così la filterBar eredita le variabili --gv-* e le
+       regole [data-gridview] anche fuori dal container griglia. I widget della
+       filterBar si collegano alla form della griglia via form="gv-form-{key}",
+       quindi funzionano pur stando qui nella sidebar.
+       columnVisibility vive ora nell'header; la sidebar appare solo se la griglia
+       ha colonne in filterBar, altrimenti base.html.twig non rende affatto la colonna. #}
+    {% if gridview.hasFilterBar() %}
     <div data-gridview class="gv-sidebar-tools mb-3">
-        {{ gridview_include(gridview, 'columnVisibility') }}
         {{ gridview_include(gridview, 'filterBar') }}
     </div>
+    {% endif %}
 {% endblock %}
 
 {% block body %}

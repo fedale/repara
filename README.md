@@ -38,6 +38,13 @@ docker compose exec app composer install
 Le modifiche al sorgente del bundle in `../gridview-bundle` sono immediatamente
 visibili nell'app (Composer crea un symlink in `vendor/fedale/gridview-bundle`).
 
+## Documentazione
+
+- [Schema ER](docs/er-schema.md)
+- [Data Fixtures — fixtures astratte + profili di dominio](docs/data-fixtures.md):
+  come popolare la demo per campi di business diversi (idrotermica, porte e
+  serrande, …) senza duplicare le fixtures.
+
 ## Note
 
 - **Build di produzione**: attualmente disattivato (vedi `TODO(prod)` nel

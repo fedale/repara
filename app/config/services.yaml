@@ -7,6 +7,8 @@ parameters:
     # myParam: 'My value from services.yaml'
     env(MONGODB_URL): ''
     env(MONGODB_DB): ''
+    # Business field loaded by the data fixtures (see App\DataFixtures\Domain).
+    env(FIXTURE_DOMAIN): 'idrotermica'
 
 services:
     # default configuration for services in *this* file
@@ -22,7 +24,12 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
-    
+            # DataFixtures extend a dev-only base class (doctrine/doctrine-fixtures-bundle),
+            # absent under `composer install --no-dev`. They are registered as services
+            # only in dev/test (see when@dev below), so a prod container build doesn't
+            # try to compile them.
+            - '../src/DataFixtures/'
+
     # Locale from the gridview `gv_locale` cookie (server first-paint alignment).
     App\EventListener\LocaleSubscriber:
         arguments:
@@ -34,3 +41,32 @@ services:
 
     # https://twig.symfony.com/doc/3.x/functions/template_from_string.html
     # Twig\Extension\StringLoaderExtension:
+
+# Data fixtures are a dev/test-only concern: register them (and their domain
+# profile wiring) only where doctrine/doctrine-fixtures-bundle is installed.
+when@dev: &fixtures
+    services:
+        _defaults:
+            autowire: true
+            autoconfigure: true
+
+        # Every domain profile is collected so the provider can pick the active one.
+        _instanceof:
+            App\DataFixtures\Domain\DomainProfile:
+                tags: ['app.fixture_domain_profile']
+
+        App\DataFixtures\:
+            resource: '../src/DataFixtures/'
+
+        # Selects the fixture vocabulary for this Repara instance's business field.
+        App\DataFixtures\Domain\DomainProfileProvider:
+            arguments:
+                $profiles: !tagged_iterator app.fixture_domain_profile
+                $activeKey: '%env(string:FIXTURE_DOMAIN)%'
+
+        # Fixtures write demo attachment images under the public web root.
+        App\DataFixtures\Asset\AssetAttachmentFixtures:
+            arguments:
+                $publicDir: '%kernel.project_dir%/public'
+
+when@test: *fixtures

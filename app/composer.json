@@ -6,7 +6,7 @@
     "repositories": [
         {
             "type": "path",
-            "url": "../gridview-bundle",
+            "url": "../{gridview-bundle}",
             "options": {
                 "symlink": true,
                 "versions": {
@@ -16,7 +16,13 @@
         },
         {
             "type": "path",
-            "url": "../FedaleCalendarBundle"
+            "url": "../{access-control-voter-bundle}",
+            "options": {
+                "symlink": true,
+                "versions": {
+                    "fedale/access-control-voter-bundle": "1.0.999"
+                }
+            }
         }
     ],
     "require": {
@@ -31,7 +37,7 @@
         "doctrine/orm": "^2.12",
         "fakerphp/faker": "^1.19",
         "fedale/access-control-bundle": "^1.0",
-        "fedale/calendar-bundle": "dev-main",
+        "fedale/access-control-voter-bundle": "^1.0",
         "fedale/gridview-bundle": "^1.0",
         "fresh/doctrine-enum-bundle": "^9.0",
         "lexik/jwt-authentication-bundle": "^2.16",
@@ -72,7 +78,8 @@
         "symfony/yaml": "6.4.*",
         "twig/extra-bundle": "^2.12|^3.0",
         "twig/intl-extra": "^3.5",
-        "twig/twig": "^2.12|^3.0"
+        "twig/twig": "^2.12|^3.0",
+        "vich/uploader-bundle": "^2.9"
     },
     "config": {
         "allow-plugins": {
@@ -81,6 +88,9 @@
             "symfony/runtime": true
         },
         "optimize-autoloader": true,
+        "platform": {
+            "php": "8.3.31"
+        },
         "preferred-install": {
             "*": "dist"
         },

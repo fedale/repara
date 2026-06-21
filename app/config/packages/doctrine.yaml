@@ -17,6 +17,14 @@ doctrine:
         types:
             ProjectTaskStateType: App\DBAL\Types\ProjectTaskStateType
             ProjectTaskPriorityType: App\DBAL\Types\ProjectTaskPriorityType
+        # 'state' e 'priority' sono ENUM nativi PostgreSQL creati dalle migration
+        # legacy (project_task.state / project_task.priority). Senza questo mapping
+        # l'introspezione dello schema (doctrine:migrations:diff, make:migration,
+        # schema:update) fallisce con "Unknown database type state requested".
+        # Li trattiamo come string, coerente con App\DBAL\Types\ProjectTask*Type.
+        mapping_types:
+            state: string
+            priority: string
         #server_version: '16'
         use_savepoints: true
     orm:

@@ -5,15 +5,26 @@ namespace App\Entity\Asset;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * AssetAttachment
  */
 #[ORM\Table(name: 'asset_attachment', indexes: [new ORM\Index(name: 'stuff_id', columns: ['asset_id']), new ORM\Index(name: 'active', columns: ['active']), new ORM\Index(name: 'name', columns: ['name']), new ORM\Index(name: 'type', columns: ['type']), new ORM\Index(name: 'created_at', columns: ['created_at']), new ORM\Index(name: 'type_2', columns: ['type']), new ORM\Index(name: 'path', columns: ['path']), new ORM\Index(name: 'updated_at', columns: ['updated_at']), new ORM\Index(name: 'size', columns: ['size']), new ORM\Index(name: 'filename', columns: ['filename'])])]
 #[ORM\Entity(repositoryClass: \App\Repository\Asset\AssetAttachmentRepository::class)]
+#[Vich\Uploadable]
 class AssetAttachment
 {
     use TimestampableEntity;
+
+    /**
+     * Upload field (NOT persisted): the gridview `media` control hands the
+     * UploadedFile here; VichUploader moves it under public/uploads/asset and
+     * fills filename/size/type on flush.
+     */
+    #[Vich\UploadableField(mapping: 'asset_attachment', fileNameProperty: 'filename', size: 'size', mimeType: 'type')]
+    private ?File $imageFile = null;
 
     #[ORM\Column]
     #[ORM\Id]
@@ -76,7 +87,7 @@ class AssetAttachment
         return $this->type;
     }
     
-    public function setType(string $type): self
+    public function setType(?string $type): self
     {
         $this->type = $type;
 
@@ -88,7 +99,7 @@ class AssetAttachment
         return $this->size;
     }
     
-    public function setSize(int $size): self
+    public function setSize(?int $size): self
     {
         $this->size = $size;
 
@@ -112,7 +123,7 @@ class AssetAttachment
         return $this->filename;
     }
     
-    public function setFilename(string $filename): self
+    public function setFilename(?string $filename): self
     {
         $this->filename = $filename;
 
@@ -151,6 +162,24 @@ class AssetAttachment
     public function setSlug(string $slug): self
     {
         $this->slug = $slug;
+
+        return $this;
+    }
+
+    public function getImageFile(): ?File
+    {
+        return $this->imageFile;
+    }
+
+    public function setImageFile(?File $imageFile = null): self
+    {
+        $this->imageFile = $imageFile;
+
+        // Force a change so Doctrine/Vich detect the update when only the file
+        // changes on an existing record.
+        if ($imageFile !== null) {
+            $this->updatedAt = new \DateTime();
+        }
 
         return $this;
     }

@@ -4,7 +4,6 @@ namespace App\Entity\User;
 
 use App\Entity\Customer\Customer;
 use App\Entity\Project\Task\ProjectTask;
-use App\Entity\Project\Task\ProjectTaskUserAssigned;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -32,9 +31,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     use TimestampableEntity;
 
     #[ORM\Id]
-    #[ORM\Column()]
+    #[ORM\Column(type: 'integer')]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
-    private $id;
+    private ?int $id = null;
 
     #[ORM\Column(length: 64, nullable: false, unique: true)]
     private string $code;
@@ -95,9 +94,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\JoinTable(name: 'user_group_assigned')]
     private $groups;
 
-    #[ORM\OneToMany(targetEntity: ProjectTaskUserAssigned::class, mappedBy: 'users')]
-    private $projectTaskUserAssigneds;
-
     #[ORM\ManyToMany(targetEntity: ProjectTask::class, mappedBy: 'projectTaskUserAssigneds')]
     private Collection $projectTasks;
 
@@ -110,7 +106,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->roles = new ArrayCollection();
         $this->groups = new ArrayCollection();
-        $this->projectTaskUserAssigneds = new ArrayCollection();
         $this->projectTasks = new ArrayCollection();
         $this->assignedCustomers = new ArrayCollection();
     }
@@ -423,36 +418,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeGroup(UserGroup $group): self
     {
         $this->groups->removeElement($group);
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, ProjectTaskUserAssigned>
-     */
-    public function getProjectTaskUserAssigneds(): Collection
-    {
-        return $this->projectTaskUserAssigneds;
-    }
-
-    public function addProjectTaskUserAssigned(ProjectTaskUserAssigned $projectTaskUserAssigned): self
-    {
-        if (!$this->projectTaskUserAssigneds->contains($projectTaskUserAssigned)) {
-            $this->projectTaskUserAssigneds[] = $projectTaskUserAssigned;
-            $projectTaskUserAssigned->setUsers($this);
-        }
-
-        return $this;
-    }
-
-    public function removeProjectTaskUserAssigned(ProjectTaskUserAssigned $projectTaskUserAssigned): self
-    {
-        if ($this->projectTaskUserAssigneds->removeElement($projectTaskUserAssigned)) {
-            // set the owning side to null (unless already changed)
-            if ($projectTaskUserAssigned->getUsers() === $this) {
-                $projectTaskUserAssigned->setUsers(null);
-            }
-        }
 
         return $this;
     }

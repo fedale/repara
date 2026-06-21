@@ -1,5 +1,5 @@
 fedale_access_control:
-    enabled: true
+    enabled: false
 
     # Utenti non autenticati su una richiesta che non matcha alcuna regola: negati.
     anonymous_access: false

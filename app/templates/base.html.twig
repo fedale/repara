@@ -149,10 +149,13 @@
                 </button>
             </header>
 
+            {% set sidebar_content %}{% block sidebar %}{% endblock %}{% endset %}
             <div class="page-main">
+                {% if sidebar_content|trim is not empty %}
                 <aside class="page-sidebar bg-body-tertiary border-end p-2">
-                    {% block sidebar %}{% endblock %}
+                    {{ sidebar_content }}
                 </aside>
+                {% endif %}
 
                 <main class="page-body">
                     {% block body %}{% endblock %}

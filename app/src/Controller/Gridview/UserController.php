@@ -37,10 +37,7 @@ class UserController extends AbstractCrudGridController
             'formView' => 'gridview/user/_form.html.twig',
             'options' => [
                 'reorderColumns' => true,
-                'layout' => [
-                    'gridview' => '{toolbar} {bulkBar} {header} {table} {footer}',
-                    'toolbar' => '{addButton} {savedSearch} {export}',
-                ],
+                'globalSearch' => ['u.username', 'u.email'],
             ],
         ];
     }

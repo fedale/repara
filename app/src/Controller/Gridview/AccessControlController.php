@@ -30,16 +30,12 @@ class AccessControlController extends AbstractCrudGridController
     protected function configure(): array
     {
         return [
-            'id'             => 'access_control',
-            'title'          => 'Regola di accesso',
-            'addLabel'       => 'Nuova regola',
+            'id' => 'access_control',
+            'title' => 'Regola di accesso',
+            'addLabel' => 'Nuova regola',
             'exportFilename' => 'access-control',
-            'options'        => [
+            'options' => [
                 'reorderColumns' => true,
-                'layout' => [
-                    'gridview' => '{toolbar} {bulkBar} {header} {table} {footer}',
-                    'toolbar'  => '{addButton} {savedSearch} {export}',
-                ],
             ],
         ];
     }
@@ -47,8 +43,8 @@ class AccessControlController extends AbstractCrudGridController
     protected function getDataProviderConfig(): array
     {
         return [
-            'models'     => AccessControlEntity::class,
-            'alias'      => 'ac',
+            'models' => AccessControlEntity::class,
+            'alias' => 'ac',
             'pagination' => ['defaultPageSize' => 20],
             // Applied to the fallback QueryBuilder (bundle repo has no search()).
             'searchFields' => [
@@ -59,7 +55,7 @@ class AccessControlController extends AbstractCrudGridController
                 'allow' => ['boolean', 'ac.allow'],
             ],
             'sort' => [
-                'id'   => ['asc' => ['ac.id'],   'desc' => ['ac.id'],   'default' => 'desc'],
+                'id' => ['asc' => ['ac.id'], 'desc' => ['ac.id'], 'default' => 'desc'],
                 'name' => ['asc' => ['ac.name'], 'desc' => ['ac.name'], 'default' => 'asc'],
                 'path' => ['asc' => ['ac.path'], 'desc' => ['ac.path'], 'default' => 'asc'],
                 'sort' => ['asc' => ['ac.sort'], 'desc' => ['ac.sort'], 'default' => 'asc'],

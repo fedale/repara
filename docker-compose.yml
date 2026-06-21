@@ -47,6 +47,9 @@ services:
       # Va montato in /srv/gridview-bundle perché composer (dentro il container)
       # risolve il path repo "../gridview-bundle" relativo a /srv/app.
       - ../gridview-bundle:/srv/gridview-bundle
+      # Stessa convenzione per il voter-bundle: composer risolve il path repo
+      # "../access-control-voter-bundle" (relativo a /srv/app) in /srv/access-control-voter-bundle.
+      - ../access-control-voter-bundle:/srv/access-control-voter-bundle
 
   nginx:
     image: nginx

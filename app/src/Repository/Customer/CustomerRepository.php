@@ -74,6 +74,19 @@ class CustomerRepository extends ServiceEntityRepository
             ['ilike', 'c.email', $params['profile_fullname'] ?? null],
         );
 
+        // The "username" column filter searches across username, code and the
+        // full name (firstname/lastname matched in either order).
+        $this->searchForm->andFilterWhere(
+            $qb,
+            'or',
+            ['ilike', 'c.username', $params['username'] ?? null],
+            ['ilike', 'c.code', $params['username'] ?? null],
+            ['ilike', 'p.firstname', $params['username'] ?? null],
+            ['ilike', 'p.lastname', $params['username'] ?? null],
+            ['ilike', 'CONCAT(p.firstname, \' \', p.lastname)', $params['username'] ?? null],
+            ['ilike', 'CONCAT(p.lastname, \' \', p.firstname)', $params['username'] ?? null],
+        );
+
         return $qb;
     }
 }

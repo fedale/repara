@@ -3,9 +3,17 @@
 namespace App\Controller\Gridview;
 
 use App\Entity\Customer\Customer;
+use App\Entity\Customer\CustomerGroup;
+use App\Entity\Customer\CustomerProfile;
+use App\Entity\Customer\CustomerRole;
 use App\Entity\Customer\CustomerType;
 use App\Repository\Customer\CustomerLocationRepository;
+use Doctrine\Common\Collections\Collection;
+use Fedale\GridviewBundle\Contract\GridCrudHandlerInterface;
 use Fedale\GridviewBundle\Controller\AbstractCrudGridController;
+use Fedale\GridviewBundle\Crud\CrudButton;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/gridview/customer', name: 'gridview_customer_')]
@@ -13,7 +21,36 @@ class CustomerController extends AbstractCrudGridController
 {
     public function __construct(
         private CustomerLocationRepository $locationRepository,
-    ) {
+        private UserPasswordHasherInterface $passwordHasher,
+    ) {}
+
+    /** Hashes the submitted plain password for new/cloned customers. */
+    protected function beforeSave(FormInterface $form, string $mode): void
+    {
+        if (!\in_array($mode, [GridCrudHandlerInterface::MODE_ADD, GridCrudHandlerInterface::MODE_CLONE], true)) {
+            return;
+        }
+
+        /** @var Customer $customer */
+        $customer = $form->getData();
+        // The plainPassword control is required in add/clone, so it is present.
+        $plain = (string) $form->get('plainPassword')->getData();
+        $customer->setPassword($this->passwordHasher->hashPassword($customer, $plain));
+    }
+
+    /**
+     * Returns the customer's profile, lazily creating and wiring one when the
+     * customer has none yet (cascade persist on Customer::$profile saves it).
+     */
+    private function profileOf(Customer $customer): CustomerProfile
+    {
+        $profile = $customer->getProfile();
+        if ($profile === null) {
+            $profile = new CustomerProfile();
+            $customer->setProfile($profile); // setProfile() also sets the owning side
+        }
+
+        return $profile;
     }
 
     protected function getDataClass(): string
@@ -56,6 +93,8 @@ class CustomerController extends AbstractCrudGridController
         }
 
         return [
+            // selection checkbox (enables bulk actions)
+            ['type' => 'checkbox'],
             // id (integer)
             'id',
             // code (string)
@@ -64,19 +103,100 @@ class CustomerController extends AbstractCrudGridController
                 'label' => 'col.customer.code',
                 'filter' => ['type' => 'text'],
                 // 'filterBar' => true,
+                'showInDeleteConfirm' => true,
+                'editable' => true,
+                'control' => [
+                    'type' => 'text',
+                    'required' => true,
+                    'requiredMessage' => 'Il codice è obbligatorio.',
+                    'unique' => true,
+                    'uniqueMessage' => 'Esiste già un cliente con questo codice.',
+                ],
+                'active' => false
             ],
+            // username (string)
+            [
+                'attribute' => 'username',
+                'label' => 'col.customer.username',
+                'filter' => ['type' => 'text'],
+                'showInDeleteConfirm' => true,
+                'editable' => false,
+                'control' => [
+                    'type' => 'text',
+                    'required' => true,
+                    'requiredMessage' => 'Lo username è obbligatorio.',
+                    'unique' => true,
+                    'uniqueMessage' => 'Username già in uso.',
+                ],
+                'type' => 'html',
+                'valueGetter' => fn(array $data) => $data['profile']['fullname'] . ' <br> '
+                    . $data['username'] . ' <br> '
+                    . $data['email'] . ' <br> '
+                    . $data['code']
+            ],
+            // roles (ManyToMany) — bound via getRoleEntities()/addRole(); getRoles()
+            // is reserved by the Security contract (returns string codes).
             [
                 'attribute' => 'roles',
                 'label' => 'col.customer.roles',
+                'type' => 'relation',
                 'value' => fn(array $d) => implode(', ', $d['roles'] ?? []),
+                'control' => [
+                    'options' => [
+                        'class' => CustomerRole::class,
+                        'choice_label' => 'name',
+                        'multiple' => true,
+                        'getter' => fn(Customer $c) => $c->getRoleEntities(),
+                        'setter' => function (Customer $c, iterable $roles): void {
+                            // EntityType's MergeDoctrineCollectionListener mutates the
+                            // original collection in place; snapshot before clear().
+                            $new = $roles instanceof Collection ? $roles->toArray() : iterator_to_array($roles);
+                            $c->getRoleEntities()->clear();
+                            foreach ($new as $role) {
+                                $c->addRole($role);
+                            }
+                        },
+                    ],
+                ],
             ],
-            // profile (OneToOne) — fullname
+            // profile (OneToOne) — fullname (display only: virtual attribute, no setter)
             [
                 'attribute' => 'profile_fullname',
                 'label' => 'col.customer.fullname',
                 'value' => fn(array $data) => $data['profile']['fullname'] ?? '—',
                 'filter' => ['type' => 'text'],
                 // 'filterBar' => true,
+                'active' => false
+
+            ],
+            // profile.firstname — edited through the (cascade-persisted) CustomerProfile
+            [
+                'attribute' => 'firstname',
+                'label' => 'col.customer.firstname',
+                'visible' => false,
+                'control' => [
+                    'type' => 'text',
+                    'required' => false,
+                    'options' => [
+                        'getter' => fn(Customer $c) => $c->getProfile()?->getFirstname(),
+                        'setter' => fn(Customer $c, ?string $v) => $this->profileOf($c)->setFirstname($v),
+                    ],
+                ],
+            ],
+            // profile.lastname — required (NOT NULL on customer_profile)
+            [
+                'attribute' => 'lastname',
+                'label' => 'col.customer.lastname',
+                'visible' => false,
+                'control' => [
+                    'type' => 'text',
+                    'required' => true,
+                    'requiredMessage' => 'Il cognome è obbligatorio.',
+                    'options' => [
+                        'getter' => fn(Customer $c) => $c->getProfile()?->getLastname(),
+                        'setter' => fn(Customer $c, ?string $v) => $this->profileOf($c)->setLastname((string) $v),
+                    ],
+                ],
             ],
             // email (string)
             [
@@ -84,19 +204,48 @@ class CustomerController extends AbstractCrudGridController
                 'label' => 'col.customer.email',
                 'filter' => ['type' => 'text'],
                 // 'filterBar' => true,
+                'showInDeleteConfirm' => true,
+                'editable' => true,
+                'control' => [
+                    'type' => 'email',
+                    'required' => true,
+                    'requiredMessage' => "L'e-mail è obbligatoria.",
+                    'unique' => true,
+                    'uniqueMessage' => 'Esiste già un cliente con questa e-mail.',
+                ],
+                'active' => false
+
             ],
-            // type (ManyToOne)
+            // type (ManyToOne) — relation control binds a managed CustomerType entity
             [
                 'attribute' => 'type',
                 'label' => 'col.customer.type',
+                'type' => 'relation',
                 'value' => fn(array $data) => $data['type']['name'] ?? '—',
                 'filter' => [
                     'type' => 'relation',
                     'options' => ['choices' => $typeChoices, 'multiple' => true, 'searchable' => true],
                 ],
                 // 'filterBar' => true,
+                'batchUpdate' => true,
+                'editable' => true,
+                'control' => [
+                    'required' => true,
+                    'options' => ['class' => CustomerType::class, 'choice_label' => 'name'],
+                ],
             ],
-            // locations (OneToMany)
+            // groups (ManyToMany) — multi relation control
+            [
+                'attribute' => 'groups',
+                'label' => 'col.customer.groups',
+                'type' => 'relation',
+                'value' => fn(array $data) => implode(
+                    ', ',
+                    array_map(fn(array $group) => $group['name'], $data['groups'] ?? [])
+                ),
+                'control' => ['options' => ['class' => CustomerGroup::class, 'choice_label' => 'name', 'multiple' => true]],
+            ],
+            // locations (OneToMany) — display only: inverse side, FK owned by CustomerLocation
             [
                 'attribute' => 'locations',
                 'label' => 'col.customer.locations',
@@ -110,25 +259,37 @@ class CustomerController extends AbstractCrudGridController
                 ],
                 // 'filterBar' => true,
             ],
-            // active (boolean)
+            // active (boolean) — checkbox control (not required, else it must be checked)
             [
                 'attribute' => 'active',
                 'label' => 'col.customer.active',
+                'type' => 'boolean',
                 'value' => fn(array $data) => $data['active'] ? 'Sì' : 'No',
                 'filter' => ['type' => 'boolean'],
                 // 'filterBar' => true,
+                'batchUpdate' => true,
+                'editable' => true,
+                'control' => ['required' => false],
             ],
-            // createdAt (datetime)
-            [
-                'attribute' => 'createdAt',
-                'label' => 'col.customer.createdAt',
-                'twigFilter' => "date('d/m/Y')",
-                'filter' => ['type' => 'date'],
-            ],
+            // actions — add/edit/clone/delete wired to the CRUD modal
             [
                 'type' => 'action',
                 'label' => 'col.customer.actions',
-            ]
+                'layout' => '{edit} {clone} {delete}',
+                'buttons' => [
+                    'edit' => fn(array $row) => CrudButton::edit(
+                        $this->generateUrl($this->routeName('update'), ['id' => $row['id']]),
+                        $this->config('mode')
+                    ),
+                    'clone' => fn(array $row) => CrudButton::clone(
+                        $this->generateUrl($this->routeName('clone'), ['id' => $row['id']]),
+                        $this->config('mode')
+                    ),
+                    'delete' => fn(array $row) => CrudButton::delete(
+                        $this->generateUrl($this->routeName('delete'), ['id' => $row['id']])
+                    ),
+                ],
+            ],
         ];
     }
 }

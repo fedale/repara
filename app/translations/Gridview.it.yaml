@@ -2,11 +2,15 @@
 # Keys are referenced from the grid controllers' buildColumns(); shipped to the
 # browser so column headers switch language instantly.
 col.customer.code: "Codice"
+col.customer.username: "Username"
+col.customer.password: "Password"
 col.customer.roles: "Ruoli"
 col.customer.fullname: "Nominativo"
+col.customer.firstname: "Nome"
+col.customer.lastname: "Cognome"
 col.customer.email: "E-mail"
 col.customer.type: "Tipo"
+col.customer.groups: "Gruppi"
 col.customer.locations: "Sedi"
 col.customer.active: "Attivo"
-col.customer.createdAt: "Creato il"
 col.customer.actions: "Azioni"

@@ -61,7 +61,7 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToOne(targetEntity: CustomerProfile::class, mappedBy: 'customer', cascade: ['persist', 'remove'])]
     #[MaxDepth(1)]
-    private ?CustomerProfile $profile;
+    private ?CustomerProfile $profile = null;
 
     #[ORM\OneToMany(targetEntity: CustomerLocation::class, mappedBy: 'customer')]
     #[MaxDepth(1)]
@@ -389,6 +389,16 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
+    }
+
+    /**
+     * Raw CustomerRole collection — getRoles() is reserved by the Security
+     * contract (returns role codes as strings), so forms bind to the entities
+     * via this getter instead of PropertyAccess.
+     */
+    public function getRoleEntities(): Collection
+    {
+        return $this->roles;
     }
 
     // /**

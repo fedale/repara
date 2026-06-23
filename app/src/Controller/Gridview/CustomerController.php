@@ -22,7 +22,8 @@ class CustomerController extends AbstractCrudGridController
     public function __construct(
         private CustomerLocationRepository $locationRepository,
         private UserPasswordHasherInterface $passwordHasher,
-    ) {}
+    ) {
+    }
 
     /** Hashes the submitted plain password for new/cloned customers. */
     protected function beforeSave(FormInterface $form, string $mode): void
@@ -64,7 +65,10 @@ class CustomerController extends AbstractCrudGridController
         return [
             // Responsive collapse: on narrow screens the least important columns
             // (highest priority number) fold into an expandable detail row.
-            'options' => ['responsive' => true],
+            'options' => [
+                'responsive' => true,
+                'pagination' => ['mode' => 'infinite'],
+            ],
         ];
     }
 
@@ -172,6 +176,7 @@ class CustomerController extends AbstractCrudGridController
                                 $c->addRole($role);
                             }
                         },
+
                     ],
                 ],
             ],

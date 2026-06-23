@@ -51,3 +51,6 @@ app.register('gridview-mercure', GridviewMercureController);
 
 import GridviewResponsiveController from '../../FedaleGridviewBundle/assets/controllers/gridview-responsive_controller.js';
 app.register('gridview-responsive', GridviewResponsiveController);
+
+import GridviewInfiniteScrollController from '../../FedaleGridviewBundle/assets/controllers/gridview-infinite-scroll_controller.js';
+app.register('gridview-infinite-scroll', GridviewInfiniteScrollController);

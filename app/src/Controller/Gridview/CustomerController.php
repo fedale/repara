@@ -112,7 +112,9 @@ class CustomerController extends AbstractCrudGridController
                     'unique' => true,
                     'uniqueMessage' => 'Esiste già un cliente con questo codice.',
                 ],
-                'active' => false
+                // Mostrato in modo composito dentro la colonna username: nascosto
+                // dalla griglia ma editabile in Create/Update.
+                'active' => ['inIndex' => false],
             ],
             // username (string)
             [
@@ -166,7 +168,8 @@ class CustomerController extends AbstractCrudGridController
                 'value' => fn(array $data) => $data['profile']['fullname'] ?? '—',
                 'filter' => ['type' => 'text'],
                 // 'filterBar' => true,
-                'active' => false
+                // Display-only (nessun control): mostrato dentro username, nascosto dalla griglia.
+                'active' => ['inIndex' => false],
 
             ],
             // profile.firstname — edited through the (cascade-persisted) CustomerProfile
@@ -213,7 +216,9 @@ class CustomerController extends AbstractCrudGridController
                     'unique' => true,
                     'uniqueMessage' => 'Esiste già un cliente con questa e-mail.',
                 ],
-                'active' => false
+                // Mostrato in modo composito dentro la colonna username: nascosto
+                // dalla griglia ma editabile in Create/Update.
+                'active' => ['inIndex' => false],
 
             ],
             // type (ManyToOne) — relation control binds a managed CustomerType entity

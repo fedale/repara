@@ -48,3 +48,6 @@ app.register('gridview-column-order', GridviewColumnOrderController);
 
 import GridviewMercureController from '../../FedaleGridviewBundle/assets/controllers/gridview-mercure_controller.js';
 app.register('gridview-mercure', GridviewMercureController);
+
+import GridviewResponsiveController from '../../FedaleGridviewBundle/assets/controllers/gridview-responsive_controller.js';
+app.register('gridview-responsive', GridviewResponsiveController);

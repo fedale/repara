@@ -44,12 +44,13 @@ class CustomerRepository extends ServiceEntityRepository
     {
         $qb = $this
             ->createQueryBuilder('c')
-            ->select('c', 'p', 'l', 't', 'r')
+            ->select('c', 'p', 'l', 't', 'r', 'g')
             ->distinct()
             ->join('c.profile', 'p')
             ->join('c.locations', 'l')
             ->join('c.type', 't')
             ->leftJoin('c.roles', 'r')
+            ->leftJoin('c.groups', 'g')
         ;
 
         // Per-type filter logic (date range parsing, boolean cast, IN, ...)
@@ -61,6 +62,7 @@ class CustomerRepository extends ServiceEntityRepository
             'createdAt' => ['date',     'c.createdAt'],
             'locations' => ['relation', 'l.id'],
             'type'      => ['relation', 't.id'],
+            'groups'    => ['relation', 'g.id'],
         ]);
 
         // Genuinely custom condition: fullname matches any of several fields

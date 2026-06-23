@@ -58,7 +58,15 @@ class CustomerController extends AbstractCrudGridController
         return Customer::class;
     }
 
-    // Grid id default ("customer") derived from the entity short name; no configure() needed.
+    // Grid id default ("customer") derived from the entity short name.
+    protected function configure(): array
+    {
+        return [
+            // Responsive collapse: on narrow screens the least important columns
+            // (highest priority number) fold into an expandable detail row.
+            'options' => ['responsive' => true],
+        ];
+    }
 
     protected function getDataProviderConfig(): array
     {
@@ -66,13 +74,13 @@ class CustomerController extends AbstractCrudGridController
             'models' => Customer::class,
             'pagination' => ['defaultPageSize' => 20],
             // Not shown in the grid; their getters eager-load relations, so
-            // keep them out of normalization. 'roles' is fetch-joined in
-            // CustomerRepository::search() and displayed, so it stays in.
-            'ignoredAttributes' => ['groups', 'users'],
+            // keep them out of normalization. 'roles' and 'groups' are
+            // fetch-joined in CustomerRepository::search() and displayed.
+            'ignoredAttributes' => ['users'],
             'sort' => [
                 'id' => ['asc' => ['c.id'], 'desc' => ['c.id'], 'default' => 'desc'],
-                'code' => ['asc' => ['c.code'], 'desc' => ['c.code'], 'default' => 'asc'],
-                'email' => ['asc' => ['c.email'], 'desc' => ['c.email'], 'default' => 'asc'],
+                'active' => ['asc' => ['c.active'], 'desc' => ['c.active'], 'default' => 'asc'],
+                'username' => ['asc' => ['c.email'], 'desc' => ['c.email'], 'default' => 'asc'],
             ],
         ];
     }
@@ -90,6 +98,11 @@ class CustomerController extends AbstractCrudGridController
         $locationChoices = [];
         foreach ($this->locationRepository->findAll() as $location) {
             $locationChoices[$location->getCity() . ' — ' . $location->getName()] = $location->getId();
+        }
+
+        $groupChoices = [];
+        foreach ($this->em()->getRepository(CustomerGroup::class)->findAll() as $group) {
+            $groupChoices[$group->getName()] = $group->getId();
         }
 
         return [
@@ -142,6 +155,7 @@ class CustomerController extends AbstractCrudGridController
                 'attribute' => 'roles',
                 'label' => 'col.customer.roles',
                 'type' => 'relation',
+                'priority' => 10,
                 'value' => fn(array $d) => implode(', ', $d['roles'] ?? []),
                 'control' => [
                     'options' => [
@@ -185,6 +199,7 @@ class CustomerController extends AbstractCrudGridController
                         'setter' => fn(Customer $c, ?string $v) => $this->profileOf($c)->setFirstname($v),
                     ],
                 ],
+                'active' => ['inIndex' => false],
             ],
             // profile.lastname — required (NOT NULL on customer_profile)
             [
@@ -200,6 +215,7 @@ class CustomerController extends AbstractCrudGridController
                         'setter' => fn(Customer $c, ?string $v) => $this->profileOf($c)->setLastname((string) $v),
                     ],
                 ],
+                'active' => ['inIndex' => false],
             ],
             // email (string)
             [
@@ -226,6 +242,7 @@ class CustomerController extends AbstractCrudGridController
                 'attribute' => 'type',
                 'label' => 'col.customer.type',
                 'type' => 'relation',
+                'priority' => 5,
                 'value' => fn(array $data) => $data['type']['name'] ?? '—',
                 'filter' => [
                     'type' => 'relation',
@@ -244,16 +261,22 @@ class CustomerController extends AbstractCrudGridController
                 'attribute' => 'groups',
                 'label' => 'col.customer.groups',
                 'type' => 'relation',
+                'priority' => 20,
                 'value' => fn(array $data) => implode(
                     ', ',
                     array_map(fn(array $group) => $group['name'], $data['groups'] ?? [])
                 ),
+                'filter' => [
+                    'type' => 'relation',
+                    'options' => ['choices' => $groupChoices, 'multiple' => true, 'searchable' => true],
+                ],
                 'control' => ['options' => ['class' => CustomerGroup::class, 'choice_label' => 'name', 'multiple' => true]],
             ],
             // locations (OneToMany) — display only: inverse side, FK owned by CustomerLocation
             [
                 'attribute' => 'locations',
                 'label' => 'col.customer.locations',
+                'priority' => 30,
                 'value' => fn(array $data) => implode(
                     ', ',
                     array_map(fn(array $location) => $location['name'], $data['locations'] ?? [])

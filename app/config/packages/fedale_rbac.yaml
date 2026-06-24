@@ -1,0 +1,22 @@
+fedale_rbac:
+    enabled: true
+
+    # Role that bypasses any rule (app convention).
+    super_admin_role: ROLE_SUPERADMIN
+
+    # Kept OFF until auth_item_child is populated: with true the bundle decorates
+    # security.role_hierarchy and the static hierarchy would be replaced.
+    override_role_hierarchy: false
+
+    # Fallback for injecting roles into the token. Recommended primary:
+    # User::getRoles() via AssignedRolesUserProvider.
+    inject_assigned_roles: false
+
+    cache:
+        enabled: false
+        pool: cache.app
+        # ttl: 3600  # seconds; null = no expiration (invalidate the pool manually)
+
+    # RBAC source: the 4 tables auth_item / auth_item_child / auth_assignment /
+    # auth_rule (the bundle's entities).
+    provider: doctrine

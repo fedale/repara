@@ -16,11 +16,11 @@
         },
         {
             "type": "path",
-            "url": "../{access-control-voter-bundle}",
+            "url": "../{rbac-bundle}",
             "options": {
                 "symlink": true,
                 "versions": {
-                    "fedale/access-control-voter-bundle": "1.0.999"
+                    "fedale/rbac-bundle": "1.0.999"
                 }
             }
         }
@@ -37,7 +37,7 @@
         "doctrine/orm": "^2.12",
         "fakerphp/faker": "^1.19",
         "fedale/access-control-bundle": "^1.0",
-        "fedale/access-control-voter-bundle": "^1.0",
+        "fedale/rbac-bundle": "^1.0",
         "fedale/gridview-bundle": "^1.0",
         "fresh/doctrine-enum-bundle": "^9.0",
         "lexik/jwt-authentication-bundle": "^2.16",

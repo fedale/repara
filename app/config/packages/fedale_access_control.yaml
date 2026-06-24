@@ -5,7 +5,7 @@ fedale_access_control:
     anonymous_access: false
 
     # Ruolo che bypassa tutte le regole (manteniamo la convenzione dell'app).
-    super_admin_role: ROLE_SuperAdmin
+    super_admin_role: ROLE_SUPERADMIN
 
     # allow | deny -> policy quando nessuna regola matcha
     default_policy: deny

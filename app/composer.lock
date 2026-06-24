@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "15b383cb97c0b84d8d42ece1e8ab9a49",
+    "content-hash": "2f3b42ba7f1aff0000a0a8de650d0fc2",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -1798,79 +1798,12 @@
             "time": "2026-06-11T13:35:53+00:00"
         },
         {
-            "name": "fedale/access-control-voter-bundle",
-            "version": "dev-main",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/fedale/access-control-voter-bundle.git",
-                "reference": "c76ad8fbb2e34ae1ea8da801bdd1d1d659857329"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/fedale/access-control-voter-bundle/zipball/c76ad8fbb2e34ae1ea8da801bdd1d1d659857329",
-                "reference": "c76ad8fbb2e34ae1ea8da801bdd1d1d659857329",
-                "shasum": ""
-            },
-            "require": {
-                "fedale/access-control-bundle": "^1.0",
-                "php": "^8.2",
-                "psr/cache": "^3.0",
-                "symfony/config": "^6.4 || ^7.0",
-                "symfony/console": "^6.4 || ^7.0",
-                "symfony/dependency-injection": "^6.4 || ^7.0",
-                "symfony/http-kernel": "^6.4 || ^7.0",
-                "symfony/security-bundle": "^6.4 || ^7.0",
-                "symfony/security-core": "^6.4 || ^7.0"
-            },
-            "require-dev": {
-                "doctrine/doctrine-bundle": "^2.8",
-                "doctrine/orm": "^2.14 || ^3.0",
-                "phpunit/phpunit": "^11.0",
-                "symfony/cache": "^6.4 || ^7.0"
-            },
-            "suggest": {
-                "doctrine/doctrine-bundle": "Necessario quando 'provider: doctrine'",
-                "doctrine/orm": "Necessario quando 'provider: doctrine' (sorgente regole di default)"
-            },
-            "default-branch": true,
-            "type": "symfony-bundle",
-            "extra": {
-                "branch-alias": {
-                    "dev-main": "1.0-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Fedale\\AccessControlVoterBundle\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "Symfony bundle for dynamic, DB-driven authorization voters (#[IsGranted] backed by a database)",
-            "keywords": [
-                "authorization",
-                "bundle",
-                "is-granted",
-                "permissions",
-                "rbac",
-                "symfony",
-                "voter"
-            ],
-            "support": {
-                "issues": "https://github.com/fedale/access-control-voter-bundle/issues",
-                "source": "https://github.com/fedale/access-control-voter-bundle/tree/main"
-            },
-            "time": "2026-06-19T23:07:12+00:00"
-        },
-        {
             "name": "fedale/gridview-bundle",
             "version": "1.0.999",
             "dist": {
                 "type": "path",
                 "url": "../gridview-bundle",
-                "reference": "30e13a08ba51e7c054262860f75186cdf50a377d"
+                "reference": "4078d473dd8f30ded0da6cc1affa4d19a2438639"
             },
             "require": {
                 "php": ">=8.1",
@@ -1922,6 +1855,74 @@
                 "grid",
                 "gridview",
                 "symfony"
+            ],
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
+            "name": "fedale/rbac-bundle",
+            "version": "1.0.999",
+            "dist": {
+                "type": "path",
+                "url": "../rbac-bundle",
+                "reference": "c76ad8fbb2e34ae1ea8da801bdd1d1d659857329"
+            },
+            "require": {
+                "php": "^8.2",
+                "psr/cache": "^3.0",
+                "psr/container": "^1.1 || ^2.0",
+                "symfony/config": "^6.4 || ^7.0",
+                "symfony/console": "^6.4 || ^7.0",
+                "symfony/dependency-injection": "^6.4 || ^7.0",
+                "symfony/expression-language": "^6.4 || ^7.0",
+                "symfony/http-kernel": "^6.4 || ^7.0",
+                "symfony/security-bundle": "^6.4 || ^7.0",
+                "symfony/security-core": "^6.4 || ^7.0",
+                "symfony/security-http": "^6.4 || ^7.0",
+                "symfony/service-contracts": "^2.5 || ^3.0"
+            },
+            "require-dev": {
+                "doctrine/doctrine-bundle": "^2.8",
+                "doctrine/orm": "^2.14 || ^3.0",
+                "phpunit/phpunit": "^11.0",
+                "symfony/cache": "^6.4 || ^7.0"
+            },
+            "suggest": {
+                "doctrine/doctrine-bundle": "Necessario quando 'provider: doctrine'",
+                "doctrine/orm": "Necessario quando 'provider: doctrine' (sorgente RBAC di default)"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Fedale\\RbacBundle\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Fedale\\RbacBundle\\Tests\\": "tests/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Symfony RBAC bundle inspired by Yii2 (auth_item / auth_item_child / auth_assignment / auth_rule): roles, permissions, hierarchy, per-user assignments and contextual rules, with a can() API and DB-driven role hierarchy",
+            "keywords": [
+                "authorization",
+                "bundle",
+                "is-granted",
+                "permissions",
+                "rbac",
+                "roles",
+                "symfony",
+                "voter",
+                "yii2"
             ],
             "transport-options": {
                 "symlink": true,

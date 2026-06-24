@@ -22,6 +22,6 @@ return [
     Fedale\GridviewBundle\FedaleGridviewBundle::class => ['all' => true],
     Symfony\Bundle\MercureBundle\MercureBundle::class => ['all' => true],
     Fedale\AccessControlBundle\FedaleAccessControlBundle::class => ['all' => true],
-    Fedale\AccessControlVoterBundle\FedaleAccessControlVoterBundle::class => ['all' => true],
+    Fedale\RbacBundle\FedaleRbacBundle::class => ['all' => true],
     Vich\UploaderBundle\VichUploaderBundle::class => ['all' => true],
 ];

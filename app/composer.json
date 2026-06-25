@@ -10,7 +10,7 @@
             "options": {
                 "symlink": true,
                 "versions": {
-                    "fedale/gridview-bundle": "1.0.999"
+                    "fedale/gridview-bundle": "1.0"
                 }
             }
         },
@@ -20,7 +20,7 @@
             "options": {
                 "symlink": true,
                 "versions": {
-                    "fedale/rbac-bundle": "1.0.999"
+                    "fedale/rbac-bundle": "1.0"
                 }
             }
         },
@@ -30,7 +30,7 @@
             "options": {
                 "symlink": true,
                 "versions": {
-                    "fedale/setting-bundle": "1.0.999"
+                    "fedale/setting-bundle": "1.0"
                 }
             }
         }

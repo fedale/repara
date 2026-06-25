@@ -225,6 +225,11 @@ class BundleController extends AbstractController
                     // (vedi gridview/with_sidebar.html.twig). La form resta attorno
                     // alla sola tabella; la filterBar staccata si collega per id.
                     'gridview' => '{header} {table} {footer}',
+                    // Il default di `header` include {filterBar}: va rimosso qui,
+                    // altrimenti la filterBar verrebbe resa due volte (header della
+                    // griglia + sidebar) e Symfony Form solleva "field already
+                    // rendered". La filterBar vive solo nella sidebar.
+                    'header'   => '{globalSearch} {filterSubmit} {addButton} {columnVisibility}',
                 ],
             ])
             ->setAttributes([

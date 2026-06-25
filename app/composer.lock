@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2f3b42ba7f1aff0000a0a8de650d0fc2",
+    "content-hash": "805b08c0d23f092b0bf70d2a0d67aa36",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -1867,7 +1867,7 @@
             "dist": {
                 "type": "path",
                 "url": "../rbac-bundle",
-                "reference": "c76ad8fbb2e34ae1ea8da801bdd1d1d659857329"
+                "reference": "1f1029cd11935216b9ae661d8a1cad39ac892bd1"
             },
             "require": {
                 "php": "^8.2",
@@ -1887,11 +1887,13 @@
                 "doctrine/doctrine-bundle": "^2.8",
                 "doctrine/orm": "^2.14 || ^3.0",
                 "phpunit/phpunit": "^11.0",
-                "symfony/cache": "^6.4 || ^7.0"
+                "symfony/cache": "^6.4 || ^7.0",
+                "twig/twig": "^3.0"
             },
             "suggest": {
-                "doctrine/doctrine-bundle": "Necessario quando 'provider: doctrine'",
-                "doctrine/orm": "Necessario quando 'provider: doctrine' (sorgente RBAC di default)"
+                "doctrine/doctrine-bundle": "Required when 'provider: doctrine'",
+                "doctrine/orm": "Required when 'provider: doctrine' (default RBAC source)",
+                "twig/twig": "Enables the can() Twig function"
             },
             "type": "symfony-bundle",
             "extra": {
@@ -1928,6 +1930,69 @@
                 "symlink": true,
                 "relative": true
             }
+        },
+        {
+            "name": "fedale/setting-bundle",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fedale/setting-bundle.git",
+                "reference": "c3ec9689209d94fc856773b4b78bd4c40e1a95e1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/fedale/setting-bundle/zipball/c3ec9689209d94fc856773b4b78bd4c40e1a95e1",
+                "reference": "c3ec9689209d94fc856773b4b78bd4c40e1a95e1",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.2",
+                "psr/cache": "^3.0",
+                "symfony/config": "^6.4 || ^7.0",
+                "symfony/dependency-injection": "^6.4 || ^7.0",
+                "symfony/http-kernel": "^6.4 || ^7.0"
+            },
+            "require-dev": {
+                "doctrine/doctrine-bundle": "^2.8",
+                "doctrine/orm": "^2.14 || ^3.0",
+                "phpunit/phpunit": "^11.0",
+                "symfony/cache": "^6.4 || ^7.0",
+                "twig/twig": "^3.0"
+            },
+            "suggest": {
+                "doctrine/doctrine-bundle": "Necessario quando 'provider: doctrine'",
+                "doctrine/orm": "Necessario quando 'provider: doctrine' (storage di default dei settings)",
+                "twig/twig": "Abilita la funzione Twig setting() per leggere i settings nei template"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Fedale\\SettingBundle\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Symfony bundle for runtime, multi-tenant application settings stored in the database",
+            "keywords": [
+                "Settings",
+                "bundle",
+                "configuration",
+                "multi-tenant",
+                "preferences",
+                "symfony"
+            ],
+            "support": {
+                "issues": "https://github.com/fedale/setting-bundle/issues",
+                "source": "https://github.com/fedale/setting-bundle/tree/v1.0.0"
+            },
+            "time": "2026-06-25T06:48:27+00:00"
         },
         {
             "name": "fresh/doctrine-enum-bundle",

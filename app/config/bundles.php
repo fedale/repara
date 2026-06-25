@@ -24,4 +24,5 @@ return [
     Fedale\AccessControlBundle\FedaleAccessControlBundle::class => ['all' => true],
     Fedale\RbacBundle\FedaleRbacBundle::class => ['all' => true],
     Vich\UploaderBundle\VichUploaderBundle::class => ['all' => true],
+    Fedale\SettingBundle\FedaleSettingBundle::class => ['all' => true],
 ];

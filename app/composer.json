@@ -23,6 +23,16 @@
                     "fedale/rbac-bundle": "1.0.999"
                 }
             }
+        },
+        {
+            "type": "path",
+            "url": "../{setting-bundle}",
+            "options": {
+                "symlink": true,
+                "versions": {
+                    "fedale/setting-bundle": "1.0.999"
+                }
+            }
         }
     ],
     "require": {
@@ -39,6 +49,7 @@
         "fedale/access-control-bundle": "^1.0",
         "fedale/rbac-bundle": "^1.0",
         "fedale/gridview-bundle": "^1.0",
+        "fedale/setting-bundle": "^1.0",
         "fresh/doctrine-enum-bundle": "^9.0",
         "lexik/jwt-authentication-bundle": "^2.16",
         "phpdocumentor/reflection-docblock": "^5.3",

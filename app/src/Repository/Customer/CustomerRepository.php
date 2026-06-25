@@ -56,13 +56,13 @@ class CustomerRepository extends ServiceEntityRepository
         // Per-type filter logic (date range parsing, boolean cast, IN, ...)
         // lives in the bundle appliers; the map declares param key => [type, DQL field]
         $this->searchForm->applyFilters($qb, $params, [
-            'code'      => ['text',     'c.code'],
-            'email'     => ['text',     'c.email'],
-            'active'    => ['boolean',  'c.active'],
-            'createdAt' => ['date',     'c.createdAt'],
+            'code' => ['text', 'c.code'],
+            'email' => ['text', 'c.email'],
+            'active' => ['boolean', 'c.active'],
+            'createdAt' => ['date', 'c.createdAt'],
             'locations' => ['relation', 'l.id'],
-            'type'      => ['relation', 't.id'],
-            'groups'    => ['relation', 'g.id'],
+            'type' => ['relation', 't.id'],
+            'groups' => ['relation', 'g.id'],
         ]);
 
         // Genuinely custom condition: fullname matches any of several fields
@@ -85,6 +85,7 @@ class CustomerRepository extends ServiceEntityRepository
             ['ilike', 'c.code', $params['username'] ?? null],
             ['ilike', 'p.firstname', $params['username'] ?? null],
             ['ilike', 'p.lastname', $params['username'] ?? null],
+            ['ilike', 'c.email', $params['username'] ?? null],
             ['ilike', 'CONCAT(p.firstname, \' \', p.lastname)', $params['username'] ?? null],
             ['ilike', 'CONCAT(p.lastname, \' \', p.firstname)', $params['username'] ?? null],
         );

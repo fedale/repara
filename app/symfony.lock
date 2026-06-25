@@ -81,6 +81,9 @@
     "fedale/gridview-bundle": {
         "version": "dev-main"
     },
+    "fedale/setting-bundle": {
+        "version": "v1.0.0"
+    },
     "fresh/doctrine-enum-bundle": {
         "version": "9.0",
         "recipe": {

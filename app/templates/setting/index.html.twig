@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Setting index{% endblock %}
+
+{% block body %}
+    <h1>Setting index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>TenantId</th>
+                <th>Name</th>
+                <th>Value</th>
+                <th>Type</th>
+                <th>Active</th>
+                <th>CreatedAt</th>
+                <th>UpdatedAt</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for setting in settings %}
+            <tr>
+                <td>{{ setting.id }}</td>
+                <td>{{ setting.tenantId }}</td>
+                <td>{{ setting.name }}</td>
+                <td>{{ setting.value }}</td>
+                <td>{{ setting.type }}</td>
+                <td>{{ setting.active ? 'Yes' : 'No' }}</td>
+                <td>{{ setting.createdAt ? setting.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ setting.updatedAt ? setting.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_setting_show', {'id': setting.id}) }}">show</a>
+                    <a href="{{ path('app_setting_edit', {'id': setting.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="9">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_setting_new') }}">Create new</a>
+{% endblock %}

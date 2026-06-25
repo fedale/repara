@@ -50,6 +50,9 @@ services:
       # Stessa convenzione per il rbac-bundle: composer risolve il path repo
       # "../rbac-bundle" (relativo a /srv/app) in /srv/rbac-bundle.
       - ../rbac-bundle:/srv/rbac-bundle
+      # Stessa convenzione per il setting-bundle: composer risolve il path repo
+      # "../setting-bundle" (relativo a /srv/app) in /srv/setting-bundle.
+      - ../setting-bundle:/srv/setting-bundle
 
   nginx:
     image: nginx

@@ -11,6 +11,14 @@
 import '@tabler/core/dist/css/tabler.min.css';
 import './styles/app.css';
 
+// Enable Bootstrap's data-api for the Tabler header: dropdowns (menu groups)
+// and collapse (mobile navbar toggler). Import the package root (ESM bundle) so
+// we share the single Bootstrap instance our controllers already use via
+// `import { Modal } from 'bootstrap'`. Importing the per-component UMD subpaths
+// instead pulls in a SECOND copy, whose duplicate data-api handlers open and
+// then immediately close every dropdown on the same click.
+import 'bootstrap';
+
 // start the Stimulus application
 import './bootstrap';
 

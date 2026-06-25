@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html data-bs-theme="dark">
+<html data-bs-theme="dark" class="theme-dark">
     <head>
         <meta charset="UTF-8">
         <title>{% block title %}Welcome!{% endblock %}</title>
@@ -15,32 +15,6 @@
         {% endblock %}
 
         <style>
-            /* Native (JS-free) dropdown groups for the header nav. */
-            .nav-group { position: relative; }
-            .nav-group > summary {
-                list-style: none;
-                cursor: pointer;
-                padding: .25rem .5rem;
-                border-radius: .25rem;
-            }
-            .nav-group > summary::-webkit-details-marker { display: none; }
-            .nav-group > summary::after { content: " ▾"; opacity: .6; }
-            .nav-group[open] > summary { background: var(--bs-secondary-bg); }
-            .nav-group__menu {
-                position: absolute;
-                top: 100%;
-                left: 0;
-                z-index: 1000;
-                min-width: 12rem;
-                margin-top: .25rem;
-                padding: .25rem;
-                background: var(--bs-body-bg);
-                border: 1px solid var(--bs-border-color);
-                border-radius: .375rem;
-                box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
-            }
-            .nav-group__menu a { display: block; padding: .35rem .6rem; border-radius: .25rem; white-space: nowrap; }
-            .nav-group__menu a:hover { background: var(--bs-secondary-bg); }
             .sidebar-group { margin-bottom: .75rem; }
             .sidebar-group__title {
                 font-size: .7rem;
@@ -93,34 +67,50 @@
         ] %}
         <div class="page">
             <header class="navbar navbar-expand-md d-print-none">
-                <div class="container-xl">
-                    <a class="navbar-brand" href="{{ path('gridview_customer_index') }}">⚫️ Repara</a>
-                    <nav class="navbar-nav flex-row gap-2 me-auto">
-                        {% for group in menu %}
-                            <details class="nav-group nav-item">
-                                <summary class="nav-link">{{ group.title }}</summary>
-                                <div class="nav-group__menu">
-                                    {% for item in group.items %}
-                                        <a class="nav-link" href="{{ path(item.route) }}">{{ item.label }}</a>
-                                    {% endfor %}
-                                </div>
-                            </details>
-                        {% endfor %}
-                    </nav>
-                    <div class="navbar-nav flex-row align-items-center gap-2">
+                <div class="container-fluid">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu" aria-controls="navbar-menu" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
+                        <a href="{{ path('gridview_customer_index') }}">⚫️ Repara</a>
+                    </h1>
+                    <div class="navbar-nav flex-row order-md-last">
                         {# Host-page language switcher: drives the gridview instantly via
                            the gridview-locale-switcher controller (window.GridviewI18n).
                            A single switcher for the whole page — no per-grid switcher. #}
-                        <button class="btn btn-sm btn-outline-secondary"
-                                data-controller="gridview-locale-switcher"
-                                data-action="click->gridview-locale-switcher#toggle">
-                            🌐 <span data-gridview-locale-switcher-target="label">EN</span>
-                        </button>
-                        <button class="btn btn-sm btn-outline-secondary"
-                                data-controller="color-theme"
-                                data-action="click->color-theme#toggle">
-                            <span data-color-theme-target="icon">☀</span>
-                        </button>
+                        <div class="nav-item">
+                            <button class="btn btn-sm btn-outline-secondary"
+                                    data-controller="gridview-locale-switcher"
+                                    data-action="click->gridview-locale-switcher#toggle">
+                                🌐 <span data-gridview-locale-switcher-target="label">EN</span>
+                            </button>
+                        </div>
+                        <div class="nav-item ms-2">
+                            <button class="btn btn-sm btn-outline-secondary"
+                                    data-controller="color-theme"
+                                    data-action="click->color-theme#toggle">
+                                <span data-color-theme-target="icon">☀</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="collapse navbar-collapse" id="navbar-menu">
+                        <div class="d-flex flex-column flex-md-row flex-fill align-items-stretch align-items-md-center">
+                            <ul class="navbar-nav">
+                                {% for group in menu %}
+                                    {% set dropdown_id = 'navbar-menu-' ~ loop.index %}
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle" href="#{{ dropdown_id }}" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="false">
+                                            <span class="nav-link-title">{{ group.title }}</span>
+                                        </a>
+                                        <div class="dropdown-menu">
+                                            {% for item in group.items %}
+                                                <a class="dropdown-item" href="{{ path(item.route) }}">{{ item.label }}</a>
+                                            {% endfor %}
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </header>
@@ -128,7 +118,7 @@
             {% set sidebar_content %}{% block sidebar %}{% endblock %}{% endset %}
             <div class="page-wrapper">
                 <div class="page-body">
-                    <div class="container-xl">
+                    <div class="container-fluid">
                         <div class="row g-3">
                             {% if sidebar_content|trim is not empty %}
                                 <aside class="col-12 col-md-3 page-sidebar">
@@ -143,7 +133,7 @@
                 </div>
 
                 <footer class="footer footer-transparent d-print-none">
-                    <div class="container-xl text-center">
+                    <div class="container-fluid text-center">
                         {% block footer %}
                             <span class="text-secondary">© {{ "now"|date("Y") }} Repara</span>
                         {% endblock %}

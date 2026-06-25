@@ -15,35 +15,6 @@
         {% endblock %}
 
         <style>
-            html, body { height: 100%; }
-            body { margin: 0; }
-            .page-layout {
-                display: flex;
-                flex-direction: column;
-                min-height: 100vh;
-            }
-            .page-header {
-                flex: 0 0 auto;
-            }
-            .page-main {
-                flex: 1 1 auto;
-                display: flex;
-                min-height: 0;
-            }
-            .page-sidebar {
-                flex: 0 0 10%;
-                max-width: 10%;
-                overflow: auto;
-            }
-            .page-body {
-                flex: 1 1 auto;
-                min-width: 0;
-                overflow: auto;
-                padding: 1rem;
-            }
-            .page-footer {
-                flex: 0 0 auto;
-            }
             /* Native (JS-free) dropdown groups for the header nav. */
             .nav-group { position: relative; }
             .nav-group > summary {
@@ -117,56 +88,68 @@
             { title: 'Sistema', items: [
                 { route: 'gridview_website_index', label: 'Siti' },
                 { route: 'gridview_access_control_index', label: 'Controllo accessi' },
+                { route: 'app_setting_index', label: 'Impostazioni' },
             ] },
         ] %}
-        <div class="page-layout">
-            <header class="page-header navbar navbar-expand bg-body-tertiary border-bottom px-3 py-2">
-                <a class="navbar-brand" href="{{ path('gridview_customer_index') }}">⚫️ Repara</a>
-                <nav class="navbar-nav flex-row gap-2 me-auto">
-                    {% for group in menu %}
-                        <details class="nav-group nav-item">
-                            <summary class="nav-link">{{ group.title }}</summary>
-                            <div class="nav-group__menu">
-                                {% for item in group.items %}
-                                    <a class="nav-link" href="{{ path(item.route) }}">{{ item.label }}</a>
-                                {% endfor %}
-                            </div>
-                        </details>
-                    {% endfor %}
-                </nav>
-                {# Host-page language switcher: drives the gridview instantly via
-                   the gridview-locale-switcher controller (window.GridviewI18n).
-                   A single switcher for the whole page — no per-grid switcher. #}
-                <button class="btn btn-sm btn-outline-secondary me-2"
-                        data-controller="gridview-locale-switcher"
-                        data-action="click->gridview-locale-switcher#toggle">
-                    🌐 <span data-gridview-locale-switcher-target="label">EN</span>
-                </button>
-                <button class="btn btn-sm btn-outline-secondary"
-                        data-controller="color-theme"
-                        data-action="click->color-theme#toggle">
-                    <span data-color-theme-target="icon">☀</span>
-                </button>
+        <div class="page">
+            <header class="navbar navbar-expand-md d-print-none">
+                <div class="container-xl">
+                    <a class="navbar-brand" href="{{ path('gridview_customer_index') }}">⚫️ Repara</a>
+                    <nav class="navbar-nav flex-row gap-2 me-auto">
+                        {% for group in menu %}
+                            <details class="nav-group nav-item">
+                                <summary class="nav-link">{{ group.title }}</summary>
+                                <div class="nav-group__menu">
+                                    {% for item in group.items %}
+                                        <a class="nav-link" href="{{ path(item.route) }}">{{ item.label }}</a>
+                                    {% endfor %}
+                                </div>
+                            </details>
+                        {% endfor %}
+                    </nav>
+                    <div class="navbar-nav flex-row align-items-center gap-2">
+                        {# Host-page language switcher: drives the gridview instantly via
+                           the gridview-locale-switcher controller (window.GridviewI18n).
+                           A single switcher for the whole page — no per-grid switcher. #}
+                        <button class="btn btn-sm btn-outline-secondary"
+                                data-controller="gridview-locale-switcher"
+                                data-action="click->gridview-locale-switcher#toggle">
+                            🌐 <span data-gridview-locale-switcher-target="label">EN</span>
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary"
+                                data-controller="color-theme"
+                                data-action="click->color-theme#toggle">
+                            <span data-color-theme-target="icon">☀</span>
+                        </button>
+                    </div>
+                </div>
             </header>
 
             {% set sidebar_content %}{% block sidebar %}{% endblock %}{% endset %}
-            <div class="page-main">
-                {% if sidebar_content|trim is not empty %}
-                <aside class="page-sidebar bg-body-tertiary border-end p-2">
-                    {{ sidebar_content }}
-                </aside>
-                {% endif %}
+            <div class="page-wrapper">
+                <div class="page-body">
+                    <div class="container-xl">
+                        <div class="row g-3">
+                            {% if sidebar_content|trim is not empty %}
+                                <aside class="col-12 col-md-3 page-sidebar">
+                                    {{ sidebar_content }}
+                                </aside>
+                            {% endif %}
+                            <main class="col">
+                                {% block body %}{% endblock %}
+                            </main>
+                        </div>
+                    </div>
+                </div>
 
-                <main class="page-body">
-                    {% block body %}{% endblock %}
-                </main>
+                <footer class="footer footer-transparent d-print-none">
+                    <div class="container-xl text-center">
+                        {% block footer %}
+                            <span class="text-secondary">© {{ "now"|date("Y") }} Repara</span>
+                        {% endblock %}
+                    </div>
+                </footer>
             </div>
-
-            <footer class="page-footer bg-body-tertiary border-top text-center small py-2">
-                {% block footer %}
-                    <span class="text-body-secondary">© {{ "now"|date("Y") }} Repara</span>
-                {% endblock %}
-            </footer>
         </div>
     </body>
 </html>

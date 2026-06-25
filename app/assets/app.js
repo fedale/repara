@@ -6,7 +6,9 @@
  */
 
 // any CSS you import will output into a single css file (app.css in this case)
-import 'bootstrap/dist/css/bootstrap.css';
+// Tabler ships its own Bootstrap, so we import Tabler instead of Bootstrap to
+// avoid loading Bootstrap twice. Our own overrides stay last so they win.
+import '@tabler/core/dist/css/tabler.min.css';
 import './styles/app.css';
 
 // start the Stimulus application

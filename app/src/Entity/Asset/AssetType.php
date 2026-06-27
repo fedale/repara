@@ -14,10 +14,10 @@ class AssetType
 {
     use TimestampableEntity;
 
-    #[ORM\Column]
+    #[ORM\Column(type: 'integer')]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
-    private $id;
+    private ?int $id = null;
 
     #[ORM\Column(length: 64, nullable: false)]
     private string $name;

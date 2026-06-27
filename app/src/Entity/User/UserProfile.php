@@ -13,8 +13,8 @@ class UserProfile
 {
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy:'AUTO')]
-    #[ORM\Column]
-    private $id;
+    #[ORM\Column(type: 'integer')]
+    private ?int $id = null;
 
     /**
      * @var string|null

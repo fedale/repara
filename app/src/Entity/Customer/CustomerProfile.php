@@ -14,8 +14,8 @@ class CustomerProfile
 {
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy:'AUTO')]
-    #[ORM\Column]
-    private $id;
+    #[ORM\Column(type: 'integer')]
+    private ?int $id = null;
 
     #[ORM\OneToOne(targetEntity: Customer::class, inversedBy: 'profile', cascade: ['persist', 'remove'])]
     #[Ignore]

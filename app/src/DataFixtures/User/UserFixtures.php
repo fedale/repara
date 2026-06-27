@@ -6,6 +6,7 @@ use App\Entity\User\User;
 use App\Entity\User\UserGroup;
 use App\Entity\User\UserProfile;
 use App\Entity\User\UserRole;
+use App\Entity\User\UserType;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -17,7 +18,9 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
     {
         $userRoleRepository = $manager->getRepository(UserRole::class);
         $userGroupRepository = $manager->getRepository(UserGroup::class);
-        
+        // User.type is required (JoinColumn nullable: false): assign a default type.
+        $defaultType = $manager->getRepository(UserType::class)->findOneBy([]);
+
         foreach ($this->getUsers() as $k => $item) {
             $u = $item['user'];
             $p = $item['profile'];
@@ -27,7 +30,8 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
             $user->setCode($u['code']);
             $user->setEmail($u['email']);
             $user->setPassword($u['password']);
-            
+            $user->setType($defaultType);
+
             // Check for role
             if (array_key_exists('roles', $item) && count($item['roles']) > 0 ) {
                 foreach ($item['roles'] as $k => $code) {
@@ -201,6 +205,7 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
         return [
             UserRoleFixtures::class,
             UserGroupFixtures::class,
+            TypeFixtures::class,
         ];
     }
 }

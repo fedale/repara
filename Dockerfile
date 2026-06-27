@@ -10,6 +10,7 @@ ARG APP_ENV=prod
 RUN apt update \
     && apt install -y zlib1g-dev g++ git libpq-dev libicu-dev zip libzip-dev zip acl apt-transport-https gnupg apt-utils \
         libfreetype6-dev libjpeg62-turbo-dev libpng-dev fonts-dejavu-core \
+        libfcgi-bin \
     && docker-php-ext-install intl opcache pdo pdo_mysql pdo_pgsql \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd \

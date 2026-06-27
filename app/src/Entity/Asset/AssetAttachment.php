@@ -26,10 +26,10 @@ class AssetAttachment
     #[Vich\UploadableField(mapping: 'asset_attachment', fileNameProperty: 'filename', size: 'size', mimeType: 'type')]
     private ?File $imageFile = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: 'integer')]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
-    private $id;
+    private ?int $id = null;
     
      
     #[ORM\Column(name: 'name', type: 'string', length: 255, nullable: false)]

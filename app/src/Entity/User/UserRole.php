@@ -19,10 +19,10 @@ use App\Repository\User\UserRoleRepository;
 class UserRole
 {
      
-    #[ORM\Column(name: 'id', type: 'smallint', nullable: false, options: ['unsigned' => true])]
+    #[ORM\Column(name: 'id', type: 'integer', nullable: false)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
-    private $id;
+    private ?int $id = null;
 
     #[ORM\Column(name: 'slug', type: 'string', length: 64, nullable: false, unique: true)]
     #[Gedmo\Slug(fields: ['name'])]

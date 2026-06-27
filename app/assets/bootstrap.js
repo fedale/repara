@@ -54,3 +54,6 @@ app.register('gridview-responsive', GridviewResponsiveController);
 
 import GridviewInfiniteScrollController from '../../FedaleGridviewBundle/assets/controllers/gridview-infinite-scroll_controller.js';
 app.register('gridview-infinite-scroll', GridviewInfiniteScrollController);
+
+import GridviewDropdownController from '../../FedaleGridviewBundle/assets/controllers/gridview-dropdown_controller.js';
+app.register('gridview-dropdown', GridviewDropdownController);

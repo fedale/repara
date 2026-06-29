@@ -220,15 +220,15 @@ class BundleController extends AbstractController
             ->setSearchModel($this->customerSearchModel)
             ->setOptions([
                 'layout' => [
-                    // 'gridview' => '{toolbar} {header} {table} {footer}',
+                    // 'shell' => '{toolbar} {header} {dataview} {footer}',
                     // columnVisibility e filterBar resi nella sidebar di pagina
                     // (vedi gridview/with_sidebar.html.twig). La form resta attorno
                     // alla sola tabella; la filterBar staccata si collega per id.
-                    'gridview' => '{header} {table} {footer}',
-                    // Il default di `header` include {filterBar}: va rimosso qui,
-                    // altrimenti la filterBar verrebbe resa due volte (header della
-                    // griglia + sidebar) e Symfony Form solleva "field already
-                    // rendered". La filterBar vive solo nella sidebar.
+                    'shell' => '{header} {dataview} {footer}',
+                    // La filterBar vive solo nella sidebar: la `header` qui elenca
+                    // i widget direttamente (niente {filterBar}), altrimenti
+                    // verrebbe resa due volte (header della griglia + sidebar) e
+                    // Symfony Form solleva "field already rendered".
                     'header'   => '{globalSearch} {filterSubmit} {addButton} {columnVisibility}',
                 ],
             ])
